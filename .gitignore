@@ -1,8 +1,2 @@
-.DS_Store
-/.idea
-/tests/*.diff
-/tests/*.exp
-/tests/*.log
-/tests/*.out
-/tests/*.php
+/local/
 /vendor
