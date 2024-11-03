@@ -1,8 +1,8 @@
 # CliToolkit
 
-**CliToolkit** is a framework for PHP CLI scripts.
+**CliToolkit** is a CLI framework for PHP scripts.
 
-Key features (why would you want to use it):
+Key features (why you would want to use it):
 - configure named (options) and positioned (arguments) parameters with ease using a builder;
 - define required options, optional arguments, lists of possible values, flags, array-like parameters and subcommands;
 - call your scripts from any paths by generated aliases
@@ -22,9 +22,12 @@ Key features (why would you want to use it):
 
 The only requirement is PHP >= 8.1
 
-Just clone / download this repository.
+Use composer:
+```shell
+composer require magic-push/cli-toolkit
+```
 
-The composer-based installation will become available a bit later.
+... or just clone / download this repository.
 
 ## How to
 
@@ -107,7 +110,8 @@ You can also read the [Tests](tests/Tests)`/*/scripts/` directories as artificia
 **CliToolkit** was inspired by and based on [Cliff](https://github.com/johnnywoo/cliff) project, so the first author is
 [Aleksandr Galkin](https://github.com/johnnywoo).
 
-A part of ideas and code for **CliToolkit v1.0** was brought by [Anton Kotik](https://github.com/anton-kotik).
+A part of ideas and code for [CliToolkit v1.0.0](docs/changelog.md#v100) was brought by
+[Anton Kotik](https://github.com/anton-kotik).
 
 The [Question](src/Question/Question.php) class was developed by [Vasiliy Borodin](https://github.com/borodin-vasiliy).
 
