@@ -65,7 +65,7 @@ abstract class TestCaseAbstract extends TestCase {
     }
 
     /**
-     * Asserts that a {@see LogicException} exception was printed out. Exit code may vary thus is not asserted.
+     * Asserts that a {@see LogicException} exception was printed out.
      */
     protected static function assertLogicExceptionOutput(
         string $script,

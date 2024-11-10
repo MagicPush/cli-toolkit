@@ -5,16 +5,10 @@ The list of plans and ideas for future development.
 ## Baseline
 
 1. Docs:
-    1. Subcommands.
     1. Array parameters (especially for `newArrayArgument()`).
     1. Validators custom exception messages.
     1. Details about Parameterizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Allow making subcommands optional and/or adding default values.
-   Example: `git --version` does not require a subcommand to show the whole package version.
-   
-   Points to consider:
-    * Cover `CliRequest::getCommandRequest()` with autotests.
 1. Simplify outputs strings formatting ([TerminalFormatter](src/TerminalFormatter.php)) with something like tags.
 
    <details>
@@ -72,7 +66,14 @@ The list of plans and ideas for future development.
 
    </details>
 
-## Major and super ambitious ideas
+## Next major release
+
+Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
+When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
+
+1. Rename `CliRequest::getCommandRequest()` into `getSubcommandRequest()`.
+
+## Large and super ambitious ideas
 
 1. Class-based scripts as subcommands.
     1. Add a scripts launcher generator (let you specify a path to your launcher JSON settings).

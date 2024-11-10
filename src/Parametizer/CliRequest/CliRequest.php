@@ -30,15 +30,18 @@ class CliRequest {
         return $this->params[$paramName];
     }
 
-    public function getCommandRequest(string $command): static {
-        $subcommandConfig = $this->config->getBranch($command);
+    /**
+     * Returns a subcommand request by a name specified for a subcommand switch parameter.
+     */
+    public function getCommandRequest(string $subcommandName): static {
+        $subcommandConfig = $this->config->getBranch($subcommandName);
         if (!$subcommandConfig) {
             throw new LogicException(
-                "Subcommand '" . HelpFormatter::createForStdErr()->paramTitle($command) . "' not found",
+                "Subcommand '" . HelpFormatter::createForStdErr()->paramTitle($subcommandName) . "' not found",
             );
         }
 
-        return new static($subcommandConfig, $this->getParam($command));
+        return new static($subcommandConfig, $this->getParam($subcommandName));
     }
 
     private static function validateValueIsArray(string $paramName, mixed $paramValue): void {

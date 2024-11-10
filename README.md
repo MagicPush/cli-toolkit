@@ -33,8 +33,6 @@ composer require magic-push/cli-toolkit
 
 Just create a php-file and start configuring:
 ```php
-use MagicPush\CliToolkit\Parametizer\Parametizer;
-
 // Configure your script parameters
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size') // A positioned parameter.
@@ -75,8 +73,6 @@ Config and parameter builders will guide you with available options you can set 
 built-in validators will show you corresponding errors:
 
 ```php
-use MagicPush\CliToolkit\Parametizer\Parametizer;
-
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->default(100)

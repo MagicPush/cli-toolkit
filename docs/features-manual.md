@@ -7,6 +7,7 @@ Here are more detailed descriptions for different features you may find in the p
 - [Parameter types](#parameter-types)
 - [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
+- [Subcommands](#subcommands)
 
 ## Parameter types
 
@@ -77,8 +78,6 @@ Ensure your script can be called with valid values only.
 Configure possible values list:
 
 ```php
-use MagicPush\CliToolkit\Parametizer\Parametizer;
-
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->allowedValues([10, 50, 100, 200, 500])
@@ -93,8 +92,6 @@ Incorrect value '1000' for argument <chunk-size>
 ...or provide a pattern:
 
 ```php
-use MagicPush\CliToolkit\Parametizer\Parametizer;
-
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->validatorPattern('/^[0-9]+$/')
@@ -109,8 +106,6 @@ Incorrect value '200s' for argument <chunk-size>
 ...or even specify a callback:
 
 ```php
-use MagicPush\CliToolkit\Parametizer\Parametizer;
-
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->validatorCallback(function (&$value) { // Values can be rewritten in callbacks, if you desire.
@@ -123,3 +118,110 @@ $request = Parametizer::newConfig()
 $ php my-cool-script.php 510
 Incorrect value '510' for argument <chunk-size>
 ```
+
+## Subcommands
+
+In some cases you might want to have such a script, where one part of parameters is common for every launch and another
+part of parameters differs quite significantly depending on a script's branch (subcommand). Technically it turns a
+script parameters config into a tree of configs with the base config (like a 'trunk') and 'branched' configs, where
+each 'branch' has its own config with parameters available only within that particular branch.
+
+Common examples of such constructs:
+- `git push --verify` and `git tag --verify`: a parameter with the same name `--verify` acts differently depending on
+  a subcommand selected (`push` or `tag`);
+- `composer install --download-only` and `composer update --root-reqs`: `--download-only` flag is not available for
+  `update` subcommand so as `--root-reqs` flag - for `install` subcommand.
+  
+Consider such a script:
+```php
+$request = Parametizer::newConfig()
+    /*
+     * The `--help` flag is added automatically for each config - the trunk and all branches.
+     * Thus you are able to see different help pages depending on the position of the flag in a command line.
+     */
+
+    /*
+     * This argument exists on the base 'level' and should be passed before a subcommand name,
+     * but its value is available everywhere in a script's configs tree.
+     */
+    ->newArgument('file-path')
+    ->description('Path to a file for processing.')
+    
+    /*
+     * The subcommand switch name works like an argument with a few exceptions:
+     *  - can not be optional;
+     *  - must be the last argument in the current config
+     *  (thus also excluding a possibility to define more subcommand switches in the same config).
+     */
+    ->newSubcommandSwitch('operation')
+    /*
+     * Here you define as many subcommands (nested configs or 'branches') as you wish.
+     * The first parameter here is the substring a script user should specify as a subcommand switch value,
+     * so the corresponding branch takes effect.
+     */
+    ->newSubcommand(
+        'read',
+        Parametizer::newConfig()
+        // If you do not need any other parameters, you can leave an 'empty' config here.
+    )
+    ->newSubcommand(
+        'write',
+        Parametizer::newConfig()
+            ->newFlag('--truncate')
+            ->description('
+                Truncate the whole file before writing into it.
+                By default, the string is appended to the end of a file.
+            ')
+            
+            ->newArgument('substring'),
+            
+            /*
+             * If you dare, you may create an even more complex tree of subcommands,
+             * as it is possible to add a subcommand switch to each and every config: 
+             */
+            //->newSubcommandSwitch('sub-operation')
+            //->newSubcommand(
+            //    'super'
+            //     Parametizer::newConfig()
+            //        -> ...
+            //        ->newSubcommandSwitch('even-deeper')
+            //        ->newSubcommand(...)
+            //        ...
+            // )
+            // ->newSubcommand(
+            //    'mega'
+            //     Parametizer::newConfig()
+            //        -> ...
+            // )
+    )
+
+    ->run();
+
+$filePath  = $request->getParam('file-path');
+$operation = $request->getParam('operation');
+// Here you get a sub-request for a corresponding branch config.
+$operationRequest = $request->getCommandRequest($operation);
+switch ($operation) {
+    case 'read':
+        // ...
+        break;
+        
+    case 'write':
+        $shouldTruncate = $operationRequest->getParam('truncate');
+        // ...
+        break;
+}
+```
+
+With such a script:
+1. You may request a help page for the common part (`script.php --help`)
+   or for one of subcommands (`script.php write --help`).
+1. You have to specify options and arguments for a specific 'level' (subcommand, config) before you specify
+   a subcommand name.
+
+   For instance, you can not specify `--truncate` flag before specifying `write` (the subcommand
+   that supports `--truncate` flag): `script.php --truncate write` will render an error about an unknown option,
+   but `script.php write --truncate` will be executed correctly.
+
+   Or you can not request the main command help when specifying `--help` after `read`,
+   because this way you invoke a help page generation for the `read` subcommand.

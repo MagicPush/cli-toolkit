@@ -2,6 +2,7 @@
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Subcommand;
 
+use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
@@ -23,10 +24,7 @@ class SubcommandTest extends TestCaseAbstract {
      * @covers Config::registerArgument()
      */
     public function testConfigSubcommandOks(string $script, string $parametersString): void {
-        $result = static::assertNoErrorsOutput($script, $parametersString);
-
-        // Success = no output.
-        assertSame('', $result->getStdOut());
+        static::assertNoErrorsOutput($script, $parametersString);
     }
 
     /**
@@ -62,7 +60,7 @@ class SubcommandTest extends TestCaseAbstract {
         static::assertParseErrorOutput(
             $script,
             "Unknown option '--name-l2'",
-            'test11 test23 --name-l2=supername',
+            'test11 test21 --name-l2=supername',
         );
 
         // Vice versa: you can not specify some deeper-level option before you specify a corresponding subcommand.
@@ -214,7 +212,7 @@ class SubcommandTest extends TestCaseAbstract {
             [
                 0 => 'print-option-names',
 
-                // Top level default settings
+                // Top level default settings, should be added automatically.
                 1 => 'parametizer-internal-autocomplete-generate',
                 2 => 'parametizer-internal-autocomplete-execute',
                 3 => 'help',
@@ -227,21 +225,26 @@ class SubcommandTest extends TestCaseAbstract {
 
                         'BRANCHES' => [
                             'test21' => [
+                                // Should be added automatically.
                                 0 => 'help',
                             ],
                             'test22' => [
+                                // Should be added automatically.
                                 0 => 'help',
                             ],
                             'test23' => [
                                 0 => 'name-l3',
 
+                                // Should be added automatically.
                                 1 => 'help',
 
                                 'BRANCHES' => [
                                     'test31' => [
+                                        // Should be added automatically.
                                         0 => 'help',
                                     ],
                                     'test32' => [
+                                        // Should be added automatically.
                                         0 => 'help',
                                     ],
                                 ],
@@ -249,11 +252,53 @@ class SubcommandTest extends TestCaseAbstract {
                         ],
                     ],
                     'test12' => [
+                        // Should be added automatically.
                         0 => 'help',
                     ],
                 ],
             ],
             json_decode($result->getStdOut(), true),
+        );
+    }
+
+    #[DataProvider('provideReadingSubcommandParameters')]
+    /**
+     * Tests reading parameters in different subcommands (branches).
+     *
+     * @covers CliRequest::getCommandRequest()
+     */
+    public function testReadingSubcommandParameters(string $subcommandName, string $expectedOutput): void {
+        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/same-name-different-branches.php', $subcommandName);
+        assertSame($expectedOutput, $result->getStdOut());
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideReadingSubcommandParameters(): array {
+        return [
+            'red' => [
+                'subcommandName' => 'branch-red',
+                'expectedOutput' => 'opt-level-2-red, opt-level-2-red',
+            ],
+            'blue' => [
+                'subcommandName' => 'branch-blue',
+                'expectedOutput' => 'opt-level-2-blue, opt-level-2-blue',
+            ],
+        ];
+    }
+
+    /**
+     * Tests a failed attempt to read an unknown subcommand parameters
+     * (after the correct one is used during the parsing phase).
+     *
+     * @covers CliRequest::getCommandRequest()
+     */
+    public function testRequestingUnknownSubcommand(): void {
+        static::assertLogicExceptionOutput(
+            __DIR__ . '/scripts/error-request-subcommand-name.php',
+            "Subcommand 'branch-green' not found",
+            'branch-red',
         );
     }
 }

@@ -6,7 +6,14 @@ This change log references the repository changes and releases, which respect [s
 
 Currently in `dev` branch:
 
+### New features
+
 1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting.
+
+### Patching
+
+1. Covered `CliRequest::getCommandRequest()` with autotests.
+1. Added a paragraph about subcommands into [features-manual](features-manual.md#subcommands).
 
 ## v1.0.0
 
