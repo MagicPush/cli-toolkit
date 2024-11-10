@@ -2,13 +2,14 @@
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Config;
 
+use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ConfigTest extends TestCaseAbstract {
     #[DataProvider('provideConfigLogicExceptions')]
     /**
-     * Test various {@see LogicException}s when setting up a config.
+     * Test various {@see ConfigException}s when setting up a config.
      *
      * @covers Config::ensureNoDuplicateName()
      * @covers Config::ensureNoDuplicateShortName()

@@ -42,7 +42,7 @@ $request = Parametizer::newConfig()
     ->run();
 
 // Read parameters
-$chunkSize = (int) $request->getParam('chunk-size');
+$chunkSize = $request->getParamAsInt('chunk-size');
 
 // Process...
 

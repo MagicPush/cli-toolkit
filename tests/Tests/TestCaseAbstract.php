@@ -2,6 +2,7 @@
 
 namespace MagicPush\CliToolkit\Tests\Tests;
 
+use LogicException;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\utils\CliProcess;
@@ -47,7 +48,7 @@ abstract class TestCaseAbstract extends TestCase {
     }
 
     /**
-     * Asserts that a correct exception was printed out, {@see ConfigException}.
+     * Asserts that a {@see ConfigException} exception was printed out. Exit code may vary thus is not asserted.
      */
     protected static function assertConfigExceptionOutput(
         string $script,
@@ -59,6 +60,24 @@ abstract class TestCaseAbstract extends TestCase {
             $expectedErrorOutput,
             $parametersString,
             exceptionHeaderSubstring: ConfigException::class . ': ',
+            // Config exceptions happen before a specific error code is set for the exception handler.
+        );
+    }
+
+    /**
+     * Asserts that a {@see LogicException} exception was printed out. Exit code may vary thus is not asserted.
+     */
+    protected static function assertLogicExceptionOutput(
+        string $script,
+        string $expectedErrorOutput,
+        string $parametersString = '',
+    ): void {
+        self::assertAnyErrorOutput(
+            $script,
+            $expectedErrorOutput,
+            $parametersString,
+            exceptionHeaderSubstring: LogicException::class . ': ',
+            shouldAssertExitCode: true,
         );
     }
 

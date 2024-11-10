@@ -52,7 +52,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
      * @covers TerminalFormatter::__construct()
      */
     public function testNoStyleWhenNotInTerminal(): void {
-        $result = static::assertNoErrorsOutput(__DIR__ . '/test-no-style-when-not-in-terminal-script.php');
+        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/no-style-when-not-in-terminal.php');
         assertSame(
             [
                 'some string',

@@ -2,6 +2,12 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
+## DEV
+
+Currently in `dev` branch:
+
+1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting.
+
 ## v1.0.0
 
 The first official release. Mainly focused on Cliff improvements and some additions like:

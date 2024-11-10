@@ -35,10 +35,9 @@ class ParsingTest extends TestCaseAbstract {
             'arg-optional'   => 'B',
             'arg-list'       => [],
         ];
-        $expectedValues = array_merge($defaultValues, $expectedValues);
 
-        $resultJsonString = $result->getStdOut();
-        $actualValues     = json_decode($resultJsonString, true);
+        $expectedValues = array_merge($defaultValues, $expectedValues);
+        $actualValues   = json_decode($result->getStdOut(), true);
 
         assertSame($expectedValues, $actualValues);
     }

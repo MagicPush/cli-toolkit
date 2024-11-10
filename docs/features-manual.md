@@ -5,6 +5,7 @@ Here are more detailed descriptions for different features you may find in the p
 ## Contents
 
 - [Parameter types](#parameter-types)
+- [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
 
 ## Parameter types
@@ -38,6 +39,36 @@ value only. This is suitable if you want to specify for instance an _argument_ v
 There are different opinions on how to call a positional parameter. The main reason here to call it as "argument"
 is just that a very popular CLI framework `symfony/console` calls it the same way.
 So if you used to write CLI PHP scripts via `symfony`, you won't have any trouble with this term.
+
+## Type casting from requests
+
+After command-line parameters are processed, `Parametizer::run()` returns an instance of `CliRequest`. Then you can
+read the parsed parameters' values from that request object via `getParam()` method.
+
+Though, initially parsed values are always rendered as strings. And usually you would like to cast those to more
+appropriate data types. You can do it by a standard way like `(int) $request->getParam('cycles-count')` or via the
+special helper methods:
+
+```php
+$request = Parametizer::newConfig()
+    ->newFlag('--verbose')
+    ->newOption('cycles-count')
+    ->newOption('temperature')
+    ->newArrayOption('list-of-ids')
+    ->newArrayOption('list-of-coords')
+
+$isVerbose   = $request->getParam('verbose');            // Flag values are always converted to bool automatically.
+$cyclesCount = $request->getParamAsInt('cycles-count');  // Instead of `(int) $request->getParam('cycles-count')`.
+$temperature = $request->getParamAsFloat('temperature'); // Instead of `(float) $request->getParam('temperature')`.
+
+// Each element of an array is casted to ...
+$ids    = $request->getParamAsIntList('list-of-ids');      // ... an integer value.
+$coords = $request->getParamAsFloatList('list-of-coords'); // ... a float value.
+```
+
+In addition, all `getParamAs*()` helpers execute a basic validation ensuring that you do not try to cast single values
+into arrays and vice versa. If you want some custom value casting or filtering, you can always do it
+via `validatorCallback()` (see [Validators](#validators) below).
 
 ## Validators
 

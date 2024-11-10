@@ -10,6 +10,11 @@ The list of plans and ideas for future development.
     1. Validators custom exception messages.
     1. Details about Parameterizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
+1. Allow making subcommands optional and/or adding default values.
+   Example: `git --version` does not require a subcommand to show the whole package version.
+   
+   Points to consider:
+    * Cover `CliRequest::getCommandRequest()` with autotests.
 1. Simplify outputs strings formatting ([TerminalFormatter](src/TerminalFormatter.php)) with something like tags.
 
    <details>
@@ -26,14 +31,6 @@ The list of plans and ideas for future development.
     * Use this feature to improve current built-in formatting - to simplify and shorten the code.
    </details>
 1. Smart completion for mentioned options (not array = do not complete it twice).
-1. Extend `SubcommandSwitchBuilder` from `ArgumentBuilder`
-   and debug why `setIsSubcommandSwitch()` is called after `newSubcommand()`.
-1. Parameter type caster: you specify a value type in a parameter builder,
-   then do not need manual casting like `(int) $request->getParam('chunk-size')`.
-   OR instead of `$request->getParam('param-name')` you call something like
-   `$request->getFlag('param-name')`, `->getFloat('param-name')` and so on.
-    1. For array parameters each value is casted in the same specified way.
-    1. Flag option is cast to boolean by default.
 1. Complex validators for grouped or dependent parameters.
 
    As for now, validators are fired only within connected parameters.

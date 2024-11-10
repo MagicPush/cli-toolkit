@@ -82,7 +82,7 @@ set_exception_handler(function (Throwable $e) {
 });
 
 $searchPaths        = $request->getParam('search-paths');
-$isVerbose          = (bool) $request->getParam('verbose');
+$isVerbose          = $request->getParam('verbose');
 $aliasPrefix        = $request->getParam('alias-prefix');
 $executionFormatter = ScriptFormatter::createForStdOut();
 
