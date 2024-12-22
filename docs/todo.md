@@ -4,10 +4,6 @@ The list of plans and ideas for future development.
 
 ## Baseline
 
-1. Short description: show only the first description line.
-   Implement for subcommands - when outputting descriptions for possible subcommand switch values.
-   
-   Later this feature will come in handy for the "_Class-based scripts_".
 1. Docs:
     1. Array parameters (especially for `newArrayArgument()`).
     1. Validators custom exception messages.
@@ -111,6 +107,7 @@ The list of plans and ideas for future development.
         * It should be possible to specify no short name at all (also, a default state).
         * If there is no reasonable way to set a short name without walking recursively through all subcommand branches,
         implement it as a pre-setup-only setting (must be specified in a Parametizer config constructor).
+    1. Values for `HelpGenerator::SHORT_DESCRIPTION_MIN_CHARS` and `SHORT_DESCRIPTION_MAX_CHARS`.
     </details>
 1. A web interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.
@@ -124,6 +121,8 @@ Let's try making major releases less frequent by accumulating here all ideas wit
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
 1. Rename `CliRequest::getCommandRequest()` into `getSubcommandRequest()`.
+1. Make `HelpGenerator::getUsageTemplate()` protected and non-static.
+    * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
 1. Move to PHP 8.3 as a minimal required version. This includes:
     1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
     2. Update PHPUnit. And try messing with the coverage.

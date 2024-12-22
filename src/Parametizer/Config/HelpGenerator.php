@@ -14,6 +14,9 @@ class HelpGenerator {
 
     protected const USAGE_MAX_OPTIONS = 5;
 
+    protected const SHORT_DESCRIPTION_MIN_CHARS = 30;
+    protected const SHORT_DESCRIPTION_MAX_CHARS = 70;
+
     protected readonly HelpFormatter $formatter;
 
 
@@ -42,7 +45,9 @@ class HelpGenerator {
             $usageTemplate .= static::getUsageTemplate($parentConfig, true) . ' ';
         }
 
-        $usageTemplate .= $config->getScriptName();
+        $usageTemplate .= $parentConfig
+            ? HelpFormatter::createForStdOut()->paramValue($config->getScriptName())
+            : $config->getScriptName();
 
         $optionTemplateStrings         = [];
         $requiredOptionTemplateStrings = [];
@@ -261,7 +266,7 @@ class HelpGenerator {
     protected function getSubcommandsBlock(): string {
         $lines = [];
         foreach ($this->config->getBranches() as $config) {
-            $title   = static::unindent($config->getDescription());
+            $title   = static::getShortDescription($config->getDescription());
             $lines[] = [HelpGenerator::getUsageTemplate($config), $title];
         }
 
@@ -539,5 +544,31 @@ class HelpGenerator {
         }
 
         return $mainConfig->getScriptName();
+    }
+
+    /**
+     * Until there is a {@see wordwrap()} UTF8-compatible analogue, we cut a string gracefully the manual way.
+     */
+    protected static function getShortDescription(string $description): string {
+        [$firstLine, ] = explode(PHP_EOL, static::unindent($description), 2);
+        if (mb_strlen($firstLine) <= static::SHORT_DESCRIPTION_MAX_CHARS) {
+            return $firstLine;
+        }
+        $firstLineShort = mb_substr($firstLine, 0, static::SHORT_DESCRIPTION_MAX_CHARS);
+
+        $lastSentencePosition = mb_strrpos($firstLineShort, '. ');
+        if ($lastSentencePosition) {
+            $lastSentence = mb_substr($firstLineShort, 0, $lastSentencePosition);
+            if (mb_strlen($lastSentence) >= static::SHORT_DESCRIPTION_MIN_CHARS) {
+                return $lastSentence . '.';
+            }
+        }
+
+        $lastSpacePosition = mb_strrpos($firstLineShort, ' ');
+        if (false === $lastSpacePosition) {
+            return $firstLineShort;
+        }
+
+        return mb_substr($firstLineShort, 0, $lastSpacePosition);
     }
 }

@@ -10,11 +10,15 @@ Currently in `dev` branch:
 
 1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting,
    see [Features Manual: Type casting from requests](features-manual.md#type-casting-from-requests).
+1. Added `HelpGenerator::getShortDescription()` that is used to show short versions for subcommand descriptions,
+when outputting a help page for a script with a list of available subcommands.
 
 ### Patching
 
 1. Covered `CliRequest::getCommandRequest()` with autotests.
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
+1. Formatted subcommand value in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
+'COMMANDS' section of a help page with a list of available subcommands.
 
 ## v1.0.0
 

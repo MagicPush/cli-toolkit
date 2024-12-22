@@ -7,6 +7,7 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertStringStartsWith;
 
 #[CoversClass(HelpGenerator::class)]
 class HelpGeneratorTest extends TestCaseAbstract {
@@ -18,9 +19,8 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @covers HelpGenerator::getFullHelp()
      */
     public function testScriptHelp(): void {
-        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/lots-of-params.php', '--help');
-
-        $expectedOutput = <<<HELP
+        assertSame(
+            <<<HELP
 
           Here is a very very very very long description.
           So long that multiple lines are needed.
@@ -80,20 +80,19 @@ class HelpGeneratorTest extends TestCaseAbstract {
           <arg-list>       (multiple values allowed)
 
 
-        HELP;
-
-        assertSame($expectedOutput, $result->getStdOut());
+        HELP,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/lots-of-params.php', '--help')->getStdOut(),
+        );
     }
 
     /**
-     * Help for subcommands, top level.
+     * Help for subcommands, top level. Also tests the short descriptions.
      *
      * @covers HelpGenerator::getFullHelp()
      */
     public function testSubcommandScriptHelpFirstLevel(): void {
-        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/deep-nesting.php', '--help');
-
-        $expectedOutput = <<<HELP
+        assertSame(
+            <<<HELP
 
         USAGE
 
@@ -115,9 +114,9 @@ class HelpGeneratorTest extends TestCaseAbstract {
           deep-nesting.php test12
 
 
-        HELP;
-
-        assertSame($expectedOutput, $result->getStdOut());
+        HELP,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/deep-nesting.php', '--help')->getStdOut(),
+        );
     }
 
     /**
@@ -127,12 +126,8 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @covers HelpGenerator::getBaseScriptName()
      */
     public function testSubcommandScriptHelpDeepInSubcommand(): void {
-        $result = static::assertNoErrorsOutput(
-            __DIR__ . '/scripts/deep-nesting.php',
-            'test11 test23 --help',
-        );
-
-        $expectedOutput = <<<HELP
+        assertSame(
+            <<<HELP
 
         USAGE
 
@@ -160,8 +155,93 @@ class HelpGeneratorTest extends TestCaseAbstract {
           deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] test32
 
 
-        HELP;
+        HELP,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/deep-nesting.php', 'test11 test23 --help')->getStdOut(),
+        );
+    }
 
-        assertSame($expectedOutput, $result->getStdOut());
+    /**
+     * Tests short descriptions output. The short descriptions are rendered when listing available subcommands.
+     *
+     * @covers HelpGenerator::getShortDescription()
+     */
+    public function testSubcommandHelpShortDescription(): void {
+        assertSame(
+            <<<HELP
+
+            USAGE
+
+              subcommands-long-description.php <switchme>
+
+            OPTIONS
+
+              --help   Show full help page.
+
+            ARGUMENTS
+
+              <switchme>   Allowed values: multistring, long-string, long-string-short-sentence, unbreakable-long-line
+              (required)   Subcommand help: <script_name> ... <subcommand value> --help
+
+            COMMANDS
+
+              subcommands-long-description.php multistring                  Short description on the first line.
+
+              subcommands-long-description.php long-string                  Here is a sort of... short description.
+
+              subcommands-long-description.php long-string-short-sentence   Too short to stop here. So the description continues for some more
+
+              subcommands-long-description.php unbreakable-long-line        Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
+
+
+            HELP,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', '--help')->getStdOut(),
+        );
+
+        // ... And let's check the full descriptions to show the difference between short and long versions.
+
+        assertStringStartsWith(
+            <<<HELP
+
+              Short description on the first line.
+              The rest of long description is omitted while shown beside subcommand possible values.
+            HELP
+            ,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', 'multistring --help')
+                ->getStdOut(),
+        );
+        assertStringStartsWith(
+            <<<HELP
+
+              Here is a sort of... short description. The long description continues on the same line and this line is too long, but it is still not enough so...
+              Here is another line :)
+            HELP
+            ,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', 'long-string --help')
+                ->getStdOut(),
+        );
+        assertStringStartsWith(
+            <<<HELP
+
+              Too short to stop here. So the description continues for some more words before the limit is reached.
+            HELP
+            ,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                'long-string-short-sentence --help',
+            )
+                ->getStdOut(),
+        );
+        assertStringStartsWith(
+            <<<HELP
+
+              Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbecutbrutallyafterthecharacterslimitisreached.
+            HELP
+            ,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                'unbreakable-long-line --help',
+            )
+                ->getStdOut(),
+        );
     }
 }
