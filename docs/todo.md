@@ -4,37 +4,23 @@ The list of plans and ideas for future development.
 
 ## Baseline
 
+1. Short description: show only the first description line.
+   Implement for subcommands - when outputting descriptions for possible subcommand switch values.
+   
+   Later this feature will come in handy for the "_Class-based scripts_".
 1. Docs:
     1. Array parameters (especially for `newArrayArgument()`).
     1. Validators custom exception messages.
     1. Details about Parameterizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Simplify outputs strings formatting ([TerminalFormatter](src/TerminalFormatter.php)) with something like tags.
-
-   <details>
-   <summary>More details</summary>
-
-   Something like `"value: '<itemValue>{$value}</itemValue>'"` instead of
-   `"value: '" . $errorFormatter->itemValue($value) . "'"`.
-   See also [symfony coloring](https://symfony.com/doc/current/console/coloring.html) as an example.
-
-   Points to consider:
-    * If formatting is disabled, the tags should be stripped from strings before outputting.
-    * Ignore (for formatting or stripping) not supported tags.
-    * Create a mean to escape a tag - to output it as is (for instance, as a formatting example).
-    * Use this feature to improve current built-in formatting - to simplify and shorten the code.
-   </details>
 1. Smart completion for mentioned options (not array = do not complete it twice).
-1. Complex validators for grouped or dependent parameters.
-
-   As for now, validators are fired only within connected parameters.
-
-   It would be cool to be able to validate a parameter "B" based on the pre-validated value of a parameter "A".
-   Also if a validation exception happens, the generated help page should include all affected parameters
-   ("A" and "B").
+1. Try out the parameters ambiguity puzzle: `-fctest`, where `-f` is a flag, `-c` is an option and there is
+   also a `-t` flag. Possible outcomes:
+    1. `test` is the `-c` value, `-t` flag is not enabled.
+    1. `tes` is the `-c` value and `t` is the `-t` flag being enabled.
 1. HelpGenerator: show the same script path as used for calling it - by alias or by relative path.
-1. [Question.php](src%2FQuestion%2FQuestion.php): add a demo script showing different types of questions.
 1. (if possible) Auto-tests for [Question.php](src%2FQuestion%2FQuestion.php).
+1. [Question.php](src%2FQuestion%2FQuestion.php): add a demo script showing different types of questions.
 1. Flag+value combined options (`<no mention> | --verbose | --verbose=more`).
 
    <details>
@@ -66,28 +52,104 @@ The list of plans and ideas for future development.
 
    </details>
 
-## Next major release
+## Large feature ideas
 
-Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
-When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
+1. Class-based scripts as subcommands (Symfony-like).
+    <details>
+    <summary>Points to consider</summary>
 
-1. Rename `CliRequest::getCommandRequest()` into `getSubcommandRequest()`.
+    1. Support different script (subcommand) naming. 
+        * Composite names: 2 parts at least - `section:script` (like in Symfony).
+          Single named scripts should be allowed too.
 
-## Large and super ambitious ideas
+          Also try to allow compositions of implement an ability to use any amount of parts (3, 4, ..., N).
+        * Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for a script,
+          that may be also called via `gas` or `generate-completion` aliases.
+        * Ensure no names and aliases duplication.
+    1. Add built-in subcommand to list all detected scripts with their names and short descriptions.
+    1. Detected script names may be accessed as subcommand values by specifying their full names (autocomplete-powered)
+       or unambiguous first characters substrings (like in Symfony console) - if there are scripts `clear-cache`
+       and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
+        * (like in Symfony) In case of composite names each name substring should be mentioned - for
+          `cli-toolkit:generate-autocompletion-scripts` you should specify `c:g`
+          (if it is unambiguous enough - there are no other scripts named `c*:g*`).
+        * Support showing all available script names via the runner list command (switched on/off by a flag option).
+    1. Add a scripts launcher generator that initially stores a path to the CliToolkit engine.
+       
+       In future, there may also be a path to a settings config file (see the "_Setting manager_" feature below)
+       or the config contents itself.
+    1. Scripts launcher may detect ordinal Parametizer-based scripts
+       (one of the launcher / "_Setting manager_" config settings).
+       
+       Thoughts about such scripts naming:
+        * Generate default names by minimal unambiguous paths.
+        * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
+          and add those to a launcher available commands list.
 
-1. Class-based scripts as subcommands.
-    1. Add a scripts launcher generator (let you specify a path to your launcher JSON settings).
-    1. Scripts launcher may detect ordinal Parametizer-based scripts (one of the launcher settings).
+    </details>
+1. Setting Manager - for setting up Parametizer behavior:
+    <details>
+    <summary>Points to consider</summary>
+
+    1. Dual setup - manually via a builder or automatically via a JSON(?) config file.
+        * A config file path may be specified via a builder inside a script or via a built-in option. The option should
+          override the builder setting.
+    1. A default config with all settings.
+    1. (?) [generate-autocompletion-scripts.php](../tools/cli-toolkit/generate-autocompletion-scripts.php) allows to
+       specify a path to a settings config. That path then is added (as a config path hidden option value) for generated
+       script aliases - so all script launched by such aliases incorporate that config.
+        * Add an ability to override a config path for a particular script launch via an option.
+
+    </details>
+    
+    <details>
+    <summary>Settings to implement</summary>
+    
+    1. If option short names are case sensitive (`-h` and `-H` may be connected with different options).
+       Default state: **in**sensitive.
+    1. A short name for built-in `--help` option.
+        * It should be possible to specify no short name at all (also, a default state).
+        * If there is no reasonable way to set a short name without walking recursively through all subcommand branches,
+        implement it as a pre-setup-only setting (must be specified in a Parametizer config constructor).
+    </details>
 1. A web interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.
    
    The web interface should be used as an example only - you may replace with with your own web or console interface.
    The main point is in the machinery behind the interface that you can reuse.
 
-## After moving to PHP 8.3 as a minimal required version
+## Next major release
 
-1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
+Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
+When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
+
+1. Rename `CliRequest::getCommandRequest()` into `getSubcommandRequest()`.
+1. Move to PHP 8.3 as a minimal required version. This includes:
+    1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
+    2. Update PHPUnit. And try messing with the coverage.
 
 ## Just fun thoughts to (maybe) implement one day
 
+1. Complex validators for grouped or dependent parameters.
+
+   As for now, validators are fired only within connected parameters.
+
+   It would be cool to be able to validate a parameter "B" based on the pre-validated value of a parameter "A".
+   Also if a validation exception happens, the generated help page should include all affected parameters
+   ("A" and "B").
+1. Simplify outputs strings formatting ([TerminalFormatter](src/TerminalFormatter.php)) with something like tags.
+
+   <details>
+   <summary>More details</summary>
+
+   Something like `"value: '<itemValue>{$value}</itemValue>'"` instead of
+   `"value: '" . $errorFormatter->itemValue($value) . "'"`.
+   See also [symfony coloring](https://symfony.com/doc/current/console/coloring.html) as an example.
+
+   Points to consider:
+    * If formatting is disabled, the tags should be stripped from strings before outputting.
+    * Ignore (for formatting or stripping) not supported tags.
+    * Create a mean to escape a tag - to output it as is (for instance, as a formatting example).
+    * Use this feature to improve current built-in formatting - to simplify and shorten the code.
+   </details>
 1. Symfony-like (or not like) progress bar.

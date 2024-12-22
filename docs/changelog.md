@@ -8,12 +8,13 @@ Currently in `dev` branch:
 
 ### New features
 
-1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting.
+1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting,
+   see [Features Manual: Type casting from requests](features-manual.md#type-casting-from-requests).
 
 ### Patching
 
 1. Covered `CliRequest::getCommandRequest()` with autotests.
-1. Added a paragraph about subcommands into [features-manual](features-manual.md#subcommands).
+1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
 
 ## v1.0.0
 
