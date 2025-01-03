@@ -9,14 +9,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 class AutocompletionTest extends TestCaseAbstract {
-    #[DataProvider('provideAutocompleteExecution')]
-    /**
-     * Tests autocomplete execution.
-     *
-     * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     */
-    public function testAutocompleteExecution(string $parametersString, array $expectedOutputLines): void {
+    private function testTemplateAutocomplete(
+        string $scriptPath,
+        string $parametersString,
+        array $expectedOutputLines,
+    ): void {
         $completionLine = 'some-command-alias';
 
         if ($parametersString !== '') {
@@ -24,16 +21,49 @@ class AutocompletionTest extends TestCaseAbstract {
         }
 
         $result = static::assertNoErrorsOutput(
-            __DIR__ . '/scripts/different-params.php',
+            $scriptPath,
             sprintf(
                 '--parametizer-internal-autocomplete-execute %s %s %s',
                 escapeshellarg($completionLine),
                 escapeshellarg((string) mb_strlen($completionLine)),
-                escapeshellarg(PHP_EOL . " \t\"'><=;|&(:"),
+                escapeshellarg(Completion::COMP_WORDBREAKS),
             ),
         );
 
         assertSame($expectedOutputLines, $result->getStdOutAsArray());
+    }
+
+    #[DataProvider('provideAutocompleteExecution')]
+    /**
+     * Tests autocomplete execution.
+     *
+     * @param string[] $expectedOutputLines
+     * @covers Completion::executeAutocomplete()
+     * @covers Completion::complete()
+     */
+    public function testAutocompleteExecution(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(
+            __DIR__ . '/scripts/different-params.php',
+            $parametersString,
+            $expectedOutputLines,
+        );
+    }
+
+    #[DataProvider('provideAutocompleteExecution')]
+    /**
+     * Tests the same autocomplete execution as in {@see testAutocompleteExecution()},
+     * but the tested config is a subcommand.
+     *
+     * @param string[] $expectedOutputLines
+     * @covers Completion::executeAutocomplete()
+     * @covers Completion::complete()
+     */
+    public function testAutocompleteExecutionSubcommand(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(
+            __DIR__ . '/scripts/subcommands.php',
+            'different-params ' . $parametersString,
+            $expectedOutputLines,
+        );
     }
 
     /**
@@ -71,12 +101,8 @@ class AutocompletionTest extends TestCaseAbstract {
                 ],
             ],
 
-            'argument-allowed-values' => [
-                'parametersString'    => 'super a',
-                'expectedOutputLines' => ['aaa '],
-            ],
-            'argument-allowed-values-no-completion' => [
-                'parametersString'    => 'super aaa b',
+            'argument-allowed-values-emptied-no-completion' => [
+                'parametersString'    => 'super b',
                 'expectedOutputLines' => [],
             ],
 
@@ -127,7 +153,7 @@ class AutocompletionTest extends TestCaseAbstract {
             ],
 
             'option-short-name-values' => [
-                'parametersString'    => 'super aaa -o',
+                'parametersString'    => 'super -o',
                 'expectedOutputLines' => [
                     '100 ',
                     '200 ',
@@ -135,14 +161,14 @@ class AutocompletionTest extends TestCaseAbstract {
                 ],
             ],
             'option-short-name-part-value' => [
-                'parametersString'    => 'super aaa -o1',
+                'parametersString'    => 'super -o1',
                 'expectedOutputLines' => [
                     '100 ',
                     '1000000 ',
                 ],
             ],
             'option-short-name-part-value-spaced' => [
-                'parametersString'    => 'super aaa -o 1',
+                'parametersString'    => 'super -o 1',
                 'expectedOutputLines' => [
                     '100 ',
                     '1000000 ',
@@ -153,13 +179,13 @@ class AutocompletionTest extends TestCaseAbstract {
             // so everything else is treated as argument values.
             // Here '-o1' is treated as 'arg' value (that is invalid, yes, but, firstly, not needing the completion).
             'option-short-name-after-double-dash' => [
-                'parametersString'    => 'super aaa -- -o1',
+                'parametersString'    => 'super -- -o1',
                 'expectedOutputLines' => [],
             ],
-            // Here '-o' is ignored and '1' is treated as 'arg' value
+            // Here '-o' and '1' are treated as 'arg' values
             // (that is invalid, yes, but, firstly, not needing the completion).
             'option-short-name-after-double-dash-spaced' => [
-                'parametersString'    => 'super aaa -- -o 1',
+                'parametersString'    => 'super -- -o 1',
                 'expectedOutputLines' => [],
             ],
 
@@ -195,6 +221,155 @@ class AutocompletionTest extends TestCaseAbstract {
             'option-short-name-two-flags-spaced' => [
                 'parametersString'    => '-f -s',
                 'expectedOutputLines' => [],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideSmartAutocomplete')]
+    /**
+     * Tests "smart" (no duplicate) autocomplete execution.
+     *
+     * @param string[] $expectedOutputLines
+     * @covers Completion::executeAutocomplete()
+     * @covers Completion::complete()
+     * @covers Completion::completeOptions()
+     * @covers Completion::completeParamValue()
+     */
+    public function testSmartAutocomplete(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(
+            __DIR__ . '/scripts/smart-autocomplete.php',
+            $parametersString,
+            $expectedOutputLines,
+        );
+    }
+
+    #[DataProvider('provideSmartAutocomplete')]
+    /**
+     * Tests the same "smart" (no duplicate) autocomplete execution as in {@see testSmartAutocomplete()},
+     * but the tested config is a subcommand.
+     *
+     * @param string[] $expectedOutputLines
+     * @covers Completion::executeAutocomplete()
+     * @covers Completion::complete()
+     * @covers Completion::completeOptions()
+     * @covers Completion::completeParamValue()
+     */
+    public function testSmartAutocompleteSubcommand(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(
+            __DIR__ . '/scripts/subcommands.php',
+            'smart-autocomplete ' . $parametersString,
+            $expectedOutputLines,
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSmartAutocomplete(): array {
+        return [
+            // Completion suggests only the allowed values that haven't been passed yet:
+            'argument-array-complete-not-used-only' => [
+                'parametersString'    => 'qwe ',
+                'expectedOutputLines' => [
+                    'asd ',
+                    'zxc ',
+                ],
+            ],
+            // Completion suggests nothing after all allowed values have been specified:
+            'argument-array-no-completion-if-all-used' => [
+                'parametersString'    => 'qwe asd zxc ',
+                'expectedOutputLines' => [],
+            ],
+
+            // The flag is not suggested if already specified:
+            'flag' => [
+                'parametersString'    => '--flag --',
+                'expectedOutputLines' => [
+                    '--opt=',
+                    '--opt-arr=',
+                    '--help ',
+                ],
+            ],
+            // No completion even if a flag is specified by a short name:
+            'flag-short' => [
+                'parametersString'    => '-f --f',
+                'expectedOutputLines' => [],
+            ],
+
+            'option-value-completion-if-used' => [
+                'parametersString'    => '--opt=200 -o 1',
+                'expectedOutputLines' => [],
+            ],
+            'option-value-completion-if-used-2' => [
+                'parametersString'    => '-o200 --opt=',
+                'expectedOutputLines' => [],
+            ],
+            'option-no-same-option-suggestion-if-used' => [
+                'parametersString'    => '-o 200 --o',
+                'expectedOutputLines' => [
+                    '--opt-arr=',
+                ],
+            ],
+
+            'option-array-complete-only-not-used' => [
+                'parametersString'    => '-a 443 -a',
+                'expectedOutputLines' => [
+                    '80 ',
+                ],
+            ],
+            'option-array-no-completion-if-all-used' => [
+                'parametersString'    => '--opt-arr=443 --opt-arr=80 --opt-arr=',
+                'expectedOutputLines' => [],
+            ],
+            'option-array-no-completion-if-all-used-short' => [
+                'parametersString'    => '-a443 -a80 -a',
+                'expectedOutputLines' => [],
+            ],
+            'option-array-no-same-option-suggestion-if-all-values-used' => [
+                'parametersString'    => '-a 443 -a 80 --o',
+                'expectedOutputLines' => [
+                    '--opt=',
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideSubcommandSwitch')]
+    /**
+     * Tests subcommand switch completion.
+     *
+     * @param string[] $expectedOutputLines
+     * @covers Completion::executeAutocomplete()
+     * @covers Completion::complete()
+     * @covers Completion::completeParamValue()
+     */
+    public function testSubcommandSwitch(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(__DIR__ . '/scripts/subcommands.php', $parametersString, $expectedOutputLines);
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSubcommandSwitch(): array {
+        return [
+            'empty' => [
+                'parametersString'    => '',
+                'expectedOutputLines' => [
+                    'different-params ',
+                    'smart-autocomplete ',
+                ],
+            ],
+            'partial' => [
+                'parametersString'    => 's',
+                'expectedOutputLines' => [
+                    'smart-autocomplete '
+                ],
+            ],
+            'after-double-dash' => [
+                'parametersString'    => '-- d',
+                'expectedOutputLines' => [
+                    'different-params '
+                ],
             ],
         ];
     }

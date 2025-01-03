@@ -19,6 +19,8 @@ when outputting a help page for a script with a list of available subcommands.
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
 1. Formatted subcommand value in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
 'COMMANDS' section of a help page with a list of available subcommands.
+1. Fixed autocompletion for option short names in subcommands.
+1. Made autocompletion smarter: duplicate option and value mentioning is not completed.
 
 ## v1.0.0
 

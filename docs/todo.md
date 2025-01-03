@@ -7,9 +7,8 @@ The list of plans and ideas for future development.
 1. Docs:
     1. Array parameters (especially for `newArrayArgument()`).
     1. Validators custom exception messages.
-    1. Details about Parameterizer builder methods
+    1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Smart completion for mentioned options (not array = do not complete it twice).
 1. Try out the parameters ambiguity puzzle: `-fctest`, where `-f` is a flag, `-c` is an option and there is
    also a `-t` flag. Possible outcomes:
     1. `test` is the `-c` value, `-t` flag is not enabled.
@@ -120,15 +119,26 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
-1. Rename `CliRequest::getCommandRequest()` into `getSubcommandRequest()`.
+1. Naming:
+    1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
+    1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
+    1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
 1. Make `HelpGenerator::getUsageTemplate()` protected and non-static.
     * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
 1. Move to PHP 8.3 as a minimal required version. This includes:
     1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
-    2. Update PHPUnit. And try messing with the coverage.
+    1. Update PHPUnit. And try messing with the coverage.
+1. Move to PHP 8.4 as a minimal required version. This includes:
+    1. Replace `*trim()` functions with `mb_*trim()` alternatives.
 
 ## Just fun thoughts to (maybe) implement one day
 
+1. Fix the autocompletion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
+   but get `100` (`-o` is vanished).
+    * Reason: `$COMP_WORDBREAKS` shell variable is considered (not `Completion::COMP_WORDBREAKS`), bash-completion
+      sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.
+    * Possible, but odd solution: alter `$COMP_WORDBREAKS` shell variable during runtime (append an option short name),
+      then restore the variable's original value right before a script is terminated.
 1. Complex validators for grouped or dependent parameters.
 
    As for now, validators are fired only within connected parameters.

@@ -76,6 +76,12 @@ class CliRequestProcessor {
      * call {@see load()}.
      */
     public function append(mixed $word) {
+        if ($this->detectedBranchRequest) {
+            $this->detectedBranchRequest->append($word);
+
+            return;
+        }
+
         if (!isset($this->parser)) {
             throw new LogicException('Please call "load()" method first.');
         }
@@ -413,5 +419,25 @@ class CliRequestProcessor {
         } while (next($this->argumentStack) && !$argument->isRequired());
 
         return $arguments;
+    }
+
+    /**
+     * Returns values (by names) for all actually registered parameters: (string) name without hyphens => (mixed) value
+     *
+     * @return mixed[]
+     */
+    public function getInnermostBranchRegisteredValues(): array {
+        if ($this->detectedBranchRequest) {
+            return $this->detectedBranchRequest->getInnermostBranchRegisteredValues();
+        }
+
+        $registeredValues = [];
+
+        foreach ($this->registeredParams as $registeredParameter) {
+            $registeredParameterName                    = $registeredParameter->getName();
+            $registeredValues[$registeredParameterName] = $this->requestParams[$registeredParameterName];
+        }
+
+        return $registeredValues;
     }
 }

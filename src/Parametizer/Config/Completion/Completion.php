@@ -13,12 +13,14 @@ use MagicPush\CliToolkit\Parametizer\Parser\Parser;
 use RuntimeException;
 
 final class Completion {
+    public const COMP_WORDBREAKS = PHP_EOL . " \t\"'><=;|&(:";
+
     private readonly Parser $parser;
     private readonly CliRequestProcessor $cliRequestProcessor;
 
     /**
+     * @var Option[]
      * @see Config::getOptionsByFormattedNamesAndShortNames()
-     * @return Option[]
      */
     private readonly array $innermostOptionsByAllNames;
 
@@ -36,7 +38,7 @@ final class Completion {
     private function complete(
         string $command,
         int $cursorOffset,
-        string $compWordBreaks = PHP_EOL . " \t\"'><=;|&(:",
+        string $compWordBreaks = self::COMP_WORDBREAKS,
     ): array {
         $tokenizer = new Tokenizer($command);
 
@@ -54,11 +56,26 @@ final class Completion {
         } else {
             array_pop($words); // The last one is being completed.
 
-            // In case '-o val' we have 2 tokens: the last one contains a value (or a part of it) - 'val',
-            // the previous one contains a short option name - '-o'.
-            // In other cases the previous value is absent (there is just one token in total)
-            // or just irrelevant for the autocompletion context (only the last token is being completed).
+            /*
+             * In case '-o val' we have 2 tokens: the last one contains a value (or a part of it) - 'val',
+             * the previous one contains a short option name - '-o'.
+             * In other cases the previous value is absent (there is just one token in total)
+             * or just irrelevant for the autocompletion context (only the last token is being completed).
+             */
             $prevWord = array_pop($words);
+            /*
+             * However if we have a case like '-o val something'
+             * (when an option short name and it's value are specified, but the next token should be completed),
+             * we should push the popped token back, so '-o val' is not separated into '-o' and 'val`,
+             * thus processed successfully.
+             */
+            if (
+                null !== $prevWord
+                && (!str_starts_with($prevWord, '-') || '--' === $prevWord)
+            ) {
+                $words[]  = $prevWord;
+                $prevWord = null;
+            }
         }
 
         // Let's fire up CliRequestProcessor with the rest of passed data.
@@ -69,7 +86,7 @@ final class Completion {
 
         // If the last two tokens may be treated as options...
         if ($this->parser->areOptionsAllowed()) { // Same as ensuring no '--' is found in $words.
-            // At te moment we can not treat short option names and thus autocomplete values properly for such cases.
+            // At the moment we can not treat short option names and thus autocomplete values properly for such cases.
             // So let's try detecting a short option name and, if successful, convert it into a full name.
 
             $this->innermostOptionsByAllNames = $this->cliRequestProcessor
@@ -93,7 +110,12 @@ final class Completion {
                     $prevWord = null;
                 }
             } elseif (null !== $lastToken && '--' !== $prevWord && str_starts_with($lastToken->word, '-')) {
-                // Case '-o' (an option's short name only) or '-oval' (an option's short name + a value or a part of it):
+                /*
+                 * And here we have one of the following:
+                 * a) '-o' (an option's short name only);
+                 * b) '-oval' (an option's short name + a value or a part of it)
+                 * c) '--' that may count as a full option name (`--option`)
+                 */
 
                 $lastWordShortName = mb_substr($lastToken->word, 0, 2);
                 if (array_key_exists($lastWordShortName, $this->innermostOptionsByAllNames)) {
@@ -115,9 +137,9 @@ final class Completion {
         }
 
         try {
-            $optionNames = $this->completeConfig($lastToken ? $lastToken->word : '');
+            $allPossibleCompletions = $this->completeConfig($lastToken ? $lastToken->word : '');
 
-            return $this->reduceOptions($optionNames, $lastToken, $compWordBreaks);
+            return $this->getCompletionsLimitedByToken($allPossibleCompletions, $lastToken, $compWordBreaks);
         } catch (Exception $e) {
             /*
              * Printing an error explaining why autocomplete does not work.
@@ -143,7 +165,9 @@ final class Completion {
      * @return string[]
      */
     private function completeConfig(string $currentArg): array {
-        $completions = [];
+        $completions      = [];
+        $registeredValues = $this->cliRequestProcessor->getInnermostBranchRegisteredValues();
+
         if ($this->parser->areOptionsAllowed()) {
             if (str_starts_with($currentArg, '-')) {
                 $this->completeOptions($this->innermostOptionsByAllNames, $completions);
@@ -155,7 +179,7 @@ final class Completion {
 
                 if ($option) {
                     // $matches[3]: part of parameter value entered by the user.
-                    $this->completeParamValue($completions, $matches[3], $option, $matches[1]);
+                    $this->completeParamValue($completions, $registeredValues, $matches[3], $option, $matches[1]);
                 }
             }
         }
@@ -165,7 +189,7 @@ final class Completion {
                 continue;
             }
 
-            $this->completeParamValue($completions, $currentArg, $argument);
+            $this->completeParamValue($completions, $registeredValues, $currentArg, $argument);
         }
 
         return $completions;
@@ -176,6 +200,8 @@ final class Completion {
      * @param string[] $completions
      */
     private function completeOptions(array $options, array &$completions): void {
+        $registeredValues = $this->cliRequestProcessor->getInnermostBranchRegisteredValues();
+
         foreach ($options as $alias => $option) {
             // Ignore short names.
             if (mb_strlen($alias) === 2) {
@@ -183,6 +209,21 @@ final class Completion {
             }
 
             if (!$option->isVisibleIn(Config::VISIBLE_COMPLETION)) {
+                continue;
+            }
+
+            $optionRegisteredValues = $registeredValues[$option->getName()] ?? [];
+
+            // Do not complete an already registered option name, unless it supports multiple values.
+            if (!$option->isArray() && $optionRegisteredValues) {
+                continue;
+            }
+
+            // Do not complete an array option name, if all allowed values have been already registered.
+            if (
+                $option->isArray() && $optionRegisteredValues
+                && count($optionRegisteredValues) == count($option->complete(''))
+            ) {
                 continue;
             }
 
@@ -195,27 +236,37 @@ final class Completion {
 
     /**
      * @param string[] $completions
+     * @param mixed[] $registeredValues {@see CliRequestProcessor::getInnermostBranchRegisteredValues()}
      */
     private function completeParamValue(
         array &$completions,
+        array $registeredValues,
         string $enteredValue,
         ParameterAbstract $param,
         string $prefix = '',
     ): void {
+        $parameterRegisteredValues = $registeredValues[$param->getName()] ?? [];
+        if ($parameterRegisteredValues && !$param->isArray()) {
+            return;
+        }
+
         foreach ($param->complete($enteredValue) as $line) {
+            if (in_array($line, $parameterRegisteredValues)) {
+                continue;
+            }
             $completions[] = $prefix . $line . ' ';
         }
     }
 
     /**
-     * Tailors list of options to the prefix which is being completed.
+     * Tailors list of completion strings to the prefix which is being completed.
      *
-     * @param string[] $optionNames
+     * @param string[] $completions
      * @return string[]
      */
-    private function reduceOptions(array $optionNames, ?Token $arg, string $compWordBreaks): array {
+    private function getCompletionsLimitedByToken(array $completions, ?Token $arg, string $compWordBreaks): array {
         if (!$arg) {
-            return $optionNames;
+            return $completions;
         }
 
         $cmpWord = mb_strtolower($arg->word);
@@ -233,12 +284,12 @@ final class Completion {
         $prefix      = $arg->getArgTail($compWordBreaks);
         $forcePrefix = ($prefix != $arg->arg);
 
-        foreach ($optionNames as $k => $variant) {
+        foreach ($completions as $key => $variant) {
             // Need to convert the casing (ac<tab> -> aCC).
             $variantPrefix = mb_strtolower(mb_substr($variant, 0, $length));
             if ($variantPrefix != $cmpWord || mb_strlen($variant) == $length) {
                 // Does not match or is equal to what is being completed; skip this option.
-                unset($optionNames[$k]);
+                unset($completions[$key]);
 
                 continue;
             }
@@ -250,11 +301,11 @@ final class Completion {
              * (this way we can get correct case of chars).
              */
             if ($forcePrefix || $variantPrefix != $cmpArg) {
-                $optionNames[$k] = $prefix . mb_substr($variant, $length);
+                $completions[$key] = $prefix . mb_substr($variant, $length);
             }
         }
 
-        return $optionNames;
+        return $completions;
     }
 
     /**
@@ -270,8 +321,8 @@ final class Completion {
         $compLine       = prev($args);
 
         $completion = new self($config);
-        foreach ($completion->complete($compLine, $compPoint, $compWordBreaks) as $optionName) {
-            echo $optionName . PHP_EOL;
+        foreach ($completion->complete($compLine, $compPoint, $compWordBreaks) as $variant) {
+            echo $variant . PHP_EOL;
         }
     }
 

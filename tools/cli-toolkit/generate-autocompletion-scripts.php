@@ -147,13 +147,13 @@ if ($isVerbose) {
         . PHP_EOL . PHP_EOL;
 }
 $outputFilepath  = (string) $request->getParam('output-filepath');
-$outputDirectory = pathinfo($outputFilepath, PATHINFO_DIRNAME);
+$outputDirectory = dirname($outputFilepath);
 if (!file_exists($outputDirectory)) {
     if (!mkdir(directory: $outputDirectory, recursive: true)) {
         throw new RuntimeException('Unable to create a directory: ' . var_export($outputDirectory, true));
     }
     if ($isVerbose) {
-        echo 'A directory has been created:'
+        echo 'A directory has been created: '
             . $executionFormatter->success($outputDirectory)
             . PHP_EOL;
     }
