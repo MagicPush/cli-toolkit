@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion;
 
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
+use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -23,7 +26,7 @@ class AutocompletionTest extends TestCaseAbstract {
         $result = static::assertNoErrorsOutput(
             $scriptPath,
             sprintf(
-                '--parametizer-internal-autocomplete-execute %s %s %s',
+                '--' . Config::OPTION_NAME_AUTOCOMPLETE_EXECUTE . ' %s %s %s',
                 escapeshellarg($completionLine),
                 escapeshellarg((string) mb_strlen($completionLine)),
                 escapeshellarg(Completion::COMP_WORDBREAKS),

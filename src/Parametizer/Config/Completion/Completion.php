@@ -1,14 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config\Completion;
 
 use Exception;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
-use MagicPush\CliToolkit\Parametizer\Exception\ParseErrorException;
 use MagicPush\CliToolkit\Parametizer\Parser\Parser;
 use RuntimeException;
 
@@ -80,9 +80,10 @@ final class Completion {
 
         // Let's fire up CliRequestProcessor with the rest of passed data.
         $this->parser              = new Parser($words);
-        $this->cliRequestProcessor = (new CliRequestProcessor())
+        $this->cliRequestProcessor = (new CliRequestProcessor($this->config))
             ->disableCallbacks();
-        $this->cliRequestProcessor->load($this->config, $this->parser);
+
+        $this->cliRequestProcessor->load($this->parser);
 
         // If the last two tokens may be treated as options...
         if ($this->parser->areOptionsAllowed()) { // Same as ensuring no '--' is found in $words.
@@ -153,9 +154,8 @@ final class Completion {
              */
             fwrite(STDERR, PHP_EOL . $e->getMessage() . PHP_EOL);
 
-            if ($e instanceof ParseErrorException) {
-                fwrite(STDERR, HelpGenerator::getUsageForParseErrorException($e, true));
-            }
+            // Adding extra lines to STDERR (like a help page) is pointless here,
+            // because in this case only a single line is shown in STDERR.
 
             return [];
         }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests;
 
@@ -60,7 +62,8 @@ abstract class TestCaseAbstract extends TestCase {
             $expectedErrorOutput,
             $parametersString,
             exceptionHeaderSubstring: ConfigException::class . ': ',
-            // Config exceptions happen before a specific error code is set for the exception handler.
+            // Config exceptions happen before a specific error code is set for the exception handler:
+            shouldAssertExitCode: false,
         );
     }
 
@@ -81,22 +84,23 @@ abstract class TestCaseAbstract extends TestCase {
         );
     }
 
-    private static function assertAnyErrorOutput(
-        string $script,
+    protected static function assertAnyErrorOutput(
+        string $scriptPath,
         string $expectedErrorOutput,
-        string $parametersString,
+        string $parametersString = '',
         ?string $exceptionHeaderSubstring = null,
         bool $shouldAssertExitCode = false,
     ): CliProcess {
-        $command = 'php ' . escapeshellarg($script);
+        $command = 'php ' . escapeshellarg($scriptPath);
         if ($parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);
+        $stdErr = $result->getStdErr();
 
         // The heading space before a script name is needed for a script being clickable in PhpStorm console log
         // as a script file link.
-        $assertOutputPrefix = " {$script}" . PHP_EOL
+        $assertOutputPrefix = " {$scriptPath}" . PHP_EOL
             . "COMMAND: {$command}" . PHP_EOL;
 
         if ($shouldAssertExitCode) {
@@ -107,21 +111,23 @@ abstract class TestCaseAbstract extends TestCase {
             );
         }
 
-        $assertOutputMessage = "{$assertOutputPrefix}Unexpected error output: {$result->getStdErr()}";
+        $assertOutputMessage = "{$assertOutputPrefix}Unexpected error output: {$stdErr}";
         if ($exceptionHeaderSubstring) {
             assertStringContainsString(
                 $exceptionHeaderSubstring . $expectedErrorOutput,
-                $result->getStdErr(),
+                $stdErr,
                 $assertOutputMessage,
             );
         } else {
-            assertSame($expectedErrorOutput . PHP_EOL, $result->getStdErr(), $assertOutputMessage);
+            assertSame($expectedErrorOutput . PHP_EOL, $stdErr, $assertOutputMessage);
         }
 
         return $result;
     }
 
     /**
+     * Includes asserting `help` option mention in the generated help output.
+     *
      * @param string[] $helpSubstrings
      */
     public static function assertParseErrorOutputWithHelp(

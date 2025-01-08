@@ -1,0 +1,191 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
+
+use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+
+use function PHPUnit\Framework\assertSame;
+
+class EnvironmentConfigTest extends TestCaseAbstract {
+    #[DataProvider('provideDifferentBranchConfigs')]
+    /**
+     * Tests that a setting is read from an {@see EnvironmentConfig} instance linked to a corresponding config branch,
+     * when a parse error is thrown during a script execution.
+     *
+     * Here it does not matter what exact {@see EnvironmentConfig} setting is tested.
+     * As an example, {@see EnvironmentConfig::$optionHelpShortName} is analyzed.
+     *
+     * @see Parametizer::setExceptionHandlerForParsing()
+     */
+    public function testDifferentBranchConfigs(
+        string $parametersString,
+        $expectedErrorOutput,
+        string $expectedHelpOptionShortName,
+    ): void {
+        static::assertParseErrorOutputWithHelp(
+            __DIR__ . '/scripts/main-and-subcommands.php',
+            $expectedErrorOutput,
+            $parametersString,
+            [$expectedHelpOptionShortName],
+        );
+    }
+
+    public static function provideDifferentBranchConfigs(): array {
+        return [
+            'main' => [
+                'parametersString'            => 'invalid',
+                'expectedErrorOutput'         => "Incorrect value 'invalid' for argument <switchme-l1>",
+                'expectedHelpOptionShortName' => '-X, --help',
+            ],
+            'level-2' => [
+                'parametersString'            => 'conf-l2-s2 invalid',
+                'expectedErrorOutput'         => "Incorrect value 'invalid' for argument <switchme-l2-s2>",
+                'expectedHelpOptionShortName' => '-y, --help',
+            ],
+            'level-3' => [
+                'parametersString'            => 'conf-l2-s2 conf-l3-s1 --asd=test',
+                'expectedErrorOutput'         => "Unknown option '--asd'",
+                'expectedHelpOptionShortName' => '-z, --help',
+            ],
+        ];
+    }
+
+    #[DataProvider('provideAutoloadFromFiles')]
+    /**
+     * Tests various environment config autoload cases.
+     *
+     * @param mixed[] $expectedConfigValues
+     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @covers EnvironmentConfig::detectTopmostDirectoryPath()
+     * @covers EnvironmentConfig::fillFromJsonConfigFile()
+     * @covers Parametizer::newConfig()
+     */
+    public function testAutoloadFromFiles(string $scriptPath, array $expectedConfigValues): void {
+        $outputJson   = static::assertNoErrorsOutput($scriptPath)->getStdOut();
+        $actualValues = json_decode($outputJson, true, flags: JSON_THROW_ON_ERROR);
+
+        assertSame($expectedConfigValues, $actualValues);
+    }
+
+    public static function provideAutoloadFromFiles(): array {
+        return [
+            'same-directory' => [
+                'scriptPath'           => __DIR__ . '/' . 'autoload-files/same-directory.php',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'A',
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,
+                    'helpGeneratorShortDescriptionCharsMax'               => 2,
+                ],
+            ],
+
+            // If there is no config file in the same directory as a script file,
+            // we should look for a config file in a directory above.
+            'lower-dir-find-higher-config' => [
+                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level2-no-config-nearby.php',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'A',
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,
+                    'helpGeneratorShortDescriptionCharsMax'               => 2,
+                ],
+            ],
+
+            // If a config nearby contains only a part of settings,
+            // the rest might be filled from other configs above (if present).
+            'filled-by-several-configs' => [
+                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level3/partial-config-nearby.php',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'X', // From the nearby config.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,   // From the topmost config.
+                    'helpGeneratorShortDescriptionCharsMax'               => 2,   // From the topmost config.
+                ],
+            ],
+
+            // Stop searching for configs above and leave the rest of settings with default values,
+            // if reached the topmost search directory.
+            'no-search-above-topmost' => [
+                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level3/no-search-above-topmost.php',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'X',  // From the nearby config.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 40,   // A default value.
+                    'helpGeneratorShortDescriptionCharsMax'               => 70,   // A default value.
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideThrowingOnExceptions')]
+    /**
+     * Tests if all environment config autoload-related methods process `$throwOnException` flag correctly.
+     *
+     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @covers EnvironmentConfig::fillFromJsonConfigFile()
+     */
+    public function testThrowingOnExceptions(
+        string $scriptPath,
+        bool $throwOnException,
+        string $expectedErrorOutput,
+    ): void {
+        if ($throwOnException) {
+            // This way `$throwOnException` flag is passed to a config builder:
+            $parametersString = '1';
+
+            self::assertAnyErrorOutput(
+                $scriptPath,
+                $expectedErrorOutput,
+                $parametersString,
+                RuntimeException::class . ': ',
+                false,
+            );
+        } else {
+            // This way `$throwOnException` flag is not passed to a config builder, throwing is disabled:
+            $parametersString = '';
+
+            self::assertNoErrorsOutput($scriptPath, $parametersString);
+        }
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideThrowingOnExceptions(): array {
+        return [
+            'invalid-json-no-throw' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-json-file.php',
+                'throwOnException'    => false,
+                'expectedErrorOutput' => '',
+            ],
+            'invalid-json-exception' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-json-file.php',
+                'throwOnException'    => true,
+                'expectedErrorOutput' => 'Unable to read an environment config',
+            ],
+
+            'invalid-path-bottommost-no-throw' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-bottommost.php',
+                'throwOnException'    => false,
+                'expectedErrorOutput' => '',
+            ],
+            'invalid-path-bottommost-exception' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-bottommost.php',
+                'throwOnException'    => true,
+                'expectedErrorOutput' => 'Unable to read the bottommost directory',
+            ],
+
+            'invalid-path-topmost-no-throw' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-topmost.php',
+                'throwOnException'    => false,
+                'expectedErrorOutput' => '',
+            ],
+            'invalid-path-topmost-exception' => [
+                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-topmost.php',
+                'throwOnException'    => true,
+                'expectedErrorOutput' => 'Unable to read the topmost directory',
+            ],
+        ];
+    }
+}

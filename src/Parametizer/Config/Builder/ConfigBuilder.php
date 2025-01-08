@@ -1,17 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config\Builder;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 class ConfigBuilder implements BuilderInterface {
     protected readonly Config $config;
 
 
-    public function __construct() {
-        $this->config = new Config();
+    public function __construct(?EnvironmentConfig $envConfig = null) {
+        $this->config = new Config($envConfig);
     }
 
 

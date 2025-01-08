@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\HelpGenerator;
 
@@ -14,9 +16,12 @@ class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests the help generator for the majority of cases (except subcommands; see dedicated tests below).
      *
+     * Also tests the correct options order in {@see HelpGenerator::getParamsBlock()}.
+     *
      * Output is redirected, so no text styles here.
      *
      * @covers HelpGenerator::getFullHelp()
+     * @covers HelpGenerator::getParamsBlock()
      */
     public function testScriptHelp(): void {
         assertSame(

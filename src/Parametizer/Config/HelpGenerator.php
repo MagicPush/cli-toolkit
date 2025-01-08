@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config;
 
@@ -13,9 +15,6 @@ class HelpGenerator {
     protected const PAD_LEFT_PARAM_DESCRIPTION = 3;
 
     protected const USAGE_MAX_OPTIONS = 5;
-
-    protected const SHORT_DESCRIPTION_MIN_CHARS = 30;
-    protected const SHORT_DESCRIPTION_MAX_CHARS = 70;
 
     protected readonly HelpFormatter $formatter;
 
@@ -253,9 +252,15 @@ class HelpGenerator {
      */
     public static function getUsageForParseErrorException(
         ParseErrorException $exception,
+        Config $config,
         bool $isForStdErr = false,
     ): string {
-        $invalidParams = [Config::createHelpOption(), ...$exception->getInvalidParams()];
+        $invalidParams = [];
+        $helpOption    = $config->getOptions()[Config::OPTION_NAME_HELP] ?? null;
+        if (null !== $helpOption) {
+            $invalidParams[] = $helpOption;
+        }
+        $invalidParams = [...$invalidParams, ...$exception->getInvalidParams()];
 
         $formatter = $isForStdErr ? HelpFormatter::createForStdErr() : HelpFormatter::createForStdOut();
 
@@ -266,7 +271,14 @@ class HelpGenerator {
     protected function getSubcommandsBlock(): string {
         $lines = [];
         foreach ($this->config->getBranches() as $config) {
-            $title   = static::getShortDescription($config->getDescription());
+            // For subcommands short descriptions we want to use parent (subcommands holder) config:
+            $envConfig = $this->config->getEnvConfig();
+            $title     = static::getShortDescription(
+                $config->getDescription(),
+                $envConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop,
+                $envConfig->helpGeneratorShortDescriptionCharsMax,
+            );
+
             $lines[] = [HelpGenerator::getUsageTemplate($config), $title];
         }
 
@@ -548,25 +560,37 @@ class HelpGenerator {
 
     /**
      * Until there is a {@see wordwrap()} UTF8-compatible analogue, we cut a string gracefully the manual way.
+     *
+     * 1. The method cuts an input string by `$charsMax`.
+     * 2. Then tries to detect the last complete sentence (ends with a full stop symbol '.') in a substring.
+     * 3. If there is no complete sentence, or a substring with a sentence (or several in a row) is too short
+     * (shorter than `$charsMinBeforeFullStop`), the rest of a cut substring is added too.
+     * 4. Next the method cuts a substring by the last space character, so there is no trailing part of a word.
      */
-    protected static function getShortDescription(string $description): string {
+    public static function getShortDescription(string $description, int $charsMinBeforeFullStop, int $charsMax): string {
         [$firstLine, ] = explode(PHP_EOL, static::unindent($description), 2);
-        if (mb_strlen($firstLine) <= static::SHORT_DESCRIPTION_MAX_CHARS) {
+        if (mb_strlen($firstLine) <= $charsMax) {
             return $firstLine;
         }
-        $firstLineShort = mb_substr($firstLine, 0, static::SHORT_DESCRIPTION_MAX_CHARS);
+
+        // At first, let's add +1 to MAX in case the +1 character is a space.
+        // This way we will not cut a whole word from the end of a substring.
+        $firstLineShort = mb_substr($firstLine, 0, $charsMax + 1);
 
         $lastSentencePosition = mb_strrpos($firstLineShort, '. ');
         if ($lastSentencePosition) {
-            $lastSentence = mb_substr($firstLineShort, 0, $lastSentencePosition);
-            if (mb_strlen($lastSentence) >= static::SHORT_DESCRIPTION_MIN_CHARS) {
-                return $lastSentence . '.';
+            // Compare the length of a sentence with a possible trailing space:
+            // do not count a trailing space as a beginning of the next sentence.
+            $lastSentence = mb_substr($firstLineShort, 0, $lastSentencePosition) . '. ';
+            if (mb_strlen($lastSentence) >= $charsMinBeforeFullStop) {
+                return rtrim($lastSentence, ' '); // Now let's remove a possible trailing space.
             }
         }
 
         $lastSpacePosition = mb_strrpos($firstLineShort, ' ');
         if (false === $lastSpacePosition) {
-            return $firstLineShort;
+            // Previously we cut a substring with +1. Now we just want a substring of a maximum allowed length.
+            return mb_substr($firstLine, 0, $charsMax);
         }
 
         return mb_substr($firstLineShort, 0, $lastSpacePosition);

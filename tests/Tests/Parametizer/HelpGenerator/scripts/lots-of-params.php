@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
@@ -29,16 +31,6 @@ Parametizer::newConfig()
         'Usage long example with description',
     )
 
-    ->newOption('--opt-required')
-    ->description('Required option: pick one from the list')
-    ->required()
-    ->allowedValuesDescribed([
-        'black' => 'A pile of books',
-        'pink'  => 'A heap of ponies',
-        'white' => null, // No description,
-        '5'     => 'Give me "five"!',
-    ])
-
     ->newOption('--opt-default', '-o')
     ->description('Non-required option with a default value')
     ->default('opt_default_value')
@@ -54,6 +46,17 @@ Parametizer::newConfig()
 
     ->newFlag('--flag3')
     ->description('Flag without short name')
+
+    // Let's place it here intentionally - to ensure the options correct order from `HelpGenerator::getParamsBlock()`
+    ->newOption('--opt-required')
+    ->description('Required option: pick one from the list')
+    ->required()
+    ->allowedValuesDescribed([
+        'black' => 'A pile of books',
+        'pink'  => 'A heap of ponies',
+        'white' => null, // No description,
+        '5'     => 'Give me "five"!',
+    ])
 
     ->newArgument('arg-required')
     ->description('Required argument')

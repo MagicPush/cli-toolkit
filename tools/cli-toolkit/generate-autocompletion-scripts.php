@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/ScriptFormatter.php';
@@ -8,7 +10,7 @@ use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 $helpFormatter = HelpFormatter::createForStdOut();
-$request = Parametizer::newConfig()
+$request       = Parametizer::newConfig()
     ->description('
         Generates a file with Bash completion scripts, which you can include in your Bash profile.
         
@@ -78,7 +80,7 @@ $request = Parametizer::newConfig()
 set_exception_handler(function (Throwable $e) {
     fwrite(STDERR, ScriptFormatter::createForStdErr()->error($e->getMessage() . PHP_EOL));
 
-    exit(1);
+    exit(Parametizer::ERROR_EXIT_CODE);
 });
 
 $searchPaths        = $request->getParam('search-paths');

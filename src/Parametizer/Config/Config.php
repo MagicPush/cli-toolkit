@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config;
 
@@ -9,6 +11,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Argument;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
@@ -39,6 +42,8 @@ class Config {
     /** Parameter is visible everywhere (full bitmask). */
     public const VISIBILITY_BITMASK_ALL = 15;
 
+
+    protected EnvironmentConfig $envConfig;
 
     protected string $description = '';
 
@@ -74,6 +79,17 @@ class Config {
     /** @var Config[] Subcommand value => config object */
     protected array $branches = [];
 
+
+    public function __construct(?EnvironmentConfig $envConfig = null) {
+        if (null === $envConfig) {
+            $envConfig = new EnvironmentConfig();
+        }
+        $this->envConfig = $envConfig;
+    }
+
+    public function getEnvConfig(): EnvironmentConfig {
+        return $this->envConfig;
+    }
 
     /**
      * Read the description in {@see ConfigBuilder::description()}.
@@ -307,21 +323,18 @@ class Config {
         }
 
         $this->registerOption(
-            static::createHelpOption()
+            (new Option(static::OPTION_NAME_HELP))
+                ->shortName($this->getEnvConfig()->optionHelpShortName)
+                ->flagValue(true)
+                ->default(false)
+                ->description('Show full help page.')
+                ->visibilityBitmask(static::VISIBLE_HELP | static::VISIBLE_COMPLETION)
                 ->callback(function () {
                     echo (new HelpGenerator($this))->getFullHelp();
 
                     exit;
                 }),
         );
-    }
-
-    public static function createHelpOption(): Option {
-        return (new Option(static::OPTION_NAME_HELP))
-            ->flagValue(true)
-            ->default(false)
-            ->description('Show full help page.')
-            ->visibilityBitmask(static::VISIBLE_HELP | static::VISIBLE_COMPLETION);
     }
 
     /**

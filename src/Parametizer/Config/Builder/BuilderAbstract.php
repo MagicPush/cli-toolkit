@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config\Builder;
 
@@ -30,7 +32,7 @@ abstract class BuilderAbstract implements BuilderInterface {
      * If there is no validator, callback is called immediately. If the param allows multiple values,
      * callback is called for each value (as soon as the parser reads it).
      *
-     * Callback receives 1 argument (param name), its result is not used.
+     * Callback receives 1 argument (parameter's value), its result is not used.
      */
     public function callback(?callable $callback): static {
         $this->param->callback($callback);

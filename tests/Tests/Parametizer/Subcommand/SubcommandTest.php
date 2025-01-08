@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Subcommand;
 
@@ -213,39 +215,39 @@ class SubcommandTest extends TestCaseAbstract {
                 0 => 'print-option-names',
 
                 // Top level default settings, should be added automatically.
-                1 => 'parametizer-internal-autocomplete-generate',
-                2 => 'parametizer-internal-autocomplete-execute',
-                3 => 'help',
+                1 => Config::OPTION_NAME_AUTOCOMPLETE_GENERATE,
+                2 => Config::OPTION_NAME_AUTOCOMPLETE_EXECUTE,
+                3 => Config::OPTION_NAME_HELP,
 
                 'BRANCHES' => [
                     'test11' => [
                         0 => 'name-l2',
 
-                        1 => 'help',
+                        1 => Config::OPTION_NAME_HELP,
 
                         'BRANCHES' => [
                             'test21' => [
                                 // Should be added automatically.
-                                0 => 'help',
+                                0 => Config::OPTION_NAME_HELP,
                             ],
                             'test22' => [
                                 // Should be added automatically.
-                                0 => 'help',
+                                0 => Config::OPTION_NAME_HELP,
                             ],
                             'test23' => [
                                 0 => 'name-l3',
 
                                 // Should be added automatically.
-                                1 => 'help',
+                                1 => Config::OPTION_NAME_HELP,
 
                                 'BRANCHES' => [
                                     'test31' => [
                                         // Should be added automatically.
-                                        0 => 'help',
+                                        0 => Config::OPTION_NAME_HELP,
                                     ],
                                     'test32' => [
                                         // Should be added automatically.
-                                        0 => 'help',
+                                        0 => Config::OPTION_NAME_HELP,
                                     ],
                                 ],
                             ],
@@ -253,7 +255,7 @@ class SubcommandTest extends TestCaseAbstract {
                     ],
                     'test12' => [
                         // Should be added automatically.
-                        0 => 'help',
+                        0 => Config::OPTION_NAME_HELP,
                     ],
                 ],
             ],

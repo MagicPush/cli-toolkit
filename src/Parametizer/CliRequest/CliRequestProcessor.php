@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\CliRequest;
 
@@ -17,7 +19,6 @@ use MagicPush\CliToolkit\Parametizer\Parser\ParsedOption;
 use MagicPush\CliToolkit\Parametizer\Parser\Parser;
 
 class CliRequestProcessor {
-    protected Config $config;
     protected Parser $parser;
 
     protected ?CliRequestProcessor $detectedBranchRequest = null;
@@ -37,6 +38,8 @@ class CliRequestProcessor {
     protected array $defaultsLookup = [];
 
 
+    public function __construct(protected Config $config) { }
+
     public function disableCallbacks(bool $areCallbacksDisabled = true): static {
         $this->areCallbacksDisabled = $areCallbacksDisabled;
 
@@ -53,8 +56,7 @@ class CliRequestProcessor {
         return $this;
     }
 
-    public function load(Config $config, Parser $parser): CliRequest {
-        $this->config        = $config;
+    public function load(Parser $parser): CliRequest {
         $this->parser        = $parser;
         $this->requestParams = [];
 
@@ -294,13 +296,13 @@ class CliRequestProcessor {
             }
 
             // The rest of arguments are treated as a separate request to the subcommand.
-            $requestProcessor            = (new static())->setParent($this);
+            $requestProcessor            = (new static($branch))->setParent($this);
             $this->detectedBranchRequest = $requestProcessor;
 
             // Options are allowed again.
             $this->parser->allowOptions();
 
-            $consoleRequest = $requestProcessor->load($branch, $this->parser);
+            $consoleRequest = $requestProcessor->load($this->parser);
 
             $this->requestParams[$value] = $consoleRequest->getParams();
         }

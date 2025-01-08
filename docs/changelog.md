@@ -2,12 +2,31 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
-## DEV
+## v2.0.0
 
-Currently in `dev` branch:
+### Backward incompatibilities:
+
+1. `Config::createHelpOption()` is deleted because not needed anymore (see the point below).
+1. `Parametizer::setExceptionHandlerForParsing()` requires a `CliRequestProcessor` object,
+   `HelpGenerator::getUsageForParseErrorException()` requires a `Config` object as the second parameter,
+   `CliRequestProcessor::__construct()` is added with a required `Config` object parameter,
+   `CliRequestProcessor::load()` signature is changed - `Config` object parameter is removed.
+   This way it's possible to get an innermost branch config for `ParseErrorException` instances.
+
+#### ... only if `DEV` is merged into master before this branch:
+
+1. `HelpGenerator::getShortDescription()` requires 2 more parameters - min and max amount of chars.
+1. `HelpGenerator::SHORT_DESCRIPTION_MIN_CHARS` and `SHORT_DESCRIPTION_MAX_CHARS` constants are removed.
 
 ### New features
 
+1. Added [EnvironmentConfig](../src/Parametizer/EnvironmentConfig.php) class that allows setting "environment"-related
+   options like a short name for built-in `--help` option and short description boundaries.
+   Other changes provoked by this addition:
+    1. `Config::__construct()`, `ConfigBuilder::__construct()` and `Parametizer::newConfig()` support
+       a new optional parameter `$envConfig` to pass `EnvironmentConfig` instance.
+    1. Added `Config::$envConfig` protected property to keep `EnvironmentConfig` instance
+       and the related `getEnvConfig()` public method.
 1. `CliRequest` provides `getParamAs*` helper methods for easier parameters' values type casting,
    see [Features Manual: Type casting from requests](features-manual.md#type-casting-from-requests).
 1. Added `HelpGenerator::getShortDescription()` that is used to show short versions for subcommand descriptions,
@@ -25,8 +44,8 @@ when outputting a help page for a script with a list of available subcommands.
 
 The first official release. Mainly focused on Cliff improvements and some additions like:
 - more transparent and convenient config builder;
-- [generate-autocompletion-scripts.php](tools/cli-toolkit/generate-autocompletion-scripts.php)
+- [generate-autocompletion-scripts.php](../tools/cli-toolkit/generate-autocompletion-scripts.php)
   (eases autocompletion init);
-- [TerminalFormatter](src/TerminalFormatter.php) (helps format the improved generated help pages);
-- [Question](src/Question/Question.php) (helps implement interactive scripts);
+- [TerminalFormatter](../src/TerminalFormatter.php) (helps format the improved generated help pages);
+- [Question](../src/Question/Question.php) (helps implement interactive scripts);
 - PHPUnit for autotests plus more autotests.
