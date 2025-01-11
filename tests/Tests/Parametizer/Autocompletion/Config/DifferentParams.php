@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 class DifferentParams {
     public static function getConfigBuilder(): BuilderInterface {
-        return Parametizer::newConfig()
+        return Parametizer::newConfig(throwOnException: true)
             ->newOption('--opt', '-o')
             ->allowedValuesDescribed([
                 '100'     => 'One hundred',

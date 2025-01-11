@@ -1,23 +1,25 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-$request = Parametizer::newConfig()
+$request = Parametizer::newConfig(throwOnException: true)
     ->newOption('--opt')
     ->default('opt-level-1')
 
     ->newSubcommandSwitch('branch')
     ->newSubcommand(
         'branch-red',
-        Parametizer::newConfig()
+        Parametizer::newConfig(throwOnException: true)
             ->newOption('--opt')
             ->default('opt-level-2-red'),
     )
     ->newSubcommand(
         'branch-blue',
-        Parametizer::newConfig()
+        Parametizer::newConfig(throwOnException: true)
             ->newOption('--opt')
             ->default('opt-level-2-blue'),
     )

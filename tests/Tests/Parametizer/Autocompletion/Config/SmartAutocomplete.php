@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 class SmartAutocomplete {
     public static function getConfigBuilder(): BuilderInterface {
-        return Parametizer::newConfig()
+        return Parametizer::newConfig(throwOnException: true)
             ->newOption('--opt', '-o')
             ->allowedValues([100, 200])
 

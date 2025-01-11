@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config\DifferentParams;
@@ -6,7 +8,7 @@ use MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config\SmartAuto
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig()
+Parametizer::newConfig(throwOnException: true)
     /*
      * Let's add some parameters with the same short names as in subcommand configs,
      * but of other types - a flag instead of option and vice versa.

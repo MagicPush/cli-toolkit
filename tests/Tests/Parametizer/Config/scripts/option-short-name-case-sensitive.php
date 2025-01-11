@@ -6,7 +6,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig()
+Parametizer::newConfig(throwOnException: true)
     ->newFlag('--flag-one', '-f')
     ->callback(function () {
         die('"-f" stands for "--flag-one"');

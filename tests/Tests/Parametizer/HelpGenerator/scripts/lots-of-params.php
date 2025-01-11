@@ -6,7 +6,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig()
+Parametizer::newConfig(throwOnException: true)
     ->description('
         Here is a very very very very long description.
         So long that multiple lines are needed.

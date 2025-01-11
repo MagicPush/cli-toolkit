@@ -63,7 +63,7 @@ The list of plans and ideas for future development.
            allow `20` and `'20'`, but not `20.0` or `'20.0'`
     1. [ ] A default config generator with all settings and descriptions.
     1. [ ] Docs.
-    1. [ ] Specify `$throwOnException` for all test scripts.
+    1. [x] Specify `$throwOnException` for all test scripts.
     1. [ ] Think about adding other possible backward incompatibilities. Additional sublist:
         1. [ ] Rename `Parametizer::newConfig()` into `build()` / `startBuilding()` / `createBuilder()` / etc.
         1. [ ] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,

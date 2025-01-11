@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
@@ -7,7 +9,7 @@ require_once __DIR__ . '/../../../init-console.php';
 $parameterName = $_SERVER['argv'][1];
 unset($_SERVER['argv'][1]);
 
-$request = Parametizer::newConfig()
+$request = Parametizer::newConfig(throwOnException: true)
     ->newOption('--option-parameter')
     ->default('option_value')
 

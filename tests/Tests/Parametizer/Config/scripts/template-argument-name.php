@@ -1,7 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig()->newArgument($argv[1] ?? '');
+Parametizer::newConfig(throwOnException: true)->newArgument($argv[1] ?? '');

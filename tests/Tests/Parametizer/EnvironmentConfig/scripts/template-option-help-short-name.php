@@ -11,5 +11,5 @@ $envConfig = new EnvironmentConfig();
 
 $envConfig->optionHelpShortName = isset($argv[2]) ? ltrim($argv[2], '-') : null;
 
-Parametizer::newConfig($envConfig)
+Parametizer::newConfig($envConfig, throwOnException: true)
     ->run();

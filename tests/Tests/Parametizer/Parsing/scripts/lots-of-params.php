@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-$request = Parametizer::newConfig()
+$request = Parametizer::newConfig(throwOnException: true)
     ->newOption('--opt-required')
     ->description('Required option: pick one from the list')
     ->required()

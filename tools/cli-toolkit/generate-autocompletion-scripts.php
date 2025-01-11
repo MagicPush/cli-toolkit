@@ -115,7 +115,7 @@ foreach ($searchPaths as $searchPath) {
 
         $contents = file_get_contents($path);
         if (
-            !str_contains($contents, 'Parametizer::newConfig()')
+            !str_contains($contents, 'Parametizer::newConfig(')
             || !str_contains($contents, '->run()')
         ) {
             continue;
