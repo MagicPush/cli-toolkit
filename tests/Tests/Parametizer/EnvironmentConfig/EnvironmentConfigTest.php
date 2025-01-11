@@ -75,7 +75,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
     public static function provideAutoloadFromFiles(): array {
         return [
             'same-directory' => [
-                'scriptPath'           => __DIR__ . '/' . 'autoload-files/same-directory.php',
+                'scriptPath'           => __DIR__ . '/' . 'autoload/same-directory.php',
                 'expectedConfigValues' => [
                     'optionHelpShortName'                                 => 'A',
                     'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,
@@ -86,7 +86,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
             // If there is no config file in the same directory as a script file,
             // we should look for a config file in a directory above.
             'lower-dir-find-higher-config' => [
-                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level2-no-config-nearby.php',
+                'scriptPath'           => __DIR__ . '/' . 'autoload/level2/level2-no-config-nearby.php',
                 'expectedConfigValues' => [
                     'optionHelpShortName'                                 => 'A',
                     'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,
@@ -97,7 +97,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
             // If a config nearby contains only a part of settings,
             // the rest might be filled from other configs above (if present).
             'filled-by-several-configs' => [
-                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level3/partial-config-nearby.php',
+                'scriptPath'           => __DIR__ . '/' . 'autoload/level2/level3/partial-config-nearby.php',
                 'expectedConfigValues' => [
                     'optionHelpShortName'                                 => 'X', // From the nearby config.
                     'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,   // From the topmost config.
@@ -108,7 +108,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
             // Stop searching for configs above and leave the rest of settings with default values,
             // if reached the topmost search directory.
             'no-search-above-topmost' => [
-                'scriptPath'           => __DIR__ . '/' . 'autoload-files/level2/level3/no-search-above-topmost.php',
+                'scriptPath'           => __DIR__ . '/' . 'autoload/level2/level3/no-search-above-topmost.php',
                 'expectedConfigValues' => [
                     'optionHelpShortName'                                 => 'X',  // From the nearby config.
                     'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 40,   // A default value.

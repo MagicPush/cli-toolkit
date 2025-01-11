@@ -97,14 +97,20 @@ class EnvironmentConfig {
      *                                             {@see static::detectTopmostDirectoryPath()}.
      */
     public static function createFromConfigsBottomUpHierarchy(
-        string $bottommostDirectoryPath,
+        ?string $bottommostDirectoryPath = null,
         ?string $topmostDirectoryPath = null,
         bool $throwOnException = false,
     ): static {
         $envConfig = new EnvironmentConfig();
 
-        $bottommostDirectoryPathValidated = realpath($bottommostDirectoryPath);
-        if (!$bottommostDirectoryPathValidated || !is_readable($bottommostDirectoryPathValidated)) {
+        if (null === $bottommostDirectoryPath) {
+            $bottommostDirectoryPath = static::detectBottommostDirectoryPath();
+        }
+
+        $bottommostDirectoryPathValidated = null !== $bottommostDirectoryPath
+            ? realpath($bottommostDirectoryPath)
+            : false;
+        if (false === $bottommostDirectoryPathValidated || !is_readable($bottommostDirectoryPathValidated)) {
             if (!$throwOnException) {
                 return $envConfig;
             }
@@ -119,7 +125,7 @@ class EnvironmentConfig {
         }
 
         $topmostDirectoryPathValidated = realpath($topmostDirectoryPath);
-        if (!$topmostDirectoryPathValidated || !is_readable($topmostDirectoryPathValidated)) {
+        if (false === $topmostDirectoryPathValidated || !is_readable($topmostDirectoryPathValidated)) {
             if (!$throwOnException) {
                 return $envConfig;
             }
@@ -148,6 +154,12 @@ class EnvironmentConfig {
 
             $currentDirPath = dirname($currentDirPath);
         }
+    }
+
+    protected static function detectBottommostDirectoryPath(): ?string {
+        $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+
+        return $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? null;
     }
 
     /**

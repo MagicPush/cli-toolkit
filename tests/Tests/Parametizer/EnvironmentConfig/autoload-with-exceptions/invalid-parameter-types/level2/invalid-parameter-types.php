@@ -13,5 +13,8 @@ echo json_encode(
         $envConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop,
         $envConfig->helpGeneratorShortDescriptionCharsMax,
     ],
-    JSON_UNESCAPED_UNICODE,
+    JSON_UNESCAPED_UNICODE
+    | JSON_UNESCAPED_SLASHES
+    | JSON_UNESCAPED_LINE_TERMINATORS
+    | JSON_THROW_ON_ERROR,
 );

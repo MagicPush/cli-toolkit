@@ -56,13 +56,10 @@ The list of plans and ideas for future development.
     1. [x] Set config automatically via a JSON config file.
     1. [x] Skip a parameter setting (like it is not mentioned) if a value read from a config file has an invalid type
        and `$throwOnException` is set to `false`.
-    1. [ ] Backtrace edge case: a script and a class with config generators are located
+    1. [x] Backtrace edge case: a script and a class with a config generator are located
        in different filesystem branches.
 
        Try smarter script location (bottommost path) detection.
-
-       A possible (but inconvenient) solution: a special comment in a script
-       used as an indicator to stop reading a backtrace.
     1. [ ] A default config generator with all settings and descriptions.
     1. [ ] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.
@@ -89,11 +86,13 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. Support `EnvironmentConfig` setting:
-        1. A script class skeleton should support a method to set an `EnvironmentConfig` instance created from scratch
-           or received from a script launcher.
-        1. The skeleton should support `Parametizer::newConfig()` alternative that includes a parent `EnvironmentConfig`
-           instance, but also allows to set a new instance.
+    1. Support `EnvironmentConfig` setup:
+       1. A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
+          a script launcher or (otherwise) created from scratch (including the config file autoloader).
+            * If an `EnvironmentConfig` instance is passed from a launcher to a script class, it should be treated
+              as a default config (not a forced only-config) - a script class should be able to _update_ parameters.
+       1. A script class skeleton should be also able to load an `EnvironmentConfig` instance from config files.
+            * Think about the load priorities: a) launcher env config instance, b) script class subtree config files.
     1. Support different script (subcommand) naming.
         * Composite names: 2 parts at least - `section:script` (like in Symfony).
           Single named scripts should be allowed too.

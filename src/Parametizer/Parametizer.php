@@ -19,26 +19,14 @@ class Parametizer {
     public const ERROR_EXIT_CODE = 1;
 
     /**
-     * Not just a handy shortcut to {@see ConfigBuilder::__construct()} for easy chaining.
-     *
-     * It's also the only reliable way to try autoloading {@see EnvironmentConfig} instance from config files
-     * ({@see EnvironmentConfig::createFromConfigsBottomUpHierarchy}).
+     * A handy shortcut to {@see ConfigBuilder::__construct()} for easy chaining.
      */
     public static function newConfig(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,
     ): ConfigBuilder {
         if (null === $envConfig) {
-            // Here, in exactly this method we can detect the file that actually makes a script a Parametizer-powered one.
-            // From this spot we should start recursive bottom-up search for EnvironmentConfig files.
-            $bottommostFilePath = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? '';
-            // The appropriate path validation will happen inside the method below.
-
-            $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy(
-                dirname($bottommostFilePath),
-                null,
-                $throwOnException,
-            );
+            $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy(throwOnException: $throwOnException);
         }
 
         return new ConfigBuilder($envConfig);
