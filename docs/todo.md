@@ -54,13 +54,15 @@ The list of plans and ideas for future development.
     <summary>Points to consider</summary>
 
     1. [x] Set config automatically via a JSON config file.
-    1. [ ] Type-related and custom validation for settings.
-       Test:
-        1. JSON type validation for all settings.
-            1. Make one of `int` settings value as a string
-               in `tests/Tests/Parametizer/EnvironmentConfig/autoload-files/parametizer.env.json`
-        1. JSON type validation example for `EnvironmentConfig::$helpGeneratorShortDescriptionChars*`:
-           allow `20` and `'20'`, but not `20.0` or `'20.0'`
+    1. [x] Skip a parameter setting (like it is not mentioned) if a value read from a config file has an invalid type
+       and `$throwOnException` is set to `false`.
+    1. [ ] Backtrace edge case: a script and a class with config generators are located
+       in different filesystem branches.
+
+       Try smarter script location (bottommost path) detection.
+
+       A possible (but inconvenient) solution: a special comment in a script
+       used as an indicator to stop reading a backtrace.
     1. [ ] A default config generator with all settings and descriptions.
     1. [ ] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.

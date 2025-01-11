@@ -129,6 +129,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
         string $scriptPath,
         bool $throwOnException,
         string $expectedErrorOutput,
+        string $expectedStdOutput,
     ): void {
         if ($throwOnException) {
             // This way `$throwOnException` flag is passed to a config builder:
@@ -145,7 +146,7 @@ class EnvironmentConfigTest extends TestCaseAbstract {
             // This way `$throwOnException` flag is not passed to a config builder, throwing is disabled:
             $parametersString = '';
 
-            self::assertNoErrorsOutput($scriptPath, $parametersString);
+            assertSame($expectedStdOutput, self::assertNoErrorsOutput($scriptPath, $parametersString)->getStdOut());
         }
     }
 
@@ -154,37 +155,58 @@ class EnvironmentConfigTest extends TestCaseAbstract {
      */
     public static function provideThrowingOnExceptions(): array {
         return [
-            'invalid-json-no-throw' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-json-file.php',
-                'throwOnException'    => false,
-                'expectedErrorOutput' => '',
-            ],
-            'invalid-json-exception' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-json-file.php',
-                'throwOnException'    => true,
-                'expectedErrorOutput' => 'Unable to read an environment config',
-            ],
-
             'invalid-path-bottommost-no-throw' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-bottommost.php',
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-path-bottommost.php',
                 'throwOnException'    => false,
                 'expectedErrorOutput' => '',
+                'expectedStdOutput'   => '',
             ],
             'invalid-path-bottommost-exception' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-bottommost.php',
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-path-bottommost.php',
                 'throwOnException'    => true,
                 'expectedErrorOutput' => 'Unable to read the bottommost directory',
+                'expectedStdOutput'   => '',
             ],
 
             'invalid-path-topmost-no-throw' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-topmost.php',
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-path-topmost.php',
                 'throwOnException'    => false,
                 'expectedErrorOutput' => '',
+                'expectedStdOutput'   => '',
             ],
             'invalid-path-topmost-exception' => [
-                'scriptPath'          => __DIR__ . '/autoload-with-exceptions/invalid-path-topmost.php',
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-path-topmost.php',
                 'throwOnException'    => true,
                 'expectedErrorOutput' => 'Unable to read the topmost directory',
+                'expectedStdOutput'   => '',
+            ],
+
+            'invalid-json-no-throw' => [
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-json-file/invalid-json-file.php',
+                'throwOnException'    => false,
+                'expectedErrorOutput' => '',
+                'expectedStdOutput'   => '',
+            ],
+            'invalid-json-exception' => [
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-json-file/invalid-json-file.php',
+                'throwOnException'    => true,
+                'expectedErrorOutput' => 'Unable to read the environment config',
+                'expectedStdOutput'   => '',
+            ],
+
+            // Here we try setting as many values as possible.
+            // The rest of parameters are set via the next config in the search tree (in the directory above).
+            'invalid-parameter-types-no-throw' => [
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-parameter-types/level2/invalid-parameter-types.php',
+                'throwOnException'    => false,
+                'expectedErrorOutput' => '',
+                'expectedStdOutput'   => '["p",100,20]',
+            ],
+            'invalid-parameter-types-exception' => [
+                'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-parameter-types/level2/invalid-parameter-types.php',
+                'throwOnException'    => true,
+                'expectedErrorOutput' => "Unable to set 'optionHelpShortName' environment config setting to the value: 0.0",
+                'expectedStdOutput'   => '',
             ],
         ];
     }

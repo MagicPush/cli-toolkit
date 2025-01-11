@@ -6,6 +6,7 @@ namespace MagicPush\CliToolkit\Parametizer;
 
 use Exception;
 use RuntimeException;
+use TypeError;
 
 class EnvironmentConfig {
     protected const CONFIG_FILENAME = 'parametizer.env.json';
@@ -60,16 +61,27 @@ class EnvironmentConfig {
             }
 
             throw new RuntimeException(
-                "Unable to read an environment config '{$configAbsolutePath}': {$e->getMessage()}",
-                $e->getCode(),
-                $e,
+                "Unable to read the environment config '{$configAbsolutePath}': {$e->getMessage()}",
             );
         }
 
         foreach ($this->propertiesNotYetInitializedFromFiles as $propertyName => $notUsed) {
             if (array_key_exists($propertyName, $parsedConfig)) {
+                try {
+                    $this->$propertyName = $parsedConfig[$propertyName];
+                } catch (Exception|TypeError $e) {
+                    if (!$throwOnException) {
+                        continue;
+                    }
+
+                    throw new RuntimeException(
+                        "Unable to set '{$propertyName}' environment config setting to the value: "
+                            . var_export($parsedConfig[$propertyName], true)
+                            . "; source file '{$configAbsolutePath}'; error: {$e->getMessage()}",
+                    );
+                }
+
                 unset($this->propertiesNotYetInitializedFromFiles[$propertyName]);
-                $this->$propertyName = $parsedConfig[$propertyName];
             }
         }
     }
