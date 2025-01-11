@@ -37,6 +37,7 @@ Just create a php-file and start configuring:
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size') // A positioned parameter.
     ->newFlag('--dry-run') // A named boolean parameter.
+
     ->run();
 
 // Read parameters
@@ -44,7 +45,7 @@ $chunkSize = $request->getParamAsInt('chunk-size');
 
 // Process...
 
-if (!$request->getParam('dry-run')) {
+if (!$request->getParamAsBool('dry-run')) {
     // Make data changes.
 }
 ```
@@ -77,6 +78,7 @@ $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->default(100)
     ->required()
+
     ->run();
 ```
 

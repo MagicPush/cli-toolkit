@@ -46,9 +46,9 @@ So if you used to write CLI PHP scripts via `symfony`, you won't have any troubl
 After command-line parameters are processed, `Parametizer::run()` returns an instance of `CliRequest`. Then you can
 read the parsed parameters' values from that request object via `getParam()` method.
 
-Though, initially parsed values are always rendered as strings. And usually you would like to cast those to more
-appropriate data types. You can do it by a standard way like `(int) $request->getParam('cycles-count')` or via the
-special helper methods:
+Though, initially parsed values are always rendered as strings (flags only - as booleans). And usually you would like
+to cast those to more appropriate data types. You can do it by a standard way like
+`(int) $request->getParam('cycles-count')` or via the special helper methods:
 
 ```php
 $request = Parametizer::newConfig()
@@ -58,7 +58,8 @@ $request = Parametizer::newConfig()
     ->newArrayOption('list-of-ids')
     ->newArrayOption('list-of-coords')
 
-$isVerbose   = $request->getParam('verbose');            // Flag values are always converted to bool automatically.
+$isVerbose   = $request->getParamAsBool('verbose');      // Flag values are always converted to bool automatically,
+                                                         // but this way is more IDE-friendly.
 $cyclesCount = $request->getParamAsInt('cycles-count');  // Instead of `(int) $request->getParam('cycles-count')`.
 $temperature = $request->getParamAsFloat('temperature'); // Instead of `(float) $request->getParam('temperature')`.
 
@@ -81,6 +82,7 @@ Configure possible values list:
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->allowedValues([10, 50, 100, 200, 500])
+
     ->run();
 ```
 
@@ -95,6 +97,7 @@ Incorrect value '1000' for argument <chunk-size>
 $request = Parametizer::newConfig()
     ->newArgument('chunk-size')
     ->validatorPattern('/^[0-9]+$/')
+
     ->run();
 ```
 
@@ -111,6 +114,7 @@ $request = Parametizer::newConfig()
     ->validatorCallback(function (&$value) { // Values can be rewritten in callbacks, if you desire.
         return $value > 0 && $value <= 500;
     })
+
     ->run();
 ```
 
@@ -207,7 +211,7 @@ switch ($operation) {
         break;
         
     case 'write':
-        $shouldTruncate = $operationRequest->getParam('truncate');
+        $shouldTruncate = $operationRequest->getParamAsBool('truncate');
         // ...
         break;
 }

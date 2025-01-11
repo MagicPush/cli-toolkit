@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../../init-console.php';
 
 $request = Parametizer::newConfig()
     ->newOption('--type')
-    ->allowedValues(['int', 'float'])
+    ->allowedValues(['bool', 'int', 'float'])
 
     ->newOption('--single')
 
@@ -15,6 +15,11 @@ $request = Parametizer::newConfig()
     ->run();
 
 switch ($request->getParam('type')) {
+    case 'bool':
+        $valueSingle = $request->getParamAsBool('single');
+        $valueArray  = $request->getParam('array'); // No bool casting for array elements.
+        break;
+
     case 'int':
         $valueSingle = $request->getParamAsInt('single');
         $valueArray  = $request->getParamAsIntList('array');

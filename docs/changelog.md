@@ -15,7 +15,6 @@ when outputting a help page for a script with a list of available subcommands.
 
 ### Patching
 
-1. Covered `CliRequest::getCommandRequest()` with autotests.
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
 1. Formatted subcommand value in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
 'COMMANDS' section of a help page with a list of available subcommands.

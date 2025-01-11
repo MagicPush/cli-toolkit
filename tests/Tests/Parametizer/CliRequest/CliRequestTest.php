@@ -69,6 +69,7 @@ class CliRequestTest extends TestCaseAbstract {
      *
      * @param mixed[] $expectedValues
      * @covers CliRequest::getParam()
+     * @covers CliRequest::getParamAsBool()
      * @covers CliRequest::getParamAsInt()
      * @covers CliRequest::getParamAsIntList()
      * @covers CliRequest::getParamAsFloat()
@@ -98,6 +99,13 @@ class CliRequestTest extends TestCaseAbstract {
                     'array'  => ['9.8whatever', '0'],
                 ],
             ],
+            'cast-bool' => [
+                'castType'       => 'bool',
+                'expectedValues' => [
+                    'single' => true,
+                    'array'  => ['9.8whatever', '0'], // No bool casting for array elements.
+                ],
+            ],
             'cast-int' => [
                 'castType'       => 'int',
                 'expectedValues' => [
@@ -119,11 +127,20 @@ class CliRequestTest extends TestCaseAbstract {
     /**
      * Tests logic errors while reading parameter values processed from a request.
      *
+     * @covers CliRequest::getParamAsBool()
+     * @covers CliRequest::getParamAsInt()
+     * @covers CliRequest::getParamAsIntList()
+     * @covers CliRequest::getParamAsFloat()
+     * @covers CliRequest::getParamAsFloatList()
      * @covers CliRequest::validateValueIsArray()
      * @covers CliRequest::validateValueNotArray()
      */
-    public function testParameterLogicErrors(string $scriptPath, string $expectedErrorSubstring): void {
-        static::assertLogicExceptionOutput($scriptPath, $expectedErrorSubstring);
+    public function testParameterLogicErrors(
+        string $scriptPath,
+        string $castType,
+        string $expectedErrorSubstring,
+    ): void {
+        static::assertLogicExceptionOutput($scriptPath, $expectedErrorSubstring, "--type={$castType}");
     }
 
     /**
@@ -131,12 +148,30 @@ class CliRequestTest extends TestCaseAbstract {
      */
     public static function provideParameterLogicErrors(): array {
         return [
-            'array-as-single' => [
+            'array-as-single-bool' => [
                 'scriptPath'             => __DIR__ . '/scripts/get-array-as-single.php',
+                'castType'               => 'bool',
                 'expectedErrorSubstring' => "Parameter 'option-array' contains an array",
             ],
-            'single-as-array' => [
+            'array-as-single-int' => [
+                'scriptPath'             => __DIR__ . '/scripts/get-array-as-single.php',
+                'castType'               => 'int',
+                'expectedErrorSubstring' => "Parameter 'option-array' contains an array",
+            ],
+            'array-as-single-float' => [
+                'scriptPath'             => __DIR__ . '/scripts/get-array-as-single.php',
+                'castType'               => 'float',
+                'expectedErrorSubstring' => "Parameter 'option-array' contains an array",
+            ],
+
+            'single-as-array-int' => [
                 'scriptPath'             => __DIR__ . '/scripts/get-single-as-array.php',
+                'castType'               => 'int',
+                'expectedErrorSubstring' => "Parameter 'option-single' contains a single value",
+            ],
+            'single-as-array-float' => [
+                'scriptPath'             => __DIR__ . '/scripts/get-single-as-array.php',
+                'castType'               => 'float',
                 'expectedErrorSubstring' => "Parameter 'option-single' contains a single value",
             ],
         ];

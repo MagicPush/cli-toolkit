@@ -64,6 +64,13 @@ class CliRequest {
         );
     }
 
+    public function getParamAsBool(string $paramName): bool {
+        $paramValue = $this->getParam($paramName);
+        self::validateValueNotArray($paramName, $paramValue);
+
+        return (bool) $paramValue;
+    }
+
     public function getParamAsInt(string $paramName): int {
         $paramValue = $this->getParam($paramName);
         self::validateValueNotArray($paramName, $paramValue);

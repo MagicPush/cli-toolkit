@@ -5,8 +5,26 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 require_once __DIR__ . '/../../../init-console.php';
 
 $request = Parametizer::newConfig()
+    ->newOption('--type')
+    ->allowedValues(['bool', 'int', 'float'])
+
     ->newArrayOption('--option-array')
 
     ->run();
 
-$request->getParamAsInt('option-array');
+switch ($request->getParam('type')) {
+    case 'bool':
+        $request->getParamAsBool('option-array');
+        break;
+
+    case 'int':
+        $request->getParamAsInt('option-array');
+        break;
+
+    case 'float':
+        $request->getParamAsFloat('option-array');
+        break;
+
+    default:
+        break;
+}
