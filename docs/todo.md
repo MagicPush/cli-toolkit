@@ -60,7 +60,7 @@ The list of plans and ideas for future development.
        in different filesystem branches.
 
        Try smarter script location (bottommost path) detection.
-    1. [ ] A default config generator with all settings and descriptions.
+    1. [x] A default config generator with all settings and descriptions.
     1. [ ] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.
     1. [ ] Think about adding other possible backward incompatibilities. Additional sublist:
@@ -93,6 +93,51 @@ The list of plans and ideas for future development.
               as a default config (not a forced only-config) - a script class should be able to _update_ parameters.
        1. A script class skeleton should be also able to load an `EnvironmentConfig` instance from config files.
             * Think about the load priorities: a) launcher env config instance, b) script class subtree config files.
+
+       <details>
+       <summary>Base class implementation idea</summary>
+
+       ```php
+        <?php
+
+        declare(strict_types=1);
+
+        abstract class ParametizerPoweredAbstract {
+            protected BuilderInterface $builder;
+
+
+            public function __construct(protected ?EnvironmentConfig $launcherEnvConfig = null) {
+                $this->builder = Parametizer::newConfig($this->createEnvironmentConfig());
+            }
+
+            protected function createEnvironmentConfig(): EnvironmentConfig {
+                // Start reading config files from the actual script classes directory.
+                // 'x' should be calculated, but may be a hardcoded trace jumps count.
+                $bottom = debug_backtrace()[last-x];
+
+                // Also test if __DIR__ placed as a default property value is transformed into
+                // a current instance class directory, not the base abstract class directory.
+
+                $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy($bottom);
+
+                if (isset($this->launcherEnvConfig)) {
+                    // New method: fill only the settings not filled from config files.
+                    // But do it once (or mark all fields filled from files),
+                    // otherwise other attempts will overwrite all settings.
+                    $envConfig->appendNotFilledFromFiles($this->launcherEnvConfig);
+                }
+
+                return $envConfig;
+            }
+
+            abstract public function configure(): void;
+
+            abstract public function execute(CliRequest $request): void;
+        }
+
+       ```
+
+       </details>
     1. Support different script (subcommand) naming.
         * Composite names: 2 parts at least - `section:script` (like in Symfony).
           Single named scripts should be allowed too.

@@ -13,7 +13,7 @@ $helpFormatter = HelpFormatter::createForStdOut();
 $request       = Parametizer::newConfig()
     ->description('
         Generates a file with Bash completion scripts, which you can include in your Bash profile.
-        
+
         Each time you add or delete a Parametizer-powered script, you should:
             1. Launch this script - so the generated completion script is updated.
             2. Relaunch your Bash (or call the generated script manually) - so the updated list of aliases'
@@ -26,7 +26,7 @@ $request       = Parametizer::newConfig()
                 . ' + script names (without extensions).
             3. Generates a Bash completion script for each detected script and its compiled alias.
             4. Places all this generated stuff into ' . $helpFormatter->paramTitle('--output-filepath') . '.
-            
+
         After you include the generated file in your Bash profile
         (you may specify ' . $helpFormatter->paramTitle('--verbose') . ' for the example inclusion command to be shown)
         and apply it (`source /path/to/your_bash_profile` or restart your Bash),
@@ -70,9 +70,9 @@ $request       = Parametizer::newConfig()
         function (&$value) {
             $value = realpath(trim($value));
 
-            return is_string($value) && is_readable($value);
+            return false !== $value && is_readable($value);
         },
-        'There should be a readable path.',
+        'Path should be readable.',
     )
 
     ->run();
@@ -83,12 +83,11 @@ set_exception_handler(function (Throwable $e) {
     exit(Parametizer::ERROR_EXIT_CODE);
 });
 
-$searchPaths        = $request->getParam('search-paths');
-$isVerbose          = $request->getParam('verbose');
-$aliasPrefix        = $request->getParam('alias-prefix');
+$searchPaths        = $request->getParamAsStringList('search-paths');
+$isVerbose          = $request->getParamAsBool('verbose');
+$aliasPrefix        = $request->getParamAsString('alias-prefix');
 $executionFormatter = ScriptFormatter::createForStdOut();
 
-/** @var string[] $searchPaths */
 $scriptPathsByAliases = [];
 if ($isVerbose) {
     echo $executionFormatter->section('=== SCANNING SEARCH PATHS for Pararmetizer-based scripts ===')
@@ -148,7 +147,7 @@ if ($isVerbose) {
     echo $executionFormatter->section('=== GENERATING A FILE with aliases and auto-complete scripts ===')
         . PHP_EOL . PHP_EOL;
 }
-$outputFilepath  = (string) $request->getParam('output-filepath');
+$outputFilepath  = $request->getParamAsString('output-filepath');
 $outputDirectory = dirname($outputFilepath);
 if (!file_exists($outputDirectory)) {
     if (!mkdir(directory: $outputDirectory, recursive: true)) {

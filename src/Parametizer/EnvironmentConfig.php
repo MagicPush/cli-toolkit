@@ -9,7 +9,7 @@ use RuntimeException;
 use TypeError;
 
 class EnvironmentConfig {
-    protected const CONFIG_FILENAME = 'parametizer.env.json';
+    public const CONFIG_FILENAME = 'parametizer.env.json';
 
 
     /* AVAILABLE PROPERTIES -> */
@@ -32,6 +32,17 @@ class EnvironmentConfig {
             array_keys(get_object_vars(...)->__invoke($this)),
             true,
         );
+    }
+
+    public function toJsonFileContent(): string {
+        return json_encode(
+            $this,
+            JSON_THROW_ON_ERROR
+            | JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_UNESCAPED_LINE_TERMINATORS
+            | JSON_PRETTY_PRINT,
+        ) . PHP_EOL;
     }
 
     protected function haveFilesInitializedAllProperties(): bool {
