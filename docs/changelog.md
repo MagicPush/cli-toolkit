@@ -12,6 +12,12 @@ This change log references the repository changes and releases, which respect [s
    `CliRequestProcessor::__construct()` is added with a required `Config` object parameter,
    `CliRequestProcessor::load()` signature is changed - `Config` object parameter is removed.
    This way it's possible to get an innermost branch config for `ParseErrorException` instances.
+1. Renaming:
+    1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
+    1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
+    1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
+1. `HelpGenerator::getUsageTemplate()` is made _protected_ (from _public_) and non-static. Then it's able to use
+an instance `$formatter` property (instead of creating a separate formatter instance).
 
 #### ... only if `DEV` is merged into master before this branch:
 
@@ -20,7 +26,7 @@ This change log references the repository changes and releases, which respect [s
 
 ### New features
 
-1. Added [EnvironmentConfig](../src/Parametizer/EnvironmentConfig.php) class that allows setting "environment"-related
+1. Added [Environment Config](features-manual.md#environment-config) that allows setting "environment"-related
    options like a short name for built-in `--help` option and short description boundaries.
    Other changes provoked by this addition:
     1. `Config::__construct()`, `ConfigBuilder::__construct()` and `Parametizer::newConfig()` support

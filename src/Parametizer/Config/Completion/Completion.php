@@ -134,7 +134,7 @@ final class Completion {
         // Let's add $prevWord to a pre-parsed list of tokens now,
         // unless it has been nullified when used as an option name.
         if ($prevWord) {
-            $this->cliRequestProcessor->append($prevWord);
+            $this->cliRequestProcessor->appendToInnermostBranch($prevWord);
         }
 
         try {
@@ -184,7 +184,7 @@ final class Completion {
             }
         }
 
-        foreach ($this->cliRequestProcessor->getAllowedArguments() as $argument) {
+        foreach ($this->cliRequestProcessor->getInnermostBranchAllowedArguments() as $argument) {
             if (!$argument->isVisibleIn(Config::VISIBLE_COMPLETION)) {
                 continue;
             }

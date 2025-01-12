@@ -209,7 +209,7 @@ $request = Parametizer::newConfig()
 $filePath  = $request->getParamAsString('file-path');
 $operation = $request->getParamAsString('operation');
 // Here you get a sub-request for a corresponding branch config.
-$operationRequest = $request->getCommandRequest($operation);
+$operationRequest = $request->getSubcommandRequest($operation);
 switch ($operation) {
     case 'read':
         // ...

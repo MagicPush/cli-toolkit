@@ -24,5 +24,5 @@ $request = Parametizer::newConfig(throwOnException: true)
     ->run();
 
 echo $request
-        ->getCommandRequest('branch-green') // Let's try requesting an unknown subcommand here.
+        ->getSubcommandRequest('branch-green') // Let's try requesting an unknown subcommand here.
         ->getParam('opt');

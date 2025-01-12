@@ -267,7 +267,7 @@ class SubcommandTest extends TestCaseAbstract {
     /**
      * Tests reading parameters in different subcommands (branches).
      *
-     * @covers CliRequest::getCommandRequest()
+     * @covers CliRequest::getSubcommandRequest()
      */
     public function testReadingSubcommandParameters(string $subcommandName, string $expectedOutput): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/same-name-different-branches.php', $subcommandName);
@@ -294,7 +294,7 @@ class SubcommandTest extends TestCaseAbstract {
      * Tests a failed attempt to read an unknown subcommand parameters
      * (after the correct one is used during the parsing phase).
      *
-     * @covers CliRequest::getCommandRequest()
+     * @covers CliRequest::getSubcommandRequest()
      */
     public function testRequestingUnknownSubcommand(): void {
         static::assertLogicExceptionOutput(

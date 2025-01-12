@@ -77,9 +77,9 @@ class CliRequestProcessor {
      * A plumber function needed in rare cases, when you want to process (pass) an additional argument (word) after you
      * call {@see load()}.
      */
-    public function append(mixed $word) {
+    public function appendToInnermostBranch(mixed $word) {
         if ($this->detectedBranchRequest) {
-            $this->detectedBranchRequest->append($word);
+            $this->detectedBranchRequest->appendToInnermostBranch($word);
 
             return;
         }
@@ -403,9 +403,9 @@ class CliRequestProcessor {
     /**
      * @return Argument[]
      */
-    public function getAllowedArguments(): array {
+    public function getInnermostBranchAllowedArguments(): array {
         if ($this->detectedBranchRequest) {
-            return $this->detectedBranchRequest->getAllowedArguments();
+            return $this->detectedBranchRequest->getInnermostBranchAllowedArguments();
         }
 
         if (empty($this->argumentStack)) {

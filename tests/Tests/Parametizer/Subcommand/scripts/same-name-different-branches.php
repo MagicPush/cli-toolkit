@@ -31,5 +31,5 @@ echo $request->getParam($branch)['opt']
     . ', '
     // Let's show that the method below is a more handy version of reading nested parameters, rendering the same values.
     . $request
-        ->getCommandRequest($branch)
+        ->getSubcommandRequest($branch)
         ->getParam('opt');

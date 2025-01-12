@@ -36,16 +36,16 @@ class HelpGenerator {
      * @param bool $isSubcommandSwitchNameOmitted Useful when printing a subcommand template - subcommand switch name
      *                                            is replaced with an actual value (subcommand config "script name").
      */
-    public static function getUsageTemplate(Config $config, bool $isSubcommandSwitchNameOmitted = false): string {
+    protected function getUsageTemplate(Config $config, bool $isSubcommandSwitchNameOmitted = false): string {
         $usageTemplate = '';
 
         $parentConfig = $config->getParent();
         if ($parentConfig) {
-            $usageTemplate .= static::getUsageTemplate($parentConfig, true) . ' ';
+            $usageTemplate .= $this->getUsageTemplate($parentConfig, true) . ' ';
         }
 
         $usageTemplate .= $parentConfig
-            ? HelpFormatter::createForStdOut()->paramValue($config->getScriptName())
+            ? $this->formatter->paramValue($config->getScriptName())
             : $config->getScriptName();
 
         $optionTemplateStrings         = [];
@@ -166,7 +166,7 @@ class HelpGenerator {
         $output = $this->formatter->section('USAGE') . PHP_EOL . PHP_EOL;
 
         // Print general usage template:
-        $output .= static::getUsageTemplate($this->config);
+        $output .= $this->getUsageTemplate($this->config);
 
         $usageExamples  = $this->config->getUsageExamples();
         $baseScriptName = static::getBaseScriptName($this->config);
@@ -279,7 +279,7 @@ class HelpGenerator {
                 $envConfig->helpGeneratorShortDescriptionCharsMax,
             );
 
-            $lines[] = [HelpGenerator::getUsageTemplate($config), $title];
+            $lines[] = [$this->getUsageTemplate($config), $title];
         }
 
         return static::makeDefinitionList($this->formatter, $lines, 'COMMANDS');

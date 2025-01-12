@@ -2,6 +2,13 @@
 
 The list of plans and ideas for future development.
 
+## Contents
+
+- [Baseline](#baseline)
+- [Large feature ideas](#large-feature-ideas)
+- [Next major release](#next-major-release)
+- [Just fun thoughts to (maybe) implement one day](#just-fun-thoughts-to-maybe-implement-one-day)
+
 ## Baseline
 
 1. Docs:
@@ -9,6 +16,8 @@ The list of plans and ideas for future development.
     1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
+1. PHPUnit: the next major version.
+   1. Try messing with the coverage.
 1. Try out the parameters ambiguity puzzle: `-fctest`, where `-f` is a flag, `-c` is an option and there is
    also a `-t` flag. Possible outcomes:
     1. `test` is the `-c` value, `-t` flag is not enabled.
@@ -63,8 +72,15 @@ The list of plans and ideas for future development.
     1. [x] A default config generator with all settings and descriptions.
     1. [x] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.
-    1. [ ] Think about adding other possible backward incompatibilities. Additional sublist:
-        1. [ ] Rename `Parametizer::newConfig()` into `build()` / `startBuilding()` / `createBuilder()` / etc.
+    1. [ ] Consider adding other possible backward incompatibilities:
+        1. [x] Naming:
+           1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
+           1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
+           1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
+        1. [x] Make `HelpGenerator::getUsageTemplate()` protected and non-static.
+            * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
+        1. [ ] Move to PHP 8.3 as a minimal required version. This includes:
+            1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
         1. [ ] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
            simplify the code.
     1. [ ] Refactoring:
@@ -178,15 +194,6 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
-1. Naming:
-    1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
-    1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
-    1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
-1. Make `HelpGenerator::getUsageTemplate()` protected and non-static.
-    * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
-1. Move to PHP 8.3 as a minimal required version. This includes:
-    1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
-    1. Update PHPUnit. And try messing with the coverage.
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
 

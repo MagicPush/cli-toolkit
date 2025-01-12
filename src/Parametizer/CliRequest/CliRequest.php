@@ -33,7 +33,7 @@ class CliRequest {
     /**
      * Returns a subcommand request by a name specified for a subcommand switch parameter.
      */
-    public function getCommandRequest(string $subcommandName): static {
+    public function getSubcommandRequest(string $subcommandName): static {
         $subcommandConfig = $this->config->getBranch($subcommandName);
         if (!$subcommandConfig) {
             throw new LogicException(
