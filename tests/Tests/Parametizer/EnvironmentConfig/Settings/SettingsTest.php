@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\Settings;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
@@ -31,7 +31,7 @@ class SettingsTest extends TestCaseAbstract {
     public static function provideOptionHelpShortName(): array {
         return [
             'short-name-set' => [
-                'parametersString'        => '-h -h',
+                'parametersString'        => '-h h',
                 'expectedOutputSubstring' => PHP_EOL . '  -h, --help   Show full help page.',
             ],
             'short-name-null' => [

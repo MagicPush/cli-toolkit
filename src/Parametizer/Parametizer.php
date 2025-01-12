@@ -19,7 +19,12 @@ class Parametizer {
     public const ERROR_EXIT_CODE = 1;
 
     /**
-     * A handy shortcut to {@see ConfigBuilder::__construct()} for easy chaining.
+     * Not just a handy shortcut to {@see ConfigBuilder::__construct()} for easy chaining.
+     *
+     *  It also automatically loads an {@see EnvironmentConfig} instance from config files
+     *  ({@see EnvironmentConfig::createFromConfigsBottomUpHierarchy}), if `$envConfig` is `null`.
+     *
+     * @param bool $throwOnException Useful if `$envConfig` is `null`, which requests the automatic instance creation.
      */
     public static function newConfig(
         ?EnvironmentConfig $envConfig = null,

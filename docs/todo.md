@@ -61,7 +61,7 @@ The list of plans and ideas for future development.
 
        Try smarter script location (bottommost path) detection.
     1. [x] A default config generator with all settings and descriptions.
-    1. [ ] Docs.
+    1. [x] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.
     1. [ ] Think about adding other possible backward incompatibilities. Additional sublist:
         1. [ ] Rename `Parametizer::newConfig()` into `build()` / `startBuilding()` / `createBuilder()` / etc.
