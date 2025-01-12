@@ -74,9 +74,11 @@ class CliRequestTest extends TestCaseAbstract {
      * @covers CliRequest::getParamAsIntList()
      * @covers CliRequest::getParamAsFloat()
      * @covers CliRequest::getParamAsFloatList()
+     * @covers CliRequest::getParamAsString()
+     * @covers CliRequest::getParamAsStringList()
      */
     public function testParameterTypeCast(?string $castType, array $expectedValues): void {
-        $parametersString = '--single=3.14something --array=9.8whatever --array=0';
+        $parametersString = "--single=3.14something --array=9.8whatever --array='-' --array=1";
         if (null !== $castType) {
             $parametersString .= " --type={$castType}";
         }
@@ -96,28 +98,35 @@ class CliRequestTest extends TestCaseAbstract {
                 'castType'       => null,
                 'expectedValues' => [
                     'single' => '3.14something',
-                    'array'  => ['9.8whatever', '0'],
+                    'array'  => ['9.8whatever', null, true],
                 ],
             ],
             'cast-bool' => [
                 'castType'       => 'bool',
                 'expectedValues' => [
                     'single' => true,
-                    'array'  => ['9.8whatever', '0'], // No bool casting for array elements.
+                    'array'  => ['9.8whatever', null, true], // No bool casting is implemented for array elements.
                 ],
             ],
             'cast-int' => [
                 'castType'       => 'int',
                 'expectedValues' => [
                     'single' => 3,
-                    'array'  => [9, 0],
+                    'array'  => [9, 0, 1],
                 ],
             ],
             'cast-float' => [
                 'castType'       => 'float',
                 'expectedValues' => [
                     'single' => 3.14,
-                    'array'  => [9.8, 0],
+                    'array'  => [9.8, 0, 1],
+                ],
+            ],
+            'cast-string' => [
+                'castType'       => 'string',
+                'expectedValues' => [
+                    'single' => '3.14something',
+                    'array'  => ['9.8whatever', '', '1'],
                 ],
             ],
         ];
@@ -132,6 +141,8 @@ class CliRequestTest extends TestCaseAbstract {
      * @covers CliRequest::getParamAsIntList()
      * @covers CliRequest::getParamAsFloat()
      * @covers CliRequest::getParamAsFloatList()
+     * @covers CliRequest::getParamAsString()
+     * @covers CliRequest::getParamAsStringList()
      * @covers CliRequest::validateValueIsArray()
      * @covers CliRequest::validateValueNotArray()
      */
@@ -163,6 +174,11 @@ class CliRequestTest extends TestCaseAbstract {
                 'castType'               => 'float',
                 'expectedErrorSubstring' => "Parameter 'option-array' contains an array",
             ],
+            'array-as-single-string' => [
+                'scriptPath'             => __DIR__ . '/scripts/get-array-as-single.php',
+                'castType'               => 'string',
+                'expectedErrorSubstring' => "Parameter 'option-array' contains an array",
+            ],
 
             'single-as-array-int' => [
                 'scriptPath'             => __DIR__ . '/scripts/get-single-as-array.php',
@@ -172,6 +188,11 @@ class CliRequestTest extends TestCaseAbstract {
             'single-as-array-float' => [
                 'scriptPath'             => __DIR__ . '/scripts/get-single-as-array.php',
                 'castType'               => 'float',
+                'expectedErrorSubstring' => "Parameter 'option-single' contains a single value",
+            ],
+            'single-as-array-string' => [
+                'scriptPath'             => __DIR__ . '/scripts/get-single-as-array.php',
+                'castType'               => 'string',
                 'expectedErrorSubstring' => "Parameter 'option-single' contains a single value",
             ],
         ];

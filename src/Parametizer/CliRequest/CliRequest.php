@@ -118,4 +118,28 @@ class CliRequest {
 
         return $paramValue;
     }
+
+    public function getParamAsString(string $paramName): string {
+        $paramValue = $this->getParam($paramName);
+        self::validateValueNotArray($paramName, $paramValue);
+
+        return (string) $paramValue;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getParamAsStringList(string $paramName): array {
+        $paramValue = $this->getParam($paramName);
+        self::validateValueIsArray($paramName, $paramValue);
+
+        array_walk(
+            $paramValue,
+            function (&$elementValue) {
+                $elementValue = (string) $elementValue;
+            },
+        );
+
+        return $paramValue;
+    }
 }

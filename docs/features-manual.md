@@ -46,8 +46,9 @@ So if you used to write CLI PHP scripts via `symfony`, you won't have any troubl
 After command-line parameters are processed, `Parametizer::run()` returns an instance of `CliRequest`. Then you can
 read the parsed parameters' values from that request object via `getParam()` method.
 
-Though, initially parsed values are always rendered as strings (flags only - as booleans). And usually you would like
-to cast those to more appropriate data types. You can do it by a standard way like
+Initially parsed values are rendered as mixed
+(usually as strings and flags as booleans, but custom validators may change value types).
+And usually you would like to cast those values to more appropriate data types. You can do it by a standard way like
 `(int) $request->getParam('cycles-count')` or via the special helper methods:
 
 ```php
@@ -201,8 +202,8 @@ $request = Parametizer::newConfig()
 
     ->run();
 
-$filePath  = $request->getParam('file-path');
-$operation = $request->getParam('operation');
+$filePath  = $request->getParamAsString('file-path');
+$operation = $request->getParamAsString('operation');
 // Here you get a sub-request for a corresponding branch config.
 $operationRequest = $request->getCommandRequest($operation);
 switch ($operation) {

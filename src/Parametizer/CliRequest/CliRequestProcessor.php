@@ -134,7 +134,7 @@ class CliRequestProcessor {
             }
 
             // Forbid duplicate values for a parameter:
-            if ($isArray && $this->isRegistered($param) && in_array($value, $this->requestParams[$name])) {
+            if ($isArray && $this->isRegistered($param) && in_array($value, $this->requestParams[$name], true)) {
                 $paramErrorHelp = $param instanceof Option
                     ? "option {$paramTitleFormatted}"
                     : "argument {$paramTitleFormatted}";
