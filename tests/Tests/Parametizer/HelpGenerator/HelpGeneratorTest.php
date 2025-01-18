@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\HelpGenerator;
 
+use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -199,7 +200,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
 
             HELP,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', '--help')->getStdOut(),
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                '--' . Config::OPTION_NAME_HELP,
+            )->getStdOut(),
         );
 
         // ... And let's check the full descriptions to show the difference between short and long versions.
@@ -211,7 +215,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
               The rest of long description is omitted while shown beside subcommand possible values.
             HELP
             ,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', 'multistring --help')
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                'multistring --' . Config::OPTION_NAME_HELP,
+            )
                 ->getStdOut(),
         );
         assertStringStartsWith(
@@ -221,7 +228,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
               Here is another line :)
             HELP
             ,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-long-description.php', 'long-string --help')
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                'long-string --' . Config::OPTION_NAME_HELP,
+            )
                 ->getStdOut(),
         );
         assertStringStartsWith(
@@ -232,7 +242,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'long-string-short-sentence --help',
+                'long-string-short-sentence --' . Config::OPTION_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -244,7 +254,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'unbreakable-long-line --help',
+                'unbreakable-long-line --' . Config::OPTION_NAME_HELP,
             )
                 ->getStdOut(),
         );

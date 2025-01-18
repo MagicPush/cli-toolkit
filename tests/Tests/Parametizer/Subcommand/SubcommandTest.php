@@ -126,7 +126,6 @@ class SubcommandTest extends TestCaseAbstract {
      * Tests if a script help parts are printed for all missing required options (current subcommand level and higher)
      * and all missing required arguments (current subcommand level only).
      *
-     * @param string[] $helpSubstrings
      * @covers HelpGenerator::getUsageForParseErrorException()
      * @covers Parametizer::run()
      * @covers CliRequestProcessor::registerArgument()
@@ -135,12 +134,11 @@ class SubcommandTest extends TestCaseAbstract {
      * @covers CliRequestProcessor::validate()
      */
     public function testParseErrorsInSubcommandsWithHelp(
-        string $script,
-        string $parameters,
-        string $errorOutput,
-        array $helpSubstrings,
+        string $scriptPath,
+        string $parametersString,
+        string $expectedErrorOutput,
     ): void {
-        static::assertParseErrorOutputWithHelp($script, $errorOutput, $parameters, $helpSubstrings);
+        static::assertFullErrorOutput($scriptPath, $expectedErrorOutput, $parametersString);
     }
 
     /**
@@ -149,52 +147,90 @@ class SubcommandTest extends TestCaseAbstract {
     public static function provideParseErrorsInSubcommandsWithHelp(): array {
         return [
             'required-subcommand-level-argument-and-both-levels-options' => [
-                'script'           => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
-                'parameters'       => 'test11',
-                'errorOutput'      => "Need more parameters",
-                'helpSubstrings'   => [
-                    '--required=…        Required option',
-                    '--required-l2=…     Subcommand required option',
-                    '<required-arg-l2>   Subcommand required argument',
-                ],
+                'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
+                'parametersString'    => 'test11',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need more parameters
+
+
+  --help              Show full help page.
+
+  --required=…        Required option
+  (required)
+
+  --required-l2=…     Subcommand required option
+  (required)
+
+  <required-arg-l2>   Subcommand required argument
+  (required)
+
+STDERR_OUTPUT,
             ],
 
             'required-subcommand-and-main-levels-options' => [
-                'script'           => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
-                'parameters'       => 'test11 argValue',
-                'errorOutput'      => "Need values for --required, --required-l2",
-                'helpSubstrings'   => [
-                    '--required=…      Required option',
-                    '--required-l2=…   Subcommand required option',
-                ],
+                'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
+                'parametersString'    => 'test11 argValue',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need values for --required, --required-l2
+
+
+  --help            Show full help page.
+
+  --required=…      Required option
+  (required)
+
+  --required-l2=…   Subcommand required option
+  (required)
+
+STDERR_OUTPUT,
             ],
 
             'required-subcommand-level-argument-and-main-level-option' => [
-                'script'           => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
-                'parameters'       => 'test11 --required-l2=value',
-                'errorOutput'      => "Need more parameters",
-                'helpSubstrings'   => [
-                    '--required=…        Required option',
-                    '<required-arg-l2>   Subcommand required argument',
-                ],
+                'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
+                'parametersString'    => 'test11 --required-l2=value',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need more parameters
+
+
+  --help              Show full help page.
+
+  --required=…        Required option
+  (required)
+
+  <required-arg-l2>   Subcommand required argument
+  (required)
+
+STDERR_OUTPUT,
             ],
 
             'required-main-level-option' => [
-                'script'           => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
-                'parameters'       => 'test11 --required-l2=value argValue',
-                'errorOutput'      => "Need a value for --required",
-                'helpSubstrings'   => [
-                    '--required=…   Required option',
-                ],
+                'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
+                'parametersString'    => 'test11 --required-l2=value argValue',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need a value for --required
+
+
+  --help         Show full help page.
+
+  --required=…   Required option
+  (required)
+
+STDERR_OUTPUT,
             ],
 
             'required-subcommand-level-option' => [
-                'script'           => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
-                'parameters'       => '--required=value test11 argValue',
-                'errorOutput'      => "Need a value for --required-l2",
-                'helpSubstrings'   => [
-                    '--required-l2=…   Subcommand required option',
-                ],
+                'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
+                'parametersString'    => '--required=value test11 argValue',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need a value for --required-l2
+
+
+  --help            Show full help page.
+
+  --required-l2=…   Subcommand required option
+  (required)
+
+STDERR_OUTPUT,
             ],
         ];
     }

@@ -32,11 +32,11 @@ class SettingsTest extends TestCaseAbstract {
         return [
             'short-name-set' => [
                 'parametersString'        => '-h h',
-                'expectedOutputSubstring' => PHP_EOL . '  -h, --help   Show full help page.',
+                'expectedOutputSubstring' => PHP_EOL . '  -h, --' . Config::OPTION_NAME_HELP . '   Show full help page.',
             ],
             'short-name-null' => [
-                'parametersString'        => '--help',
-                'expectedOutputSubstring' => PHP_EOL . '  --help   Show full help page.',
+                'parametersString'        => '--' . Config::OPTION_NAME_HELP,
+                'expectedOutputSubstring' => PHP_EOL . '  --' . Config::OPTION_NAME_HELP . '   Show full help page.',
             ],
         ];
     }
@@ -55,7 +55,7 @@ class SettingsTest extends TestCaseAbstract {
             $expectedOutputSubstring,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/template-short-descriptions.php',
-                '--help ' . $parametersString,
+                '--' . Config::OPTION_NAME_HELP . ' ' . $parametersString,
             )
                 ->getStdOut(),
         );

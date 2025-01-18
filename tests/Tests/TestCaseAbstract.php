@@ -10,13 +10,12 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\utils\CliProcess;
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\assertMatchesRegularExpression;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 
 abstract class TestCaseAbstract extends TestCase {
-    protected static function assertNoErrorsOutput(string $script, string $parametersString = ''): CliProcess {
-        $command = 'php ' . escapeshellarg($script);
+    protected static function assertNoErrorsOutput(string $scriptPath, string $parametersString = ''): CliProcess {
+        $command = 'php ' . escapeshellarg($scriptPath);
         if ($parametersString) {
             $command .= " {$parametersString}";
         }
@@ -24,7 +23,7 @@ abstract class TestCaseAbstract extends TestCase {
 
         // The heading space before a script name is needed for a script being clickable in PhpStorm console log
         // as a script file link.
-        $failedAssertMessage = " {$script}" . PHP_EOL
+        $failedAssertMessage = " {$scriptPath}" . PHP_EOL
             . "COMMAND: {$command}" . PHP_EOL
             . "Unexpected error output: {$result->getStdErr()}";
         assertSame(0, $result->getExitCode(), $failedAssertMessage);
@@ -37,13 +36,13 @@ abstract class TestCaseAbstract extends TestCase {
      * Asserts that an error message was printed without a stack trace.
      */
     protected static function assertParseErrorOutput(
-        string $script,
-        string $expectedErrorOutput,
+        string $scriptPath,
+        string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): CliProcess {
         return self::assertAnyErrorOutput(
-            $script,
-            $expectedErrorOutput,
+            $scriptPath,
+            $expectedErrorOutputSubstring,
             $parametersString,
             shouldAssertExitCode: true,
         );
@@ -53,13 +52,13 @@ abstract class TestCaseAbstract extends TestCase {
      * Asserts that a {@see ConfigException} exception was printed out. Exit code may vary thus is not asserted.
      */
     protected static function assertConfigExceptionOutput(
-        string $script,
-        string $expectedErrorOutput,
+        string $scriptPath,
+        string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): void {
         self::assertAnyErrorOutput(
-            $script,
-            $expectedErrorOutput,
+            $scriptPath,
+            $expectedErrorOutputSubstring,
             $parametersString,
             exceptionHeaderSubstring: ConfigException::class . ': ',
             // Config exceptions happen before a specific error code is set for the exception handler:
@@ -71,13 +70,13 @@ abstract class TestCaseAbstract extends TestCase {
      * Asserts that a {@see LogicException} exception was printed out.
      */
     protected static function assertLogicExceptionOutput(
-        string $script,
-        string $expectedErrorOutput,
+        string $scriptPath,
+        string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): void {
         self::assertAnyErrorOutput(
-            $script,
-            $expectedErrorOutput,
+            $scriptPath,
+            $expectedErrorOutputSubstring,
             $parametersString,
             exceptionHeaderSubstring: LogicException::class . ': ',
             shouldAssertExitCode: true,
@@ -86,7 +85,7 @@ abstract class TestCaseAbstract extends TestCase {
 
     protected static function assertAnyErrorOutput(
         string $scriptPath,
-        string $expectedErrorOutput,
+        string $expectedErrorOutputSubstring,
         string $parametersString = '',
         ?string $exceptionHeaderSubstring = null,
         bool $shouldAssertExitCode = false,
@@ -111,42 +110,34 @@ abstract class TestCaseAbstract extends TestCase {
             );
         }
 
-        $assertOutputMessage = "{$assertOutputPrefix}Unexpected error output: {$stdErr}";
-        if ($exceptionHeaderSubstring) {
-            assertStringContainsString(
-                $exceptionHeaderSubstring . $expectedErrorOutput,
-                $stdErr,
-                $assertOutputMessage,
-            );
-        } else {
-            assertSame($expectedErrorOutput . PHP_EOL, $stdErr, $assertOutputMessage);
-        }
+        $assertOutputMessage = "{$assertOutputPrefix}Unexpected STDERR: {$stdErr}";
+        assertStringContainsString(
+            ($exceptionHeaderSubstring ?? '') . $expectedErrorOutputSubstring,
+            $stdErr,
+            $assertOutputMessage,
+        );
 
         return $result;
     }
 
     /**
-     * Includes asserting `help` option mention in the generated help output.
-     *
-     * @param string[] $helpSubstrings
+     * Asserts an exact math of `$expectedErrorOutput` with STDERR.
      */
-    public static function assertParseErrorOutputWithHelp(
-        string $script,
+    public static function assertFullErrorOutput(
+        string $scriptPath,
         string $expectedErrorOutput,
         string $parametersString,
-        array $helpSubstrings,
     ): void {
-        $command = 'php ' . escapeshellarg($script);
+        $command = 'php ' . escapeshellarg($scriptPath);
         if ($parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);
         $stdErr = $result->getStdErr();
-        $stdOut = $result->getStdOut();
 
         // The heading space before a script name is needed for a script being clickable in PhpStorm console log
         // as a script file link.
-        $assertOutputPrefix = " {$script}" . PHP_EOL
+        $assertOutputPrefix = " {$scriptPath}" . PHP_EOL
             . "COMMAND: {$command}" . PHP_EOL;
 
         assertSame(
@@ -155,18 +146,6 @@ abstract class TestCaseAbstract extends TestCase {
             "{$assertOutputPrefix}Unexpected exit code",
         );
 
-        assertSame(
-            $expectedErrorOutput . PHP_EOL,
-            $stdErr,
-            "{$assertOutputPrefix}Unexpected error output: {$stdErr}",
-        );
-
-        $assertHelpMessage = "{$assertOutputPrefix}Unexpected standard output: {$stdOut}";
-        assertMatchesRegularExpression('/ +\-\-help +Show full help page\./', $stdOut, $assertHelpMessage);
-        if ($helpSubstrings) {
-            foreach ($helpSubstrings as $helpSubstring) {
-                assertStringContainsString($helpSubstring, $stdOut, $assertHelpMessage);
-            }
-        }
+        assertSame($expectedErrorOutput, $stdErr, "{$assertOutputPrefix}Unexpected STDERR: {$stdErr}");
     }
 }

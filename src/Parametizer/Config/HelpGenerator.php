@@ -248,12 +248,11 @@ class HelpGenerator {
     }
 
     /**
-     * Returns script's help part based on exception's relation.
+     * Returns script's help part based on exception's relation + 'help' option for full help hint.
      */
     public static function getUsageForParseErrorException(
         ParseErrorException $exception,
         Config $config,
-        bool $isForStdErr = false,
     ): string {
         $invalidParams = [];
         $helpOption    = $config->getOptions()[Config::OPTION_NAME_HELP] ?? null;
@@ -262,10 +261,7 @@ class HelpGenerator {
         }
         $invalidParams = [...$invalidParams, ...$exception->getInvalidParams()];
 
-        $formatter = $isForStdErr ? HelpFormatter::createForStdErr() : HelpFormatter::createForStdOut();
-
-        // Print a script's help block only for invalid params + 'help' option for full help hint:
-        return static::getParamsBlock($formatter, $invalidParams);
+        return static::getParamsBlock(HelpFormatter::createForStdErr(), $invalidParams);
     }
 
     protected function getSubcommandsBlock(): string {
@@ -326,7 +322,7 @@ class HelpGenerator {
 
         if ($param->isSubcommandSwitch()) {
             $description .= PHP_EOL . $formatter->helpNote('Subcommand help: ')
-                . '<script_name> ... <subcommand value> --help';
+                . '<script_name> ... <subcommand value> --' . Config::OPTION_NAME_HELP;
         }
 
         if ($param->isArray()) {

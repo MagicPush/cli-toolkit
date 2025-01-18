@@ -116,7 +116,7 @@ class AutocompletionTest extends TestCaseAbstract {
                     '--any-value=',
                     '--flag ',
                     '--second-flag ',
-                    '--help ',
+                    '--' . Config::OPTION_NAME_HELP . ' ',
                 ],
             ],
 
@@ -290,7 +290,7 @@ class AutocompletionTest extends TestCaseAbstract {
                 'expectedOutputLines' => [
                     '--opt=',
                     '--opt-arr=',
-                    '--help ',
+                    '--' . Config::OPTION_NAME_HELP . ' ',
                 ],
             ],
             // No completion even if a flag is specified by a short name:

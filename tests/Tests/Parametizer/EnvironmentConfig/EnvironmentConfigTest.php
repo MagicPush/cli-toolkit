@@ -22,35 +22,51 @@ class EnvironmentConfigTest extends TestCaseAbstract {
      *
      * @see Parametizer::setExceptionHandlerForParsing()
      */
-    public function testDifferentBranchConfigs(
-        string $parametersString,
-        $expectedErrorOutput,
-        string $expectedHelpOptionShortName,
-    ): void {
-        static::assertParseErrorOutputWithHelp(
+    public function testDifferentBranchConfigs(string $parametersString, string $expectedErrorOutput): void {
+        static::assertFullErrorOutput(
             __DIR__ . '/scripts/main-and-subcommands.php',
             $expectedErrorOutput,
             $parametersString,
-            [$expectedHelpOptionShortName],
         );
     }
 
     public static function provideDifferentBranchConfigs(): array {
         return [
             'main' => [
-                'parametersString'            => 'invalid',
-                'expectedErrorOutput'         => "Incorrect value 'invalid' for argument <switchme-l1>",
-                'expectedHelpOptionShortName' => '-X, --help',
+                'parametersString'    => '',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need more parameters
+
+
+  -X, --help      Show full help page.
+
+  <switchme-l1>   Allowed values: conf-l2-s1, conf-l2-s2
+  (required)      Subcommand help: <script_name> ... <subcommand value> --help
+
+STDERR_OUTPUT,
             ],
             'level-2' => [
-                'parametersString'            => 'conf-l2-s2 invalid',
-                'expectedErrorOutput'         => "Incorrect value 'invalid' for argument <switchme-l2-s2>",
-                'expectedHelpOptionShortName' => '-y, --help',
+                'parametersString'    => 'conf-l2-s2',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Need more parameters
+
+
+  -y, --help         Show full help page.
+
+  <switchme-l2-s2>   Allowed values: conf-l3-s1, conf-l3-s2
+  (required)         Subcommand help: <script_name> ... <subcommand value> --help
+
+STDERR_OUTPUT,
             ],
             'level-3' => [
-                'parametersString'            => 'conf-l2-s2 conf-l3-s1 --asd=test',
-                'expectedErrorOutput'         => "Unknown option '--asd'",
-                'expectedHelpOptionShortName' => '-z, --help',
+                'parametersString'    => 'conf-l2-s2 conf-l3-s1 invalid',
+                'expectedErrorOutput' => <<<STDERR_OUTPUT
+Too many arguments, starting with 'invalid'
+
+
+  -z, --help   Show full help page.
+
+STDERR_OUTPUT,
             ],
         ];
     }

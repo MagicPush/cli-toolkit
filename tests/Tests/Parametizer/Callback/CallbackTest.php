@@ -62,34 +62,16 @@ class CallbackTest extends TestCaseAbstract {
             "Incorrect value 'test' for argument <arg>. Only digits are allowed for <arg>",
             'test --opt=test',
         );
-        assertSame(
-            [
-                '',
-                '',
-                '  --help       Show full help page.',
-                '',
-                '  <arg>',      // Part of generated help for <arg>.
-                '  (required)', // Part of generated help for <arg>.
-            ],
-            $result->getStdOutAsArray(),
-        );
+        // Here we have strings in STDERR only, because no callback was able to execute.
+        assertSame('', $result->getStdOut());
 
         $result = static::assertParseErrorOutput(
             $script,
             "Incorrect value 'test' for option --opt. Only digits are allowed for --opt",
             '10 --opt=test',
         );
-        assertSame(
-            [
-                "<arg>: '10'",  // Callback executed for <arg>.
-                '',
-                '',
-                '  --help    Show full help page.',
-                '',
-                '  --opt=…',    // Part of generated help for --opt.
-            ],
-            $result->getStdOutAsArray(),
-        );
+        // ... But in this case the <arg> value was validated successfully, so it's callback was executed after that.
+        assertSame("<arg>: '10'" . PHP_EOL, $result->getStdOut());
 
         $result = static::assertNoErrorsOutput($script, '10 --opt=20');
         assertSame(

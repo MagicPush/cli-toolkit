@@ -12,6 +12,11 @@ This change log references the repository changes and releases, which respect [s
    `CliRequestProcessor::__construct()` is added with a required `Config` object parameter,
    `CliRequestProcessor::load()` signature is changed - `Config` object parameter is removed.
    This way it's possible to get an innermost branch config for `ParseErrorException` instances.
+1. `$isForStdErr` parameter is removed from `HelpGenerator::getUsageForParseErrorException()`, the method always use
+   a formatter for STDERR stream.
+1. `Parametizer::setExceptionHandlerForParsing()` renders both an error message and a help block in STDERR (previously
+   a help block was rendered in STDOUT).
+   
 1. Renaming:
     1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
     1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`

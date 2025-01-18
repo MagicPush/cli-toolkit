@@ -81,7 +81,7 @@ The list of plans and ideas for future development.
             * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
         1. [ ] Move to PHP 8.3 as a minimal required version. This includes:
             1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
-        1. [ ] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
+        1. [x] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
            simplify the code.
     1. [ ] Refactoring:
         1. [ ] `declare(strict_types=1);` on a new line for all php-files.

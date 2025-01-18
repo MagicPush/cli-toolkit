@@ -63,9 +63,12 @@ class Parametizer {
                 fwrite(STDERR, $errorMessage . PHP_EOL);
 
                 if ($e instanceof ParseErrorException) {
-                    echo HelpGenerator::getUsageForParseErrorException(
-                        $e,
-                        $cliRequestProcessor->getInnermostBranchConfig(),
+                    fwrite(
+                        STDERR,
+                        HelpGenerator::getUsageForParseErrorException(
+                            $e,
+                            $cliRequestProcessor->getInnermostBranchConfig(),
+                        ),
                     );
                 }
 
