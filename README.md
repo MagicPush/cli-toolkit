@@ -1,5 +1,7 @@
 # CliToolkit
 
+[![Latest stable version](https://img.shields.io/packagist/v/magic-push/cli-toolkit?label=version)](https://packagist.org/packages/magic-push/cli-toolkit)
+
 **CliToolkit** is a CLI framework for PHP scripts.
 
 Key features (why you would want to use it):
