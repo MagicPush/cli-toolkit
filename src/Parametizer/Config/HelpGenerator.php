@@ -11,10 +11,10 @@ use MagicPush\CliToolkit\Parametizer\Exception\ParseErrorException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
 class HelpGenerator {
-    protected const PAD_LEFT_MAIN              = 2;
-    protected const PAD_LEFT_PARAM_DESCRIPTION = 3;
+    protected const int PAD_LEFT_MAIN              = 2;
+    protected const int PAD_LEFT_PARAM_DESCRIPTION = 3;
 
-    protected const USAGE_MAX_OPTIONS = 5;
+    protected const int USAGE_MAX_OPTIONS = 5;
 
     protected readonly HelpFormatter $formatter;
 

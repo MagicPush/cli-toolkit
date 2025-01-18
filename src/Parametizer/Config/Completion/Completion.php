@@ -13,7 +13,7 @@ use MagicPush\CliToolkit\Parametizer\Parser\Parser;
 use RuntimeException;
 
 final class Completion {
-    public const COMP_WORDBREAKS = PHP_EOL . " \t\"'><=;|&(:";
+    public const string COMP_WORDBREAKS = PHP_EOL . " \t\"'><=;|&(:";
 
     private readonly Parser $parser;
     private readonly CliRequestProcessor $cliRequestProcessor;

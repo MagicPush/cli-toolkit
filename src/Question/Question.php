@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Question;
 
@@ -6,7 +8,7 @@ use LogicException;
 use RuntimeException;
 
 class Question {
-    protected const QUESTION_POSTFIX = ': ';
+    protected const string QUESTION_POSTFIX = ': ';
 
     protected string $answer;
 

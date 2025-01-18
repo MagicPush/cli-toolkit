@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config\Parameter;
 
@@ -54,17 +56,6 @@ class Option extends ParameterAbstract {
 
     public static function isShortNameForOption(string $string): bool {
         return !static::isFullNameForOption($string) && str_starts_with($string, '-');
-    }
-
-    /**
-     * Removes leading dashes from an option name.
-     */
-    public static function getOptionCleanFullName(string $formattedName): string {
-        if (static::isFullNameForOption($formattedName)) {
-            return ltrim($formattedName, '-');
-        }
-
-        return $formattedName;
     }
 
     public function isValueRequired(): bool {

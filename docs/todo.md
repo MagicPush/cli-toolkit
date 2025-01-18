@@ -83,8 +83,8 @@ The list of plans and ideas for future development.
             1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
         1. [x] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
            simplify the code.
-    1. [ ] Refactoring:
-        1. [ ] `declare(strict_types=1);` on a new line for all php-files.
+    1. [x] Refactoring:
+        1. [x] `declare(strict_types=1);` on a new line for all php-files.
     1. [ ] Review [changelog](changelog.md#v200), especially 'only if `DEV`' paragraph.
 
     </details>

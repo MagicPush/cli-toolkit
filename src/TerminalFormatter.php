@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit;
 
@@ -19,56 +21,56 @@ class TerminalFormatter {
      *
      * In some terminals may not reset {@see STYLE_INVERT}. Use explicitly {@see RESET_STYLE_INVERT} in this case.
      */
-    public final const RESET_ALL = 0;
+    final public const int RESET_ALL = 0;
 
     // FONT STYLES
 
-    public final const STYLE_BOLD       = 1;
-    public final const STYLE_DIM        = 2;
-    public final const STYLE_ITALIC     = 3;
-    public final const STYLE_UNDERLINED = 4;
-    public final const STYLE_BLINK      = 5;
-    public final const STYLE_INVERT     = 7;
-    public final const STYLE_STRIKE     = 9;
-    public final const STYLE_OVERLINED  = 53;
+    final public const int STYLE_BOLD       = 1;
+    final public const int STYLE_DIM        = 2;
+    final public const int STYLE_ITALIC     = 3;
+    final public const int STYLE_UNDERLINED = 4;
+    final public const int STYLE_BLINK      = 5;
+    final public const int STYLE_INVERT     = 7;
+    final public const int STYLE_STRIKE     = 9;
+    final public const int STYLE_OVERLINED  = 53;
 
     /** Visual effect only: you will see "hidden" contents after copy-pasting it right in the same terminal. */
-    public final const STYLE_HIDDEN = 8;
+    final public const int STYLE_HIDDEN = 8;
 
     /**
      * Adds a double underline.
      *
      * In some terminals may reset bold / bright instead.
      */
-    public final const STYLE_UNDERLINED_DOUBLE = 21;
+    final public const int STYLE_UNDERLINED_DOUBLE = 21;
 
-    public final const RESET_STYLE_BOLD_OR_DIM = 22;
-    public final const RESET_STYLE_ITALIC      = 23;
-    public final const RESET_STYLE_UNDERLINED  = 24;
-    public final const RESET_STYLE_BLINK       = 25;
-    public final const RESET_STYLE_INVERT      = 27;
-    public final const RESET_STYLE_HIDDEN      = 28;
-    public final const RESET_STYLE_STRIKE      = 29;
-    public final const RESET_STYLE_OVERLINED   = 55;
+    final public const int RESET_STYLE_BOLD_OR_DIM = 22;
+    final public const int RESET_STYLE_ITALIC      = 23;
+    final public const int RESET_STYLE_UNDERLINED  = 24;
+    final public const int RESET_STYLE_BLINK       = 25;
+    final public const int RESET_STYLE_INVERT      = 27;
+    final public const int RESET_STYLE_HIDDEN      = 28;
+    final public const int RESET_STYLE_STRIKE      = 29;
+    final public const int RESET_STYLE_OVERLINED   = 55;
 
     // FONT COLORS
 
-    public final const FONT_BLACK         = 30;
-    public final const FONT_RED           = 31;
-    public final const FONT_GREEN         = 32;
-    public final const FONT_YELLOW        = 33;
-    public final const FONT_BLUE          = 34;
-    public final const FONT_MAGENTA       = 35;
-    public final const FONT_CYAN          = 36;
-    public final const FONT_LIGHT_GRAY    = 37;
-    public final const FONT_DARK_GRAY     = 90;
-    public final const FONT_LIGHT_RED     = 91;
-    public final const FONT_LIGHT_GREEN   = 92;
-    public final const FONT_LIGHT_YELLOW  = 93;
-    public final const FONT_LIGHT_BLUE    = 94;
-    public final const FONT_LIGHT_MAGENTA = 95;
-    public final const FONT_LIGHT_CYAN    = 96;
-    public final const FONT_WHITE         = 97;
+    final public const int FONT_BLACK         = 30;
+    final public const int FONT_RED           = 31;
+    final public const int FONT_GREEN         = 32;
+    final public const int FONT_YELLOW        = 33;
+    final public const int FONT_BLUE          = 34;
+    final public const int FONT_MAGENTA       = 35;
+    final public const int FONT_CYAN          = 36;
+    final public const int FONT_LIGHT_GRAY    = 37;
+    final public const int FONT_DARK_GRAY     = 90;
+    final public const int FONT_LIGHT_RED     = 91;
+    final public const int FONT_LIGHT_GREEN   = 92;
+    final public const int FONT_LIGHT_YELLOW  = 93;
+    final public const int FONT_LIGHT_BLUE    = 94;
+    final public const int FONT_LIGHT_MAGENTA = 95;
+    final public const int FONT_LIGHT_CYAN    = 96;
+    final public const int FONT_WHITE         = 97;
 
     /**
      * Special code that allows to set a font color with additional codes.
@@ -77,9 +79,9 @@ class TerminalFormatter {
      *  * 256-color palette - `38;5;N`, where `N` is 0-255, one of the palette colors.
      *  * RGB: `38;2;R;G;B`, where `R`, `G`, and `B` are 0-255 for red, green, and blue color strength respectively.
      */
-    public final const FONT_CUSTOM = 38;
+    final public const int FONT_CUSTOM = 38;
 
-    public final const RESET_FONT = 39;
+    final public const int RESET_FONT = 39;
 
     /**
      * Special code that allows to set an underline color with additional codes.
@@ -95,7 +97,7 @@ class TerminalFormatter {
      * For instance, the sequence after `58` - `2;0;208;98` ("emerald green" in RGB) - will be treated as a list of
      * separate codes, where '0' means not 'R' (red) part, but an independent {@see RESET_ALL} code.
      */
-    public final const FONT_UNDERLINED_CUSTOM = 58;
+    final public const int FONT_UNDERLINED_CUSTOM = 58;
 
     /**
      * Special code that disables underline custom color ({@see TerminalFormatter::FONT_UNDERLINED_CUSTOM}).
@@ -103,26 +105,26 @@ class TerminalFormatter {
      * On the contrary, {@see TerminalFormatter::RESET_STYLE_UNDERLINED}
      * disables the underline itself ({@see TerminalFormatter::STYLE_UNDERLINED}).
      */
-    public final const RESET_FONT_UNDERLINED_CUSTOM = 59;
+    final public const int RESET_FONT_UNDERLINED_CUSTOM = 59;
 
     // BACKGROUND COLORS
 
-    public final const BACKGROUND_BLACK         = 40;
-    public final const BACKGROUND_RED           = 41;
-    public final const BACKGROUND_GREEN         = 42;
-    public final const BACKGROUND_YELLOW        = 43;
-    public final const BACKGROUND_BLUE          = 44;
-    public final const BACKGROUND_MAGENTA       = 45;
-    public final const BACKGROUND_CYAN          = 46;
-    public final const BACKGROUND_LIGHT_GRAY    = 47;
-    public final const BACKGROUND_DARK_GRAY     = 100;
-    public final const BACKGROUND_LIGHT_RED     = 101;
-    public final const BACKGROUND_LIGHT_GREEN   = 102;
-    public final const BACKGROUND_LIGHT_YELLOW  = 103;
-    public final const BACKGROUND_LIGHT_BLUE    = 104;
-    public final const BACKGROUND_LIGHT_MAGENTA = 105;
-    public final const BACKGROUND_LIGHT_CYAN    = 106;
-    public final const BACKGROUND_WHITE         = 107;
+    final public const int BACKGROUND_BLACK         = 40;
+    final public const int BACKGROUND_RED           = 41;
+    final public const int BACKGROUND_GREEN         = 42;
+    final public const int BACKGROUND_YELLOW        = 43;
+    final public const int BACKGROUND_BLUE          = 44;
+    final public const int BACKGROUND_MAGENTA       = 45;
+    final public const int BACKGROUND_CYAN          = 46;
+    final public const int BACKGROUND_LIGHT_GRAY    = 47;
+    final public const int BACKGROUND_DARK_GRAY     = 100;
+    final public const int BACKGROUND_LIGHT_RED     = 101;
+    final public const int BACKGROUND_LIGHT_GREEN   = 102;
+    final public const int BACKGROUND_LIGHT_YELLOW  = 103;
+    final public const int BACKGROUND_LIGHT_BLUE    = 104;
+    final public const int BACKGROUND_LIGHT_MAGENTA = 105;
+    final public const int BACKGROUND_LIGHT_CYAN    = 106;
+    final public const int BACKGROUND_WHITE         = 107;
 
     /**
      * Special code that allows to set a background color with additional codes.
@@ -131,9 +133,9 @@ class TerminalFormatter {
      *  * 256-color palette - `48;5;N`, where `N` is 0-255, one of the palette colors.
      *  * RGB: `48;2;R;G;B`, where `R`, `G`, and `B` are 0-255 for red, green, and blue color strength respectively.
      */
-    public final const BACKGROUND_CUSTOM = 48;
+    final public const int BACKGROUND_CUSTOM = 48;
 
-    public final const RESET_BACKGROUND = 49;
+    final public const int RESET_BACKGROUND = 49;
 
     /**
      * If the font functionality is disabled.

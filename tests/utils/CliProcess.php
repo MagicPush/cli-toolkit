@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\utils;
 
 use RuntimeException;
 
 class CliProcess {
-    final protected const DESCRIPTOR_STDOUT = 1;
-    final protected const DESCRIPTOR_STDERR = 2;
+    final protected const int DESCRIPTOR_STDOUT = 1;
+    final protected const int DESCRIPTOR_STDERR = 2;
 
     private readonly int $exitCode;
     private readonly string $stdOut;

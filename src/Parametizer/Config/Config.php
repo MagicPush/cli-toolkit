@@ -16,31 +16,31 @@ use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
 class Config {
-    public const OPTION_NAME_HELP                  = 'help';
-    public const OPTION_NAME_AUTOCOMPLETE_GENERATE = 'parametizer-internal-autocomplete-generate';
-    public const OPTION_NAME_AUTOCOMPLETE_EXECUTE  = 'parametizer-internal-autocomplete-execute';
+    public const string OPTION_NAME_HELP                  = 'help';
+    public const string OPTION_NAME_AUTOCOMPLETE_GENERATE = 'parametizer-internal-autocomplete-generate';
+    public const string OPTION_NAME_AUTOCOMPLETE_EXECUTE  = 'parametizer-internal-autocomplete-execute';
 
     // Visibility bits:
 
     /** The param is displayed in usage template at the top of the help. */
-    public final const VISIBLE_USAGE_TEMPLATE = 1;
+    final public const int VISIBLE_USAGE_TEMPLATE = 1;
 
     /** The param is displayed in the help with its description. */
-    public final const VISIBLE_HELP = 2;
+    final public const int VISIBLE_HELP = 2;
 
     /** Autocomplete will suggest the parameter value (and names for options). */
-    public final const VISIBLE_COMPLETION = 4;
+    final public const int VISIBLE_COMPLETION = 4;
 
     /** Parameter value is available in {@see CliRequest} inside of the script. */
-    public final const VISIBLE_REQUEST = 8;
+    final public const int VISIBLE_REQUEST = 8;
 
     // Visibility bitmasks:
 
     /** Completely hidden (empty bitmask). */
-    public final const VISIBILITY_BITMASK_NONE = 0;
+    final public const int VISIBILITY_BITMASK_NONE = 0;
 
     /** Parameter is visible everywhere (full bitmask). */
-    public const VISIBILITY_BITMASK_ALL = 15;
+    public const int VISIBILITY_BITMASK_ALL = 15;
 
 
     protected EnvironmentConfig $envConfig;

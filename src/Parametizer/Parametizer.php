@@ -16,7 +16,7 @@ use Throwable;
 
 class Parametizer {
     /** This exit code will be used if an uncaught exception occurs. */
-    public const ERROR_EXIT_CODE = 1;
+    public const int ERROR_EXIT_CODE = 1;
 
     /**
      * Not just a handy shortcut to {@see ConfigBuilder::__construct()} for easy chaining.

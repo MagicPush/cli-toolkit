@@ -9,7 +9,7 @@ use RuntimeException;
 use TypeError;
 
 class EnvironmentConfig {
-    public const CONFIG_FILENAME = 'parametizer.env.json';
+    public const string CONFIG_FILENAME = 'parametizer.env.json';
 
 
     /* AVAILABLE PROPERTIES -> */

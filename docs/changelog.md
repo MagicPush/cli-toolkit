@@ -7,6 +7,7 @@ This change log references the repository changes and releases, which respect [s
 ### Backward incompatibilities:
 
 1. PHP minimal required version is **8.3**.
+    1. Set explicitly types for all classes constants.
 1. `Config::createHelpOption()` is deleted because not needed anymore (see the point below).
 1. `Parametizer::setExceptionHandlerForParsing()` requires a `CliRequestProcessor` object,
    `HelpGenerator::getUsageForParseErrorException()` requires a `Config` object as the second parameter,
@@ -17,6 +18,7 @@ This change log references the repository changes and releases, which respect [s
    a formatter for STDERR stream.
 1. `Parametizer::setExceptionHandlerForParsing()` renders both an error message and a help block in STDERR (previously
    a help block was rendered in STDOUT).
+1. `Option::getOptionCleanFullName()` is deleted because of no usage.
    
 1. Renaming:
     1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`

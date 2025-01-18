@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Exception;
 
@@ -8,14 +10,14 @@ use RuntimeException;
 use Throwable;
 
 final class ParseErrorException extends RuntimeException {
-    public const E_NO_PARAM = 1;
+    public const int E_NO_PARAM = 1;
 
-    public const E_TOO_MANY_ARGUMENTS = 101;
-    public const E_WRONG_ARGUMENT     = 102;
+    public const int E_TOO_MANY_ARGUMENTS = 101;
+    public const int E_WRONG_ARGUMENT     = 102;
 
-    public const E_NO_OPTION       = 201;
-    public const E_WRONG_OPTION    = 202;
-    public const E_NO_OPTION_VALUE = 203;
+    public const int E_NO_OPTION       = 201;
+    public const int E_WRONG_OPTION    = 202;
+    public const int E_NO_OPTION_VALUE = 203;
 
     /** @var ParameterAbstract[] */
     protected array $invalidParams;
