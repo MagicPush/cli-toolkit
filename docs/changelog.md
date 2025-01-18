@@ -27,11 +27,6 @@ This change log references the repository changes and releases, which respect [s
 1. `HelpGenerator::getUsageTemplate()` is made _protected_ (from _public_) and non-static. Then it's able to use
 an instance `$formatter` property (instead of creating a separate formatter instance).
 
-#### ... only if `DEV` is merged into master before this branch:
-
-1. `HelpGenerator::getShortDescription()` requires 2 more parameters - min and max amount of chars.
-1. `HelpGenerator::SHORT_DESCRIPTION_MIN_CHARS` and `SHORT_DESCRIPTION_MAX_CHARS` constants are removed.
-
 ### New features
 
 1. Added [Environment Config](features-manual.md#environment-config) that allows setting "environment"-related

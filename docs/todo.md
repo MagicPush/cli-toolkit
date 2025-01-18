@@ -58,46 +58,6 @@ The list of plans and ideas for future development.
 
 ## Large feature ideas
 
-1. Environment Config - for setting up Parametizer behavior:
-    <details>
-    <summary>Points to consider</summary>
-
-    1. [x] Set config automatically via a JSON config file.
-    1. [x] Skip a parameter setting (like it is not mentioned) if a value read from a config file has an invalid type
-       and `$throwOnException` is set to `false`.
-    1. [x] Backtrace edge case: a script and a class with a config generator are located
-       in different filesystem branches.
-
-       Try smarter script location (bottommost path) detection.
-    1. [x] A default config generator with all settings and descriptions.
-    1. [x] Docs.
-    1. [x] Specify `$throwOnException` for all test scripts.
-    1. [x] Consider adding other possible backward incompatibilities:
-        1. [x] Naming:
-           1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
-           1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
-           1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
-        1. [x] Make `HelpGenerator::getUsageTemplate()` protected and non-static.
-            * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
-        1. [x] Move to PHP 8.3 as a minimal required version. This includes:
-            1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
-        1. [x] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
-           simplify the code.
-    1. [x] Refactoring:
-        1. [x] `declare(strict_types=1);` on a new line for all php-files.
-    1. [ ] Review [changelog](changelog.md#v200), especially 'only if `DEV`' paragraph.
-
-    </details>
-
-    <details>
-    <summary>Settings to implement</summary>
-
-    1. A short name for built-in `--help` option.
-        * It should be possible to specify no short name at all (also, a default state).
-        * If there is no reasonable way to set a short name without walking recursively through all subcommand branches,
-          implement it as a pre-setup-only setting (must be specified in a Parametizer config constructor).
-    1. Values for `HelpGenerator::SHORT_DESCRIPTION_MIN_CHARS` and `SHORT_DESCRIPTION_MAX_CHARS`.
-    </details>
 1. Class-based scripts as subcommands (Symfony-like).
     <details>
     <summary>Points to consider</summary>

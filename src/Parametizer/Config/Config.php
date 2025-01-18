@@ -80,10 +80,14 @@ class Config {
     protected array $branches = [];
 
 
-    public function __construct(?EnvironmentConfig $envConfig = null) {
+    /**
+     * @param bool $throwOnException Useful to debug automatic environment config creation, if `$envConfig` is `null`.
+     */
+    public function __construct(?EnvironmentConfig $envConfig = null, bool $throwOnException = false) {
         if (null === $envConfig) {
-            $envConfig = new EnvironmentConfig();
+            $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy(throwOnException: $throwOnException);
         }
+
         $this->envConfig = $envConfig;
     }
 
