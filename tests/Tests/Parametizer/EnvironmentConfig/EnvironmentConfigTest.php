@@ -226,4 +226,15 @@ STDERR_OUTPUT,
             ],
         ];
     }
+
+    /**
+     * Tests no endless loop happens if a topmost directory is unreachable (exists in another files branch).
+     *
+     * This test should execute momentarily, unless an endless loop happens.
+     *
+     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     */
+    public function testUnreachableTopmost(): void {
+        assertSame('', self::assertNoErrorsOutput(__DIR__ . '/autoload/unreachable-topmost.php')->getStdOut());
+    }
 }

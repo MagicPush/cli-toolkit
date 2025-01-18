@@ -163,7 +163,12 @@ class EnvironmentConfig {
                 return $envConfig;
             }
 
-            $currentDirPath = dirname($currentDirPath);
+            $previousDirPath = $currentDirPath;
+            $currentDirPath  = dirname($currentDirPath);
+            // Prevents a possible endless loop, if `$topmostDirectoryPath` is unreachable:
+            if ($currentDirPath === $previousDirPath) {
+                return $envConfig;
+            }
         }
     }
 
