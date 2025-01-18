@@ -4,15 +4,12 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-mbstring": "*",
         "ext-posix": "*",
         "ext-ctype": "*"
     },
     "autoload": {
-        "files": [
-            "src/Polyfill.php"
-        ],
         "psr-4": {
             "MagicPush\\CliToolkit\\": "src/"
         }

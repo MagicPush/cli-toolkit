@@ -72,14 +72,14 @@ The list of plans and ideas for future development.
     1. [x] A default config generator with all settings and descriptions.
     1. [x] Docs.
     1. [x] Specify `$throwOnException` for all test scripts.
-    1. [ ] Consider adding other possible backward incompatibilities:
+    1. [x] Consider adding other possible backward incompatibilities:
         1. [x] Naming:
            1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
            1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
            1. `CliRequestProcessor::append()` -> `appendToInnermostBranch()`
         1. [x] Make `HelpGenerator::getUsageTemplate()` protected and non-static.
             * Then replace `HelpFormatter::createForStdOut()` call inside the method with `$this->formatter`.
-        1. [ ] Move to PHP 8.3 as a minimal required version. This includes:
+        1. [x] Move to PHP 8.3 as a minimal required version. This includes:
             1. Replace `mb_str_pad` polyfill with native `mb_str_pad`.
         1. [x] In Parametizer::setExceptionHandlerForParsing() output `ParseErrorException` into `STDERR`,
            simplify the code.

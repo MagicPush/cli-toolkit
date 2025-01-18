@@ -6,6 +6,7 @@ This change log references the repository changes and releases, which respect [s
 
 ### Backward incompatibilities:
 
+1. PHP minimal required version is **8.3**.
 1. `Config::createHelpOption()` is deleted because not needed anymore (see the point below).
 1. `Parametizer::setExceptionHandlerForParsing()` requires a `CliRequestProcessor` object,
    `HelpGenerator::getUsageForParseErrorException()` requires a `Config` object as the second parameter,
