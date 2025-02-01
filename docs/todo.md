@@ -16,6 +16,10 @@ The list of plans and ideas for future development.
     1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
+1. Add an alternative way to show a help page for subcommands,
+   e.g. `git help status` is the same as `git status --help`.
+    * The `help` subcommand should be added automatically for each config with a subcommand.
+    * Possible values are all other available subcommand names for the same switch.
 1. PHPUnit: the next major version.
    1. Try messing with the coverage.
 1. Try out the parameters ambiguity puzzle: `-fctest`, where `-f` is a flag, `-c` is an option and there is

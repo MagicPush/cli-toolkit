@@ -356,7 +356,7 @@ With this setting you may choose which scripts get a short name for `--help` (an
 #### helpGeneratorShortDescriptionCharsMinBeforeFullStop
 
 * Affects scripts descriptions' short versions (usually seen on scripts' help pages for available subcommands).
-* Controls a min length of a description substring cut after a full sentence (a substring ending with `. `).
+* Controls a min length of a description substring cut around a full sentence (a substring ending with `. `).
 * Possible values: any (reasonable) `int`
     * Values bigger than [helpGeneratorShortDescriptionCharsMax](#helpgeneratorshortdescriptioncharsmax) are
     ignored naturally.
@@ -387,7 +387,7 @@ Consider a full description:
 Too short string. Another shorty. The rest adds much more characters, what makes the whole line too long.
 ```
 
-If the setting value `60`
+If the setting value is `60`
 and [helpGeneratorShortDescriptionCharsMinBeforeFullStop](#helpgeneratorshortdescriptioncharsminbeforefullstop) is too
 big (`35` or bigger), the short description could be `Too short string. Another shorty. The rest adds much more ch`
 (exactly 60 chars), but if a space character is found before the max length cursor, the last part (` ch`, a piece of
