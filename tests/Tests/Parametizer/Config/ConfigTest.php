@@ -13,10 +13,10 @@ class ConfigTest extends TestCaseAbstract {
     /**
      * Tests various {@see ConfigException}s when setting up a config.
      *
-     * @covers Config::ensureNoDuplicateName()
-     * @covers Config::ensureNoDuplicateShortName()
-     * @covers VariableBuilderAbstract::ensureNotAllowedValuesSetWithValidatorOrCompletionSimultaneously()
-     * @covers VariableBuilderAbstract::ensureNotRequiredAndHasDefaultSimultaneously()
+     * @see Config::ensureNoDuplicateName()
+     * @see Config::ensureNoDuplicateShortName()
+     * @see VariableBuilderAbstract::ensureNotAllowedValuesSetWithValidatorOrCompletionSimultaneously()
+     * @see VariableBuilderAbstract::ensureNotRequiredAndHasDefaultSimultaneously()
      */
     public function testConfigLogicExceptions(string $scriptPath, string $errorOutput): void {
         static::assertConfigExceptionOutput($scriptPath, $errorOutput);
@@ -80,10 +80,10 @@ class ConfigTest extends TestCaseAbstract {
     /**
      * Tests names and short names for parameters.
      *
-     * @covers ParameterAbstract::__construct()
-     * @covers Option::shortName()
-     * @covers BuilderAbstract::getValidatedOptionName()
-     * @covers BuilderAbstract::getValidatedOptionShortName()
+     * @see ParameterAbstract::__construct()
+     * @see Option::shortName()
+     * @see BuilderAbstract::getValidatedOptionName()
+     * @see BuilderAbstract::getValidatedOptionShortName()
      */
     public function testNameConfigs(string $scriptPath, ?string $name, ?string $errorOutput): void {
         $escapedName = null !== $name ? escapeshellarg($name) : '';
@@ -256,7 +256,7 @@ class ConfigTest extends TestCaseAbstract {
     /**
      * Tests that short names are case sensitive.
      *
-     * @covers Option::shortName()
+     * @see Option::shortName()
      */
     public function testOptionShortNameCaseSensitive(): void {
         self::assertSame(

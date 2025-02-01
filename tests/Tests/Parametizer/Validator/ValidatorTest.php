@@ -15,7 +15,7 @@ class ValidatorTest extends TestCaseAbstract {
     /**
      * Tests invalid validator config exception.
      *
-     * @covers ParameterAbstract::validate()
+     * @see ParameterAbstract::validate()
      */
     public function testValidatorInvalidConfig(): void {
         static::assertConfigExceptionOutput(
@@ -29,7 +29,7 @@ class ValidatorTest extends TestCaseAbstract {
     /**
      * Tests different validator configs.
      *
-     * @covers ParameterAbstract::validate()
+     * @see ParameterAbstract::validate()
      */
     public function testValidatorConfigs(
         string $script,
@@ -144,9 +144,8 @@ class ValidatorTest extends TestCaseAbstract {
     /**
      * Tests if validators act as filters and alter parameters' values.
      *
-     * @covers CliRequestProcessor::validateParam()
-     * @covers ParameterAbstract::validate()
-     * @covers ParameterAbstract::validate()
+     * @see CliRequestProcessor::validateParam()
+     * @see ParameterAbstract::validate()
      */
     public function testValidatorFilterValue(): void {
         $result = static::assertNoErrorsOutput(

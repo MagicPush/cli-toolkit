@@ -15,12 +15,12 @@ class ParsingTest extends TestCaseAbstract {
      * Test successful values parsing for different parameters.
      *
      * @param mixed[] $expectedValues
-     * @covers Parametizer::run()
-     * @covers Parser::read()
-     * @covers CliRequestProcessor::registerArgument()
-     * @covers CliRequestProcessor::registerOption()
-     * @covers CliRequestProcessor::setRequestParam()
-     * @covers CliRequestProcessor::validate()
+     * @see Parametizer::run()
+     * @see Parser::read()
+     * @see CliRequestProcessor::registerArgument()
+     * @see CliRequestProcessor::registerOption()
+     * @see CliRequestProcessor::setRequestParam()
+     * @see CliRequestProcessor::validate()
      */
     public function testParsingSuccess(string $parametersString, array $expectedValues): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/lots-of-params.php', $parametersString);
@@ -238,8 +238,8 @@ class ParsingTest extends TestCaseAbstract {
      * Successful execution of specific test scripts.
      *
      * @param mixed[] $expectedValues
-     * @covers Parametizer::run()
-     * @covers Parser::read()
+     * @see Parametizer::run()
+     * @see Parser::read()
      */
     public function testParsingManyFlagsSuccess(
         string $scriptPath,
@@ -297,12 +297,12 @@ class ParsingTest extends TestCaseAbstract {
      *  1) a script help parts are printed for all missing required parameters and parameters with invalid values;
      *  2) the `--help` parameter is always printed (so a user could know how to see a full help page).
      *
-     * @covers HelpGenerator::getUsageForParseErrorException()
-     * @covers Parametizer::run()
-     * @covers CliRequestProcessor::registerArgument()
-     * @covers CliRequestProcessor::registerOption()
-     * @covers CliRequestProcessor::setRequestParam()
-     * @covers CliRequestProcessor::validate()
+     * @see HelpGenerator::getUsageForParseErrorException()
+     * @see Parametizer::run()
+     * @see CliRequestProcessor::registerArgument()
+     * @see CliRequestProcessor::registerOption()
+     * @see CliRequestProcessor::setRequestParam()
+     * @see CliRequestProcessor::validate()
      */
     public function testParseErrorsWithHelp(
         string $scriptPath,

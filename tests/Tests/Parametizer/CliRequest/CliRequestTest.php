@@ -16,8 +16,8 @@ class CliRequestTest extends TestCaseAbstract {
     /**
      * Tests different reading of parameter values processed from a request.
      *
-     * @covers CliRequest::getParam()
-     * @covers CliRequest::getParams()
+     * @see CliRequest::getParam()
+     * @see CliRequest::getParams()
      */
     public function testGettingParameterValue(string $parameterName, string $parameterValue): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-parameter-name.php', $parameterName);
@@ -54,7 +54,7 @@ class CliRequestTest extends TestCaseAbstract {
     /**
      * Tests the exception if an unknown parameter is addressed.
      *
-     * @covers CliRequest::getParam()
+     * @see CliRequest::getParam()
      */
     public function testGettingParameterValueByInvalidName(): void {
         static::assertLogicExceptionOutput(
@@ -70,14 +70,14 @@ class CliRequestTest extends TestCaseAbstract {
      * Tests type casting helper methods for parameter values processed from a request.
      *
      * @param mixed[] $expectedValues
-     * @covers CliRequest::getParam()
-     * @covers CliRequest::getParamAsBool()
-     * @covers CliRequest::getParamAsInt()
-     * @covers CliRequest::getParamAsIntList()
-     * @covers CliRequest::getParamAsFloat()
-     * @covers CliRequest::getParamAsFloatList()
-     * @covers CliRequest::getParamAsString()
-     * @covers CliRequest::getParamAsStringList()
+     * @see CliRequest::getParam()
+     * @see CliRequest::getParamAsBool()
+     * @see CliRequest::getParamAsInt()
+     * @see CliRequest::getParamAsIntList()
+     * @see CliRequest::getParamAsFloat()
+     * @see CliRequest::getParamAsFloatList()
+     * @see CliRequest::getParamAsString()
+     * @see CliRequest::getParamAsStringList()
      */
     public function testParameterTypeCast(?string $castType, array $expectedValues): void {
         $parametersString = "--single=3.14something --array=9.8whatever --array='-' --array=1";
@@ -138,15 +138,15 @@ class CliRequestTest extends TestCaseAbstract {
     /**
      * Tests logic errors while reading parameter values processed from a request.
      *
-     * @covers CliRequest::getParamAsBool()
-     * @covers CliRequest::getParamAsInt()
-     * @covers CliRequest::getParamAsIntList()
-     * @covers CliRequest::getParamAsFloat()
-     * @covers CliRequest::getParamAsFloatList()
-     * @covers CliRequest::getParamAsString()
-     * @covers CliRequest::getParamAsStringList()
-     * @covers CliRequest::validateValueIsArray()
-     * @covers CliRequest::validateValueNotArray()
+     * @see CliRequest::getParamAsBool()
+     * @see CliRequest::getParamAsInt()
+     * @see CliRequest::getParamAsIntList()
+     * @see CliRequest::getParamAsFloat()
+     * @see CliRequest::getParamAsFloatList()
+     * @see CliRequest::getParamAsString()
+     * @see CliRequest::getParamAsStringList()
+     * @see CliRequest::validateValueIsArray()
+     * @see CliRequest::validateValueNotArray()
      */
     public function testParameterLogicErrors(
         string $scriptPath,

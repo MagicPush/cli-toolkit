@@ -45,7 +45,7 @@ class SettingsTest extends TestCaseAbstract {
     /**
      * Tests short description output with different limits.
      *
-     * @covers HelpGenerator::getShortDescription()
+     * @see HelpGenerator::getShortDescription()
      */
     public function testHelpGeneratorShortDescriptionLength(
         string $parametersString,
