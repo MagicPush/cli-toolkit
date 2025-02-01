@@ -21,7 +21,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
     /**
      * Test a typical styling of a string.
      *
-     * @covers TerminalFormatter::apply()
+     * @see TerminalFormatter::apply()
      */
     public function testSimpleStyling(): void {
         assertSame(
@@ -33,7 +33,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
     /**
      * Test if a substring with its own style does not interfere in an outer string styling.
      *
-     * @covers TerminalFormatter::apply()
+     * @see TerminalFormatter::apply()
      */
     public function testRestyleAlreadyStylizedSubstring(): void {
         assertSame(
@@ -51,7 +51,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
     /**
      * Styling should be disabled when not in a terminal.
      *
-     * @covers TerminalFormatter::__construct()
+     * @see TerminalFormatter::__construct()
      */
     public function testNoStyleWhenNotInTerminal(): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/no-style-when-not-in-terminal.php');

@@ -22,8 +22,8 @@ class SubcommandTest extends TestCaseAbstract {
     /**
      * Successful execution scenarios for subcommands.
      *
-     * @covers Config::commitSubcommandSwitch()
-     * @covers Config::registerArgument()
+     * @see Config::commitSubcommandSwitch()
+     * @see Config::registerArgument()
      */
     public function testConfigSubcommandOks(string $script, string $parametersString): void {
         static::assertNoErrorsOutput($script, $parametersString);
@@ -49,8 +49,8 @@ class SubcommandTest extends TestCaseAbstract {
      * Tests that options are subcommand (level) dependent
      * and have to be specified in the right order - before a subcommand.
      *
-     * @covers Config::commitSubcommandSwitch()
-     * @covers CliRequestProcessor::load()
+     * @see Config::commitSubcommandSwitch()
+     * @see CliRequestProcessor::load()
      */
     public function testOptionStickToLevel(): void {
         $script = __DIR__ . '/scripts/deep-nesting.php';
@@ -77,8 +77,8 @@ class SubcommandTest extends TestCaseAbstract {
     /**
      * Error execution scenarios for subcommands.
      *
-     * @covers Config::commitSubcommandSwitch()
-     * @covers Config::registerArgument()
+     * @see Config::commitSubcommandSwitch()
+     * @see Config::registerArgument()
      */
     public function testConfigSubcommandErrors(string $script, string $errorOutput): void {
         static::assertConfigExceptionOutput($script, $errorOutput);
@@ -126,12 +126,12 @@ class SubcommandTest extends TestCaseAbstract {
      * Tests if a script help parts are printed for all missing required options (current subcommand level and higher)
      * and all missing required arguments (current subcommand level only).
      *
-     * @covers HelpGenerator::getUsageForParseErrorException()
-     * @covers Parametizer::run()
-     * @covers CliRequestProcessor::registerArgument()
-     * @covers CliRequestProcessor::registerOption()
-     * @covers CliRequestProcessor::setRequestParam()
-     * @covers CliRequestProcessor::validate()
+     * @see HelpGenerator::getUsageForParseErrorException()
+     * @see Parametizer::run()
+     * @see CliRequestProcessor::registerArgument()
+     * @see CliRequestProcessor::registerOption()
+     * @see CliRequestProcessor::setRequestParam()
+     * @see CliRequestProcessor::validate()
      */
     public function testParseErrorsInSubcommandsWithHelp(
         string $scriptPath,
@@ -238,7 +238,7 @@ STDERR_OUTPUT,
     /**
      * Test adding default config settings to branches of subcommands.
      *
-     * @covers Config::addDefaultOptions()
+     * @see Config::addDefaultOptions()
      */
     public function testAddingDefaultOptions(): void {
         $result = static::assertNoErrorsOutput(
@@ -303,7 +303,7 @@ STDERR_OUTPUT,
     /**
      * Tests reading parameters in different subcommands (branches).
      *
-     * @covers CliRequest::getSubcommandRequest()
+     * @see CliRequest::getSubcommandRequest()
      */
     public function testReadingSubcommandParameters(string $subcommandName, string $expectedOutput): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/same-name-different-branches.php', $subcommandName);
@@ -330,7 +330,7 @@ STDERR_OUTPUT,
      * Tests a failed attempt to read an unknown subcommand parameters
      * (after the correct one is used during the parsing phase).
      *
-     * @covers CliRequest::getSubcommandRequest()
+     * @see CliRequest::getSubcommandRequest()
      */
     public function testRequestingUnknownSubcommand(): void {
         static::assertLogicExceptionOutput(

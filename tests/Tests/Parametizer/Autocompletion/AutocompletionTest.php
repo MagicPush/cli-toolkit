@@ -41,8 +41,8 @@ class AutocompletionTest extends TestCaseAbstract {
      * Tests autocomplete execution.
      *
      * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     * @covers Completion::complete()
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
      */
     public function testAutocompleteExecution(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -58,8 +58,8 @@ class AutocompletionTest extends TestCaseAbstract {
      * but the tested config is a subcommand.
      *
      * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     * @covers Completion::complete()
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
      */
     public function testAutocompleteExecutionSubcommand(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -233,10 +233,10 @@ class AutocompletionTest extends TestCaseAbstract {
      * Tests "smart" (no duplicate) autocomplete execution.
      *
      * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     * @covers Completion::complete()
-     * @covers Completion::completeOptions()
-     * @covers Completion::completeParamValue()
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
+     * @see Completion::completeOptions()
+     * @see Completion::completeParamValue()
      */
     public function testSmartAutocomplete(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -252,10 +252,10 @@ class AutocompletionTest extends TestCaseAbstract {
      * but the tested config is a subcommand.
      *
      * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     * @covers Completion::complete()
-     * @covers Completion::completeOptions()
-     * @covers Completion::completeParamValue()
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
+     * @see Completion::completeOptions()
+     * @see Completion::completeParamValue()
      */
     public function testSmartAutocompleteSubcommand(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -342,9 +342,9 @@ class AutocompletionTest extends TestCaseAbstract {
      * Tests subcommand switch completion.
      *
      * @param string[] $expectedOutputLines
-     * @covers Completion::executeAutocomplete()
-     * @covers Completion::complete()
-     * @covers Completion::completeParamValue()
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
+     * @see Completion::completeParamValue()
      */
     public function testSubcommandSwitch(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(__DIR__ . '/scripts/subcommands.php', $parametersString, $expectedOutputLines);

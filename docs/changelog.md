@@ -2,6 +2,14 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
+## v2.0.1
+
+### Patches
+
+1. PHPUnit version is upgraded from `^10` to `12.1.0`.
+
+   From now on PHPUnit engine itself is not present in the library and should be installed and launched separately.
+
 ## v2.0.0
 
 ### Backward incompatibilities:
@@ -41,7 +49,7 @@ an instance `$formatter` property (instead of creating a separate formatter inst
 1. Added `HelpGenerator::getShortDescription()` that is used to show short versions for subcommand descriptions,
 when outputting a help page for a script with a list of available subcommands.
 
-### Patching
+### Patches
 
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
 1. Formatted subcommand value in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the

@@ -21,8 +21,8 @@ class HelpGeneratorTest extends TestCaseAbstract {
      *
      * Output is redirected, so no text styles here.
      *
-     * @covers HelpGenerator::getFullHelp()
-     * @covers HelpGenerator::getParamsBlock()
+     * @see HelpGenerator::getFullHelp()
+     * @see HelpGenerator::getParamsBlock()
      */
     public function testScriptHelp(): void {
         assertSame(
@@ -94,7 +94,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Help for subcommands, top level. Also tests the short descriptions.
      *
-     * @covers HelpGenerator::getFullHelp()
+     * @see HelpGenerator::getFullHelp()
      */
     public function testSubcommandScriptHelpFirstLevel(): void {
         assertSame(
@@ -128,8 +128,8 @@ class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Help for a specific subcommand.
      *
-     * @covers HelpGenerator::getFullHelp()
-     * @covers HelpGenerator::getBaseScriptName()
+     * @see HelpGenerator::getFullHelp()
+     * @see HelpGenerator::getBaseScriptName()
      */
     public function testSubcommandScriptHelpDeepInSubcommand(): void {
         assertSame(
@@ -169,7 +169,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests short descriptions output. The short descriptions are rendered when listing available subcommands.
      *
-     * @covers HelpGenerator::getShortDescription()
+     * @see HelpGenerator::getShortDescription()
      */
     public function testSubcommandHelpShortDescription(): void {
         assertSame(

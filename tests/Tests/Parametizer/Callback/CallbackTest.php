@@ -18,7 +18,7 @@ class CallbackTest extends TestCaseAbstract {
     /**
      * Tests valid callback configs.
      *
-     * @covers ParameterAbstract::runCallback()
+     * @see ParameterAbstract::runCallback()
      */
     public function testCallbackConfig(string $script, string $argument, string $standardOutput): void {
         $escapedArgument = escapeshellarg($argument);
@@ -53,8 +53,8 @@ class CallbackTest extends TestCaseAbstract {
     /**
      * Tests if a callback is executed after a validator for each parameter (an argument and an option).
      *
-     * @covers CliRequestProcessor::registerArgument()
-     * @covers CliRequestProcessor::registerOption()
+     * @see CliRequestProcessor::registerArgument()
+     * @see CliRequestProcessor::registerOption()
      */
     public function testCallbackIsExecutedAfterValidator(): void {
         $script = __DIR__ . '/scripts/callback-after-validator.php';

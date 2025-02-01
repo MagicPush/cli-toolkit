@@ -76,10 +76,10 @@ STDERR_OUTPUT,
      * Tests various environment config autoload cases.
      *
      * @param mixed[] $expectedConfigValues
-     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
-     * @covers EnvironmentConfig::detectTopmostDirectoryPath()
-     * @covers EnvironmentConfig::fillFromJsonConfigFile()
-     * @covers Parametizer::newConfig()
+     * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @see EnvironmentConfig::detectTopmostDirectoryPath()
+     * @see EnvironmentConfig::fillFromJsonConfigFile()
+     * @see Parametizer::newConfig()
      */
     public function testAutoloadFromFiles(string $scriptPath, array $expectedConfigValues): void {
         $outputJson   = static::assertNoErrorsOutput($scriptPath)->getStdOut();
@@ -138,8 +138,8 @@ STDERR_OUTPUT,
     /**
      * Tests if all environment config autoload-related methods process `$throwOnException` flag correctly.
      *
-     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
-     * @covers EnvironmentConfig::fillFromJsonConfigFile()
+     * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @see EnvironmentConfig::fillFromJsonConfigFile()
      */
     public function testThrowingOnExceptions(
         string $scriptPath,
@@ -232,7 +232,7 @@ STDERR_OUTPUT,
      *
      * This test should execute momentarily, unless an endless loop happens.
      *
-     * @covers EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
      */
     public function testUnreachableTopmost(): void {
         assertSame('', self::assertNoErrorsOutput(__DIR__ . '/autoload/unreachable-topmost.php')->getStdOut());
