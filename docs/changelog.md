@@ -9,6 +9,10 @@ This change log references the repository changes and releases, which respect [s
 1. PHPUnit version is upgraded from `^10` to `11.5.6`.
     * From now on PHPUnit is not a require-dev composer entry, but an independent PHAR. That removes the necessity to
     download a bunch of dependencies.
+1. Test classes are auto-loaded only during actual test launches. E.g. if you accidentally use `tests/utils/CliProcess`
+   in your production classes under 'dev' environment (when you call `composer install` without `--no-dev` option),
+   you will get "Class 'XXX' not found in ..." error.
+   Previously there was no error, until you install composer packages with `--no-dev` flag.
 
 ## v2.0.0
 
