@@ -20,8 +20,8 @@ The list of plans and ideas for future development.
    e.g. `git help status` is the same as `git status --help`.
     * The `help` subcommand should be added automatically for each config with a subcommand.
     * Possible values are all other available subcommand names for the same switch.
-1. PHPUnit: the next major version.
-   1. Try messing with the coverage.
+1. PHPUnit: remove the PHAR from the project completely, try OS-based installation.
+1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
 1. Try out the parameters ambiguity puzzle: `-fctest`, where `-f` is a flag, `-c` is an option and there is
    also a `-t` flag. Possible outcomes:
     1. `test` is the `-c` value, `-t` flag is not enabled.

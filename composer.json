@@ -14,11 +14,6 @@
             "MagicPush\\CliToolkit\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "MagicPush\\CliToolkit\\Tests\\": "tests/"
-        }
-    },
     "authors": [
         {
             "name": "Kirill Ulanovskii",

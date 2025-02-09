@@ -9,6 +9,10 @@ This change log references the repository changes and releases, which respect [s
 1. PHPUnit version is upgraded from `^10` to `12.1.0`.
 
    From now on PHPUnit engine itself is not present in the library and should be installed and launched separately.
+1. Test classes are auto-loaded only during actual test launches. E.g. if you accidentally use `tests/utils/CliProcess`
+   in your production classes under 'dev' environment (when you call `composer install` without `--no-dev` option),
+   you will get "Class 'XXX' not found in ..." error.
+   Previously there was no error, until you install composer packages with `--no-dev` flag.
 
 ## v2.0.0
 
