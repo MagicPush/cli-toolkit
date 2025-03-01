@@ -123,9 +123,12 @@ class HelpGenerator {
         // 3. Determine the minimum heading spaces count in all lines of description.
         $descriptionLines      = explode(PHP_EOL, $description);
         $minHeadingSpacesCount = null;
-        foreach ($descriptionLines as $line) {
-            // Do not count empty lines:
-            if (!$line) {
+        foreach ($descriptionLines as $lineIndex => $line) {
+            // 4. Trim space-only lines.
+            // Ignore empty and space-only lines:
+            if (!trim($line)) {
+                $descriptionLines[$lineIndex] = '';
+
                 continue;
             }
 
@@ -135,19 +138,14 @@ class HelpGenerator {
             }
         }
 
-        // 4. Delete that many heading spaces from each line.
+        // 5. Delete that many heading spaces from each line.
         if ($minHeadingSpacesCount) {
-            foreach ($descriptionLines as &$line) {
-                // 5. Trim space-only lines.
-                if (!trim($line)) {
-                    $line = '';
-                }
-
+            foreach ($descriptionLines as $lineIndex => $line) {
                 if (!$line) {
                     continue;
                 }
 
-                $line = mb_substr($line, $minHeadingSpacesCount);
+                $descriptionLines[$lineIndex] = mb_substr($line, $minHeadingSpacesCount);
             }
             unset($line);
 

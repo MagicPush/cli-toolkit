@@ -23,6 +23,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
      *
      * @see HelpGenerator::getFullHelp()
      * @see HelpGenerator::getParamsBlock()
+     * @see HelpGenerator::getDescriptionBlock()
      */
     public function testScriptHelp(): void {
         assertSame(
