@@ -7,16 +7,24 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 require_once __DIR__ . '/../../../init-console.php';
 
 Parametizer::newConfig(throwOnException: true)
+    /*
+     * There is excessive padding.
+     * Also pay attention at the blank line with 4 spaces under the first paragraph: in previous version it caused
+     * the whole help block to be shown as is with such a huge padding. The point is that the length of this exact
+     * space-line negatively affected the whole block minimum padding. However now it should be ignored at all,
+     * so eventually there should be correct padding for the whole block.
+     */
     ->description('
-        Here is a very very very very long description.
-        So long that multiple lines are needed.
-        
-        And there is more than that! Here is a list with padding, which should be outputted the same way in a terminal:
-            1. Start with this step.
-            2. Proceed with doing this thing.
-            3. Finally finish by doing this stuff.
-            
-                                            HERE IS SOME MORE PADDED TEXT
+                Here is a very very very very long description.
+                So long that multiple lines are needed.
+    
+                And there is more than that! Here is a list with padding, which should be outputted the same way '
+                . 'in a terminal:
+                    1. Start with this step.
+                    2. Proceed with doing this thing.
+                    3. Finally finish by doing this stuff.
+                    
+                                                    HERE IS SOME MORE PADDED TEXT
               
 
                                             
