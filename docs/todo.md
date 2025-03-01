@@ -158,6 +158,7 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
+1. Remove now obsolete `HelpGenerator::getBaseScriptName()`.
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
 

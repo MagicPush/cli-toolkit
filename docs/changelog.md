@@ -13,8 +13,11 @@ This change log references the repository changes and releases, which respect [s
    in your production classes under 'dev' environment (when you call `composer install` without `--no-dev` option),
    you will get "Class 'XXX' not found in ..." error.
    Previously there was no error, until you install composer packages with `--no-dev` flag.
-1. Fixed scripts main description block - stopped counting symbols in space-only lines.
-   Previously it caused too much padding for descriptions with too short space-only lines.
+1. `HelpGenerator`:
+    1. Fixed scripts main description block - stopped counting symbols in space-only lines.
+       Previously it caused too much padding for descriptions with too short space-only lines.
+    1. Improved subcommand help usage block - when `--help` is called for a subcommand, all manual usage lines
+       include the whole path (subcommand values) starting from the topmost config.
 
 ## v2.0.0
 
