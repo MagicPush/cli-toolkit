@@ -166,8 +166,14 @@ class HelpGenerator {
         // Print general usage template:
         $output .= $this->getUsageTemplate($this->config);
 
-        $usageExamples  = $this->config->getUsageExamples();
-        $baseScriptName = static::getBaseScriptName($this->config);
+        $branchConfig    = $this->config;
+        $scriptNameParts = [];
+        do {
+            $scriptNameParts[] = $branchConfig->getScriptName();
+        } while ($branchConfig = $branchConfig->getParent());
+        $baseScriptName = implode(' ', array_reverse($scriptNameParts));
+
+        $usageExamples = $this->config->getUsageExamples();
 
         // Firstly print usage examples with no description:
         foreach ($usageExamples as $usageExample) {

@@ -105,6 +105,9 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
           deep-nesting.php <switchme>
 
+          Very deep call:
+          deep-nesting.php test11 --name-l2=supername test23 --name-l3=nameLevelThree test32
+
         OPTIONS
 
           --help   Show full help page.
@@ -130,7 +133,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * Help for a specific subcommand.
      *
      * @see HelpGenerator::getFullHelp()
-     * @see HelpGenerator::getBaseScriptName()
+     * @see HelpGenerator::getUsagesBlock()
      */
     public function testSubcommandScriptHelpDeepInSubcommand(): void {
         assertSame(
@@ -139,10 +142,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
         USAGE
 
           deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] <switchme-l3>
-          deep-nesting.php test11 --name-l2=supername test23 test31
+          deep-nesting.php test11 test23 test31
 
           Very deep call:
-          deep-nesting.php test11 --name-l2=supername test23 --name-l3=nameLevelThree test32
+          deep-nesting.php test11 test23 --name-l3=nameLevelThree test32
 
         OPTIONS
 
