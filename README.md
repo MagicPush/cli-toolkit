@@ -7,8 +7,7 @@
 Key features (why you would want to use it):
 - configure named (options) and positioned (arguments) parameters with ease using a builder;
 - define required options, optional arguments, lists of possible values, flags, array-like parameters and subcommands;
-- call your scripts from any paths by generated aliases
-  (see [tools/cli-toolkit/generate-autocompletion-scripts.php](tools/cli-toolkit/generate-autocompletion-scripts.php));
+- call your scripts from any paths by generated aliases;
 - enjoy autocompleting options' names and parameters' possible values (when calling scripts via special aliases);
 - get a generated help page (using the built-in `--help` option) based on your parameters configuration.
 
@@ -22,14 +21,9 @@ Key features (why you would want to use it):
 
 ## Installation
 
-The only requirement is PHP >= 8.1
-
-Use composer:
 ```shell
 composer require magic-push/cli-toolkit
 ```
-
-... or just clone / download this repository.
 
 ## How to
 
@@ -93,17 +87,30 @@ For more cool stuff to know see [Features Manual](docs/features-manual.md).
 
 ## Examples
 
-Here are [useful scripts](tools/cli-toolkit) that also utilize some Parametizer features (so may be studied as examples).
+Here are [useful scripts](tools/cli-toolkit/Scripts)
+that also utilize some Parametizer features (so may be studied as examples).
 
-- [generate-autocompletion-scripts.php](tools/cli-toolkit/generate-autocompletion-scripts.php)
-  You should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
-    - Launch the script and show the details: `php tools/cli-toolkit/generate-autocompletion-scripts.php --verbose`
-    - Read it's manual for further customization: `php tools/cli-toolkit/generate-autocompletion-scripts.php --help`
-- [terminal-formatter-showcase.php](tools/cli-toolkit/terminal-formatter-showcase.php)
-  This script shows examples and codes for a terminal coloring and formatting by utilizing
-  the [TerminalFormatter](src/TerminalFormatter.php) class included in the project.
+- [GenerateAutocompletionScript.php](tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php):
+  you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
+    - Launch the script and read the details:
+      ```sh
+      php tools/cli-toolkit/launcher.php generate-autocompletion-script --verbose
+      ```
+    - Read it's manual for further customization:
+      ```sh
+      php tools/cli-toolkit/launcher.php generate-autocompletion-script --help
+      ```
+- [GenerateEnvConfig.php](tools/cli-toolkit/Scripts/GenerateEnvConfig.php):
+  helps to configure environment settings for your scripts.
+  See [Environment Config manual](docs/features-manual.md#environment-config) for details.
+- [TerminalFormatterShowcase.php](tools/cli-toolkit/Scripts/TerminalFormatterShowcase.php):
+  this script shows examples and codes for a terminal coloring and formatting by utilizing
+  the [TerminalFormatter](src/TerminalFormatter.php) class included in the project. See usage:
+  ```sh
+  php tools/cli-toolkit/launcher.php terminal-formatter-showcase --help
+  ```
 
-You can also read the [Tests](tests/Tests)`/*/scripts/` directories as artificial examples.
+You can also look through `/*/scripts/*` files in [Tests](tests/Tests) directory as artificial examples.
 
 ## Inspiration and authors
 

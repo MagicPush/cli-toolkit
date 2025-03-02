@@ -2,6 +2,24 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
+## v3.0.0
+
+### Backward incompatibilities:
+
+1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
+   [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts
+   and a [launcher.php](../tools/cli-toolkit/launcher.php).
+
+### New features
+
+1. [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php) as a basement for
+   class-based Parametizer-powered scripts.
+1. [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) for different script types auto-detection.
+   For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts are supported.
+1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
+   Main purpose - a separator for script classes sections.
+1. Removed min 2 subcommands constraint from `Config::commitSubcommandSwitch()`.
+
 ## v2.1.0
 
 ### New features

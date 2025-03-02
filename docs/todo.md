@@ -26,6 +26,11 @@ The list of plans and ideas for future development.
    also a `-t` flag. Possible outcomes:
     1. `test` is the `-c` value, `-t` flag is not enabled.
     1. `tes` is the `-c` value and `t` is the `-t` flag being enabled.
+1. Make `newSubcommandSwitch()` optional, so as `$subcommandName` parameter for `$request->getSubcommandRequest()`.
+    * Only a single subcommand switch is possible, so there is no need to specify its name explicitly
+      (but it's still should be possible).
+    * If `$request->getSubcommandRequest()` parameter is omitted (`null`), the _default_ subcommand switch name should
+      be considered (e.g. `subcommand`) .
 1. HelpGenerator: show the same script path as used for calling it - by alias or by relative path.
 1. (if possible) Auto-tests for [Question.php](../src/Question/Question.php).
 1. [Question.php](../src/Question/Question.php): add a demo script showing different types of questions.
@@ -66,13 +71,44 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. Support `EnvironmentConfig` setup:
-       1. A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
-          a script launcher or (otherwise) created from scratch (including the config file autoloader).
-            * If an `EnvironmentConfig` instance is passed from a launcher to a script class, it should be treated
+    1. TEST
+        1. - [ ] Subcommands detector:
+            1. - [ ] Detection:
+                1. - [ ] Script classes.
+                1. - [ ] Plain Parametizer-based scripts.
+                1. - [ ] Regular plain scripts.
+            1. - [ ] There may be no namespace.
+            1. - [ ] No abstract classes detected.
+            1. - [ ] Several search paths.
+            1. - [ ] Ignore (black) masked lists for search paths.
+            1. - [ ] Include (white) masked lists for search paths.
+            1. - [ ] Force-ignore (black-over-whitelist) exact paths.
+            1. - [ ] Force-include (white-over-black) exact paths.
+            1. - [ ] Names are naturally sorted (`script2` is placed above `script10`).
+            1. - [ ] Invalid / not readable paths.
+        1. - [ ] `ScriptAbstract`
+            1. - [ ] Simple and composite names.
+            1. - [ ] `getLocalName()` must not be empty.
+            1. - [ ] `getLocalName()` auto name generation:
+                 `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
+    1. - [ ] [features-manual.md](features-manual.md):
+       1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
+       1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
+       1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+    1. - [ ] Support different script (subcommand) naming.
+       1. - [x] Composite names: 2 parts at least - `section:script` (like in Symfony).
+            Single named scripts should be allowed too.
+           1. - [x] Also try to allow any amount of parts in a script full name (3, 4, ..., N).
+       1. - [ ] Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for
+            a script, that may be also called via `gas` or `generate-completion` aliases.
+       1. - [ ] Ensure no names and aliases duplication.
+    1. - [ ] Support `EnvironmentConfig` setup:
+       1. - [ ] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
+            a script launcher or (otherwise) created from scratch (including the config file autoloader).
+           * If an `EnvironmentConfig` instance is passed from a launcher to a script class, it should be treated
               as a default config (not a forced only-config) - a script class should be able to _update_ parameters.
-       1. A script class skeleton should be also able to load an `EnvironmentConfig` instance from config files.
-            * Think about the load priorities: a) launcher env config instance, b) script class subtree config files.
+       1. - [ ] A script class skeleton should be also able to load an `EnvironmentConfig` instance from config files.
+           * Think about the load priorities: a) launcher env config instance, b) script class subtree config files.
 
        <details>
        <summary>Base class implementation idea</summary>
@@ -116,35 +152,47 @@ The list of plans and ideas for future development.
         }
 
        ```
-
        </details>
-    1. Support different script (subcommand) naming.
-        * Composite names: 2 parts at least - `section:script` (like in Symfony).
-          Single named scripts should be allowed too.
 
-          Also try to allow compositions of implement an ability to use any amount of parts (3, 4, ..., N).
-        * Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for a script,
-          that may be also called via `gas` or `generate-completion` aliases.
-        * Ensure no names and aliases duplication.
-    1. Add built-in subcommand to list all detected scripts with their names and short descriptions.
-    1. Detected script names may be accessed as subcommand values by specifying their full names (autocomplete-powered)
-       or unambiguous first characters substrings (like in Symfony console) - if there are scripts `clear-cache`
-       and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
-        * (like in Symfony) In case of composite names each name substring should be mentioned - for
-          `cli-toolkit:generate-autocompletion-scripts` you should specify `c:g`
-          (if it is unambiguous enough - there are no other scripts named `c*:g*`).
-        * Support showing all available script names via the runner list command (switched on/off by a flag option).
-    1. Add a scripts launcher generator that initially stores a path to the CliToolkit engine.
+       1. - [ ] Try moving `ScriptAbstract::NAME_*` constants into `EnvironmentConfig`
+       1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
+            instance "automatically" by making `getConfiguration()` non-static or in a separate method.
+    1. - [ ] Add manual short description support - in case automatic short description is not so good.
+    1. - [ ] Add a built-in subcommand `list` to list all detected scripts with their names and short descriptions.
+         Also consider this:
+        1. - [ ] Add the command automatically for all configs with switches.
+        1. - [ ] Support different output formats.
+        1. - [ ] Add filtering by a substring.
+        1. - [ ] Modify `--help` callback for a script with subcommands: if there is more than X subcommands available,
+             do not show the full list of subcommands with usages, mention `list` subcommand instead.
+    1. - [ ] Detected script names may be accessed as subcommand values by specifying their full names
+         (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
+         scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
+        1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
+             `cli-toolkit:generate-autocompletion-scripts` you should specify `c:g`
+             (if it is unambiguous enough - there are no other scripts named `c*:g*`).
+        1. - [ ] Support showing all available script names via the runner list command
+             (switched on/off by a flag option).
+    1. - [ ] Add a scripts launcher generator that initially stores a path to the CliToolkit engine.
+         
+         In future, there may also be a path to a settings config file (see the "_Environment Config_" feature below)
+         or the config contents itself.
+    1. - [ ] Scripts launcher may detect ordinal Parametizer-based scripts
+         (one of the launcher / "_Environment Config_" config settings).
 
-       In future, there may also be a path to a settings config file (see the "_Environment Config_" feature below)
-       or the config contents itself.
-    1. Scripts launcher may detect ordinal Parametizer-based scripts
-       (one of the launcher / "_Environment Config_" config settings).
-
-       Thoughts about such scripts naming:
+         Thoughts about such scripts naming:
         * Generate default names by minimal unambiguous paths.
         * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
           and add those to a launcher available commands list.
+    1. - [ ] Test performance on many files.
+        1. - [ ] Think if [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) needs caching.
+        1. - [ ] Create test classes generator to generate ~ 50 - 500 files.
+        1. - [ ] Compare file tokenizer vs regexp.
+        1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
+    1. - [x] Remove now obsolete "plain" scripts from `tools/cli-toolkit`
+         or replace repeating code with script classes usages.
+    1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
+       the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
 
     </details>
 1. A web interface for foreground / background scripts launch. Includes indications / notifications
