@@ -236,13 +236,13 @@ class ConfigTest extends TestCaseAbstract {
                 'scriptPath'  => __DIR__ . '/scripts/template-subcommand-value.php',
                 'name'        => '1c',
                 'errorOutput' => "'switchme' subcommand >>> Config error: invalid characters in value '1c'."
-                    . ' Must start with latin (lower); the rest symbols may be of latin (lower), digit, underscore or hyphen.',
+                    . ' Must start with a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             ],
             'subcommand-value-err-invalid-symbol' => [
                 'scriptPath'  => __DIR__ . '/scripts/template-subcommand-value.php',
                 'name'        => 'a的',
                 'errorOutput' => "'switchme' subcommand >>> Config error: invalid characters in value 'a的'."
-                    . ' Must start with latin (lower); the rest symbols may be of latin (lower), digit, underscore or hyphen.',
+                    . ' Must start with a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             ],
 
             'subcommand-value-ok' => [

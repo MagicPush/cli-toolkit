@@ -97,10 +97,6 @@ class SubcommandTest extends TestCaseAbstract {
                 'script'      => __DIR__ . '/' . 'scripts/error-duplicate-value.php',
                 'errorOutput' => "'switchme' subcommand >>> Config error: duplicate value 'test1'.",
             ],
-            'only-one-subcommand' => [
-                'script'      => __DIR__ . '/' . 'scripts/error-only-one-subcommand.php',
-                'errorOutput' => "'switchme' >>> Config error: you must specify at least 2 subcommand configs.",
-            ],
             'argument-after-subcommand-switch' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-argument-after-subcommand-switch.php',
                 'errorOutput' => "'forbidden' >>> Config error: extra arguments are not allowed on the same level AFTER"
@@ -116,7 +112,7 @@ class SubcommandTest extends TestCaseAbstract {
             // Any kind of exception is ok here.
             'switch-final-commit-forgotten-in-subcommand' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-final-commit-forgotten-in-subcommand.php',
-                'errorOutput' => "'switchme-l3' >>> Config error: you must specify at least 2 subcommand configs.",
+                'errorOutput' => "'switchme-l3' subcommand >>> Config error: duplicate value 'test31'.",
             ],
         ];
     }

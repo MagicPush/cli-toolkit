@@ -229,10 +229,10 @@ class Config {
         if (mb_strlen($subcommandValue) < 1) {
             throw new ConfigException("{$errorMessagePrefix} empty value; must contain at least 1 symbol.");
         }
-        if (!preg_match('/^[a-z][a-z0-9_\-]+$/u', $subcommandValue)) {
+        if (!preg_match('/^[a-z][a-z0-9_\-:]+$/u', $subcommandValue)) {
             throw new ConfigException(
                 "{$errorMessagePrefix} invalid characters in value '{$subcommandValueFormatted}'. Must start with"
-                . ' latin (lower); the rest symbols may be of latin (lower), digit, underscore or hyphen.',
+                . ' a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             );
         }
 
@@ -416,21 +416,15 @@ class Config {
             throw new ConfigException("{$errorMessagePrefix} the subcommand switch was commited already.");
         }
 
-        if (count($subcommandConfigsByValues) < 2) {
-            throw new ConfigException("{$errorMessagePrefix} you must specify at least 2 subcommand configs.");
-        }
-
 
         // ==== PROCESSING ====
-
-        $subcommandValues = array_keys($subcommandConfigsByValues);
 
         foreach ($subcommandConfigsByValues as $branchConfig) {
             $branchConfig->commitSubcommandSwitch();
         }
 
         // Setting up possible values for autocomplete and validation.
-        $subcommandSwitch->allowedValues(array_fill_keys($subcommandValues, null));
+        $subcommandSwitch->allowedValues(array_fill_keys(array_keys($subcommandConfigsByValues), null));
 
         // Restricting further attempts to commit again.
         $this->isSubcommandSwitchCommited = true;

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace MagicPush\CliToolkit\Tools\CliToolkit\Classes;
+
 use MagicPush\CliToolkit\TerminalFormatter;
 
 final class ScriptFormatter extends TerminalFormatter {
