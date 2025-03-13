@@ -378,9 +378,9 @@ TEXT;
 
         $pathFile = $this->pathDirectoryBase . '/init.php';
         if (false === file_put_contents($pathFile, $contents)) {
-            throw new RuntimeException('Unable to create an init script: ' . var_export($pathFile, true));
+            throw new RuntimeException('Unable to store an init script: ' . var_export($pathFile, true));
         }
-        $this->log('Init script has been created: ' . $this->formatter->pathProcessed($pathFile));
+        $this->log('Init script has been written: ' . $this->formatter->pathProcessed($pathFile));
 
         return $this;
     }
@@ -423,9 +423,9 @@ TEXT;
         $launcherFileName = static::LAUNCHER_NAME;
         $pathLauncher     = $this->pathDirectoryBase . "/{$launcherFileName}.php";
         if (false === file_put_contents($pathLauncher, $contents)) {
-            throw new RuntimeException('Unable to create a launcher script: ' . var_export($pathLauncher, true));
+            throw new RuntimeException('Unable to store a launcher script: ' . var_export($pathLauncher, true));
         }
-        $this->log('Launcher script has been created: ' . $this->formatter->pathProcessed($pathLauncher));
+        $this->log('Launcher script has been written: ' . $this->formatter->pathProcessed($pathLauncher));
 
         $scriptAlias    = static::LAUNCHER_ALIAS_PREFIX . $launcherFileName;
         $pathCompletion = $this->pathDirectoryBase . '/completion.sh';
@@ -435,10 +435,11 @@ TEXT;
                 Completion::generateAutocompleteScript($scriptAlias, $pathLauncher),
             )
         ) {
-            throw new RuntimeException('Unable to create a completion script: ' . var_export($pathCompletion, true));
+            throw new RuntimeException('Unable to store a completion script: ' . var_export($pathCompletion, true));
         }
         $this->log(
-            PHP_EOL . 'Enable completion for "' . $this->formatter->pathMentioned($scriptAlias) . '":'
+            PHP_EOL . 'Completion script has been written: '  . $this->formatter->pathProcessed($pathCompletion)
+                . PHP_EOL . 'Enable completion for "' . $this->formatter->pathMentioned($scriptAlias) . '":'
                 . PHP_EOL . $this->formatter->command("source {$pathCompletion}"),
         );
 
@@ -510,7 +511,7 @@ namespace {$namespace};
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-class {$className} extends ScriptAbstract {
+final class {$className} extends ScriptAbstract {
     public static function getConfiguration(): BuilderInterface {
         return static::newConfig()
             ->newOption('--%%OPTION_NAME%%')
@@ -556,7 +557,7 @@ TEXT;
 
             $scriptPath = $directoryPath . "/{$className}.php";
             if (false === file_put_contents($scriptPath, $scriptContents)) {
-                throw new RuntimeException('Unable to create a launcher script: ' . var_export($scriptPath, true));
+                throw new RuntimeException('Unable to create a class script: ' . var_export($scriptPath, true));
             }
             $this->log(
                 sprintf("%{$scriptsCountLength}d. ", $scriptNumber) . $this->formatter->pathMentioned($className) . ': '
