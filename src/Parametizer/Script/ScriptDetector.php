@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer\Script;
 
 use FilesystemIterator;
-use PhpToken;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -77,45 +76,26 @@ class ScriptDetector {
                     continue;
                 }
 
-                $fileNamespace            = null;
-                $fileClassName            = null;
-                $isTokenDetectedNamespace = false;
-                $isTokenDetectedClass     = false;
-                foreach (PhpToken::tokenize($fileContents) as $fileToken) {
-                    if (T_ABSTRACT === $fileToken->id) {
-                        break;
-                    }
-
-                    if ($fileToken->isIgnorable()) {
-                        continue;
-                    }
-
-                    if (null === $fileNamespace) {
-                        if ($isTokenDetectedNamespace && T_NAME_QUALIFIED === $fileToken->id) {
-                            $fileNamespace = $fileToken->text;
-                        } elseif (T_NAMESPACE === $fileToken->id) {
-                            $isTokenDetectedNamespace = true;
-                        }
-                    }
-
-                    if (null === $fileClassName) {
-                        if ($isTokenDetectedClass && T_STRING === $fileToken->id) {
-                            $fileClassName = $fileToken->text;
-
-                            // Nothing useful for us below this token,
-                            // e.g. 'namespace' can (should) not be defined below a class declaration.
-                            break;
-                        } elseif (T_CLASS === $fileToken->id) {
-                            $isTokenDetectedClass = true;
-                        }
-                    }
+                if (preg_match('/' . PHP_EOL . 'abstract [a-z ]*class .+' . PHP_EOL . '?{/', $fileContents)) {
+                    continue;
                 }
+
+                $fileNamespace = null;
+                if (preg_match('/' . PHP_EOL . 'namespace\s+(\S+);' . PHP_EOL . '/', $fileContents, $matches)) {
+                    $fileNamespace = $matches[1];
+                }
+
+                if (!preg_match('/' . PHP_EOL . '[a-z ]*class (.+) extends .+' . PHP_EOL . '?{/', $fileContents, $matches)) {
+                    continue;
+                }
+                $fileClassName = $matches[1];
+
                 if (null === $fileClassName) {
                     continue;
                 }
 
                 $fullyQualifiedName = '';
-                if ($fileNamespace) {
+                if (null !== $fileNamespace) {
                     $fullyQualifiedName .= "{$fileNamespace}\\";
                 }
                 $fullyQualifiedName .= $fileClassName;
