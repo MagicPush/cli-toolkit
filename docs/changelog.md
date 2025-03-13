@@ -14,8 +14,14 @@ This change log references the repository changes and releases, which respect [s
 
 1. [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php) as a basement for
    class-based Parametizer-powered scripts.
+1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/Scripts/CliToolkitScriptAbstract.php) as a basement for all
+   [tools/cli-toolkit](../tools/cli-toolkit) scripts.
 1. [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) for different script types auto-detection.
    For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts are supported.
+1. [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) as a tool
+   to test the performance and other "law of large numbers" cases, when a launcher includes lots of class scripts.
+1. `ScriptFormatter::note()` is added initially for
+   [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
 1. Removed min 2 subcommands constraint from `Config::commitSubcommandSwitch()`.

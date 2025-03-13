@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\TerminalFormatter;
 
-class TerminalFormatterShowcase extends ScriptAbstract {
+class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
     private const string EXAMPLE_SUBSTRING = '1iI 0oO';
     private const string CELL_PAD_VALUE    = ' ';
     private const string COLUMN_MARGIN     = ' ';

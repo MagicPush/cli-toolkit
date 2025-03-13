@@ -30,4 +30,8 @@ final class ScriptFormatter extends TerminalFormatter {
     public function command(string $text): string {
         return $this->apply($text, [static::STYLE_DIM]);
     }
+
+    public function note(string $text): string {
+        return $this->apply($text, [static::FONT_LIGHT_MAGENTA]);
+    }
 }

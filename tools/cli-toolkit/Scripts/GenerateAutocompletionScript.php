@@ -9,7 +9,6 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -17,7 +16,7 @@ use RuntimeException;
 use SplFileInfo;
 use Throwable;
 
-class GenerateAutocompletionScript extends ScriptAbstract {
+class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
     public static function getConfiguration(): BuilderInterface {
         $helpFormatter = HelpFormatter::createForStdOut();
 
@@ -131,6 +130,7 @@ class GenerateAutocompletionScript extends ScriptAbstract {
                 if (
                     !str_contains($contents, 'Parametizer::newConfig(')
                     || !str_contains($contents, '->run()')
+                    || preg_match('/' . PHP_EOL . 'class .+' . PHP_EOL . '?{/', $contents)
                 ) {
                     continue;
                 }
@@ -150,9 +150,17 @@ class GenerateAutocompletionScript extends ScriptAbstract {
                 echo PHP_EOL;
             }
         }
+
+        $outputFilepath = $this->request->getParamAsString('output-filepath');
+
         if (!$scriptPathsByAliases) {
             if ($isVerbose) {
                 echo $executionFormatter->error('No scripts were found') . PHP_EOL;
+
+                // Let's try removing the output file (if exists) to indicate the situation more explicitly:
+                if (file_exists($outputFilepath)) {
+                    unlink($outputFilepath);
+                }
             }
 
             exit(Parametizer::ERROR_EXIT_CODE);
@@ -162,7 +170,6 @@ class GenerateAutocompletionScript extends ScriptAbstract {
             echo $executionFormatter->section('=== GENERATING A FILE with aliases and auto-complete scripts ===')
                 . PHP_EOL . PHP_EOL;
         }
-        $outputFilepath  = $this->request->getParamAsString('output-filepath');
         $outputDirectory = dirname($outputFilepath);
         if (!file_exists($outputDirectory)) {
             if (!mkdir(directory: $outputDirectory, recursive: true)) {
