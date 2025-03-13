@@ -95,6 +95,12 @@ The list of plans and ideas for future development.
        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
        1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+    1. - [ ] Test performance on many files.
+       1. - [x] Create test classes generator to generate ~ 50 - 500 files.
+       1. - [ ] Think if [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) needs caching.
+       1. - [ ] Compare file tokenizer vs regexp.
+       1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
+       1. - [ ] Test `EnvironmentConfig` search performance.
     1. - [ ] Support different script (subcommand) naming.
        1. - [x] Composite names: 2 parts at least - `section:script` (like in Symfony).
             Single named scripts should be allowed too.
@@ -184,11 +190,6 @@ The list of plans and ideas for future development.
         * Generate default names by minimal unambiguous paths.
         * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
           and add those to a launcher available commands list.
-    1. - [ ] Test performance on many files.
-        1. - [ ] Think if [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) needs caching.
-        1. - [ ] Create test classes generator to generate ~ 50 - 500 files.
-        1. - [ ] Compare file tokenizer vs regexp.
-        1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
     1. - [x] Remove now obsolete "plain" scripts from `tools/cli-toolkit`
          or replace repeating code with script classes usages.
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying

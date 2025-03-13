@@ -28,8 +28,10 @@ abstract class ScriptAbstract {
         $previousSymbolUpper = null;
         $pendingAbbreviation = '';
         foreach (mb_str_split($classShortName) as $symbol) {
-            if (ctype_upper($symbol)) {
-                $symbol = mb_strtolower($symbol);
+            $symbolToLower = mb_strtolower($symbol);
+
+            if ($symbol !== $symbolToLower) {
+                $symbol = $symbolToLower;
                 if (null !== $previousSymbolUpper) {
                     $pendingAbbreviation .= $previousSymbolUpper;
                 }

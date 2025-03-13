@@ -7,13 +7,11 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RuntimeException;
 use Throwable;
 
-class GenerateEnvConfig extends ScriptAbstract {
-
+class GenerateEnvConfig extends CliToolkitScriptAbstract {
     public static function getConfiguration(): BuilderInterface {
         return static::newConfig()
             ->description('
