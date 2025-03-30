@@ -143,7 +143,7 @@ The list of plans and ideas for future development.
     1. - [ ] Add manual short description support - in case automatic short description is not so good.
         1. - [ ] Add a short description to built-in subcommands where needed.
     1. - [ ] Refactoring stage:
-        1. - [ ] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
+        1. - [x] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
         1. - [ ] Apply `TestUtils::newConfig()` in all test scripts.
         1. - [ ] Remove `@noinspection SpellCheckingInspection` where possible
              by replacing substrings with "more typo friendly".
