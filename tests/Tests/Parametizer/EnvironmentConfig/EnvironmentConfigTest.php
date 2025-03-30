@@ -38,11 +38,11 @@ class EnvironmentConfigTest extends TestCaseAbstract {
 Need more parameters
 
 
-  -X, --help      Show full help page.
+  -X, --help             Show full help page.
 
-  <switchme-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-  (required)      Subcommand help: <switchme-l1> --help
-                           ... or: help <switchme-l1>
+  <subcommand-name-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+  (required)             Subcommand help: <subcommand-name-l1> --help
+                                  ... or: help <subcommand-name-l1>
 
 STDERR_OUTPUT,
             ],
@@ -52,11 +52,11 @@ STDERR_OUTPUT,
 Need more parameters
 
 
-  -y, --help         Show full help page.
+  -y, --help                Show full help page.
 
-  <switchme-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-  (required)         Subcommand help: <switchme-l2-s2> --help
-                              ... or: help <switchme-l2-s2>
+  <subcommand-name-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+  (required)                Subcommand help: <subcommand-name-l2-s2> --help
+                                     ... or: help <subcommand-name-l2-s2>
 
 STDERR_OUTPUT,
             ],

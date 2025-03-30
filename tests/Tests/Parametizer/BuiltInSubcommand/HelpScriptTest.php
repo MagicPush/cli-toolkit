@@ -32,7 +32,6 @@ class HelpScriptTest extends TestCaseAbstract {
     }
 
     /**
-     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideShowHelpForSubcommand(): array {
@@ -87,10 +86,12 @@ class HelpScriptTest extends TestCaseAbstract {
                 'parametersString' => 'avocado-is-one-of-popular-fruits-you-see-in-menu',
                 'expectedOutput'   => <<<TEXT
 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                  aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                  sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  Avocado is an edible fruit. Avocados are native to the Western Hemisphere from Mexico south to the Andean regions
+                  and are widely grown in warm climates. Avocado fruits have greenish or yellowish flesh with a buttery consistency
+                  and a rich nutty flavour. They are often eaten in salads, and in many parts of the world they are eaten
+                  as a dessert. Mashed avocado is the principal ingredient of guacamole, a characteristic sauce-like condiment
+                  in Mexican cuisine. Avocados provide thiamine, riboflavin, and vitamin A, and in some varieties the flesh contains
+                  as much as 25 percent unsaturated oil.
 
                 USAGE
 
@@ -111,13 +112,13 @@ class HelpScriptTest extends TestCaseAbstract {
 
                 USAGE
 
-                  subcommands-with-name-sections.php blue:flower:tea [--godmode]
+                  subcommands-with-name-sections.php blue:flower:tea [--god-mode]
 
                 OPTIONS
 
-                  --help      Show full help page.
+                  --help       Show full help page.
 
-                  --godmode   IDDQD
+                  --god-mode   I-D-D-Q-D
 
 
                 TEXT,

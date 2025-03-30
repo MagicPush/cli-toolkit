@@ -16,19 +16,19 @@ require_once __DIR__ . '/../../../init-console.php';
  */
 
 TestUtils::newConfig()
-    ->newSubcommandSwitch('switchme')
+    ->newSubcommandSwitch('subcommand-name')
 
     ->newSubcommand(
         'test11',
         TestUtils::newConfig()
-            ->newSubcommandSwitch('switchme-l2')
+            ->newSubcommandSwitch('subcommand-name-l2')
             ->newSubcommand('test21', TestUtils::newConfig())
             ->newSubcommand('test22', TestUtils::newConfig())
 
             ->newSubcommand(
                 'test23',
                 TestUtils::newConfig()
-                    ->newSubcommandSwitch('switchme-l3')
+                    ->newSubcommandSwitch('subcommand-name-l3')
                     ->newSubcommand('test31', TestUtils::newConfig())
                     ->newSubcommand('test31', TestUtils::newConfig())
                     // Same subcommand name, exception will be thrown.

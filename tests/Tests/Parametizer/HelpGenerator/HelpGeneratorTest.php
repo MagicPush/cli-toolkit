@@ -31,7 +31,6 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see VariableBuilderAbstract::allowedValues()
      */
     public function testScriptHelp(): void {
-        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
 
@@ -55,7 +54,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
           lots-of-params.php --opt-required=5 arg -fg C asd zxc
 
           Usage long example with description:
-          lots-of-params.php argument --opt-required=pink --opt-default=weee --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3
+          lots-of-params.php argument --opt-required=pink --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3
 
         OPTIONS
 
@@ -103,16 +102,15 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see HelpGenerator::getFullHelp()
      */
     public function testSubcommandScriptHelpFirstLevel(): void {
-        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
 
         USAGE
 
-          deep-nesting.php <switchme>
+          deep-nesting.php <subcommand-name>
 
           Very deep call:
-          deep-nesting.php test11 --name-l2=supername test23 --name-l3=nameLevelThree test32
+          deep-nesting.php test11 --name-l2=superName test23 --name-l3=nameLevelThree test32
 
         OPTIONS
 
@@ -120,10 +118,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         ARGUMENTS
 
-          <switchme>   LEVEL 1
-          (required)   Allowed values: 4 subcommands available (see 'list' subcommand output)
-                       Subcommand help: <switchme> --help
-                                ... or: help <switchme>
+          <subcommand-name>   LEVEL 1
+          (required)          Allowed values: 4 subcommands available (see 'list' subcommand output)
+                              Subcommand help: <subcommand-name> --help
+                                       ... or: help <subcommand-name>
 
 
         HELP,
@@ -143,7 +141,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         USAGE
 
-          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] <switchme-l3>
+          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] <subcommand-name-l3>
           deep-nesting.php test11 test23 test31
 
           Very deep call:
@@ -157,10 +155,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         ARGUMENTS
 
-          <switchme-l3>   LEVEL 3
-          (required)      Allowed values: 4 subcommands available (see 'list' subcommand output)
-                          Subcommand help: <switchme-l3> --help
-                                   ... or: help <switchme-l3>
+          <subcommand-name-l3>   LEVEL 3
+          (required)             Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                 Subcommand help: <subcommand-name-l3> --help
+                                          ... or: help <subcommand-name-l3>
 
 
         HELP,
@@ -174,7 +172,6 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see HelpGenerator::getShortDescription()
      */
     public function testSubcommandHelpShortDescription(): void {
-        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
              Built-in subcommands:
@@ -184,7 +181,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
              --
                 long-string                   Here is a sort of... short description.
                 long-string-short-sentence    Too short to stop here. So the description continues for some more
-                multistring                   Short description on the first line.
+                multiline                     Short description on the first line.
                 unbreakable-long-line         Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
 
             HELP,
@@ -196,7 +193,6 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         // ... And let's check the full descriptions to show the difference between short and long versions.
 
-        /** @noinspection SpellCheckingInspection */
         assertStringStartsWith(
             <<<HELP
 
@@ -206,7 +202,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'multistring --' . Config::OPTION_NAME_HELP,
+                'multiline --' . Config::OPTION_NAME_HELP,
             )
                 ->getStdOut(),
         );

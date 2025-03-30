@@ -137,16 +137,16 @@ The list of plans and ideas for future development.
             * The `help` subcommand should be added automatically for each config with a subcommand.
             * Possible values are all available subcommand names for the same switch.
         1. - [x] Update [changelog.md](changelog.md)
+    1. - [x] Refactoring stage:
+        1. - [x] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
+        1. - [x] Apply `TestUtils::newConfig()` in all test scripts.
+        1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
+             by replacing substrings with "more typo friendly".
     1. - [ ] Make `list` as the default value for a subcommand switch.
     1. - [ ] Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
          to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
     1. - [ ] Add manual short description support - in case automatic short description is not so good.
         1. - [ ] Add a short description to built-in subcommands where needed.
-    1. - [ ] Refactoring stage:
-        1. - [x] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
-        1. - [x] Apply `TestUtils::newConfig()` in all test scripts.
-        1. - [ ] Remove `@noinspection SpellCheckingInspection` where possible
-             by replacing substrings with "more typo friendly".
     1. - [ ] Support different script (subcommand) naming.
         1. - [x] Composite names: 2 parts at least - `section:script` (like in Symfony).
              Single named scripts should be allowed too.

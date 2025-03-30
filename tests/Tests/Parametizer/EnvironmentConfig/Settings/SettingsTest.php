@@ -67,10 +67,10 @@ class SettingsTest extends TestCaseAbstract {
 
     /**
      * @return array[]
-     * @noinspection SpellCheckingInspection
      */
     public static function provideHelpGeneratorShortDescriptionLength(): array {
         return [
+            /** @noinspection SpellCheckingInspection */
             // Raw cut: 'Just a very long single-line string that has lots of charact'. Graceful cut:
             'graceful-cut' => [
                 'parametersString'        => '0 60',
