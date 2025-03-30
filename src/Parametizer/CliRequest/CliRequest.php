@@ -12,7 +12,12 @@ class CliRequest {
     /**
      * @param mixed[] $params
      */
-    public function __construct(protected readonly Config $config, protected readonly array $params = []) { }
+    public function __construct(
+        public readonly Config $config,
+        protected readonly array $params,
+        public readonly ?self $parent = null,
+    ) {
+    }
 
     /**
      * @return mixed[]
@@ -33,17 +38,70 @@ class CliRequest {
     }
 
     /**
-     * Returns a subcommand request by a name specified for a subcommand switch parameter.
+     * Returns a subcommand name specified in a subcommand switch parameter,
+     * or `null` if there is no subcommand switch.
      */
-    public function getSubcommandRequest(string $subcommandName): static {
+    public function getSubcommandRequestName(): ?string {
+        $subcommandSwitchName = $this->config->getSubcommandSwitchName();
+        if (null === $subcommandSwitchName) {
+            return null;
+        }
+
+        return $this->getParamAsString($subcommandSwitchName);
+    }
+
+    /**
+     * Returns a subcommand request by a name specified in a subcommand switch parameter
+     * or `null` if there is no subcommand switch.
+     */
+    public function getSubcommandRequest(): ?static {
+        $subcommandName = $this->getSubcommandRequestName();
+        if (null === $subcommandName) {
+            return null;
+        }
+
         $subcommandConfig = $this->config->getBranch($subcommandName);
-        if (!$subcommandConfig) {
+        if (null === $subcommandConfig) {
             throw new LogicException(
                 "Subcommand '" . HelpFormatter::createForStdErr()->paramTitle($subcommandName) . "' not found",
             );
         }
 
-        return new static($subcommandConfig, $this->getParam($subcommandName));
+        $subcommandParameterValues = $this->getParam($subcommandName);
+        self::validateValueIsArray(
+            $this->config->getSubcommandSwitchName() . ' > ' . $subcommandName,
+            $subcommandParameterValues,
+        );
+
+        return new static($subcommandConfig, $subcommandParameterValues, $this);
+    }
+
+    public function executeBuiltInSubcommandIfRequested(): void {
+        $innermostSubcommandName          = null;
+        $innermostSubcommandParentRequest = null;
+        $innermostSubcommandRequest       = $this;
+        while ($subcommandName = $innermostSubcommandRequest->getSubcommandRequestName()) {
+            $innermostSubcommandName          = $subcommandName;
+            $innermostSubcommandParentRequest = $innermostSubcommandRequest;
+            $innermostSubcommandRequest       = $innermostSubcommandParentRequest->getSubcommandRequest();
+        }
+
+        // No parent request means there was no subcommand request.
+        if (null === $innermostSubcommandParentRequest) {
+            return;
+        }
+
+        $builtInSubcommandClass = $innermostSubcommandParentRequest->config
+            ->getBuiltInSubcommandClass($innermostSubcommandName);
+        if (null === $builtInSubcommandClass) {
+            return;
+        }
+
+        (new $builtInSubcommandClass($innermostSubcommandRequest))->execute();
+
+        // For a built-in subcommand we should not execute any code outside of that subcommand.
+        // So, for instance, a subcommand launcher script will not try to execute a built-in subcommand twice.
+        exit;
     }
 
     private static function validateValueIsArray(string $paramName, mixed $paramValue): void {

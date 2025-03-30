@@ -48,6 +48,8 @@ class Parametizer {
         $request = $requestProcessor->load(new Parser());
         $requestProcessor->validate();
 
+        $request->executeBuiltInSubcommandIfRequested();
+
         return $request;
     }
 

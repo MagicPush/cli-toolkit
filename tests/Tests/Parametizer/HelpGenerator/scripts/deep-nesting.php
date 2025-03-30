@@ -15,10 +15,12 @@ Parametizer::newConfig(throwOnException: true)
     )
 
     ->newSubcommandSwitch('switchme')
+    ->description('LEVEL 1')
     ->newSubcommand(
         'test11',
         Parametizer::newConfig(throwOnException: true)
             ->newSubcommandSwitch('switchme-l2')
+            ->description('LEVEL 2')
             ->newSubcommand('test21', Parametizer::newConfig(throwOnException: true))
             ->newSubcommand('test22', Parametizer::newConfig(throwOnException: true))
             ->newSubcommand(
@@ -37,6 +39,7 @@ Parametizer::newConfig(throwOnException: true)
                     )
 
                     ->newSubcommandSwitch('switchme-l3')
+                    ->description('LEVEL 3')
                     ->newSubcommand('test31', Parametizer::newConfig(throwOnException: true))
                     ->newSubcommand('test32', Parametizer::newConfig(throwOnException: true))
 

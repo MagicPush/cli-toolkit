@@ -11,6 +11,7 @@ $envConfig = new EnvironmentConfig();
 
 $envConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop = (int) $argv[2];
 $envConfig->helpGeneratorShortDescriptionCharsMax               = (int) $argv[3];
+unset($_SERVER['argv'][2], $_SERVER['argv'][3]);
 
 Parametizer::newConfig($envConfig, throwOnException: true)
     ->newSubcommandSwitch('switchme')

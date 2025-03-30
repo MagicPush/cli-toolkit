@@ -28,7 +28,6 @@ class HelpGenerator {
             . $this->getUsagesBlock()
             . static::getParamsBlock($this->formatter, $this->config->getOptions(), 'OPTIONS')
             . static::getParamsBlock($this->formatter, $this->config->getArguments(), 'ARGUMENTS')
-            . $this->getSubcommandsBlock()
             . PHP_EOL;
     }
 
@@ -268,69 +267,69 @@ class HelpGenerator {
         return static::getParamsBlock(HelpFormatter::createForStdErr(), $invalidParams);
     }
 
-    protected function getSubcommandsBlock(): string {
-        $lines = [];
-        foreach ($this->config->getBranches() as $config) {
-            // For subcommands short descriptions we want to use parent (subcommands holder) config:
-            $envConfig = $this->config->getEnvConfig();
-            $title     = static::getShortDescription(
-                $config->getDescription(),
-                $envConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop,
-                $envConfig->helpGeneratorShortDescriptionCharsMax,
-            );
-
-            $lines[] = [$this->getUsageTemplate($config), $title];
-        }
-
-        return static::makeDefinitionList($this->formatter, $lines, 'COMMANDS');
-    }
-
     protected static function makeParamDescription(HelpFormatter $formatter, ParameterAbstract $param): string {
         $description = $param->getDescription();
         if ($description) {
             $description = static::unindent($description);
         }
 
-        // Print allowed values list.
-        // Print in long format if there is a description for at least one value. Otherwise, print values in one line.
-        $stringValues = [];
-        $isLongFormat = false;
-        foreach ($param->getAllowedValues() as $value => $valueDescription) {
-            $stringValue = static::convertValueToString($value);
-            if (null !== $stringValue) {
-                $stringValues[$stringValue] = $valueDescription;
-                if ($valueDescription) {
-                    $isLongFormat = true;
-                }
-            }
-        }
-        if ($stringValues) {
-            $description .= ($description !== '') ? PHP_EOL : '';
-            if ($isLongFormat) {
-                $maxLength   = max(array_map('mb_strlen', array_keys($stringValues)));
-                $description .= $formatter->helpNote('Allowed values:');
-                foreach ($stringValues as $value => $valueDescription) {
-                    $description .= PHP_EOL . ' - '
-                        . $formatter->paramValue(
-                            $valueDescription ? mb_str_pad((string) $value, $maxLength + 1) : $value
-                        );
-                    if ($valueDescription) {
-                        $description .= $valueDescription;
-                    }
-                }
-            } else {
-                $description .= $formatter->helpNote('Allowed values: ')
-                    . implode(', ', static::getPossibleValuesFormatted($formatter, array_keys($stringValues)));
-            }
-        }
+        $allowedValuesHeaderFormatted = $formatter->helpNote('Allowed values:');
 
         if ($param->isSubcommandSwitch()) {
-            $description .= PHP_EOL . $formatter->helpNote('Subcommand help: ')
-                . '<script_name> ... <subcommand value> --' . Config::OPTION_NAME_HELP;
+            $description .= ('' !== $description) ? PHP_EOL : '';
+
+            $subcommandListFormatted = $formatter->paramValue(Config::PARAMETER_NAME_LIST);
+
+            $description .= $allowedValuesHeaderFormatted
+                . ' ' . $formatter->paramRequired((string) count($param->getAllowedValues())) . ' subcommands available'
+                . " (see '{$subcommandListFormatted}' subcommand output)";
+
+            $subcommandDescriptionHeader    = 'Subcommand help:';
+            $subcommandDescriptionHeaderAlt =
+                mb_str_pad('... or:', mb_strlen($subcommandDescriptionHeader), ' ', STR_PAD_LEFT);
+
+            $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeader)
+                . " <{$param->getName()}> " . $formatter->paramValue('--' . Config::OPTION_NAME_HELP);
+            $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeaderAlt)
+                . ' ' . $formatter->paramValue(Config::OPTION_NAME_HELP) . " <{$param->getName()}>";
+        } elseif (!$param->areAllowedValuesHiddenFromHelp()) {
+            // Print allowed values list.
+            // Print in long format if there is a description for at least one value. Otherwise, print values in one line.
+            $stringValues = [];
+            $isLongFormat = false;
+            foreach ($param->getAllowedValues() as $value => $valueDescription) {
+                $stringValue = static::convertValueToString($value);
+                if (null !== $stringValue) {
+                    $stringValues[$stringValue] = $valueDescription;
+                    if ($valueDescription) {
+                        $isLongFormat = true;
+                    }
+                }
+            }
+            if ($stringValues) {
+                $description .= ('' !== $description) ? PHP_EOL : '';
+                $description .= $allowedValuesHeaderFormatted;
+
+                if ($isLongFormat) {
+                    $maxLength   = max(array_map('mb_strlen', array_keys($stringValues)));
+                    foreach ($stringValues as $value => $valueDescription) {
+                        $description .= PHP_EOL . ' - '
+                            . $formatter->paramValue(
+                                $valueDescription ? mb_str_pad((string) $value, $maxLength + 1) : $value
+                            );
+                        if ($valueDescription) {
+                            $description .= $valueDescription;
+                        }
+                    }
+                } else {
+                    $description .= ' '
+                        . implode(', ', static::getPossibleValuesFormatted($formatter, array_keys($stringValues)));
+                }
+            }
         }
 
         if ($param->isArray()) {
-            $description .= ($description !== '') ? PHP_EOL : '';
+            $description .= ('' !== $description) ? PHP_EOL : '';
             $description .= $formatter->helpImportant("(multiple values allowed)");
         }
 
@@ -342,7 +341,7 @@ class HelpGenerator {
             $defaultValue = static::convertValueToString($default);
             if (null !== $defaultValue) {
                 $defaultValue = $formatter->paramValue($defaultValue);
-                $description  .= ($description !== '') ? PHP_EOL : '';
+                $description  .= ('' !== $description) ? PHP_EOL : '';
                 $description  .= $formatter->helpNote("Default: {$defaultValue}");
             }
         }
@@ -376,7 +375,8 @@ class HelpGenerator {
     }
 
     /**
-     * @param array[] $titleAndDescriptionLines
+     * @param array[] $titleAndDescriptionLines Each element is an array:
+     *                                          [0 => (string) title, 1 => (string) description]
      */
     protected static function makeDefinitionList(
         HelpFormatter $formatter,
@@ -388,7 +388,7 @@ class HelpGenerator {
         }
 
         $text = PHP_EOL;
-        if ($title !== '') {
+        if ('' !== $title) {
             $text .= $formatter->section($title) . PHP_EOL;
         }
 
@@ -542,20 +542,6 @@ class HelpGenerator {
             },
             $values,
         );
-    }
-
-    /**
-     * Returns main script name.
-     *
-     * Useful when provided config is related to a subcommand.
-     */
-    protected static function getBaseScriptName(Config $config): string {
-        $mainConfig = $config;
-        while ($parentConfig = $mainConfig->getParent()) {
-            $mainConfig = $parentConfig;
-        }
-
-        return $mainConfig->getScriptName();
     }
 
     /**

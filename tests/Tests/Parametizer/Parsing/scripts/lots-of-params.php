@@ -23,7 +23,7 @@ $request = Parametizer::newConfig(throwOnException: true)
 
     ->newArrayOption('--opt-list', '-l')
     ->description('List of values')
-    ->allowedValues(range(100, 800, 50))
+    ->allowedValues(range(100, 800, 50), true) // Values are hidden from help, but not from validation.
 
     ->newOption('--opt-no-default')
 

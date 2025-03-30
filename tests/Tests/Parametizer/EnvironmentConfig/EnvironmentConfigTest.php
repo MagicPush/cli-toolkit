@@ -40,8 +40,9 @@ Need more parameters
 
   -X, --help      Show full help page.
 
-  <switchme-l1>   Allowed values: conf-l2-s1, conf-l2-s2
-  (required)      Subcommand help: <script_name> ... <subcommand value> --help
+  <switchme-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+  (required)      Subcommand help: <switchme-l1> --help
+                           ... or: help <switchme-l1>
 
 STDERR_OUTPUT,
             ],
@@ -53,8 +54,9 @@ Need more parameters
 
   -y, --help         Show full help page.
 
-  <switchme-l2-s2>   Allowed values: conf-l3-s1, conf-l3-s2
-  (required)         Subcommand help: <script_name> ... <subcommand value> --help
+  <switchme-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+  (required)         Subcommand help: <switchme-l2-s2> --help
+                              ... or: help <switchme-l2-s2>
 
 STDERR_OUTPUT,
             ],

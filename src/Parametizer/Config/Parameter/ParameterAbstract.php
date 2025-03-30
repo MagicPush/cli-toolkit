@@ -30,7 +30,8 @@ abstract class ParameterAbstract {
     protected $completion;
 
     /** @var string[]|null[] */
-    protected array $allowedValues = [];
+    protected array $allowedValues                  = [];
+    protected bool  $areAllowedValuesHiddenFromHelp = false;
 
     public function __construct(string $name) {
         $errorMessagePrefix = "'" . HelpFormatter::createForStdErr()->paramTitle($name) . "' >>> Config error:";
@@ -149,7 +150,7 @@ abstract class ParameterAbstract {
     /**
      * @param string[]|null[] $allowedValues
      */
-    public function allowedValues(array $allowedValues): static {
+    public function allowedValues(array $allowedValues, bool $areHiddenFromHelp = false): static {
         if (!empty($allowedValues)) {
             $this->validator(fn($value) => array_key_exists($value, $allowedValues));
             $this->completion(array_keys($allowedValues));
@@ -158,7 +159,8 @@ abstract class ParameterAbstract {
             $this->completion(null);
         }
 
-        $this->allowedValues = $allowedValues;
+        $this->allowedValues                  = $allowedValues;
+        $this->areAllowedValuesHiddenFromHelp = $areHiddenFromHelp;
 
         return $this;
     }
@@ -168,6 +170,10 @@ abstract class ParameterAbstract {
      */
     public function getAllowedValues(): array {
         return $this->allowedValues;
+    }
+
+    public function areAllowedValuesHiddenFromHelp(): bool {
+        return $this->areAllowedValuesHiddenFromHelp;
     }
 
     public function default(mixed $default): static {

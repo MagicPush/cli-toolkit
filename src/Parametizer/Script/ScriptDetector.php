@@ -12,12 +12,18 @@ use SplFileInfo;
 
 class ScriptDetector {
     /** @var string[] */
-    protected array $searchClassPaths = [];
+    protected array $searchedClassPaths = [];
 
-    /** @var array<string, ScriptAbstract> (string) file path => (string) Fully Qualified Class name */
+    /**
+     * @var array<string, ScriptAbstract|string> (string) file path =>
+     *                                           (string) Fully Qualified class name that extends {@see ScriptAbstract}
+     */
     protected array $detectedFQClassNames = [];
 
-    /** @var array<string, ScriptAbstract> (string) script name => (string) Fully Qualified Class name */
+    /**
+     * @var array<string, ScriptAbstract|string> (string) script name =>
+     *                                           (string) Fully Qualified class name that extends {@see ScriptAbstract}
+     */
     protected array $detectedFQClassNamesByScriptNames = [];
 
 
@@ -31,20 +37,31 @@ class ScriptDetector {
 
     public function __construct(protected bool $throwOnException = false) { }
 
-    public function addSearchClassPath(string $path): static {
+    protected function validateSearchPath(string $path): ?string {
         $pathValidated = realpath(trim($path));
-        if (false !== $pathValidated && is_readable($pathValidated)) {
-            $this->searchClassPaths[] = $pathValidated;
-        } elseif ($this->throwOnException) {
-            throw new RuntimeException('Script detector >>> Path is unreadable: ' . var_export($path, true));
+        if (false === $pathValidated || !is_readable($pathValidated)) {
+            if ($this->throwOnException) {
+                throw new RuntimeException('Script detector >>> Path is unreadable: ' . var_export($path, true));
+            }
+
+            $pathValidated = null;
+        }
+
+        return $pathValidated;
+    }
+
+    public function searchClassPath(string $path): static {
+        $pathValidated = $this->validateSearchPath($path);
+        if (null !== $pathValidated) {
+            $this->searchedClassPaths[] = $pathValidated;
         }
 
         return $this;
     }
 
-    public function addSearchClassPaths(array $paths): static {
+    public function searchClassPaths(array $paths): static {
         foreach ($paths as $path) {
-            $this->addSearchClassPath($path);
+            $this->searchClassPath($path);
         }
 
         return $this;
@@ -53,7 +70,7 @@ class ScriptDetector {
     public function detect(): static {
         $this->clearCache();
 
-        foreach ($this->searchClassPaths as $searchClassPath) {
+        foreach ($this->searchedClassPaths as $searchClassPath) {
             /** @var SplFileInfo[] $files */
             $files = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($searchClassPath, FilesystemIterator::SKIP_DOTS),
@@ -64,7 +81,7 @@ class ScriptDetector {
                 }
 
                 $filePath = $file->getRealPath();
-                if (false === $filePath) {
+                if (false === $filePath || !$file->isReadable()) {
                     continue;
                 }
 
@@ -112,7 +129,9 @@ class ScriptDetector {
     }
 
     /**
-     * @return array<string, ScriptAbstract> (string) script name => (string) Fully Qualified Class name
+     * @return array<string, ScriptAbstract|string> (string) script name =>
+     *                                              (string) Fully Qualified class name
+     *                                              that extends {@see ScriptAbstract}
      */
     public function getFQClassNamesByScriptNames(): array {
         if ($this->detectedFQClassNamesByScriptNames) {

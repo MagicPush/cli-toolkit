@@ -14,7 +14,7 @@ class SmartAutocomplete {
             ->allowedValues([100, 200])
 
             ->newArrayOption('--opt-arr', '-a')
-            ->allowedValues([80, 443])
+            ->allowedValues([80, 443], true) // Values are hidden from help, but not from completion.
 
             ->newFlag('--flag', '-f')
 

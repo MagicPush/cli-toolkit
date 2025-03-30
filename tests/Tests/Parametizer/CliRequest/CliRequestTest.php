@@ -6,7 +6,6 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\CliRequest;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
-
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
@@ -198,5 +197,56 @@ class CliRequestTest extends TestCaseAbstract {
                 'expectedErrorSubstring' => "Parameter 'option-single' contains a single value",
             ],
         ];
+    }
+
+    #[DataProvider('provideSubcommandDataInRequest')]
+    /**
+     * Tests that if no subcommands are available, subcommand-related methods in the request object will render `null`.
+     *
+     * @see CliRequest::getSubcommandRequestName()
+     * @see CliRequest::getSubcommandRequest()
+     */
+    public function testSubcommandDataInRequest(string $subcommandName, array $expectedValues): void {
+        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-subcommand-request.php', $subcommandName);
+
+        assertSame($expectedValues, json_decode($result->getStdOut(), true));
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSubcommandDataInRequest(): array {
+        return [
+            'no-subcommand' => [
+                'subcommandName' => '',
+                'expectedValues' => [
+                    'subcommand_name'           => null,
+                    'subcommand_request_params' => null,
+                ],
+            ],
+            'has-subcommand' => [
+                'subcommandName' => 'awesome',
+                'expectedValues' => [
+                    'subcommand_name'           => 'awesome',
+                    'subcommand_request_params' => ['arg' => 'default-value'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Tests that a subcommand has access to parent request.
+     *
+     * @see CliRequest::__construct()
+     * @see CliRequest::getSubcommandRequest()
+     */
+    public function testAccessToParentRequest(): void {
+        assertSame(
+            <<<TEXT
+            'asd'
+            TEXT,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommand-reads-parent-request.php', '--opt=asd test')
+                ->getStdOut(),
+        );
     }
 }

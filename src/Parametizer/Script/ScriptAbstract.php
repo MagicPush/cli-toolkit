@@ -15,9 +15,9 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 abstract class ScriptAbstract {
     /** @see Config::newSubcommand() - allowed characters validation */
-    protected const string NAME_SECTION_SEPARATOR = ':';
+    public const string NAME_SECTION_SEPARATOR = ':';
     /** @see Config::newSubcommand() - allowed characters validation */
-    protected const string NAME_PART_SEPARATOR = '-';
+    public const string NAME_PART_SEPARATOR = '-';
 
 
     public static function getLocalName(): string {
