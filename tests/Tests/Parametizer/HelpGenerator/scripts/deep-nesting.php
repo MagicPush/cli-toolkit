@@ -10,16 +10,16 @@ TestUtils::newConfig()
     // When you observe the whole config tree looking from the perspective of the very parent,
     // you may manually specify a deep subcommand usage example...
     ->usage(
-        'test11 --name-l2=supername test23 --name-l3=nameLevelThree test32',
+        'test11 --name-l2=superName test23 --name-l3=nameLevelThree test32',
         'Very deep call',
     )
 
-    ->newSubcommandSwitch('switchme')
+    ->newSubcommandSwitch('subcommand-name')
     ->description('LEVEL 1')
     ->newSubcommand(
         'test11',
         TestUtils::newConfig()
-            ->newSubcommandSwitch('switchme-l2')
+            ->newSubcommandSwitch('subcommand-name-l2')
             ->description('LEVEL 2')
             ->newSubcommand('test21', TestUtils::newConfig())
             ->newSubcommand('test22', TestUtils::newConfig())
@@ -38,7 +38,7 @@ TestUtils::newConfig()
                         'Very deep call',
                     )
 
-                    ->newSubcommandSwitch('switchme-l3')
+                    ->newSubcommandSwitch('subcommand-name-l3')
                     ->description('LEVEL 3')
                     ->newSubcommand('test31', TestUtils::newConfig())
                     ->newSubcommand('test32', TestUtils::newConfig())

@@ -7,9 +7,9 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 require_once __DIR__ . '/../../../init-console.php';
 
 TestUtils::newConfig()
-    ->newSubcommandSwitch('switchme')
+    ->newSubcommandSwitch('subcommand-name')
     ->newSubcommand(
-        'multistring',
+        'multiline',
         TestUtils::newConfig()
             ->description('
                 Short description on the first line.

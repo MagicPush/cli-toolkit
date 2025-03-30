@@ -30,7 +30,6 @@ class SubcommandTest extends TestCaseAbstract {
     }
 
     /**
-     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideConfigSubcommandOks(): array {
@@ -41,7 +40,7 @@ class SubcommandTest extends TestCaseAbstract {
             ],
             'deep-nesting' => [
                 'script'           => __DIR__ . '/scripts/deep-nesting.php',
-                'parametersString' => 'test11 --name-l2=supername test23 test31',
+                'parametersString' => 'test11 --name-l2=superName test23 test31',
             ],
         ];
     }
@@ -52,26 +51,25 @@ class SubcommandTest extends TestCaseAbstract {
      *
      * @see Config::commitSubcommandSwitch()
      * @see CliRequestProcessor::load()
-     * @noinspection SpellCheckingInspection
      */
     public function testOptionStickToLevel(): void {
         $script = __DIR__ . '/scripts/deep-nesting.php';
 
         // Options should be specified within the call level.
-        static::assertNoErrorsOutput($script, 'test11 --name-l2=supername test21');
+        static::assertNoErrorsOutput($script, 'test11 --name-l2=superName test21');
 
         // You can not specify option from a higher level after a subcommand of a deeper level has been specified.
         static::assertParseErrorOutput(
             $script,
             "Unknown option '--name-l2'",
-            'test11 test21 --name-l2=supername',
+            'test11 test21 --name-l2=superName',
         );
 
         // Vice versa: you can not specify some deeper-level option before you specify a corresponding subcommand.
         static::assertParseErrorOutput(
             $script,
             "Unknown option '--name-l3'",
-            'test11 --name-l3=supername test23 test31',
+            'test11 --name-l3=superName test23 test31',
         );
     }
 
@@ -87,24 +85,23 @@ class SubcommandTest extends TestCaseAbstract {
     }
 
     /**
-     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideConfigSubcommandErrors(): array {
         return [
             'double-commit' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-double-commit.php',
-                'errorOutput' => "'switchme' >>> Config error: the subcommand switch was commited already.",
+                'errorOutput' => "'subcommand-name' >>> Config error: the subcommand switch was commited already.",
             ],
             'duplicate-value' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-duplicate-value.php',
-                'errorOutput' => "'switchme' subcommand >>> Config error: duplicate value 'test1'.",
+                'errorOutput' => "'subcommand-name' subcommand >>> Config error: duplicate value 'test1'.",
             ],
             'argument-after-subcommand-switch' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-argument-after-subcommand-switch.php',
                 'errorOutput' => "'forbidden' >>> Config error: extra arguments are not allowed on the same level AFTER"
-                    . " a subcommand switch ('switchme') is registered;"
-                    . " you should add arguments BEFORE 'switchme' or to subcommands.",
+                    . " a subcommand switch ('subcommand-name') is registered;"
+                    . " you should add arguments BEFORE 'subcommand-name' or to subcommands.",
             ],
             'subcommand-switch-forgotten' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-subcommand-switch-forgotten.php',
@@ -115,7 +112,7 @@ class SubcommandTest extends TestCaseAbstract {
             // Any kind of exception is ok here.
             'switch-final-commit-forgotten-in-subcommand' => [
                 'script'      => __DIR__ . '/' . 'scripts/error-final-commit-forgotten-in-subcommand.php',
-                'errorOutput' => "'switchme-l3' subcommand >>> Config error: duplicate value 'test31'.",
+                'errorOutput' => "'subcommand-name-l3' subcommand >>> Config error: duplicate value 'test31'.",
             ],
         ];
     }

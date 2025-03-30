@@ -35,7 +35,7 @@ TestUtils::newConfig()
     ->usage('--opt-required=5 arg -fg C asd zxc', 'Same usage, but with description')
 
     ->usage(
-        'argument --opt-required=pink --opt-default=weee --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3',
+        'argument --opt-required=pink --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3',
         'Usage long example with description',
     )
 

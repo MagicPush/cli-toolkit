@@ -29,30 +29,30 @@ class ListScriptTest extends TestCaseAbstract {
                 list                                                Shows the sorted list of available subcommands with their short
 
              --
-                avocado-is-one-of-popular-fruits-you-see-in-menu    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                red                                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                test                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
+                red                                                 Avocado is an edible fruit. Avocados are native to the Western
+                test                                                Avocado is an edible fruit. Avocados are native to the Western
 
              blue:
                 blue:flower:
                     blue:flower:tea                                 Yes, such a flower does exists!
 
              green:
-                green:house                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                green:house                                         Avocado is an edible fruit. Avocados are native to the Western
 
              red:
-                red:book                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                red:flower                                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                red:lever                                           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                red:book                                            Avocado is an edible fruit. Avocados are native to the Western
+                red:flower                                          Avocado is an edible fruit. Avocados are native to the Western
+                red:lever                                           Avocado is an edible fruit. Avocados are native to the Western
 
                 red:flower:
-                    red:flower:pot                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    red:flower:pot                                  Avocado is an edible fruit. Avocados are native to the Western
 
              yellow:
-                yellow:banana                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                yellow:banana                                       Avocado is an edible fruit. Avocados are native to the Western
 
                 yellow:banana:
-                    yellow:banana:ice-cream                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    yellow:banana:ice-cream                         Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', 'list')
@@ -106,15 +106,15 @@ class ListScriptTest extends TestCaseAbstract {
                     list                  Shows the sorted list of available subcommands with their short
 
                  --
-                    red                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    red                   Avocado is an edible fruit. Avocados are native to the Western
 
                  red:
-                    red:book              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                    red:flower            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                    red:lever             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    red:book              Avocado is an edible fruit. Avocados are native to the Western
+                    red:flower            Avocado is an edible fruit. Avocados are native to the Western
+                    red:lever             Avocado is an edible fruit. Avocados are native to the Western
 
                     red:flower:
-                        red:flower:pot    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                        red:flower:pot    Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -131,10 +131,10 @@ class ListScriptTest extends TestCaseAbstract {
                         blue:flower:tea    Yes, such a flower does exists!
 
                  red:
-                    red:flower             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    red:flower             Avocado is an edible fruit. Avocados are native to the Western
 
                     red:flower:
-                        red:flower:pot     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                        red:flower:pot     Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -147,14 +147,14 @@ class ListScriptTest extends TestCaseAbstract {
                     list                                                Shows the sorted list of available subcommands with their short
 
                  --
-                    avocado-is-one-of-popular-fruits-you-see-in-menu    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
 
                  blue:
                     blue:flower:
                         blue:flower:tea                                 Yes, such a flower does exists!
 
                  green:
-                    green:house                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    green:house                                         Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -176,17 +176,17 @@ class ListScriptTest extends TestCaseAbstract {
             <<<TEXT
             help                                                Outputs a help page for a specified subcommand.
             list                                                Shows the sorted list of available subcommands with their short
-            avocado-is-one-of-popular-fruits-you-see-in-menu    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
             blue:flower:tea                                     Yes, such a flower does exists!
-            green:house                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            red                                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            red:book                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            red:flower                                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            red:flower:pot                                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            red:lever                                           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            test                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            yellow:banana                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            yellow:banana:ice-cream                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            green:house                                         Avocado is an edible fruit. Avocados are native to the Western
+            red                                                 Avocado is an edible fruit. Avocados are native to the Western
+            red:book                                            Avocado is an edible fruit. Avocados are native to the Western
+            red:flower                                          Avocado is an edible fruit. Avocados are native to the Western
+            red:flower:pot                                      Avocado is an edible fruit. Avocados are native to the Western
+            red:lever                                           Avocado is an edible fruit. Avocados are native to the Western
+            test                                                Avocado is an edible fruit. Avocados are native to the Western
+            yellow:banana                                       Avocado is an edible fruit. Avocados are native to the Western
+            yellow:banana:ice-cream                             Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', 'list --slim')

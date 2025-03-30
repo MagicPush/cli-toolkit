@@ -229,19 +229,19 @@ class ConfigTest extends TestCaseAbstract {
             'subcommand-value-err-length-empty' => [
                 'scriptPath'  => __DIR__ . '/scripts/template-subcommand-value.php',
                 'name'        => '',
-                'errorOutput' => "'switchme' subcommand >>> Config error: empty value; must contain at least 1 symbol.",
+                'errorOutput' => "'subcommand-name' subcommand >>> Config error: empty value; must contain at least 1 symbol.",
             ],
 
             'subcommand-value-err-first-digit' => [
                 'scriptPath'  => __DIR__ . '/scripts/template-subcommand-value.php',
                 'name'        => '1c',
-                'errorOutput' => "'switchme' subcommand >>> Config error: invalid characters in value '1c'."
+                'errorOutput' => "'subcommand-name' subcommand >>> Config error: invalid characters in value '1c'."
                     . ' Must start with a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             ],
             'subcommand-value-err-invalid-symbol' => [
                 'scriptPath'  => __DIR__ . '/scripts/template-subcommand-value.php',
                 'name'        => 'a的',
-                'errorOutput' => "'switchme' subcommand >>> Config error: invalid characters in value 'a的'."
+                'errorOutput' => "'subcommand-name' subcommand >>> Config error: invalid characters in value 'a的'."
                     . ' Must start with a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             ],
 

@@ -11,23 +11,23 @@ $configBuilder = TestUtils::newConfig();
 $config        = $configBuilder->getConfig();
 
 $configBuilder
-    ->newSubcommandSwitch('switchme')
+    ->newSubcommandSwitch('subcommand-name')
     ->newSubcommand(
         'test11',
         TestUtils::newConfig()
-            ->newSubcommandSwitch('switchme-l2')
+            ->newSubcommandSwitch('subcommand-name-l2')
             ->newSubcommand('test21', TestUtils::newConfig())
             ->newSubcommand('test22', TestUtils::newConfig())
             ->newSubcommand(
                 'test23',
                 TestUtils::newConfig()
-                    ->usage('test11 --name-l2=supername test23 test31')
+                    ->usage('test11 --name-l2=superName test23 test31')
                     ->usage(
-                        'test11 --name-l2=supername test23 --name-l3=nameLevelThree test32',
+                        'test11 --name-l2=superName test23 --name-l3=nameLevelThree test32',
                         'Very deep call',
                     )
 
-                    ->newSubcommandSwitch('switchme-l3')
+                    ->newSubcommandSwitch('subcommand-name-l3')
                     ->newSubcommand('test31', TestUtils::newConfig())
                     ->newSubcommand('test32', TestUtils::newConfig())
 

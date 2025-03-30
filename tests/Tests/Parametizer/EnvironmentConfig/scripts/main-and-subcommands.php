@@ -16,12 +16,12 @@ $envConfigL2S2->optionHelpShortName = 'y';
 $envConfigL3S1->optionHelpShortName = 'z';
 
 TestUtils::newConfig($envConfigMain)
-    ->newSubcommandSwitch('switchme-l1')
+    ->newSubcommandSwitch('subcommand-name-l1')
     ->newSubcommand('conf-l2-s1', TestUtils::newConfig())
     ->newSubcommand(
         'conf-l2-s2',
         TestUtils::newConfig($envConfigL2S2)
-            ->newSubcommandSwitch('switchme-l2-s2')
+            ->newSubcommandSwitch('subcommand-name-l2-s2')
             ->newSubcommand('conf-l3-s1', TestUtils::newConfig($envConfigL3S1))
             ->newSubcommand('conf-l3-s2', TestUtils::newConfig()),
     )

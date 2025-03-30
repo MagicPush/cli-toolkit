@@ -11,7 +11,7 @@ $config = TestUtils::newConfig();
 $subcommandName = $argv[1] ?? null;
 if (null !== $subcommandName) {
     $config
-        ->newSubcommandSwitch('switchme')
+        ->newSubcommandSwitch('subcommand-name')
         ->newSubcommand(
             $subcommandName,
             TestUtils::newConfig()
