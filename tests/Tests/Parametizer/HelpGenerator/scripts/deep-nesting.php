@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig(throwOnException: true)
+TestUtils::newConfig()
     // When you observe the whole config tree looking from the perspective of the very parent,
     // you may manually specify a deep subcommand usage example...
     ->usage(
@@ -18,14 +18,14 @@ Parametizer::newConfig(throwOnException: true)
     ->description('LEVEL 1')
     ->newSubcommand(
         'test11',
-        Parametizer::newConfig(throwOnException: true)
+        TestUtils::newConfig()
             ->newSubcommandSwitch('switchme-l2')
             ->description('LEVEL 2')
-            ->newSubcommand('test21', Parametizer::newConfig(throwOnException: true))
-            ->newSubcommand('test22', Parametizer::newConfig(throwOnException: true))
+            ->newSubcommand('test21', TestUtils::newConfig())
+            ->newSubcommand('test22', TestUtils::newConfig())
             ->newSubcommand(
                 'test23',
-                Parametizer::newConfig(throwOnException: true)
+                TestUtils::newConfig()
                     /*
                      * ... However when looking from the perspective of a branch, you should not be aware of parent
                      * configs - think of branches as configs included automatically during runtime.
@@ -40,14 +40,14 @@ Parametizer::newConfig(throwOnException: true)
 
                     ->newSubcommandSwitch('switchme-l3')
                     ->description('LEVEL 3')
-                    ->newSubcommand('test31', Parametizer::newConfig(throwOnException: true))
-                    ->newSubcommand('test32', Parametizer::newConfig(throwOnException: true))
+                    ->newSubcommand('test31', TestUtils::newConfig())
+                    ->newSubcommand('test32', TestUtils::newConfig())
 
                     ->newOption('--name-l3'),
             )
 
             ->newOption('--name-l2'),
     )
-    ->newSubcommand('test12', Parametizer::newConfig(throwOnException: true))
+    ->newSubcommand('test12', TestUtils::newConfig())
 
     ->run();

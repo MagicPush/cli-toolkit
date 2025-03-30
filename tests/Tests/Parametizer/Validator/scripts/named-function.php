@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig(throwOnException: true)
+TestUtils::newConfig()
     ->newArgument('arg')
     ->validatorCallback('ctype_digit')
 

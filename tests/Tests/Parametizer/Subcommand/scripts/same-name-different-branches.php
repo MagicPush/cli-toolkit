@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-$request = Parametizer::newConfig(throwOnException: true)
+$request = TestUtils::newConfig()
     ->newOption('--opt')
     ->default('opt-level-1')
 
     ->newSubcommandSwitch('branch')
     ->newSubcommand(
         'branch-red',
-        Parametizer::newConfig(throwOnException: true)
+        TestUtils::newConfig()
             ->newOption('--opt')
             ->default('opt-level-2-red'),
     )
     ->newSubcommand(
         'branch-blue',
-        Parametizer::newConfig(throwOnException: true)
+        TestUtils::newConfig()
             ->newOption('--opt')
             ->default('opt-level-2-blue'),
     )

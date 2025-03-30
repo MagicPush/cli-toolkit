@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-$config = Parametizer::newConfig(throwOnException: true)
+$config = TestUtils::newConfig()
     ->newSubcommandSwitch('switchme')
-    ->newSubcommand('test1', Parametizer::newConfig(throwOnException: true))
-    ->newSubcommand('test2', Parametizer::newConfig(throwOnException: true))
+    ->newSubcommand('test1', TestUtils::newConfig())
+    ->newSubcommand('test2', TestUtils::newConfig())
 
     ->getConfig();
 

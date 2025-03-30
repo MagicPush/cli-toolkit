@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-Parametizer::newConfig(throwOnException: true)
+TestUtils::newConfig()
     ->newSubcommandSwitch('switchme')
     ->newSubcommand(
         'test11',
-        Parametizer::newConfig(throwOnException: true)
+        TestUtils::newConfig()
             ->newArgument('required-arg-l2')
             ->description('Subcommand required argument')
 
@@ -18,7 +18,7 @@ Parametizer::newConfig(throwOnException: true)
             ->description('Subcommand required option')
             ->required(),
     )
-    ->newSubcommand('test12', Parametizer::newConfig(throwOnException: true))
+    ->newSubcommand('test12', TestUtils::newConfig())
 
     ->newOption('--required')
     ->description('Required option')

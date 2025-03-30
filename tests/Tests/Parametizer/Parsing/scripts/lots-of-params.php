@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-$request = Parametizer::newConfig(throwOnException: true)
+$request = TestUtils::newConfig()
     ->newOption('--opt-required')
     ->description('Required option: pick one from the list')
     ->required()

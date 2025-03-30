@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
@@ -15,14 +15,14 @@ $envConfigMain->optionHelpShortName = 'X';
 $envConfigL2S2->optionHelpShortName = 'y';
 $envConfigL3S1->optionHelpShortName = 'z';
 
-Parametizer::newConfig($envConfigMain, throwOnException: true)
+TestUtils::newConfig($envConfigMain)
     ->newSubcommandSwitch('switchme-l1')
-    ->newSubcommand('conf-l2-s1', Parametizer::newConfig(throwOnException: true))
+    ->newSubcommand('conf-l2-s1', TestUtils::newConfig())
     ->newSubcommand(
         'conf-l2-s2',
-        Parametizer::newConfig($envConfigL2S2, throwOnException: true)
+        TestUtils::newConfig($envConfigL2S2)
             ->newSubcommandSwitch('switchme-l2-s2')
-            ->newSubcommand('conf-l3-s1', Parametizer::newConfig($envConfigL3S1, throwOnException: true))
-            ->newSubcommand('conf-l3-s2', Parametizer::newConfig(throwOnException: true)),
+            ->newSubcommand('conf-l3-s1', TestUtils::newConfig($envConfigL3S1))
+            ->newSubcommand('conf-l3-s2', TestUtils::newConfig()),
     )
     ->run();
