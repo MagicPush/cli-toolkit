@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests;
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Tests\utils\CliProcess;
+use MagicPush\CliToolkit\Tests\Utils\CliProcess;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertSame;

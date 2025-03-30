@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\utils;
+namespace MagicPush\CliToolkit\Tests\Utils;
 
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;

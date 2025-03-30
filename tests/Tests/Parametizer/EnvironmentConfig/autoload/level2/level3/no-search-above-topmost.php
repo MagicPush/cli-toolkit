@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Tests\utils\TestUtils;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../../../init-console.php';
 
