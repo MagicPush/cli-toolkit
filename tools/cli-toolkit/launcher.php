@@ -8,12 +8,13 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
 
 $scriptDetector = (new ScriptDetector(true))
-    ->addSearchClassPath(__DIR__ . '/Scripts')
+    ->searchClassPath(__DIR__ . '/Scripts')
     ->detect();
 $classNamesBySubcommandNames = $scriptDetector->getFQClassNamesByScriptNames();
 
 $builder = Parametizer::newConfig();
 $builder
+    ->description('A launcher for cli-toolkit stock scripts.')
     ->newSubcommandSwitch('subcommand');
 
 foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
@@ -22,9 +23,6 @@ foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
 
 $request = $builder->run();
 
-$subcommandName    = $request->getParamAsString('subcommand');
-$subcommandRequest = $request->getSubcommandRequest($subcommandName);
-
-$className   = $classNamesBySubcommandNames[$subcommandName];
-$scriptClass = new $className($subcommandRequest);
+$className   = $classNamesBySubcommandNames[$request->getSubcommandRequestName()];
+$scriptClass = new $className($request->getSubcommandRequest());
 $scriptClass->execute();

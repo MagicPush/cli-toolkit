@@ -105,11 +105,13 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
      * This will automatically set {@see validatorCallback()} and {@see completionList()}.
      *
      * @param mixed[] $allowedValues
+     * @param bool    $areHiddenForHelp If the list should not be shown on a generated help page.
+     *                                  Useful for really long lists.
      */
-    public function allowedValues(array $allowedValues): static {
+    public function allowedValues(array $allowedValues, bool $areHiddenForHelp = false): static {
         $allowedValues = array_fill_keys(array_values($allowedValues), null);
 
-        return $this->allowedValuesDescribed($allowedValues);
+        return $this->setAllowedValues($allowedValues, $areHiddenForHelp);
     }
 
     /**
@@ -125,12 +127,7 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
      * @param string[]|null[] $allowedValues
      */
     public function allowedValuesDescribed(array $allowedValues): static {
-        $this->manualAllowedValues = $allowedValues;
-        $this->ensureNotAllowedValuesSetWithValidatorOrCompletionSimultaneously();
-
-        $this->param->allowedValues($allowedValues);
-
-        return $this;
+        return $this->setAllowedValues($allowedValues, false);
     }
 
     /**
@@ -153,6 +150,15 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
 
 
     // === Misc ===
+
+    protected function setAllowedValues(array $allowedValues, bool $areHiddenForHelp): static {
+        $this->manualAllowedValues = $allowedValues;
+        $this->ensureNotAllowedValuesSetWithValidatorOrCompletionSimultaneously();
+
+        $this->param->allowedValues($allowedValues, $areHiddenForHelp);
+
+        return $this;
+    }
 
     protected function ensureNotRequiredAndHasDefaultSimultaneously(): void {
         // We do not allow to require a param and simultaneously have a default value for it.

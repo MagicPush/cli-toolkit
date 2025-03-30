@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Config;
 
+use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
@@ -14,8 +15,12 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 class Config {
+    public const string PARAMETER_NAME_LIST               = 'list';
     public const string OPTION_NAME_HELP                  = 'help';
     public const string OPTION_NAME_AUTOCOMPLETE_GENERATE = 'parametizer-internal-autocomplete-generate';
     public const string OPTION_NAME_AUTOCOMPLETE_EXECUTE  = 'parametizer-internal-autocomplete-execute';
@@ -73,10 +78,16 @@ class Config {
     protected ?string $subcommandSwitchName       = null;
     protected bool    $isSubcommandSwitchCommited = false;
 
+    /**
+     * @var array<string, ScriptAbstract|string> (string) subcommand name set in the config =>
+     *                                           (string) Fully qualified class name that extends {@see ScriptAbstract}
+     */
+    protected array $builtInSubcommandClassBySubcommandName = [];
+
     /** Not obligatory but useful for subcommand usage template help ({@see HelpGenerator::getUsageTemplate()}) */
     protected ?self $parent = null;
 
-    /** @var Config[] Subcommand value => config object */
+    /** @var array<string, Config> (string) Subcommand value => (Config) branch config */
     protected array $branches = [];
 
 
@@ -250,6 +261,43 @@ class Config {
         return $this;
     }
 
+    protected function addBuiltInSubcommands(): static {
+        $this->builtInSubcommandClassBySubcommandName[static::PARAMETER_NAME_LIST] = ListScript::class;
+        $this->builtInSubcommandClassBySubcommandName[static::OPTION_NAME_HELP]    = HelpScript::class;
+
+        foreach ($this->builtInSubcommandClassBySubcommandName as $subcommandName => $subcommandClass) {
+            $this->newSubcommand($subcommandName, $subcommandClass::getConfiguration()->getConfig());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ScriptAbstract|string|null Fully qualified class name that extends {@see ScriptAbstract}.
+     */
+    public function getBuiltInSubcommandClass(string $subcommandName): ?string {
+        return $this->builtInSubcommandClassBySubcommandName[$subcommandName] ?? null;
+    }
+
+    /**
+     * @return array<string, static> (string) subcommand name => (Config) subcommand config
+     */
+    public function getBuiltInSubcommands(): array {
+        $builtInSubcommands = [];
+        foreach ($this->builtInSubcommandClassBySubcommandName as $subcommandName => $notUsed) {
+            $subcommandConfig = $this->getBranch($subcommandName);
+            if (null !== $subcommandConfig) {
+                $builtInSubcommands[$subcommandName] = $subcommandConfig;
+            }
+        }
+
+        return $builtInSubcommands;
+    }
+
+    public function getSubcommandSwitchName(): ?string {
+        return $this->subcommandSwitchName;
+    }
+
     /**
      * Registering new argument (positional parameter).
      */
@@ -274,6 +322,8 @@ class Config {
 
         if ($argument->isSubcommandSwitch()) {
             $this->subcommandSwitchName = $argumentName;
+
+            $this->addBuiltInSubcommands();
         }
     }
 
@@ -387,7 +437,7 @@ class Config {
     /**
      * Completes setup of parameter that defines subcommands. Runs recursively for all branches.
      *
-     * Warning! Do not call this more than once! The second call will not do anything.
+     * Must be called once. Repeated calls will render {@see ConfigException}.
      *
      * This is called before processing script input parameters.
      * Manual call to this method may be needed in a rare case:
@@ -418,6 +468,23 @@ class Config {
 
 
         // ==== PROCESSING ====
+
+        // Setting up the list of allowed values for 'help' built-in subcommand argument.
+        $helpSubcommandConfig = $this->getBranch(static::OPTION_NAME_HELP);
+        if (null === $helpSubcommandConfig) {
+            throw new LogicException(sprintf('"%s" built-in subcommand was not registered', static::OPTION_NAME_HELP));
+        }
+        $helpSubcommandArgument = $helpSubcommandConfig->getParams()[HelpScript::ARGUMENT_SUBCOMMAND_NAME] ?? null;
+        if (null === $helpSubcommandArgument) {
+            throw new LogicException(
+                sprintf(
+                    '"%s" parameter was not registered in "%s" built-in subcommand',
+                    HelpScript::ARGUMENT_SUBCOMMAND_NAME,
+                    static::OPTION_NAME_HELP,
+                ),
+            );
+        }
+        $helpSubcommandArgument->allowedValues(array_fill_keys(array_keys($subcommandConfigsByValues), null), true);
 
         foreach ($subcommandConfigsByValues as $branchConfig) {
             $branchConfig->commitSubcommandSwitch();
@@ -469,7 +536,7 @@ class Config {
     /**
      * Returns all configured branches
      *
-     * @return Config[]
+     * @return array<string, Config> (string) Subcommand value => (Config) branch config
      */
     public function getBranches(): array {
         return $this->branches;

@@ -28,29 +28,30 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
     protected const int PARAMETER_NAME_LENGTH = 3;
 
 
-    protected ScriptFormatter $formatter;
+    protected readonly ScriptFormatter $formatter;
 
-    protected string $pathDirectoryProject;
-    protected string $pathDirectoryBase;
-    protected string $pathDirectoryScripts;
+    protected readonly string $pathDirectoryProject;
+    protected readonly string $pathDirectoryBase;
+    protected readonly string $pathDirectoryScripts;
 
-    /** @var Array<int, string> (int) directory number => (string) directory path */
+    /** @var array<int, string> (int) directory number => (string) directory path */
     protected array $scriptDirectoryPaths = [];
 
-    /** @var Array<string, string> (string) directory path => (string) namespace */
+    /** @var array<string, string> (string) directory path => (string) namespace */
     protected array $namespaceByDirectoryPath = [];
 
-    /** @var Array<string, true> (string) generated name => true (actual values are irrelevant) */
+    /** @var array<string, true> (string) generated name => true (actual values are irrelevant) */
     protected array $generatedCamelNames = [];
 
-    /** @var Array<string, true> (string) generated name => true (actual values are irrelevant) */
+    /** @var array<string, true> (string) generated name => true (actual values are irrelevant) */
     protected array $generatedParameterNames = [];
 
     protected readonly int  $directoriesCount;
     protected readonly int  $directoriesMaxLevel;
     protected readonly int  $scriptsCount;
-    protected readonly bool $isForced;
-    protected readonly bool $isQuiet;
+    protected readonly bool $isInteractive;
+    protected readonly bool $isVerbose;
+    protected readonly bool $areNameSectionsDisabled;
 
 
     public static function getNameSections(): array {
@@ -68,7 +69,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 Generates script classes, a launcher and supplementary files.
 
                 By default all files are deleted each time the script is launched,
-                unless ' . $formatter->paramTitle('--force') . ' is not specified
+                unless ' . $formatter->paramTitle('--interactive') . ' is specified
                 and you do not confirm deletion when asked.
 
                 Script classes may be dispersed over generated subdirectories, see '
@@ -104,17 +105,20 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 'Must be a non-negative integer.',
             )
 
-            ->newFlag('--force', '-f')
-            ->description('Delete previously generated files without confirmation.')
+            ->newFlag('--interactive', '-i')
+            ->description('Ask about previously generated files before their deletion.')
 
-            ->newFlag('--quiet', '-q')
-            ->description('Suppress all logs.')
+            ->newFlag('--verbose', '-v')
+            ->description('Show info about created objects and an instruction to enable a launcher.')
+
+            ->newFlag('--no-name-sections')
+            ->description('Disable adding name sections into classes in subfolders')
 
             ->newArgument('scripts-count')
             ->description('
                 How many scripts should be generated in total across all possible generated subdirectories.
             ')
-            ->default(50)
+            ->default(20)
             ->validatorCallback(
                 function ($value) { return ctype_digit($value) && $value > 0; },
                 'Must be a positive integer.',
@@ -127,11 +131,12 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
         $this->formatter = ScriptFormatter::createForStdOut();
 
-        $this->directoriesCount    = $request->getParamAsInt('dir-count');
-        $this->directoriesMaxLevel = $request->getParamAsInt('dir-max-level');
-        $this->scriptsCount        = $request->getParamAsInt('scripts-count');
-        $this->isForced            = $request->getParamAsBool('force');
-        $this->isQuiet             = $request->getParamAsBool('quiet');
+        $this->directoriesCount           = $request->getParamAsInt('dir-count');
+        $this->directoriesMaxLevel        = $request->getParamAsInt('dir-max-level');
+        $this->scriptsCount               = $request->getParamAsInt('scripts-count');
+        $this->isInteractive              = $request->getParamAsBool('interactive');
+        $this->isVerbose                  = $request->getParamAsBool('verbose');
+        $this->areNameSectionsDisabled    = $request->getParamAsBool('no-name-sections');
     }
 
     public function execute(): void {
@@ -143,14 +148,26 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             ->generateLauncher();
     }
 
-    protected function log(string $message): static {
-        if ($this->isQuiet) {
-            return $this;
-        }
-
+    protected function logAnyway(string $message): static {
         echo $message . PHP_EOL;
 
         return $this;
+    }
+
+    protected function logInteractive(string $message): static {
+        if (!$this->isInteractive) {
+            return $this;
+        }
+
+        return $this->logAnyway($message);
+    }
+
+    protected function log(string $message): static {
+        if (!$this->isVerbose) {
+            return $this;
+        }
+
+        return $this->logAnyway($message);
     }
 
     protected function startUp(): static {
@@ -172,10 +189,13 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
     }
 
     protected function cleanUp(): static {
-        /** @var Array<string, SplFileInfo[]> $objectsToDelete (string) validated realpath => (SplFileInfo) object */
+        /** @var array<string, SplFileInfo[]> $objectsToDelete (string) validated realpath => (SplFileInfo) object */
         $objectsToDelete = [];
 
-        /** @var Array<string, string> $unexpectedTypes (string) path => (string) type */
+        /** @var array<string, string> $unexpectedPaths (string) path => (string) type */
+        $unexpectedPaths = [];
+
+        /** @var array<string, string> $unexpectedTypes (string) path => (string) type */
         $unexpectedTypes = [];
 
         $iterator = new RecursiveIteratorIterator(
@@ -183,10 +203,8 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             RecursiveIteratorIterator::CHILD_FIRST,
         );
 
+        $this->logInteractive('Already generated data:');
         $objectNumber = 0;
-
-        $this->log('Already generated data:');
-
         /** @var SplFileInfo $fileOrDir */
         foreach ($iterator as $fileOrDir) {
             $objectType = $fileOrDir->getType();
@@ -201,6 +219,13 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 );
             }
 
+            if (!str_starts_with($objectPath, $this->pathDirectoryBase)) {
+                $unexpectedPaths[$objectPath] = $objectType;
+                $objectPathFormatted          = $this->formatter->error($objectPath);
+            } else {
+                $objectPathFormatted = $this->formatter->pathMentioned($objectPath);
+            }
+
             $objectsToDelete[$objectPath] = $fileOrDir;
 
             $objectTypeFormatted = sprintf('%-7s', $objectType);
@@ -211,37 +236,56 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 $objectTypeFormatted = $this->formatter->note($objectTypeFormatted);
             }
 
-            $this->log(sprintf(
+            $this->logInteractive(sprintf(
                 '%4d. %s => %s',
                 ++$objectNumber,
                 $objectTypeFormatted,
-                $this->formatter->pathMentioned($objectPath),
+                $objectPathFormatted,
             ));
         }
         if (empty($objectsToDelete)) {
-            echo "\e[F\e[K";
+            $this->logInteractive("\e[F\e[K");
 
             return $this;
         }
 
-        if (!$this->isForced) {
+        if ($this->isInteractive) {
             Question::confirmOrDie(
                 <<<TEXT
-                Are you sure about deleting previously generated data (see above if '--quiet' flag is not specified)?
+                Are you sure about deleting previously generated data?
                 Y - delete and proceed, N - abort the execution.
 
                 TEXT,
+                $this->formatter->error('ABORTED') . PHP_EOL,
             );
         }
 
+        if (!empty($unexpectedPaths)) {
+            $this->logInteractive('');
+            $this->logAnyway($this->formatter->error('Unable to proceed! Unexpected paths detected: '));
+
+            $objectNumber = 0;
+            foreach ($unexpectedPaths as $unexpectedPath => $objectType) {
+                $this->logAnyway(sprintf(
+                    '%4d. %s => %s',
+                    ++$objectNumber,
+                    sprintf('%-7s', $objectType),
+                    $this->formatter->error($unexpectedPath),
+                ));
+            }
+
+            exit(Parametizer::ERROR_EXIT_CODE);
+        }
+
         if (!empty($unexpectedTypes)) {
-            $this->log(PHP_EOL . $this->formatter->error('Unable to proceed! Unexpected types detected: '));
+            $this->logInteractive('');
+            $this->logAnyway($this->formatter->error('Unable to proceed! Unexpected types detected: '));
 
             $objectNumber = 0;
             foreach ($unexpectedTypes as $path => $unexpectedType) {
                 $unexpectedTypeFormatted = sprintf('%-7s', $unexpectedType);
 
-                $this->log(sprintf(
+                $this->logAnyway(sprintf(
                     '%4d. %s => %s',
                     ++$objectNumber,
                     $this->formatter->error($unexpectedTypeFormatted),
@@ -265,7 +309,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             $deletedCount++;
         }
 
-        $this->log('Deleted files: ' . $this->formatter->success((string) $deletedCount));
+        $this->logInteractive('Deleted files: ' . $this->formatter->success((string) $deletedCount));
 
         return $this;
     }
@@ -397,7 +441,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
 
 \$scriptDetector = (new ScriptDetector(true))
-    ->addSearchClassPath('{$this->pathDirectoryScripts}')
+    ->searchClassPath('{$this->pathDirectoryScripts}')
     ->detect();
 \$classNamesBySubcommandNames = \$scriptDetector->getFQClassNamesByScriptNames();
 
@@ -411,11 +455,8 @@ foreach (\$classNamesBySubcommandNames as \$subcommandName => \$className) {
 
 \$request = \$builder->run();
 
-\$subcommandName    = \$request->getParamAsString('subcommand');
-\$subcommandRequest = \$request->getSubcommandRequest(\$subcommandName);
-
-\$className   = \$classNamesBySubcommandNames[\$subcommandName];
-\$scriptClass = new \$className(\$subcommandRequest);
+\$className   = \$classNamesBySubcommandNames[\$request->getSubcommandRequestName()];
+\$scriptClass = new \$className(\$request->getSubcommandRequest());
 \$scriptClass->execute();
 
 TEXT;
@@ -476,10 +517,10 @@ TEXT;
     }
 
     protected function generateParameterName(int $length): string {
+        $availableSymbols = range('a', 'z');
         do {
             $name = '';
 
-            $availableSymbols = range('a', 'z');
             for ($symbolNumber = 0; $symbolNumber < $length; $symbolNumber++) {
                 $name .= $availableSymbols[array_rand($availableSymbols)];
             }
@@ -488,6 +529,29 @@ TEXT;
         $this->generatedParameterNames[$name] = true;
 
         return $name;
+    }
+
+    protected function generateDescription(string $paddingString): string {
+        $availableSymbols = array_merge(range('A', 'Z'), range('a', 'z'));
+
+        $description = '';
+        for ($wordNumber = 1; $wordNumber <= rand(15, 30); $wordNumber++) {
+            $word = '';
+            for ($letterNumber = 1; $letterNumber <= rand(5, 20); $letterNumber++) {
+                $word .= $availableSymbols[array_rand($availableSymbols)];
+            }
+
+            $description .= $word;
+            if (0 === ($wordNumber % 5)) {
+                $description .= '. ';
+            } elseif (0 === ($wordNumber % 8)) {
+                $description .= PHP_EOL . $paddingString;
+            } else {
+                $description .= ' ';
+            }
+        }
+
+        return trim($description);
     }
 
     protected function generateScripts(): static {
@@ -501,6 +565,18 @@ TEXT;
             $namespace     = $this->getNamespaceByDirectoryPath($directoryPath);
             $className     = $this->generateCamelName(static::FILE_CAMEL_NAME_LENGTH);
 
+            $nameSectionsString = '';
+            if (!$this->areNameSectionsDisabled && $this->pathDirectoryScripts !== $directoryPath) {
+                $nameSectionsString  = sprintf("'%s'", mb_strtolower(basename($directoryPath)));
+                $parentDirectoryPath = dirname($directoryPath);
+                while ($this->pathDirectoryScripts !== $parentDirectoryPath) {
+                    $nameSectionsString = sprintf("'%s', ", mb_strtolower(basename($parentDirectoryPath)))
+                        . $nameSectionsString;
+
+                    $parentDirectoryPath = dirname($parentDirectoryPath);
+                }
+            }
+
             $scriptContents = <<<TEXT
 <?php
 
@@ -511,9 +587,13 @@ namespace {$namespace};
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-final class {$className} extends ScriptAbstract {
+final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
     public static function getConfiguration(): BuilderInterface {
         return static::newConfig()
+            ->description('
+                %%SCRIPT_DESCRIPTION%%
+            ')
+        
             ->newOption('--%%OPTION_NAME%%')
             
             ->newFlag('--%%FLAG_NAME%%')
@@ -532,9 +612,18 @@ TEXT;
             // Do not force unique values across all scripts. We need unique values only within a single script.
             $this->generatedParameterNames = [];
             $scriptContentsReplacements = [
-                '%%OPTION_NAME%%'   => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
-                '%%FLAG_NAME%%'     => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
-                '%%ARGUMENT_NAME%%' => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
+                '%%NAME_SECTIONS%%' => $nameSectionsString ? <<<TEXT
+
+                        public static function getNameSections(): array {
+                            return array_merge(parent::getNameSections(), [{$nameSectionsString}]);
+                        }
+
+                    TEXT
+                    : '',
+                '%%SCRIPT_DESCRIPTION%%' => $this->generateDescription('                '),
+                '%%OPTION_NAME%%'        => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
+                '%%FLAG_NAME%%'          => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
+                '%%ARGUMENT_NAME%%'      => $this->generateParameterName(static::PARAMETER_NAME_LENGTH),
             ];
 
             $scriptExecutionContents = '';

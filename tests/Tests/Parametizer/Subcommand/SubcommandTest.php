@@ -30,6 +30,7 @@ class SubcommandTest extends TestCaseAbstract {
     }
 
     /**
+     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideConfigSubcommandOks(): array {
@@ -51,6 +52,7 @@ class SubcommandTest extends TestCaseAbstract {
      *
      * @see Config::commitSubcommandSwitch()
      * @see CliRequestProcessor::load()
+     * @noinspection SpellCheckingInspection
      */
     public function testOptionStickToLevel(): void {
         $script = __DIR__ . '/scripts/deep-nesting.php';
@@ -85,6 +87,7 @@ class SubcommandTest extends TestCaseAbstract {
     }
 
     /**
+     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideConfigSubcommandErrors(): array {
@@ -232,11 +235,12 @@ STDERR_OUTPUT,
     }
 
     /**
-     * Test adding default config settings to branches of subcommands.
+     * Test adding default options and built-in subcommands to config branches of subcommands.
      *
      * @see Config::addDefaultOptions()
+     * @see Config::addBuiltInSubcommands()
      */
-    public function testAddingDefaultOptions(): void {
+    public function testAddingDefaultOptionsAndBuiltInSubcommands(): void {
         $result = static::assertNoErrorsOutput(
             __DIR__ . '/scripts/deep-nesting.php',
             '--print-option-names',
@@ -252,12 +256,26 @@ STDERR_OUTPUT,
                 3 => Config::OPTION_NAME_HELP,
 
                 'BRANCHES' => [
+                    'list' => [
+                        0 => 'slim',
+                        1 => 'help',
+                    ],
+                    'help' => [
+                        0 => 'help',
+                    ],
                     'test11' => [
                         0 => 'name-l2',
 
                         1 => Config::OPTION_NAME_HELP,
 
                         'BRANCHES' => [
+                            'list' => [
+                                0 => 'slim',
+                                1 => 'help',
+                            ],
+                            'help' => [
+                                0 => 'help',
+                            ],
                             'test21' => [
                                 // Should be added automatically.
                                 0 => Config::OPTION_NAME_HELP,
@@ -273,6 +291,13 @@ STDERR_OUTPUT,
                                 1 => Config::OPTION_NAME_HELP,
 
                                 'BRANCHES' => [
+                                    'list' => [
+                                        0 => 'slim',
+                                        1 => 'help',
+                                    ],
+                                    'help' => [
+                                        0 => 'help',
+                                    ],
                                     'test31' => [
                                         // Should be added automatically.
                                         0 => Config::OPTION_NAME_HELP,
@@ -322,17 +347,45 @@ STDERR_OUTPUT,
         ];
     }
 
+    #[DataProvider('provideBuiltInSubcommandExecutionReplacesScriptExecution')]
     /**
-     * Tests a failed attempt to read an unknown subcommand parameters
-     * (after the correct one is used during the parsing phase).
+     * Tests that a built-in subcommand, if called, executes right after parameters parsing, but right after that
+     * the whole process is terminated - no main script execution happens.
      *
-     * @see CliRequest::getSubcommandRequest()
+     * @see CliRequest::executeBuiltInSubcommandIfRequested()
+     * @see Parametizer::run()
      */
-    public function testRequestingUnknownSubcommand(): void {
-        static::assertLogicExceptionOutput(
-            __DIR__ . '/scripts/error-request-subcommand-name.php',
-            "Subcommand 'branch-green' not found",
-            'branch-red',
-        );
+    public function testBuiltInSubcommandExecutionReplacesScriptExecution(
+        string $subcommandName,
+        bool $isExceptionExpected,
+    ): void {
+        $scriptPath = __DIR__ . '/' . 'scripts/no-error-if-built-in-subcommand-is-called.php';
+
+        if ($isExceptionExpected) {
+            static::assertAnyErrorOutput(
+                $scriptPath,
+                'No built-in subcommand call',
+                $subcommandName,
+                shouldAssertExitCode: true,
+            );
+        } else {
+            static::assertNoErrorsOutput($scriptPath, $subcommandName);
+        }
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideBuiltInSubcommandExecutionReplacesScriptExecution(): array {
+        return [
+            'list' => [
+                'subcommandName'      => 'list',
+                'isExceptionExpected' => false,
+            ],
+            'regular-subcommand' => [
+                'subcommandName'      => 'test',
+                'isExceptionExpected' => true,
+            ],
+        ];
     }
 }

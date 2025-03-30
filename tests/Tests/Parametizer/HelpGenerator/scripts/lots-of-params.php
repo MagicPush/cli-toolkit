@@ -45,7 +45,7 @@ Parametizer::newConfig(throwOnException: true)
 
     ->newArrayOption('--opt-list', '-l')
     ->description('List of values')
-    ->allowedValues(range(100, 800, 50))
+    ->allowedValues(range(100, 800, 50), true) // Values are hidden from help.
 
     ->newFlag('--flag1', '-f')
     ->description('Some flag')
@@ -72,7 +72,8 @@ Parametizer::newConfig(throwOnException: true)
     ->newArgument('arg-optional')
     ->description('Optional argument: pick one from the list')
     ->default('B')
-    ->allowedValues(['A', 'B', 'C'])
+    ->allowedValues(['A', 'B', 'C'], true)
+    ->allowedValues(['A', 'B', 'C']) // Making the list of values visible (after the previous statement hiding those).
 
     ->newArrayArgument('arg-list')
     ->required(false)

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\HelpGenerator;
 
+use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -24,8 +26,12 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see HelpGenerator::getFullHelp()
      * @see HelpGenerator::getParamsBlock()
      * @see HelpGenerator::getDescriptionBlock()
+     * @see ParameterAbstract::allowedValues()
+     * @see ParameterAbstract::areAllowedValuesHiddenFromHelp()
+     * @see VariableBuilderAbstract::allowedValues()
      */
     public function testScriptHelp(): void {
+        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
 
@@ -66,7 +72,6 @@ class HelpGeneratorTest extends TestCaseAbstract {
                                   Default: opt_default_value
 
           -l …, --opt-list=…      List of values
-                                  Allowed values: 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800
                                   (multiple values allowed)
 
           -f, --flag1             Some flag
@@ -98,6 +103,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see HelpGenerator::getFullHelp()
      */
     public function testSubcommandScriptHelpFirstLevel(): void {
+        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
 
@@ -114,14 +120,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         ARGUMENTS
 
-          <switchme>   Allowed values: test11, test12
-          (required)   Subcommand help: <script_name> ... <subcommand value> --help
-
-        COMMANDS
-
-          deep-nesting.php test11 [--name-l2=…] <switchme-l2>
-
-          deep-nesting.php test12
+          <switchme>   LEVEL 1
+          (required)   Allowed values: 4 subcommands available (see 'list' subcommand output)
+                       Subcommand help: <switchme> --help
+                                ... or: help <switchme>
 
 
         HELP,
@@ -155,14 +157,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         ARGUMENTS
 
-          <switchme-l3>   Allowed values: test31, test32
-          (required)      Subcommand help: <script_name> ... <subcommand value> --help
-
-        COMMANDS
-
-          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] test31
-
-          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] test32
+          <switchme-l3>   LEVEL 3
+          (required)      Allowed values: 4 subcommands available (see 'list' subcommand output)
+                          Subcommand help: <switchme-l3> --help
+                                   ... or: help <switchme-l3>
 
 
         HELP,
@@ -176,42 +174,29 @@ class HelpGeneratorTest extends TestCaseAbstract {
      * @see HelpGenerator::getShortDescription()
      */
     public function testSubcommandHelpShortDescription(): void {
+        /** @noinspection SpellCheckingInspection */
         assertSame(
             <<<HELP
-
-            USAGE
-
-              subcommands-long-description.php <switchme>
-
-            OPTIONS
-
-              --help   Show full help page.
-
-            ARGUMENTS
-
-              <switchme>   Allowed values: multistring, long-string, long-string-short-sentence, unbreakable-long-line
-              (required)   Subcommand help: <script_name> ... <subcommand value> --help
-
-            COMMANDS
-
-              subcommands-long-description.php multistring                  Short description on the first line.
-
-              subcommands-long-description.php long-string                  Here is a sort of... short description.
-
-              subcommands-long-description.php long-string-short-sentence   Too short to stop here. So the description continues for some more
-
-              subcommands-long-description.php unbreakable-long-line        Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
-
+             Built-in subcommands:
+                help                          Outputs a help page for a specified subcommand.
+                list                          Shows the sorted list of available subcommands with their short
+            
+             --
+                long-string                   Here is a sort of... short description.
+                long-string-short-sentence    Too short to stop here. So the description continues for some more
+                multistring                   Short description on the first line.
+                unbreakable-long-line         Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
 
             HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                '--' . Config::OPTION_NAME_HELP,
+                Config::PARAMETER_NAME_LIST,
             )->getStdOut(),
         );
 
         // ... And let's check the full descriptions to show the difference between short and long versions.
 
+        /** @noinspection SpellCheckingInspection */
         assertStringStartsWith(
             <<<HELP
 

@@ -127,7 +127,7 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
         echo PHP_EOL;
 
         if ($showOtherStyles) {
-            echo str_pad(' COLORS ', $lineLength, '=', STR_PAD_BOTH) . PHP_EOL . PHP_EOL;
+            echo mb_str_pad(' COLORS ', $lineLength, '=', STR_PAD_BOTH) . PHP_EOL . PHP_EOL;
         }
         foreach ($backgrounds as $backgroundCode => $backgroundTitle) {
             if (!$showBackgrounds && self::NON_EXISTENT_CODE !== $backgroundCode) {
@@ -233,7 +233,7 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
             $this->updateTitlesListAndCellLength($otherStyles, $effectCellLength);
             $effectCellLength += $cellPadLength;
 
-            echo str_pad(' STYLES ', $lineLength, '=', STR_PAD_BOTH) . PHP_EOL . PHP_EOL;
+            echo mb_str_pad(' STYLES ', $lineLength, '=', STR_PAD_BOTH) . PHP_EOL . PHP_EOL;
             foreach ($otherStyles as $effectCode => $effectTitle) {
                 echo $this->getPaddedCell($effectTitle, $effectCellLength, STR_PAD_LEFT)
                     . self::COLUMN_MARGIN
@@ -249,7 +249,7 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
     }
 
     private function getPaddedCell(string $string, int $cellLength, int $paddingMode = STR_PAD_BOTH): string {
-        return str_pad($string, $cellLength, self::CELL_PAD_VALUE, $paddingMode);
+        return mb_str_pad($string, $cellLength, self::CELL_PAD_VALUE, $paddingMode);
     }
 
     private function updateTitlesListAndCellLength(&$list, &$cellLength): void {

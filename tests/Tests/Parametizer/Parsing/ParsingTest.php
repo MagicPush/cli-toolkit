@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Parsing;
 
+use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
+use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -21,6 +23,8 @@ class ParsingTest extends TestCaseAbstract {
      * @see CliRequestProcessor::registerOption()
      * @see CliRequestProcessor::setRequestParam()
      * @see CliRequestProcessor::validate()
+     * @see ParameterAbstract::allowedValues()
+     * @see VariableBuilderAbstract::allowedValues()
      */
     public function testParsingSuccess(string $parametersString, array $expectedValues): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/lots-of-params.php', $parametersString);
@@ -254,6 +258,7 @@ class ParsingTest extends TestCaseAbstract {
     }
 
     /**
+     * @noinspection SpellCheckingInspection
      * @return array[]
      */
     public static function provideParsingManyFlagsSuccess(): array {
@@ -303,6 +308,9 @@ class ParsingTest extends TestCaseAbstract {
      * @see CliRequestProcessor::registerOption()
      * @see CliRequestProcessor::setRequestParam()
      * @see CliRequestProcessor::validate()
+     * @see ParameterAbstract::allowedValues()
+     * @see ParameterAbstract::areAllowedValuesHiddenFromHelp()
+     * @see VariableBuilderAbstract::allowedValues()
      */
     public function testParseErrorsWithHelp(
         string $scriptPath,
@@ -472,7 +480,6 @@ Duplicate value '100' for option --opt-list (-l); already registered values: '10
   --help               Show full help page.
 
   -l …, --opt-list=…   List of values
-                       Allowed values: 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800
                        (multiple values allowed)
 
 STDERR_OUTPUT,

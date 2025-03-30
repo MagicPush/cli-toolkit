@@ -69,9 +69,16 @@ class Question {
 
     /**
      * Ask a question with possible yes/no answers, exit if got "no" answer.
+     *
+     * @param string $dieMessage Optional message to output before script's execution is interrupted
+     *                           (if no "confirmation" happened).
      */
-    public static function confirmOrDie(string $question): void {
+    public static function confirmOrDie(string $question, string $dieMessage = ''): void {
         if (!static::confirm($question)) {
+            if ($dieMessage) {
+                echo $dieMessage;
+            }
+
             exit(1);
         }
     }

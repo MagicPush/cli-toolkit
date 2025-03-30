@@ -26,10 +26,9 @@ $request = Parametizer::newConfig(throwOnException: true)
 
     ->run();
 
-$branch = $request->getParam('branch');
-echo $request->getParam($branch)['opt']
+echo $request->getParam($request->getSubcommandRequestName())['opt']
     . ', '
     // Let's show that the method below is a more handy version of reading nested parameters, rendering the same values.
     . $request
-        ->getSubcommandRequest($branch)
+        ->getSubcommandRequest()
         ->getParam('opt');

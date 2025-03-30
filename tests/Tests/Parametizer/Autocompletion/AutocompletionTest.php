@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion;
 
+use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -237,6 +239,8 @@ class AutocompletionTest extends TestCaseAbstract {
      * @see Completion::complete()
      * @see Completion::completeOptions()
      * @see Completion::completeParamValue()
+     * @see ParameterAbstract::allowedValues()
+     * @see VariableBuilderAbstract::allowedValues()
      */
     public function testSmartAutocomplete(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -256,6 +260,8 @@ class AutocompletionTest extends TestCaseAbstract {
      * @see Completion::complete()
      * @see Completion::completeOptions()
      * @see Completion::completeParamValue()
+     * @see ParameterAbstract::allowedValues()
+     * @see VariableBuilderAbstract::allowedValues()
      */
     public function testSmartAutocompleteSubcommand(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateAutocomplete(
@@ -358,6 +364,8 @@ class AutocompletionTest extends TestCaseAbstract {
             'empty' => [
                 'parametersString'    => '',
                 'expectedOutputLines' => [
+                    Config::PARAMETER_NAME_LIST . ' ',
+                    Config::OPTION_NAME_HELP . ' ',
                     'different-params ',
                     'smart-autocomplete ',
                 ],

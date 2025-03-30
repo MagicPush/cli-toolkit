@@ -42,4 +42,8 @@ final class HelpFormatter extends TerminalFormatter {
     public function error(string $text): string {
         return $this->apply($text, [static::STYLE_BOLD, static::FONT_LIGHT_RED]);
     }
+
+    public function invert(string $text): string {
+        return $this->apply($text, [static::STYLE_INVERT]);
+    }
 }
