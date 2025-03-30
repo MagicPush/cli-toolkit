@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
@@ -15,22 +15,22 @@ require_once __DIR__ . '/../../../init-console.php';
  * this means that the recursive handling actually took place.
  */
 
-Parametizer::newConfig(throwOnException: true)
+TestUtils::newConfig()
     ->newSubcommandSwitch('switchme')
 
     ->newSubcommand(
         'test11',
-        Parametizer::newConfig(throwOnException: true)
+        TestUtils::newConfig()
             ->newSubcommandSwitch('switchme-l2')
-            ->newSubcommand('test21', Parametizer::newConfig(throwOnException: true))
-            ->newSubcommand('test22', Parametizer::newConfig(throwOnException: true))
+            ->newSubcommand('test21', TestUtils::newConfig())
+            ->newSubcommand('test22', TestUtils::newConfig())
 
             ->newSubcommand(
                 'test23',
-                Parametizer::newConfig(throwOnException: true)
+                TestUtils::newConfig()
                     ->newSubcommandSwitch('switchme-l3')
-                    ->newSubcommand('test31', Parametizer::newConfig(throwOnException: true))
-                    ->newSubcommand('test31', Parametizer::newConfig(throwOnException: true))
+                    ->newSubcommand('test31', TestUtils::newConfig())
+                    ->newSubcommand('test31', TestUtils::newConfig())
                     // Same subcommand name, exception will be thrown.
 
                     ->newOption('--name-l3'),
@@ -39,7 +39,7 @@ Parametizer::newConfig(throwOnException: true)
             ->newOption('--name-l2'),
     )
 
-    ->newSubcommand('test12', Parametizer::newConfig(throwOnException: true))
+    ->newSubcommand('test12', TestUtils::newConfig())
 
     ->newOption('--name')
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 class DifferentParams {
     public static function getConfigBuilder(): BuilderInterface {
-        return Parametizer::newConfig(throwOnException: true)
+        return TestUtils::newConfig()
             ->newOption('--opt', '-o')
             ->allowedValuesDescribed([
                 '100'     => 'One hundred',
