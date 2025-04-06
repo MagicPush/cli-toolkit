@@ -2,7 +2,16 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
-## v2.0.1
+## v2.1.0
+
+### New features
+
+1. [AutoloadDetector.php](../tools/cli-toolkit/Classes/AutoloadDetector.php) is added for
+   [init.php](../tools/cli-toolkit/init.php).
+
+   Previously all built-in scripts ([cli-toolkit](../tools/cli-toolkit)) could not be launched without calling
+   `composer install` additionally inside the library directory.
+   And from now on your main project's `vendor/autoload.php` path should be detectable.
 
 ### Patches
 
