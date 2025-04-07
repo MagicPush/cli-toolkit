@@ -24,10 +24,11 @@ The list of plans and ideas for future development.
       (but it's still should be possible).
     * Rename `$subcommandName` to `$subcommandSwitchName`.
     * Rename "subcommand value" to "subcommand name" throughout the whole project.
+1. Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
+     to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. Support a config file for
    [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php). It will ease
    specifying the script settings for multiple launches.
-1. PHPUnit: remove the PHAR from the project completely, try OS-based installation.
 1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
        files or any other kinds of streams.
@@ -83,97 +84,12 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. TEST
-        1. - [ ] Subcommands detector:
-            1. - [ ] Detection:
-                1. - [ ] Script classes.
-                1. - [ ] Plain Parametizer-based scripts.
-                1. - [ ] Regular plain scripts.
-            1. - [ ] There may be no namespace.
-            1. - [ ] No abstract classes detected.
-            1. - [ ] Final classes are detected too.
-            1. - [ ] Classes without namespace are detected too.
-            1. - [ ] Several search paths.
-            1. - [ ] Ignore (black) masked lists for search paths.
-            1. - [ ] Include (white) masked lists for search paths.
-            1. - [ ] Force-ignore (black-over-whitelist) exact paths.
-            1. - [ ] Force-include (white-over-black) exact paths.
-            1. - [ ] Names are naturally sorted (`script2` is placed above `script10`).
-            1. - [ ] Invalid / not readable paths.
-        1. - [ ] `ScriptAbstract`
-            1. - [ ] Simple and composite names.
-            1. - [ ] `getLocalName()` must not be empty.
-            1. - [ ] `getLocalName()` auto name generation:
-                 `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
-    1. - [ ] [features-manual.md](features-manual.md):
-        1. - [ ] Built-in subcommands.
-        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
-        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
-        1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
-    1. - [x] Remove now obsolete "plain" scripts from `tools/cli-toolkit`
-         or replace repeating code with script classes usages.
-    1. - [ ] Test performance on many files.
-        1. - [x] Create test classes generator to generate lost of class-based scripts.
-        1. - [x] Compare file tokenizer vs regexp.
-            * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
-        1. - [ ] Remove [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
-             from the launcher, make it not detectable
-             by [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
-        1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
-        1. - [ ] Think if [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) needs caching.
-        1. - [ ] Test `EnvironmentConfig` search performance.
-    1. - [x] Add a built-in subcommand `list` to list all detected scripts with their names and short descriptions.
-         Also consider this:
-        1. - [x] Update [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
-             by adding name sections. ~~For instance, each subfolder scripts are extended from a subfolder abstract class
-             with redefined `getNameSections()`.~~
-        1. - [x] Add the command automatically for all configs with switches.
-        1. - [x] Add filtering by a substring.
-        1. - [x] Support different output formats.
-        1. - [x] Modify `--help` callback for a script with subcommands: if there is more than X subcommands available,
-             do not show the full list of subcommands with usages, mention `list` subcommand instead.
-        1. - [x] Use the same mechanism to add `help` subcommand,
-             e.g. `git help status` is the same as `git status --help`.
-            * The `help` subcommand should be added automatically for each config with a subcommand.
-            * Possible values are all available subcommand names for the same switch.
-        1. - [x] Update [changelog.md](changelog.md)
-    1. - [x] Refactoring stage:
-        1. - [x] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
-        1. - [x] Apply `TestUtils::newConfig()` in all test scripts.
-        1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
-             by replacing substrings with "more typo friendly".
     1. - [ ] Make `list` as the default value for a subcommand switch.
-    1. - [ ] Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
-         to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
     1. - [ ] Add manual short description support - in case automatic short description is not so good.
         1. - [ ] Add a short description to built-in subcommands where needed.
-    1. - [ ] Support different script (subcommand) naming.
-        1. - [x] Composite names: 2 parts at least - `section:script` (like in Symfony).
-             Single named scripts should be allowed too.
-            1. - [x] Also try to allow any amount of parts in a script full name (3, 4, ..., N).
-        1. - [ ] Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for
-             a script, that may be also called via `gas` or `generate-completion` aliases.
-             
-             ... Or try making a subcommand alias via an autocompletion script.
-        1. - [ ] Ensure no names and aliases duplication.
-
-             Should happen automatically, if all names are used as built-in subcommand names.
-    1. - [ ] Additions to [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
-         1. - [ ] Different ways to include/exclude files and/or directories.
-         1. - [ ] Consider a case: script classes are spread all over a huge project. The only search path is
-              the huge project's root directory. A full scan may take a while.
-              
-              Consider caching:
-             * by a setting and/or based on all scanned files count;
-             * possible automatic invalidation condition
-             * easy to use manual cache clear tool
-    1. - [ ] Scripts launcher may detect ordinal Parametizer-based scripts
-         (one of the launcher / "_Environment Config_" config settings).
-
-         Thoughts about such scripts naming:
-        * Generate default names by minimal unambiguous paths.
-        * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
-         and add those to a launcher available commands list.
+    1. - [ ] Add `SubcommandLauncher` to keep all launchers common code.
+        * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
+          a single search path `__DIR__` and its own path as an exception.
     1. - [ ] Support `EnvironmentConfig` setup:
         1. - [ ] See if `$_SERVER` may be used instead of `debug_backtrace()`.
         1. - [ ] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
@@ -230,6 +146,61 @@ The list of plans and ideas for future development.
         1. - [ ] Try moving `ScriptAbstract::NAME_*` constants into `EnvironmentConfig`
         1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
              instance "automatically" by making `getConfiguration()` non-static or in a separate method.
+    1. - [ ] Test performance on many files.
+        1. - [x] Create test classes generator to generate lost of class-based scripts.
+        1. - [x] Compare file tokenizer vs regexp.
+            * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
+        1. - [ ] A generated launcher should also show time elapsed and RAM usage.
+        1. - [ ] Remove [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
+             from the launcher, make it not detectable
+             by [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
+        1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
+        1. - [ ] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
+            * Searching in large projects (~ 5GB) may last for 30+ seconds!
+        1. - [ ] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
+    1. - [ ] Additions to [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
+        1. - [ ] Different ways to include/exclude files and/or directories.
+        1. - [ ] Consider a case: script classes are spread all over a huge project. The only search path is
+             the huge project's root directory. A full scan may take a while.
+
+             Consider caching:
+            * by a setting and/or based on all scanned files count;
+            * possible automatic invalidation condition
+            * easy to use manual cache clear tool
+    1. TEST
+        1. - [ ] Subcommands detector:
+            1. - [ ] Detection:
+                1. - [ ] Script classes.
+                1. - [ ] Plain Parametizer-based scripts.
+                1. - [ ] Regular plain scripts.
+            1. - [ ] There may be no namespace.
+            1. - [ ] No abstract classes detected.
+            1. - [ ] Final classes are detected too.
+            1. - [ ] Classes without namespace are detected too.
+            1. - [ ] Several search paths.
+            1. - [ ] Ignore (black) masked lists for search paths.
+            1. - [ ] Include (white) masked lists for search paths.
+            1. - [ ] Force-ignore (black-over-whitelist) exact paths.
+            1. - [ ] Force-include (white-over-black) exact paths.
+            1. - [ ] Names are naturally sorted (`script2` is placed above `script10`).
+            1. - [ ] Invalid / not readable paths.
+        1. - [ ] `ScriptAbstract`
+            1. - [ ] Simple and composite names.
+            1. - [ ] `getLocalName()` must not be empty.
+            1. - [ ] `getLocalName()` auto name generation:
+                 `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
+    1. - [ ] [features-manual.md](features-manual.md):
+        1. - [ ] Built-in subcommands.
+        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
+        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
+        1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+    1. - [ ] Scripts launcher may detect ordinal Parametizer-based scripts
+         (one of the launcher / "_Environment Config_" config settings).
+
+         Thoughts about such scripts naming:
+        * Generate default names by minimal unambiguous paths.
+        * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
+          and add those to a launcher available commands list.
     1. - [ ] Implement a "typo guesser" like in `composer`:
          
          ```
@@ -242,6 +213,10 @@ The list of plans and ideas for future development.
          Do you want to run "list" instead?  (yes/no) [no]:
          >
          ```
+    1. - [ ] Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for
+         a script, that may be also called via `gas` or `generate-completion` aliases.
+
+         ... Or try making a subcommand alias via an autocompletion script.
     1. - [ ] Detected script names may be accessed as subcommand values by specifying their full names
          (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
          scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
@@ -257,6 +232,34 @@ The list of plans and ideas for future development.
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
 
+    </details>
+    <details>
+    <summary>Stuff implemented</summary>
+
+    1. - [x] Support composite names: 2 parts at least - `section:script` (like in Symfony).
+         Single named scripts should be allowed too.
+        1. - [x] Also try to allow any amount of parts in a script full name (3, 4, ..., N).
+    1. - [x] Remove now obsolete "plain" scripts from `tools/cli-toolkit`
+         or replace repeating code with script classes usages.
+    1. - [x] Add a built-in subcommand `list` to list all detected scripts with their names and short descriptions.
+         Also consider this:
+        1. - [x] Update [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
+             by adding name sections.
+        1. - [x] Add the command automatically for all configs with switches.
+        1. - [x] Add filtering by a substring.
+        1. - [x] Support different output formats.
+        1. - [x] Modify `--help` callback for a script with subcommands: if there is more than X subcommands available,
+             do not show the full list of subcommands with usages, mention `list` subcommand instead.
+        1. - [x] Use the same mechanism to add `help` subcommand,
+             e.g. `git help status` is the same as `git status --help`.
+            * The `help` subcommand should be added automatically for each config with a subcommand.
+            * Possible values are all available subcommand names for the same switch.
+        1. - [x] Update [changelog.md](changelog.md)
+    1. - [x] Refactoring stage:
+        1. - [x] Rename [utils](../tests/utils) to `Utils` (directory and namespace).
+        1. - [x] Apply `TestUtils::newConfig()` in all test scripts.
+        1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
+             by replacing substrings with "more typo friendly".
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

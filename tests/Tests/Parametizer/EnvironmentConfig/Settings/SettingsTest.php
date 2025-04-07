@@ -10,8 +10,30 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertStringContainsString;
+use function PHPUnit\Framework\assertTrue;
 
 class SettingsTest extends TestCaseAbstract {
+    /**
+     * Ensures all settings have their corresponding paragraphs in the manual.
+     *
+     * @see EnvironmentConfig
+     */
+    public function testAllSettingsAreDescribedInManual(): void {
+        $envConfigSettings = array_keys(json_decode((new EnvironmentConfig())->toJsonFileContent(), true));
+        $manualRealpath    = realpath(__DIR__ . '/' . '../scripts/../../../../../docs/features-manual.md');
+        $manualContents    = file_get_contents($manualRealpath);
+        foreach ($envConfigSettings as $settingName) {
+            $settingParagraph = "#### {$settingName}";
+            // Let's not use `assertStringContainsString()`: in case of an error we do not want to see
+            // a lengthy error message containing the whole manual page contents.
+            $isFound = str_contains($manualContents, $settingParagraph);
+            assertTrue(
+                $isFound,
+                "'$settingParagraph' paragraph is not found in the manual: {$manualRealpath}" . PHP_EOL,
+            );
+        }
+    }
+
     #[DataProvider('provideOptionHelpShortName')]
     /**
      * Tests setting up the 'help' option short name - some character and no character (disabling a short name).
