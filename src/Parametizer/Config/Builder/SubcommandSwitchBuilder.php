@@ -11,7 +11,6 @@ class SubcommandSwitchBuilder extends BuilderAbstract {
         $this->configBuilder = $configBuilder;
 
         $this->param = (new Argument($name))
-            ->require()
             ->setIsSubcommandSwitch();
 
         $this->configBuilder->getConfig()->registerArgument($this->param);

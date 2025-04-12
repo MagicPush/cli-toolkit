@@ -80,7 +80,7 @@ final class Completion {
 
         // Let's fire up CliRequestProcessor with the rest of passed data.
         $this->parser              = new Parser($words);
-        $this->cliRequestProcessor = (new CliRequestProcessor($this->config))
+        $this->cliRequestProcessor = (new CliRequestProcessor($this->config, true))
             ->disableCallbacks();
 
         $this->cliRequestProcessor->load($this->parser);

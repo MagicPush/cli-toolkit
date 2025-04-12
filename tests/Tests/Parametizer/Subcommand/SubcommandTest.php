@@ -346,10 +346,12 @@ STDERR_OUTPUT,
 
     #[DataProvider('provideBuiltInSubcommandExecutionReplacesScriptExecution')]
     /**
-     * Tests that a built-in subcommand, if called, executes right after parameters parsing, but right after that
+     * Tests that a built-in subcommand, if called, executes right after parameters parsing, but after that
      * the whole process is terminated - no main script execution happens.
      *
      * @see CliRequest::executeBuiltInSubcommandIfRequested()
+     * @see CliRequestProcessor::load()
+     * @see Config::addBuiltInSubcommands()
      * @see Parametizer::run()
      */
     public function testBuiltInSubcommandExecutionReplacesScriptExecution(
@@ -375,13 +377,29 @@ STDERR_OUTPUT,
      */
     public static function provideBuiltInSubcommandExecutionReplacesScriptExecution(): array {
         return [
-            'list' => [
-                'subcommandName'      => 'list',
+            'built-in' => [
+                'subcommandName'      => Config::PARAMETER_NAME_LIST,
                 'isExceptionExpected' => false,
             ],
-            'regular-subcommand' => [
+            'regular' => [
                 'subcommandName'      => 'test',
                 'isExceptionExpected' => true,
+            ],
+
+            // Built-in subcommands work the same way for any level in a "configs tree":
+            'deeper-level-built-in' => [
+                'subcommandName'      => 'level-2 ' . Config::PARAMETER_NAME_LIST,
+                'isExceptionExpected' => false,
+            ],
+            'deeper-level-regular' => [
+                'subcommandName'      => 'level-2 test-2',
+                'isExceptionExpected' => true,
+            ],
+
+            // If no subcommand is specified then the default one takes place:
+            'default' => [
+                'subcommandName'      => '',
+                'isExceptionExpected' => false,
             ],
         ];
     }

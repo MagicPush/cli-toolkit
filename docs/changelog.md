@@ -13,6 +13,7 @@ This change log references the repository changes and releases, which respect [s
 1. `CliRequest::getSubcommandRequest()`: removed `$subcommandName` parameter, changed return type hint
    from `string` to `?string`:
    now the method always returns the called subcommand's request object or `null` if there was no subcommand call.
+1. `CliRequestProcessor::$config` became readonly - you can not edit it after passing to `__construct()`.
 1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
@@ -30,6 +31,7 @@ This change log references the repository changes and releases, which respect [s
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
    `help` ([HelpScript.php](../src/Parametizer/Script/BuiltInSubcommand/HelpScript.php))
    and `list` ([ListScript.php](../src/Parametizer/Script/BuiltInSubcommand/ListScript.php)) built-in subcommands.
+    1. Every subcommand switch goes with `list` as its default value.
 1. [VariableBuilderAbstract.php](../src/Parametizer/Config/Builder/VariableBuilderAbstract.php):
     1. Added an optional `$areHiddenForHelp` parameter for `allowedValues()` method, defaults to `false`.
     1. Added a protected method `setAllowedValues()` for common internal operations with the allowed values list.
@@ -49,6 +51,10 @@ This change log references the repository changes and releases, which respect [s
     1. Added `getSubcommandRequestName()` method.
     1. Added `executeBuiltInSubcommandIfRequested()` method for built-in subcommands automatic execution;
        the method is utilized by `Parametizer::run()`.
+1. Added `CliRequestProcessor::parseSubcommandParameters()` protected method
+   to ease processing of the default subcommand value.
+1. Added `CliRequestProcessor::$isForCompletion` readonly flag (settable in `__construct()`). The flag is used
+   to stabilize completion output due to the default subcommand switch value.
 1. [Config.php](../src/Parametizer/Config/Config.php):
     1. Added `PARAMETER_NAME_LIST` public constant to keep the listing built-in subcommand name.
     1. Added `$builtInSubcommandClassBySubcommandName` protected property and the related methods:
@@ -57,6 +63,7 @@ This change log references the repository changes and releases, which respect [s
         * public `getBuiltInSubcommands()` - to get the list of built-in subcommand configs by their names;
         * protected `addBuiltInSubcommands()` - an internal method to add built-in subcommands automatically to every
           script that contains a subcommand switch parameter.
+    1. Added `getArgumentsByNames()` that has argument names as keys, while `getArguments()` still renders numeric keys.
 1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/Scripts/CliToolkitScriptAbstract.php) as a basement for all
    [tools/cli-toolkit](../tools/cli-toolkit) scripts.
 1. [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) as a tool

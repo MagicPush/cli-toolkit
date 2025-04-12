@@ -107,7 +107,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         USAGE
 
-          deep-nesting.php <subcommand-name>
+          deep-nesting.php [<subcommand-name>]
 
           Very deep call:
           deep-nesting.php test11 --name-l2=superName test23 --name-l3=nameLevelThree test32
@@ -119,9 +119,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
         ARGUMENTS
 
           <subcommand-name>   LEVEL 1
-          (required)          Allowed values: 4 subcommands available (see 'list' subcommand output)
+                              Allowed values: 4 subcommands available (see 'list' subcommand output)
                               Subcommand help: <subcommand-name> --help
                                        ... or: help <subcommand-name>
+                              Default: list
 
 
         HELP,
@@ -141,7 +142,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
 
         USAGE
 
-          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] <subcommand-name-l3>
+          deep-nesting.php test11 [--name-l2=…] test23 [--name-l3=…] [<subcommand-name-l3>]
           deep-nesting.php test11 test23 test31
 
           Very deep call:
@@ -156,9 +157,10 @@ class HelpGeneratorTest extends TestCaseAbstract {
         ARGUMENTS
 
           <subcommand-name-l3>   LEVEL 3
-          (required)             Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                 Allowed values: 4 subcommands available (see 'list' subcommand output)
                                  Subcommand help: <subcommand-name-l3> --help
                                           ... or: help <subcommand-name-l3>
+                                 Default: list
 
 
         HELP,

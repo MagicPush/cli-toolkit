@@ -3,6 +3,8 @@
 ## Contents
 
 - [Class-based scripts mass tests](#class-based-scripts-mass-tests)
+    - [Tokenizer vs RegExp](#tokenizer-vs-regexp)
+    - [Scripts detection performance](#scripts-detection-performance)
 
 ## Class-based scripts mass tests
 
@@ -55,3 +57,12 @@ foreach (PhpToken::tokenize($fileContents) as $fileToken) {
 }
 ```
 </details>
+
+### Scripts detection performance
+
+In large projects searching for scripts recursively in the project's main directory may last for a few seconds
+or even dozens of seconds.
+
+Possible solutions:
+1. Specify paths that are "closer" to actual scripts (less directories and files to parse).
+2. Support caching that may be enabled when needed.

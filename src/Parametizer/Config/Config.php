@@ -57,19 +57,19 @@ class Config {
 
     protected string $scriptName = '';
 
-    /** @var ParameterAbstract[] name => object */
+    /** @var array<string, ParameterAbstract> name => object */
     protected array $params = [];
 
-    /** @var Argument[] name => Argument (positional parameters) */
+    /** @var array<string, Argument> name => Argument */
     protected array $arguments = [];
 
-    /** @var Option[] long name => Option */
+    /** @var array<string, Option> long name => Option */
     protected array $options = [];
 
-    /** @var Option[] short name => Option */
+    /** @var array<string, Option> short name => Option */
     protected array $optionsByShortNames = [];
 
-    /** @var Option[] '--name' => Option / '-n' => Option */
+    /** @var array<string, Option> '--name' => Option / '-n' => Option */
     protected array $optionsByFormattedNamesAndShortNames = [];
 
     /** @var string[] */
@@ -269,6 +269,10 @@ class Config {
             $this->newSubcommand($subcommandName, $subcommandClass::getConfiguration()->getConfig());
         }
 
+        $this->arguments[$this->subcommandSwitchName]
+            ->require(false)
+            ->default(static::PARAMETER_NAME_LIST);
+
         return $this;
     }
 
@@ -401,12 +405,21 @@ class Config {
     }
 
     /**
-     * Arguments (positional params).
+     * Arguments (positional parameters).
      *
      * @return Argument[]
      */
     public function getArguments(): array {
         return array_values($this->arguments);
+    }
+
+    /**
+     * Arguments (positional parameters) by their names as keys.
+     *
+     * @return array<string, Argument> name => Argument
+     */
+    public function getArgumentsByNames(): array {
+        return $this->arguments;
     }
 
     /**
@@ -454,7 +467,7 @@ class Config {
 
         // Technically subcommand switch can be done via option/flag.
         // Any class of $subcommandSwitch will do.
-        $subcommandSwitch          = $this->params[$this->subcommandSwitchName];
+        $subcommandSwitch          = $this->arguments[$this->subcommandSwitchName];
         $subcommandConfigsByValues = $this->branches;
 
         // ==== VALIDATION ====

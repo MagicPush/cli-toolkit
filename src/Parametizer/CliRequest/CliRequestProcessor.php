@@ -38,7 +38,7 @@ class CliRequestProcessor {
     protected array $defaultsLookup = [];
 
 
-    public function __construct(protected Config $config) { }
+    public function __construct(protected readonly Config $config, protected readonly bool $isForCompletion = false) { }
 
     public function disableCallbacks(bool $areCallbacksDisabled = true): static {
         $this->areCallbacksDisabled = $areCallbacksDisabled;
@@ -69,6 +69,21 @@ class CliRequestProcessor {
         }
 
         $this->registerParameters();
+
+        // In 'completion' mode we should ignore default subcommand switch values,
+        // so we could successfully hint available subcommands.
+        if (!$this->isForCompletion) {
+            // But otherwise, if there is a subcommand switch in a config, but no subcommand request,
+            // then it's a default subcommand and we should process the switch's default value like parsed one.
+            $subcommandSwitchName  = $this->config->getSubcommandSwitchName();
+            $subcommandSwitchValue = $this->requestParams[$subcommandSwitchName] ?? null;
+            if ($subcommandSwitchValue && !array_key_exists($subcommandSwitchValue, $this->requestParams)) {
+                $this->parseSubcommandParameters(
+                    $subcommandSwitchValue,
+                    $this->config->getArgumentsByNames()[$subcommandSwitchName],
+                );
+            }
+        }
 
         return new CliRequest($this->config, $this->requestParams);
     }
@@ -261,12 +276,13 @@ class CliRequestProcessor {
      * @param Argument[] $arguments
      */
     protected function registerArgument(array &$arguments, ParsedArgument $parsedArgument): void {
-        $errorFormatter = HelpFormatter::createForStdErr();
-        $value          = $parsedArgument->value;
+        $value = $parsedArgument->value;
 
         if (empty($arguments)) {
+            $valueFormatted = HelpFormatter::createForStdErr()
+                ->paramValue(var_export(HelpGenerator::convertValueToString($value), true));
             throw new ParseErrorException(
-                "Too many arguments, starting with '" . $errorFormatter->paramValue((string) $value) . "'",
+                "Too many arguments, starting with {$valueFormatted}",
                 ParseErrorException::E_TOO_MANY_ARGUMENTS,
                 $this->getInnermostBranchConfig()->getArguments(),
             );
@@ -284,28 +300,35 @@ class CliRequestProcessor {
         }
 
         if ($argument->isSubcommandSwitch()) {
-            $branch = $this->getConfig()->getBranch($value);
-
-            // This shouldn't happen because of guaranteed validator for such a parameter. But if it still somehow happens...
-            if (!$branch) {
-                throw new ParseErrorException(
-                    "Unknown command '" . $errorFormatter->paramValue((string) $value) . "'",
-                    ParseErrorException::E_WRONG_ARGUMENT,
-                    [$argument],
-                );
-            }
-
-            // The rest of arguments are treated as a separate request to the subcommand.
-            $requestProcessor            = (new static($branch))->setParent($this);
-            $this->detectedBranchRequest = $requestProcessor;
-
-            // Options are allowed again.
-            $this->parser->allowOptions();
-
-            $consoleRequest = $requestProcessor->load($this->parser);
-
-            $this->requestParams[$value] = $consoleRequest->getParams();
+            $this->parseSubcommandParameters($value, $argument);
         }
+    }
+
+    /**
+     * Generates a {@see CliRequest} object for a branch config.
+     */
+    protected function parseSubcommandParameters(string $subcommandName, Argument $subcommandSwitch): void {
+        $branch = $this->getConfig()->getBranch($subcommandName);
+
+        // This shouldn't happen because of guaranteed validator for such a parameter. But if it still somehow happens...
+        if (!$branch) {
+            throw new ParseErrorException(
+                "Unknown command '" . HelpFormatter::createForStdErr()->paramValue($subcommandName) . "'",
+                ParseErrorException::E_WRONG_ARGUMENT,
+                [$subcommandSwitch],
+            );
+        }
+
+        // The rest of arguments are treated as a separate request to the subcommand.
+        $requestProcessor            = (new static($branch, $this->isForCompletion))->setParent($this);
+        $this->detectedBranchRequest = $requestProcessor;
+
+        // Options are allowed again.
+        $this->parser->allowOptions();
+
+        $subcommandRequest = $requestProcessor->load($this->parser);
+
+        $this->requestParams[$subcommandName] = $subcommandRequest->getParams();
     }
 
     /**

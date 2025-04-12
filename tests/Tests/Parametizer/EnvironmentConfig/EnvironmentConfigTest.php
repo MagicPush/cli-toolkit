@@ -33,30 +33,32 @@ class EnvironmentConfigTest extends TestCaseAbstract {
     public static function provideDifferentBranchConfigs(): array {
         return [
             'main' => [
-                'parametersString'    => '',
+                'parametersString'    => 'invalid',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+Incorrect value 'invalid' for argument <subcommand-name-l1>
 
 
   -X, --help             Show full help page.
 
   <subcommand-name-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-  (required)             Subcommand help: <subcommand-name-l1> --help
+                         Subcommand help: <subcommand-name-l1> --help
                                   ... or: help <subcommand-name-l1>
+                         Default: list
 
 STDERR_OUTPUT,
             ],
             'level-2' => [
-                'parametersString'    => 'conf-l2-s2',
+                'parametersString'    => 'conf-l2-s2 invalid',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+Incorrect value 'invalid' for argument <subcommand-name-l2-s2>
 
 
   -y, --help                Show full help page.
 
   <subcommand-name-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-  (required)                Subcommand help: <subcommand-name-l2-s2> --help
+                            Subcommand help: <subcommand-name-l2-s2> --help
                                      ... or: help <subcommand-name-l2-s2>
+                            Default: list
 
 STDERR_OUTPUT,
             ],

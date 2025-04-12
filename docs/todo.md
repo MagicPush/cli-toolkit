@@ -84,7 +84,10 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Make `list` as the default value for a subcommand switch.
+    1. - [ ] Ensure a parent config argument is not shadowed by a subcommand value.
+
+         Example: add `list` argument to a launcher and lose it's value after `CliRequestProcessor` replaces it with
+         `list` subcommand branch request.
     1. - [ ] Add manual short description support - in case automatic short description is not so good.
         1. - [ ] Add a short description to built-in subcommands where needed.
     1. - [ ] Add `SubcommandLauncher` to keep all launchers common code.
@@ -191,6 +194,8 @@ The list of plans and ideas for future development.
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
+            1. - [ ] `list` as a default value.
+                 No other parameters are processed correctly unless `list` is specified explicitly.
         1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
         1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
@@ -260,6 +265,7 @@ The list of plans and ideas for future development.
         1. - [x] Apply `TestUtils::newConfig()` in all test scripts.
         1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
              by replacing substrings with "more typo friendly".
+    1. - [x] Make `list` as the default value for a subcommand switch.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

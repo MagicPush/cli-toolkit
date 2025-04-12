@@ -384,4 +384,59 @@ class AutocompletionTest extends TestCaseAbstract {
             ],
         ];
     }
+
+    #[DataProvider('provideSubcommandSwitchDefaultValueDeep')]
+    /**
+     * Tests completion affected by default subcommand switch value deeply in configs tree.
+     *
+     * For now the only possible default subcommand is {@see Config::PARAMETER_NAME_LIST}, it is hardcoded.
+     * However if different default values are possible, we may test here any default value.
+     *
+     * @param string[] $expectedOutputLines
+     * @see Completion::executeAutocomplete()
+     * @see Completion::complete()
+     * @see Completion::completeParamValue()
+     */
+    public function testSubcommandSwitchDefaultValueDeep(string $parametersString, array $expectedOutputLines): void {
+        $this->testTemplateAutocomplete(
+            __DIR__ . '/scripts/deep-default-subcommand.php',
+            "level-2 {$parametersString}",
+            $expectedOutputLines,
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSubcommandSwitchDefaultValueDeep(): array {
+        return [
+            // If no subcommand is specified explicitly, the default subcommand is ignored.
+            // So the completion should render available subcommands.
+            'default' => [
+                'parametersString'    => '',
+                'expectedOutputLines' => [
+                    'list ',
+                    'help ',
+                    'level-3 ',
+                ],
+            ],
+
+            // If we explicitly specify a subcommand, the completion mechanism should suggest possible values
+            // for the next subcommand argument (if present).
+            // The same should happen if the specified subcommand is identical to the default one.
+            'explicit-default' => [
+                'parametersString'    => Config::PARAMETER_NAME_LIST . ' ',
+                'expectedOutputLines' => [],
+            ],
+            // Here the subcommand supports an argument with a list of allowed values.
+            'subcommand-with-argument' => [
+                'parametersString'    => 'level-3 ',
+                'expectedOutputLines' => [
+                    'asd ',
+                    'zxc ',
+                    'qwe ',
+                ],
+            ],
+        ];
+    }
 }
