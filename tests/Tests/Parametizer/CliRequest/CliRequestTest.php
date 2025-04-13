@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\CliRequest;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
+use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
+use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
+use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertStringContainsString;
 
 class CliRequestTest extends TestCaseAbstract {
     #[DataProvider('provideGettingParameterValue')]
@@ -19,7 +24,7 @@ class CliRequestTest extends TestCaseAbstract {
      * @see CliRequest::getParams()
      */
     public function testGettingParameterValue(string $parameterName, string $parameterValue): void {
-        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-parameter-name.php', $parameterName);
+        $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-request-parameter-name.php', $parameterName);
 
         assertSame(
             [
@@ -57,7 +62,7 @@ class CliRequestTest extends TestCaseAbstract {
      */
     public function testGettingParameterValueByInvalidName(): void {
         static::assertLogicExceptionOutput(
-            __DIR__ . '/scripts/template-parameter-name.php',
+            __DIR__ . '/scripts/template-request-parameter-name.php',
             "Parameter 'cool-parameter' not found in the request."
                 . ' The parameters being parsed: option-parameter, argument-parameter',
             'cool-parameter',
@@ -248,5 +253,110 @@ class CliRequestTest extends TestCaseAbstract {
             static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommand-reads-parent-request.php', '--opt=asd test')
                 ->getStdOut(),
         );
+    }
+
+    #[DataProvider('provideSubcommandDoesNotShadowParentParameter')]
+    /**
+     * Tests that parent config parameter values are not lost if a subcommand with the same name is picked.
+     *
+     * It is achieved by adding {@see CliRequest::SUBCOMMAND_PREFIX}
+     * to the beginning of a subcommand parameters sub-array name.
+     *
+     * @see CliRequestProcessor::parseSubcommandParameters()
+     * @see CliRequest::getSubcommandRequest()
+     */
+    public function testSubcommandDoesNotShadowParentParameter(
+        string $parametersString,
+        array $expectedRequestParameters,
+    ): void {
+        assertSame(
+            $expectedRequestParameters,
+            json_decode(
+                self::assertNoErrorsOutput(
+                    __DIR__ . '/scripts/subcommand-and-parameter-same-names.php',
+                    $parametersString,
+                )->getStdOut(),
+                true,
+            ),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSubcommandDoesNotShadowParentParameter(): array {
+        return [
+            'argument' => [
+                'parametersString'          => 'some-argument argument',
+                'expectedRequestParameters' => [
+                    'argument'   => 'some-argument',
+                    'option'     => 'option-default',
+                    'subcommand' => 'argument',
+
+                    CliRequest::SUBCOMMAND_PREFIX . 'argument' => [],
+                ],
+            ],
+            'option' => [
+                'parametersString'          => 'some-argument option',
+                'expectedRequestParameters' => [
+                    'argument'   => 'some-argument',
+                    'option'     => 'option-default',
+                    'subcommand' => 'option',
+
+                    CliRequest::SUBCOMMAND_PREFIX . 'option' => [],
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideErrorIfRequestSubcommandPrefixIsUsedForParameterNames')]
+    /**
+     * Tests that it is not possible to add the request subcommand prefix ({@see CliRequest::SUBCOMMAND_PREFIX})
+     * to parameter and subcommand regular names.
+     *
+     * This check adds insurance that when a request multi-dimensional array is created,
+     * subcommand sub-request name can not replace a parent parameter name in a request array.
+     *
+     * @see ParameterAbstract::__construct()
+     * @see Config::newSubcommand()
+     */
+    public function testErrorIfRequestSubcommandPrefixIsUsedForParameterNames(
+        string $parameterType,
+        string $expectedErrorOutputSubstringMessage,
+        string $expectedErrorOutputSubstringTrace,
+    ): void {
+        $result = self::assertAnyErrorOutput(
+            __DIR__ . '/' . 'scripts/template-parameter-or-subcommand-name.php',
+            $expectedErrorOutputSubstringMessage,
+            $parameterType,
+            ConfigException::class . ': ',
+        );
+
+        assertStringContainsString($expectedErrorOutputSubstringTrace, $result->getStdErr());
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideErrorIfRequestSubcommandPrefixIsUsedForParameterNames(): array {
+        $prefix = CliRequest::SUBCOMMAND_PREFIX;
+
+        return [
+            'argument' => [
+                'parameterType'                       => 'argument',
+                'expectedErrorOutputSubstringMessage' => "'{$prefix}something' >>> Config error: invalid characters. Must start with latin (lower);",
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\ArgumentBuilder->__construct()',
+            ],
+            'option' => [
+                'parameterType'                       => 'option',
+                'expectedErrorOutputSubstringMessage' => "'{$prefix}something' >>> Config error: invalid characters. Must start with latin (lower);",
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\OptionBuilder->__construct()',
+            ],
+            'subcommand' => [
+                'parameterType'                       => 'subcommand',
+                'expectedErrorOutputSubstringMessage' => "'subcommand' subcommand >>> Config error: invalid characters in value '{$prefix}something'. Must start with a latin (lower);",
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Config->newSubcommand()',
+            ],
+        ];
     }
 }

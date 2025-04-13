@@ -77,7 +77,13 @@ class CliRequestProcessor {
             // then it's a default subcommand and we should process the switch's default value like parsed one.
             $subcommandSwitchName  = $this->config->getSubcommandSwitchName();
             $subcommandSwitchValue = $this->requestParams[$subcommandSwitchName] ?? null;
-            if ($subcommandSwitchValue && !array_key_exists($subcommandSwitchValue, $this->requestParams)) {
+            if (
+                $subcommandSwitchValue
+                && !array_key_exists(
+                    CliRequest::SUBCOMMAND_PREFIX . $subcommandSwitchValue,
+                    $this->requestParams,
+                )
+            ) {
                 $this->parseSubcommandParameters(
                     $subcommandSwitchValue,
                     $this->config->getArgumentsByNames()[$subcommandSwitchName],
@@ -140,7 +146,9 @@ class CliRequestProcessor {
 
                 $errorMessage .= "; already registered ";
                 $errorMessage .= (true !== $this->requestParams[$name])
-                    ? "value: '" . $errorFormatter->paramValue(HelpGenerator::convertValueToString($this->requestParams[$name])) . "'"
+                    ? "value: '"
+                        . $errorFormatter->paramValue(HelpGenerator::convertValueToString($this->requestParams[$name]))
+                        . "'"
                     : 'as a flag';
 
                 throw new ParseErrorException(
@@ -167,7 +175,8 @@ class CliRequestProcessor {
                 $valueHelp = $errorFormatter->paramValue(HelpGenerator::convertValueToString($value));
 
                 throw new ParseErrorException(
-                    "Duplicate value '{$valueHelp}' for {$paramErrorHelp}; already registered values: '{$registeredValuesHelp}'",
+                    "Duplicate value '{$valueHelp}' for {$paramErrorHelp};"
+                        . " already registered values: '{$registeredValuesHelp}'",
                     ParseErrorException::E_NO_OPTION_VALUE,
                     [$param],
                 );
@@ -328,7 +337,7 @@ class CliRequestProcessor {
 
         $subcommandRequest = $requestProcessor->load($this->parser);
 
-        $this->requestParams[$subcommandName] = $subcommandRequest->getParams();
+        $this->requestParams[CliRequest::SUBCOMMAND_PREFIX . $subcommandName] = $subcommandRequest->getParams();
     }
 
     /**

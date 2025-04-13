@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
@@ -26,7 +27,7 @@ $request = TestUtils::newConfig()
 
     ->run();
 
-echo $request->getParam($request->getSubcommandRequestName())['opt']
+echo $request->getParam(CliRequest::SUBCOMMAND_PREFIX . $request->getSubcommandRequestName())['opt']
     . ', '
     // Let's show that the method below is a more handy version of reading nested parameters, rendering the same values.
     . $request

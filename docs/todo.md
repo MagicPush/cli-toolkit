@@ -84,10 +84,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Ensure a parent config argument is not shadowed by a subcommand value.
-
-         Example: add `list` argument to a launcher and lose it's value after `CliRequestProcessor` replaces it with
-         `list` subcommand branch request.
     1. - [ ] Add manual short description support - in case automatic short description is not so good.
         1. - [ ] Add a short description to built-in subcommands where needed.
     1. - [ ] Add `SubcommandLauncher` to keep all launchers common code.
@@ -266,6 +262,10 @@ The list of plans and ideas for future development.
         1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
              by replacing substrings with "more typo friendly".
     1. - [x] Make `list` as the default value for a subcommand switch.
+    1. - [x] Ensure a parent config parameter is not shadowed by a subcommand value.
+
+         Example: add `list` argument to a launcher and lose it's value after `CliRequestProcessor` replaces it with
+         `list` subcommand branch request.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

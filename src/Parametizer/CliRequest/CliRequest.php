@@ -9,6 +9,9 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
 class CliRequest {
+    public const string SUBCOMMAND_PREFIX = '!';
+
+
     /**
      * @param mixed[] $params
      */
@@ -67,9 +70,9 @@ class CliRequest {
             );
         }
 
-        $subcommandParameterValues = $this->getParam($subcommandName);
+        $subcommandParameterValues = $this->getParam(static::SUBCOMMAND_PREFIX . $subcommandName);
         self::validateValueIsArray(
-            $this->config->getSubcommandSwitchName() . ' > ' . $subcommandName,
+            $this->config->getSubcommandSwitchName() . ' -> ' . $subcommandName,
             $subcommandParameterValues,
         );
 
