@@ -30,6 +30,7 @@ class ListScript extends ScriptAbstract {
 
     public static function getConfiguration(): BuilderInterface {
         return static::newConfig()
+            ->shortDescription('Shows available subcommands.')
             ->description('Shows the sorted list of available subcommands with their short descriptions.')
 
             ->newFlag('--slim', '-s')
@@ -159,10 +160,8 @@ class ListScript extends ScriptAbstract {
                 echo PHP_EOL;
             }
 
-            $isElementConfig = $elementValue instanceof Config;
-
             $subcommandNameOutput = str_repeat(static::PADDING_BLOCK, $nodeLevel) . $elementName;
-            if ($isElementConfig) {
+            if ($elementValue instanceof Config) {
                 $subcommandNameOutputFormatted = $subcommandNameOutput;
                 if ('' !== $this->subcommandNamePart) {
                     $subcommandNameOutputFormatted = str_replace(
@@ -179,12 +178,8 @@ class ListScript extends ScriptAbstract {
                 echo $this->formatter->helpNote($subcommandNameOutput);
             }
 
-            if ($isElementConfig) {
-                $shortDescription = HelpGenerator::getShortDescription(
-                    $elementValue->getDescription(),
-                    $this->environmentConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop,
-                    $this->environmentConfig->helpGeneratorShortDescriptionCharsMax,
-                );
+            if ($elementValue instanceof Config) {
+                $shortDescription = HelpGenerator::getScriptShortDescription($elementValue, $this->environmentConfig);
 
                 if ('' !== $shortDescription) {
                     echo mb_str_pad('', $subcommandNameColumnWidthMax - mb_strlen($subcommandNameOutput))

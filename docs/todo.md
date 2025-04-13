@@ -84,8 +84,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Add manual short description support - in case automatic short description is not so good.
-        1. - [ ] Add a short description to built-in subcommands where needed.
     1. - [ ] Add `SubcommandLauncher` to keep all launchers common code.
         * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
           a single search path `__DIR__` and its own path as an exception.
@@ -195,6 +193,7 @@ The list of plans and ideas for future development.
         1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
         1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+        1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] Scripts launcher may detect ordinal Parametizer-based scripts
          (one of the launcher / "_Environment Config_" config settings).
 
@@ -266,6 +265,8 @@ The list of plans and ideas for future development.
 
          Example: add `list` argument to a launcher and lose it's value after `CliRequestProcessor` replaces it with
          `list` subcommand branch request.
+    1. - [x] Add manual short description support - in case automatic short description is not so good.
+        1. - [x] Add a short description to built-in subcommands where needed.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

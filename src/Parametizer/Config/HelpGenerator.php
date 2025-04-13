@@ -7,6 +7,7 @@ namespace MagicPush\CliToolkit\Parametizer\Config;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Argument;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ParseErrorException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
@@ -101,7 +102,10 @@ class HelpGenerator {
 
     public function getDescriptionBlock(): string {
         $description = $this->config->getDescription();
-        if (!$description) {
+        if ('' === $description) {
+            $description = $this->config->getShortDescription();
+        }
+        if ('' === $description) {
             return '';
         }
 
@@ -553,7 +557,11 @@ class HelpGenerator {
      * (shorter than `$charsMinBeforeFullStop`), the rest of a cut substring is added too.
      * 4. Next the method cuts a substring by the last space character, so there is no trailing part of a word.
      */
-    public static function getShortDescription(string $description, int $charsMinBeforeFullStop, int $charsMax): string {
+    public static function getShortDescription(
+        string $description,
+        int $charsMinBeforeFullStop,
+        int $charsMax,
+    ): string {
         [$firstLine, ] = explode(PHP_EOL, static::unindent($description), 2);
         if (mb_strlen($firstLine) <= $charsMax) {
             return $firstLine;
@@ -580,5 +588,34 @@ class HelpGenerator {
         }
 
         return mb_substr($firstLineShort, 0, $lastSpacePosition);
+    }
+
+    /**
+     * Returns {@see Config::getShortDescription()} as is (if present), otherwise returns a shortened version
+     * of {@see Config::getDescription()} (see {@see static::getShortDescription()} for details).
+     *
+     * {@see EnvironmentConfig} object is not read from `$config`, but specified explicitly by design - different
+     * environment configs may be used for different cases.
+     * Examples:
+     *  * You should use a common parent env config while outputting short descriptions for subcommands.
+     *  * You may want to output somewhere descriptions of particular scripts (not necessarily subcommands)
+     *    based on some other custom env config or the scripts' own configs.
+     */
+    public static function getScriptShortDescription(Config $config, EnvironmentConfig $envConfig): string {
+        $shortDescription = trim($config->getShortDescription());
+        if ('' !== $shortDescription) {
+            return $shortDescription;
+        }
+
+        $description = $config->getDescription();
+        if ('' === $description) {
+            return $description;
+        }
+
+        return static::getShortDescription(
+            $description,
+            $envConfig->helpGeneratorShortDescriptionCharsMinBeforeFullStop,
+            $envConfig->helpGeneratorShortDescriptionCharsMax,
+        );
     }
 }

@@ -50,7 +50,8 @@ class Config {
 
     protected EnvironmentConfig $envConfig;
 
-    protected string $description = '';
+    protected string $description      = '';
+    protected string $shortDescription = '';
 
     /** @var CommandUsageExample[] */
     protected array $usageExamples = [];
@@ -107,7 +108,7 @@ class Config {
     }
 
     /**
-     * Read the description in {@see ConfigBuilder::description()}.
+     * Read the method description in {@see ConfigBuilder::description()}.
      */
     public function description(string $description): static {
         $this->description = $description;
@@ -117,6 +118,19 @@ class Config {
 
     public function getDescription(): string {
         return $this->description;
+    }
+
+    /**
+     * Read the method description in {@see ConfigBuilder::shortDescription()}.
+     */
+    public function shortDescription(string $shortDescription): static {
+        $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    public function getShortDescription(): string {
+        return $this->shortDescription;
     }
 
     /**

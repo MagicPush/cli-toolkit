@@ -171,14 +171,14 @@ class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests short descriptions output. The short descriptions are rendered when listing available subcommands.
      *
-     * @see HelpGenerator::getShortDescription()
+     * @see HelpGenerator::getScriptShortDescription()
      */
     public function testSubcommandHelpShortDescription(): void {
         assertSame(
             <<<HELP
              Built-in subcommands:
                 help                          Outputs a help page for a specified subcommand.
-                list                          Shows the sorted list of available subcommands with their short
+                list                          Shows available subcommands.
             
              --
                 long-string                   Here is a sort of... short description.
@@ -242,6 +242,60 @@ class HelpGeneratorTest extends TestCaseAbstract {
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 'unbreakable-long-line --' . Config::OPTION_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+
+        // There is a predefined short description for the 'list' command.
+        assertStringStartsWith(
+            <<<HELP
+
+              Shows the sorted list of available subcommands with their short descriptions.
+            HELP
+            ,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/subcommands-long-description.php',
+                Config::PARAMETER_NAME_LIST . ' --' . Config::OPTION_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * Tests that a short description is shown in the full help page, if no full description is set.
+     *
+     * Also tests that the short description is not processed by a shortener function and always outputted as is.
+     *
+     * @see HelpGenerator::getDescriptionBlock()
+     * @see HelpGenerator::getScriptShortDescription()
+     */
+    public function testShortDescriptionReplacesFullInHelp(): void {
+        assertSame(
+            <<<HELP
+             Built-in subcommands:
+                help         Outputs a help page for a specified subcommand.
+                list         Shows available subcommands.
+
+             --
+                multiline    It is a multi-line description. It could be considered long enough to be shorten...
+                            But due to the fact that this description is set as the "short description",
+                            no shortage mechanism is applied.
+
+            HELP,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/short-only-description.php', '')->getStdOut(),
+        );
+
+        assertStringStartsWith(
+            <<<HELP
+
+              It is a multi-line description. It could be considered long enough to be shorten...
+              But due to the fact that this description is set as the "short description",
+              no shortage mechanism is applied.
+            HELP
+            ,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/short-only-description.php',
+                'multiline --' . Config::OPTION_NAME_HELP,
             )
                 ->getStdOut(),
         );

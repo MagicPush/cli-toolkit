@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
+use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\ListScript;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -26,7 +28,7 @@ class ListScriptTest extends TestCaseAbstract {
             <<<TEXT
              Built-in subcommands:
                 help                                                Outputs a help page for a specified subcommand.
-                list                                                Shows the sorted list of available subcommands with their short
+                list                                                Shows available subcommands.
 
              --
                 avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
@@ -55,7 +57,7 @@ class ListScriptTest extends TestCaseAbstract {
                     yellow:banana:ice-cream                         Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', 'list')
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', Config::PARAMETER_NAME_LIST)
                 ->getStdOut(),
         );
     }
@@ -76,7 +78,7 @@ class ListScriptTest extends TestCaseAbstract {
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-with-name-sections.php',
-                "list {$subcommandNamePart}",
+                Config::PARAMETER_NAME_LIST . " {$subcommandNamePart}",
             )
                 ->getStdOut(),
         );
@@ -92,7 +94,7 @@ class ListScriptTest extends TestCaseAbstract {
                 'expectedOutput'     => <<<TEXT
                  Built-in subcommands:
                     help    Outputs a help page for a specified subcommand.
-                    list    Shows the sorted list of available subcommands with their short
+                    list    Shows available subcommands.
 
 
                 TEXT,
@@ -103,7 +105,7 @@ class ListScriptTest extends TestCaseAbstract {
                 'expectedOutput'     => <<<TEXT
                  Built-in subcommands:
                     help                  Outputs a help page for a specified subcommand.
-                    list                  Shows the sorted list of available subcommands with their short
+                    list                  Shows available subcommands.
 
                  --
                     red                   Avocado is an edible fruit. Avocados are native to the Western
@@ -124,7 +126,7 @@ class ListScriptTest extends TestCaseAbstract {
                 'expectedOutput'     => <<<TEXT
                  Built-in subcommands:
                     help                   Outputs a help page for a specified subcommand.
-                    list                   Shows the sorted list of available subcommands with their short
+                    list                   Shows available subcommands.
 
                  blue:
                     blue:flower:
@@ -144,7 +146,7 @@ class ListScriptTest extends TestCaseAbstract {
                 'expectedOutput'     => <<<TEXT
                  Built-in subcommands:
                     help                                                Outputs a help page for a specified subcommand.
-                    list                                                Shows the sorted list of available subcommands with their short
+                    list                                                Shows available subcommands.
 
                  --
                     avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
@@ -175,7 +177,7 @@ class ListScriptTest extends TestCaseAbstract {
         assertSame(
             <<<TEXT
             help                                                Outputs a help page for a specified subcommand.
-            list                                                Shows the sorted list of available subcommands with their short
+            list                                                Shows available subcommands.
             avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
             blue:flower:tea                                     Yes, such a flower does exists!
             green:house                                         Avocado is an edible fruit. Avocados are native to the Western
@@ -189,8 +191,69 @@ class ListScriptTest extends TestCaseAbstract {
             yellow:banana:ice-cream                             Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', 'list --slim')
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', Config::PARAMETER_NAME_LIST . ' --slim')
                 ->getStdOut(),
         );
+    }
+
+    #[DataProvider('provideShortDescriptionSettingsFromParentEnvConfig')]
+    /**
+     * Tests that {@see ListScript} considers parent env config for generating short descriptions.
+     *
+     * @see ListScript::outputNode()
+     * @see HelpGenerator::getScriptShortDescription()
+     */
+    public function testShortDescriptionSettingsFromParentEnvConfig(
+        string $parametersString,
+        string $expectedOutput,
+    ): void {
+        assertSame(
+            $expectedOutput,
+            self::assertNoErrorsOutput(
+                __DIR__ . '/scripts/short-description-parent-env.php',
+                Config::PARAMETER_NAME_LIST . " {$parametersString}",
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideShortDescriptionSettingsFromParentEnvConfig(): array {
+        return [
+            /*
+             * The default env config settings allow optimal short description size.
+             * In this case the parent env config is based on scripts global json,
+             * while a subcommand utilizes a custom env config.
+             * The custom env config does not affect output because it is not set for a parent script config.
+             */
+            'default' => [
+                'parametersString' => '0',
+                'expectedOutput'   => <<<TEXT
+                 Built-in subcommands:
+                    help       Outputs a help page for a specified subcommand.
+                    list       Shows available subcommands.
+                
+                 --
+                    avocado    Avocado is an edible fruit. Avocados are native to the Western
+
+                TEXT,
+            ],
+
+            // Now we replace parent config with a custom one that makes short descriptions extremely short.
+            'custom' => [
+                'parametersString' => '1',
+                'expectedOutput'   => <<<TEXT
+                 Built-in subcommands:
+                    help       Outputs a help page
+                    list       Shows available subcommands.
+                
+                 --
+                    avocado    Avocado is an edible
+
+                TEXT,
+            ],
+        ];
     }
 }

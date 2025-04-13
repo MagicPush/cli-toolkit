@@ -48,6 +48,8 @@ This change log references the repository changes and releases, which respect [s
    `help` ([HelpScript.php](../src/Parametizer/Script/BuiltInSubcommand/HelpScript.php))
    and `list` ([ListScript.php](../src/Parametizer/Script/BuiltInSubcommand/ListScript.php)) built-in subcommands.
     1. Every subcommand switch goes with `list` as its default value.
+1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
+   the description shortener. Useful when environment settings are not optimal for all descriptions.
 1. [VariableBuilderAbstract.php](../src/Parametizer/Config/Builder/VariableBuilderAbstract.php):
     1. Added an optional `$areHiddenForHelp` parameter for `allowedValues()` method, defaults to `false`.
     1. Added a protected method `setAllowedValues()` for common internal operations with the allowed values list.
@@ -55,11 +57,14 @@ This change log references the repository changes and releases, which respect [s
    added a protected property `$areAllowedValuesHiddenFromHelp`,
    a related getter method `areAllowedValuesHiddenFromHelp()`,
    and a related optional parameter `$areHiddenFromHelp` for `allowedValues()` method.
-1. `HelpGenerator::makeParamDescription()`:
-    * Utilizes `$areAllowedValuesHiddenFromHelp` parameter property and does not show the list of values
-      if the flag is set to `true`.
-    * For subcommands: replaces "Allowed values" actual list with a hint about detected subcommands count
-      and a subcommand name to show all available subcommands.
+1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
+    1. Modified `makeParamDescription()`:
+        * Utilizes `$areAllowedValuesHiddenFromHelp` parameter property and does not show the list of values
+          if the flag is set to `true`.
+        * For subcommands: replaces "Allowed values" actual list with a hint about detected subcommands count
+          and a subcommand name to show all available subcommands.
+    1. Added `getScriptShortDescription()` that returns a manual short description set in a config
+       or a shortened full description (based on specified `EnvironmentConfig` object).
 1. [CliRequest.php](../src/Parametizer/CliRequest/CliRequest.php):
     1. `__construct()` changes:
         1. `$config` parameter is made _public_ (from _protected_).
@@ -80,6 +85,7 @@ This change log references the repository changes and releases, which respect [s
         * protected `addBuiltInSubcommands()` - an internal method to add built-in subcommands automatically to every
           script that contains a subcommand switch parameter.
     1. Added `getArgumentsByNames()` that has argument names as keys, while `getArguments()` still renders numeric keys.
+    1. Added `$shortDescription` protected property, the setter `shortDescription` and the getter `getShortDescription`.
 1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/Scripts/CliToolkitScriptAbstract.php) as a basement for all
    [tools/cli-toolkit](../tools/cli-toolkit) scripts.
 1. [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) as a tool
