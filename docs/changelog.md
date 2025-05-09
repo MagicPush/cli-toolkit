@@ -34,6 +34,8 @@ This change log references the repository changes and releases, which respect [s
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
     1. Removed `getBaseScriptName()` obsolete method.
+1. [composer.json](../composer.json): the `type` is changed from `project` to `library`.
+   Not sure if it should be treated as incompatibility, but let's note it here just in case.
 
 ### New features
 
@@ -45,9 +47,16 @@ This change log references the repository changes and releases, which respect [s
 1. [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) for different script types auto-detection.
    For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts are supported.
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
-   `help` ([HelpScript.php](../src/Parametizer/Script/BuiltInSubcommand/HelpScript.php))
-   and `list` ([ListScript.php](../src/Parametizer/Script/BuiltInSubcommand/ListScript.php)) built-in subcommands.
+   `help` ([HelpScript.php](../src/Parametizer/Script/BuiltIn/HelpScript.php))
+   and `list` ([ListScript.php](../src/Parametizer/Script/BuiltIn/ListScript.php)) built-in subcommands.
     1. Every subcommand switch goes with `list` as its default value.
+1. Added [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) to ease launcher scripts
+   creation. That includes:
+    1. The default auto-generated [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) that looks for
+       all scripts inside the same directory recursively plus caching is enabled.
+    1. [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
+       is automatically added to a launcher, if a launcher's script detector enables caching.
+       The subcommand lets you delete a created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
    the description shortener. Useful when environment settings are not optimal for all descriptions.
 1. [VariableBuilderAbstract.php](../src/Parametizer/Config/Builder/VariableBuilderAbstract.php):
@@ -69,7 +78,7 @@ This change log references the repository changes and releases, which respect [s
     1. `__construct()` changes:
         1. `$config` parameter is made _public_ (from _protected_).
         1. Added `$parent` parameter to access parent request (from a subcommand request).
-    1. Added `getSubcommandRequestName()` method.
+    1. Added `getRequestedSubcommandName()` method.
     1. Added `executeBuiltInSubcommandIfRequested()` method for built-in subcommands automatic execution;
        the method is utilized by `Parametizer::run()`.
 1. Added `CliRequestProcessor::parseSubcommandParameters()` protected method

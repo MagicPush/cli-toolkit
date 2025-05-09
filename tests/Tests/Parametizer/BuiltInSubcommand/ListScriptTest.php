@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
-use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\ListScript;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 

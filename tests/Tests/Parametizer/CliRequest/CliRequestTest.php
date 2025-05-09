@@ -208,7 +208,7 @@ class CliRequestTest extends TestCaseAbstract {
     /**
      * Tests that if no subcommands are available, subcommand-related methods in the request object will render `null`.
      *
-     * @see CliRequest::getSubcommandRequestName()
+     * @see CliRequest::getRequestedSubcommandName()
      * @see CliRequest::getSubcommandRequest()
      */
     public function testSubcommandDataInRequest(string $subcommandName, array $expectedValues): void {

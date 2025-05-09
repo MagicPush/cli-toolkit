@@ -1,7 +1,7 @@
 {
     "name": "magic-push/cli-toolkit",
     "description": "CLI framework for PHP",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.3",

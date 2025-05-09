@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand;
+namespace MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn;
 
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
@@ -11,7 +11,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
 
 class ListScript extends ScriptAbstract {
     protected const string PADDING_BLOCK = '    ';
@@ -60,15 +60,7 @@ class ListScript extends ScriptAbstract {
         foreach ($this->parentConfig->getBranches() as $subcommandName => $subcommandConfig) {
             $isBuiltInSubcommand = array_key_exists($subcommandName, $builtInSubcommands);
 
-            // Exclude ...
-            if (
-                // ... non-built-in subcommands
-                !$isBuiltInSubcommand
-                // ... if a filter is specified ...
-                && '' !== $this->subcommandNamePart
-                // ... and a subcommand name contains a substring from the filter.
-                && !str_contains($subcommandName, $this->subcommandNamePart)
-            ) {
+            if ('' !== $this->subcommandNamePart && !str_contains($subcommandName, $this->subcommandNamePart)) {
                 continue;
             }
 
@@ -150,7 +142,7 @@ class ListScript extends ScriptAbstract {
                 }
             }
 
-            return $key1 <=> $key2;
+            return strnatcmp($key1, $key2);
         });
 
         $firstElementKey = array_key_first($nodeData);

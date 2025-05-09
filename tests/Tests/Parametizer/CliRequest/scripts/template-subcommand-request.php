@@ -23,6 +23,6 @@ if (null !== $subcommandName) {
 $request = $config->run();
 
 echo json_encode([
-    'subcommand_name'           => $request->getSubcommandRequestName(),
+    'subcommand_name'           => $request->getRequestedSubcommandName(),
     'subcommand_request_params' => $request->getSubcommandRequest()?->getParams(),
 ]);

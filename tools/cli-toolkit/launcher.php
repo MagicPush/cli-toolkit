@@ -6,23 +6,12 @@ require_once __DIR__ . '/init.php';
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
-$scriptDetector = (new ScriptDetector(true))
-    ->searchClassPath(__DIR__ . '/Scripts')
-    ->detect();
-$classNamesBySubcommandNames = $scriptDetector->getFQClassNamesByScriptNames();
+$scriptDetector = (new ScriptDetector(throwOnException: true))
+    ->searchClassPath(__DIR__ . '/Scripts');
+$configBuilder = Parametizer::newConfig(throwOnException: true);
+$configBuilder->description('A launcher for cli-toolkit stock scripts.');
 
-$builder = Parametizer::newConfig();
-$builder
-    ->description('A launcher for cli-toolkit stock scripts.')
-    ->newSubcommandSwitch('subcommand');
-
-foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
-    $builder->newSubcommand($subcommandName, $className::getConfiguration());
-}
-
-$request = $builder->run();
-
-$className   = $classNamesBySubcommandNames[$request->getSubcommandRequestName()];
-$scriptClass = new $className($request->getSubcommandRequest());
-$scriptClass->execute();
+(new ScriptLauncher($scriptDetector, $configBuilder))
+    ->execute();

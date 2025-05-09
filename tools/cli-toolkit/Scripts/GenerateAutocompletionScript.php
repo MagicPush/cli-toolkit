@@ -9,6 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -127,11 +128,19 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
                 }
 
                 $contents = file_get_contents($path);
-                if (
-                    !str_contains($contents, 'Parametizer::newConfig(')
-                    || !str_contains($contents, '->run()')
-                    || preg_match('/' . PHP_EOL . 'class .+' . PHP_EOL . '?{/', $contents)
-                ) {
+                $isScriptDetected =
+                    !preg_match('/' . PHP_EOL . '([a-z]* )?class .+' . PHP_EOL . '?{/', $contents)
+                    && (
+                        (
+                            str_contains($contents, 'Parametizer::newConfig(') /** @see Parametizer::newConfig() */
+                            && str_contains($contents, '->run()')              /** @see Parametizer::run() */
+                        )
+                        || (
+                            str_contains($contents, 'new ScriptLauncher(')  /** @see ScriptLauncher::__construct() */
+                            && str_contains($contents, '->execute()')       /** @see ScriptLauncher::execute() */
+                        )
+                    );
+                if (!$isScriptDetected) {
                     continue;
                 }
 
@@ -203,10 +212,11 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
 
             if ($isVerbose) {
 
+                $outputFilepathReal = realpath($outputFilepath);
                 $bashIncludeCommand = $executionFormatter->command(
                     PHP_EOL
-                    . 'echo -e "if [ -f ' . $outputFilepath . ' ]; then" \\' . PHP_EOL
-                    . '"\n    source ' . $outputFilepath . '" \\' . PHP_EOL
+                    . 'echo -e "if [ -f ' . $outputFilepathReal . ' ]; then" \\' . PHP_EOL
+                    . '"\n    source ' . $outputFilepathReal . '" \\' . PHP_EOL
                     . '"\nfi\n" \\' . PHP_EOL
                     . '>> ~/.bashrc' . PHP_EOL
                     . PHP_EOL,

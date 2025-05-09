@@ -439,25 +439,14 @@ require_once __DIR__ . '/init.php';
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
-\$scriptDetector = (new ScriptDetector(true))
-    ->searchClassPath('{$this->pathDirectoryScripts}')
-    ->detect();
-\$classNamesBySubcommandNames = \$scriptDetector->getFQClassNamesByScriptNames();
+\$scriptDetector = (new ScriptDetector(throwOnException: true))
+    ->searchClassPath(__DIR__ . '/Scripts');
+\$configBuilder = Parametizer::newConfig(throwOnException: true);
 
-\$builder = Parametizer::newConfig();
-\$builder
-    ->newSubcommandSwitch('subcommand');
-
-foreach (\$classNamesBySubcommandNames as \$subcommandName => \$className) {
-    \$builder->newSubcommand(\$subcommandName, \$className::getConfiguration());
-}
-
-\$request = \$builder->run();
-
-\$className   = \$classNamesBySubcommandNames[\$request->getSubcommandRequestName()];
-\$scriptClass = new \$className(\$request->getSubcommandRequest());
-\$scriptClass->execute();
+(new ScriptLauncher(\$scriptDetector, \$configBuilder))
+    ->execute();
 
 TEXT;
 
@@ -585,7 +574,7 @@ declare(strict_types=1);
 namespace {$namespace};
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
 
 final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
     public static function getConfiguration(): BuilderInterface {

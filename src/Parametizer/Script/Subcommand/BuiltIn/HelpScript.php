@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand;
+namespace MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
 
 class HelpScript extends ScriptAbstract {
     public const string ARGUMENT_SUBCOMMAND_NAME = 'subcommand-name';

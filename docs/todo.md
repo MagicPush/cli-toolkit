@@ -19,11 +19,6 @@ The list of plans and ideas for future development.
     1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Make `newSubcommandSwitch()` optional.
-    * Only a single subcommand switch is possible, so there is no need to specify its name explicitly
-      (but it's still should be possible).
-    * Rename `$subcommandName` to `$subcommandSwitchName`.
-    * Rename "subcommand value" to "subcommand name" throughout the whole project.
 1. Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
      to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. Support a config file for
@@ -84,9 +79,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Add `SubcommandLauncher` to keep all launchers common code.
-        * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
-          a single search path `__DIR__` and its own path as an exception.
     1. - [ ] Support `EnvironmentConfig` setup:
         1. - [ ] See if `$_SERVER` may be used instead of `debug_backtrace()`.
         1. - [ ] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
@@ -143,6 +135,11 @@ The list of plans and ideas for future development.
         1. - [ ] Try moving `ScriptAbstract::NAME_*` constants into `EnvironmentConfig`
         1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
              instance "automatically" by making `getConfiguration()` non-static or in a separate method.
+    1. - [ ] Make `newSubcommandSwitch()` optional.
+        * Only a single subcommand switch is possible, so there is no need to specify its name explicitly
+          (but it's still should be possible if a custom switch name is preferred).
+        * Rename `$subcommandName` to `$subcommandSwitchName`.
+        * Rename "subcommand value" to "subcommand name" throughout the whole project.
     1. - [ ] Test performance on many files.
         1. - [x] Create test classes generator to generate lost of class-based scripts.
         1. - [x] Compare file tokenizer vs regexp.
@@ -152,24 +149,26 @@ The list of plans and ideas for future development.
              from the launcher, make it not detectable
              by [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
         1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
-        1. - [ ] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
+        1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
             * Searching in large projects (~ 5GB) may last for 30+ seconds!
         1. - [ ] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
     1. - [ ] Additions to [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
         1. - [ ] Different ways to include/exclude files and/or directories.
-        1. - [ ] Consider a case: script classes are spread all over a huge project. The only search path is
+        1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
              the huge project's root directory. A full scan may take a while.
 
              Consider caching:
-            * by a setting and/or based on all scanned files count;
-            * possible automatic invalidation condition
-            * easy to use manual cache clear tool
+            * ~~by a setting and/or based on all scanned files count;~~
+            * ~~possible automatic invalidation condition;~~
+            * easy to use manual cache clear tool.
+        1. - [ ] Do not process duplicate paths (local vs real paths).
     1. TEST
-        1. - [ ] Subcommands detector:
+        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
             1. - [ ] Detection:
                 1. - [ ] Script classes.
                 1. - [ ] Plain Parametizer-based scripts.
                 1. - [ ] Regular plain scripts.
+                1. - [ ] A cache file is created and later used when a cache file path is set.
             1. - [ ] There may be no namespace.
             1. - [ ] No abstract classes detected.
             1. - [ ] Final classes are detected too.
@@ -181,11 +180,17 @@ The list of plans and ideas for future development.
             1. - [ ] Force-include (white-over-black) exact paths.
             1. - [ ] Names are naturally sorted (`script2` is placed above `script10`).
             1. - [ ] Invalid / not readable paths.
-        1. - [ ] `ScriptAbstract`
+        1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
+            1. - [ ] Defaults in the constructor: a detector (with caching enabled) and a config.
+        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/Subcommand/ScriptAbstract.php)
             1. - [ ] Simple and composite names.
             1. - [ ] `getLocalName()` must not be empty.
             1. - [ ] `getLocalName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
+        1. - [ ] [cli-toolkit](../tools/cli-toolkit)
+            1. - [ ] `GenerateAutocompletionScript` that detects no-class scripts via `ScriptLauncher`.
+
+                 ... Unless the detection is made via `ScriptDetector`.
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
@@ -267,6 +272,9 @@ The list of plans and ideas for future development.
          `list` subcommand branch request.
     1. - [x] Add manual short description support - in case automatic short description is not so good.
         1. - [x] Add a short description to built-in subcommands where needed.
+    1. - [x] Add `ScriptLauncher` to keep all launchers common code.
+        * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
+          a single search path `__DIR__` and its own path as an exception.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

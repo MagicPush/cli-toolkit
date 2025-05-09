@@ -15,9 +15,9 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\HelpScript;
-use MagicPush\CliToolkit\Parametizer\Script\BuiltInSubcommand\ListScript;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\HelpScript;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\ListScript;
+use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
 
 class Config {
     public const string PARAMETER_NAME_LIST               = 'list';
@@ -561,9 +561,9 @@ class Config {
     }
 
     /**
-     * Returns all configured branches
+     * Returns all configured subcommands (branches).
      *
-     * @return array<string, Config> (string) Subcommand value => (Config) branch config
+     * @return array<string, Config> (string) subcommand name => (Config) subcommand config
      */
     public function getBranches(): array {
         return $this->branches;

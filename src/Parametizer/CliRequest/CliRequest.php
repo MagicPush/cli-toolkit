@@ -44,7 +44,7 @@ class CliRequest {
      * Returns a subcommand name specified in a subcommand switch parameter,
      * or `null` if there is no subcommand switch.
      */
-    public function getSubcommandRequestName(): ?string {
+    public function getRequestedSubcommandName(): ?string {
         $subcommandSwitchName = $this->config->getSubcommandSwitchName();
         if (null === $subcommandSwitchName) {
             return null;
@@ -58,7 +58,7 @@ class CliRequest {
      * or `null` if there is no subcommand switch.
      */
     public function getSubcommandRequest(): ?static {
-        $subcommandName = $this->getSubcommandRequestName();
+        $subcommandName = $this->getRequestedSubcommandName();
         if (null === $subcommandName) {
             return null;
         }
@@ -83,7 +83,7 @@ class CliRequest {
         $innermostSubcommandName          = null;
         $innermostSubcommandParentRequest = null;
         $innermostSubcommandRequest       = $this;
-        while ($subcommandName = $innermostSubcommandRequest->getSubcommandRequestName()) {
+        while ($subcommandName = $innermostSubcommandRequest->getRequestedSubcommandName()) {
             $innermostSubcommandName          = $subcommandName;
             $innermostSubcommandParentRequest = $innermostSubcommandRequest;
             $innermostSubcommandRequest       = $innermostSubcommandParentRequest->getSubcommandRequest();
