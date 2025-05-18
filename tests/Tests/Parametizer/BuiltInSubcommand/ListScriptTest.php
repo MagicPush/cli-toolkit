@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\ListScript;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\ListScript;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -209,7 +209,7 @@ class ListScriptTest extends TestCaseAbstract {
     ): void {
         assertSame(
             $expectedOutput,
-            self::assertNoErrorsOutput(
+            static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/short-description-parent-env.php',
                 Config::PARAMETER_NAME_LIST . " {$parametersString}",
             )

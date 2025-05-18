@@ -7,6 +7,7 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
@@ -18,10 +19,13 @@ use SplFileInfo;
 use Throwable;
 
 class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
-    public static function getConfiguration(): BuilderInterface {
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
         $helpFormatter = HelpFormatter::createForStdOut();
 
-        return static::newConfig()
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description('
                 Generates a file with Bash completion scripts, which you can include in your Bash profile.
         

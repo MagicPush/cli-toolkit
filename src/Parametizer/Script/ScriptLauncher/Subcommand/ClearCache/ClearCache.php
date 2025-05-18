@@ -6,6 +6,7 @@ namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\Clea
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ScriptLauncherScriptAbstract;
@@ -23,7 +24,11 @@ class ClearCache extends ScriptLauncherScriptAbstract {
      *                                        The availability of a default value is made solely for the compliance
      *                                        with the parent abstract method signature.
      */
-    public static function getConfiguration(?ClearCacheContext $context = null): BuilderInterface {
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+        ?ClearCacheContext $context = null,
+    ): BuilderInterface {
         if (null === $context) {
             throw new RuntimeException(static::getClassLastName(ClearCacheContext::class) . ' is not set');
         }
@@ -32,7 +37,7 @@ class ClearCache extends ScriptLauncherScriptAbstract {
 
         $detectorClassLastNameFormatted = $formatter->helpNote(static::getClassLastName(ScriptDetector::class));
 
-        return static::newConfig()
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->shortDescription("Clears {$detectorClassLastNameFormatted}'s cache file.")
             ->description("
                 Clears {$detectorClassLastNameFormatted}'s cache file: "

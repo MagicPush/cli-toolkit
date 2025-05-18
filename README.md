@@ -94,11 +94,11 @@ that also utilize some Parametizer features (so may be studied as examples).
   you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
     - Launch the script and read the details:
       ```sh
-      php tools/cli-toolkit/launcher.php generate-autocompletion-script --verbose
+      php tools/cli-toolkit/launcher.php cli-toolkit:generate-autocompletion-script --verbose
       ```
     - Read it's manual for further customization:
       ```sh
-      php tools/cli-toolkit/launcher.php generate-autocompletion-script --help
+      php tools/cli-toolkit/launcher.php cli-toolkit:generate-autocompletion-script --help
       ```
 - [GenerateEnvConfig.php](tools/cli-toolkit/Scripts/GenerateEnvConfig.php):
   helps to configure environment settings for your scripts.
@@ -107,7 +107,7 @@ that also utilize some Parametizer features (so may be studied as examples).
   this script shows examples and codes for a terminal coloring and formatting by utilizing
   the [TerminalFormatter](src/TerminalFormatter.php) class included in the project. See usage:
   ```sh
-  php tools/cli-toolkit/launcher.php terminal-formatter-showcase --help
+  php tools/cli-toolkit/launcher.php cli-toolkit:terminal-formatter-showcase --help
   ```
 
 You can also look through `/*/scripts/*` files in [Tests](tests/Tests) directory as artificial examples.

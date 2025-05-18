@@ -8,6 +8,7 @@ use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Question\Question;
@@ -61,10 +62,13 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         return $nameSections;
     }
 
-    public static function getConfiguration(): BuilderInterface {
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
         $formatter = HelpFormatter::createForStdOut();
 
-        return static::newConfig()
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description('
                 Generates script classes, a launcher and supplementary files.
 
@@ -437,15 +441,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/init.php';
 
-use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
 \$scriptDetector = (new ScriptDetector(throwOnException: true))
     ->searchClassPath(__DIR__ . '/Scripts');
-\$configBuilder = Parametizer::newConfig(throwOnException: true);
 
-(new ScriptLauncher(\$scriptDetector, \$configBuilder))
+(new ScriptLauncher(\$scriptDetector))
+    ->throwOnException()
     ->execute();
 
 TEXT;
@@ -574,11 +577,15 @@ declare(strict_types=1);
 namespace {$namespace};
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
-    public static function getConfiguration(): BuilderInterface {
-        return static::newConfig()
+    public static function getConfiguration(
+        ?EnvironmentConfig \$envConfig = null,
+        bool \$throwOnException = false
+    ): BuilderInterface {
+        return static::newConfig(envConfig: \$envConfig, throwOnException: \$throwOnException)
             ->description('
                 %%SCRIPT_DESCRIPTION%%
             ')

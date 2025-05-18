@@ -237,7 +237,8 @@ With such a script:
 
 ## Environment Config
 
-You may want to alter some general behavior for all or a part of your scripts. Here comes `EnvironmentConfig`.
+You may want to alter some general behavior for all or a part of your scripts.
+Here comes [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 
 ### How to: Manually via an instance
 
@@ -279,22 +280,33 @@ However if you want to affect a large amount of scripts or even all of those, th
 1. Generate a config file via Parametizer-powered
    [GenerateEnvConfig.php](../tools/cli-toolkit/Scripts/GenerateEnvConfig.php),
    ```sh
-   php ../tools/cli-toolkit/launcher.php generate-env-config --help
+   php ../tools/cli-toolkit/launcher.php cli-toolkit:generate-env-config --help
    ```
 1. Edit the generated file as you please.
 1. Choose which scripts should be affected:
-    * If you want to affect all your scripts, just place this file in your project root directory or your console scripts
-root directory.
+    * If you want to affect all your scripts, just place this file in your project root directory
+      or your console scripts root directory.
     * If you want to affect only a part of your scripts, move those scripts to a separate subdirectory and place
 the config file there in the same directory as those scripts.
 
-If `Parametizer::newConfig()` is called without a particular `EnvironmentConfig` instance passed in it,
-an `EnvironmentConfig` instance is generated automatically from config files it detects.
+If `Parametizer::newConfig()` is called without a particular `EnvironmentConfig` instance passed in it
+(or `null` is specified explicitly), then an `EnvironmentConfig` instance is generated automatically
+from config files it detects.
 
 #### Detection
 
 The detection works this way:
-1. Start looking for a config file in the same directory where the launched script file is located.
+1. Detect the bottommost lookup directory: start looking for a config file in the same directory where
+   the launched script file is located.
+    * If a launched script's backtrace contains calls from
+       [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php), then such the backtrace entry closest
+       to the launched script is chosen. Thus the detected subcommand class location is prioritized over
+       the launched script location (see _Example 2_ below).
+
+       **The caveat**: `EnvironmentConfig` autoloader will detect config files near only those subcommand classes
+      with `getConfiguration()` method defined explicitly, even if the method just calls it's parent.
+      The detection is based on `debug_backtrace()` output, so a class location is detected only
+      if exactly that class `getConfiguration()` version is called.
 1. If a config file is not found or contains only a part of settings, move 1 directory above the current and repeat.
 1. Continue the search until all settings have been read from found files or the _topmost directory_ is reached.
 
@@ -316,7 +328,8 @@ The config files autoload hierarchy works this way:
 1. For each setting specified in a detected config file set values only for the settings not filled by previously
    detected config files. In other words, affect only settings that contain default values.
 
-Consider this example:
+**Example 1 - plain scripts:**
+
 ```
 project_root/
     parametizer.env.json
@@ -337,6 +350,33 @@ an `EnvironmentConfig` instance with the contents of `project_root/scripts/speci
 only after it (if there are settings with default values left) fills the rest with the contents of
 `project_root/parametizer.env.json`. The settings not mentioned in both config files keep their respective default
 values.
+
+**Example 2 - scripts with subcommand classes:**
+
+```
+somewhere/
+    Scripts/
+        CoolScript.php 
+        parametizer.env.json
+    launchers/
+        launcher.php
+        parametizer.env.json
+    parametizer.env.json
+```
+where `CoolScript.php` is a subclass (directly or through "relative" classes in between) of
+[ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php).
+
+When launching `somewhere/launchers/launcher.php` with some other subcommand (or without a subcommand - `... --help`,
+for instance), the `EnvironmentConfig` autoloader will detect and load `somewhere/launchers/parametizer.env.json`.
+Then, if an instance is not filled completely, `somewhere/parametizer.env.json` in the parent (to `somewhere/launchers`)
+directory is considered next.
+
+However, when launching `somewhere/launchers/launcher.php cool-script`, the `EnvironmentConfig` autoloader will detect
+`somewhere/Scripts/parametizer.env.json` instead - the config file located in the same directory as
+`cool-script` subcommand class directory. Then if an instance is not filled completely,
+again `somewhere/parametizer.env.json` in the parent (now to `somewhere/Scripts`) directory is considered next.
+In this example `somewhere/launchers/parametizer.env.json` config file is read only
+by `somewhere/launchers/launcher.php` main config.
 
 ### Available settings
 

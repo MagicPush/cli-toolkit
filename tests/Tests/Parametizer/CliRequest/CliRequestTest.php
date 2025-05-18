@@ -272,7 +272,7 @@ class CliRequestTest extends TestCaseAbstract {
         assertSame(
             $expectedRequestParameters,
             json_decode(
-                self::assertNoErrorsOutput(
+                static::assertNoErrorsOutput(
                     __DIR__ . '/scripts/subcommand-and-parameter-same-names.php',
                     $parametersString,
                 )->getStdOut(),
@@ -325,7 +325,7 @@ class CliRequestTest extends TestCaseAbstract {
         string $expectedErrorOutputSubstringMessage,
         string $expectedErrorOutputSubstringTrace,
     ): void {
-        $result = self::assertAnyErrorOutput(
+        $result = static::assertAnyErrorOutput(
             __DIR__ . '/' . 'scripts/template-parameter-or-subcommand-name.php',
             $expectedErrorOutputSubstringMessage,
             $parameterType,

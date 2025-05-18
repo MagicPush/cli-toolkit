@@ -9,12 +9,10 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
-use PHPUnit\Framework\Attributes\CoversClass;
 
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringStartsWith;
 
-#[CoversClass(HelpGenerator::class)]
 class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests the help generator for the majority of cases (except subcommands; see dedicated tests below).

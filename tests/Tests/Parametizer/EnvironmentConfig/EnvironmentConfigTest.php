@@ -4,21 +4,26 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
 
+use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertStringContainsString;
+use function PHPUnit\Framework\assertStringNotContainsString;
 
+/**
+ * Here it does not matter what exact {@see EnvironmentConfig} setting is tested.
+ * Any setting may be used as an example.
+ */
 class EnvironmentConfigTest extends TestCaseAbstract {
     #[DataProvider('provideDifferentBranchConfigs')]
     /**
      * Tests that a setting is read from an {@see EnvironmentConfig} instance linked to a corresponding config branch,
      * when a parse error is thrown during a script execution.
-     *
-     * Here it does not matter what exact {@see EnvironmentConfig} setting is tested.
-     * As an example, {@see EnvironmentConfig::$optionHelpShortName} is analyzed.
      *
      * @see Parametizer::setExceptionHandlerForParsing()
      */
@@ -73,6 +78,44 @@ Too many arguments, starting with 'invalid'
 STDERR_OUTPUT,
             ],
         ];
+    }
+
+    /**
+     * Tests that all built-in subcommands automatically utilize a parent EnvironmentConfig instance.
+     *
+     * @see Config::addBuiltInSubcommands()
+     */
+    public function testBuiltInSubcommandsUtilizeParentEnvConfig(): void {
+        // The parent config uses the specified EnvironmentConfig instance:
+        assertStringContainsString(
+            '-X, --' . Config::OPTION_NAME_HELP,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/builtin-and-custom.php',
+                '--' . Config::OPTION_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+
+        // The custom subcommand config has its own EnvironmentConfig instance with another (tests default) settings:
+        $customCallOutput = static::assertNoErrorsOutput(
+            __DIR__ . '/scripts/builtin-and-custom.php',
+            'something --' . Config::OPTION_NAME_HELP,
+        )
+            ->getStdOut();
+        assertStringContainsString('--' . Config::OPTION_NAME_HELP, $customCallOutput);
+        assertStringNotContainsString('-X, --' . Config::OPTION_NAME_HELP, $customCallOutput);
+
+        // ... But all built-in subcommands utilize the parent EnvironmentConfig instance.
+        foreach (array_keys(Config::getBuiltInSubcommandClassesBySubcommandNames()) as $builtInSubcommandName) {
+            assertStringContainsString(
+                '-X, --' . Config::OPTION_NAME_HELP,
+                static::assertNoErrorsOutput(
+                    __DIR__ . '/scripts/builtin-and-custom.php',
+                    "{$builtInSubcommandName} --" . Config::OPTION_NAME_HELP,
+                )
+                    ->getStdOut(),
+            );
+        }
     }
 
     #[DataProvider('provideAutoloadFromFiles')]
@@ -138,6 +181,76 @@ STDERR_OUTPUT,
         ];
     }
 
+    #[DataProvider('provideAutoloadFromFilesForSubcommands')]
+    /**
+     * Tests environment config autoload cases related to subcommands (classes) located with own config files
+     * somewhere else - not in the same tree as a launcher script.
+     *
+     * @param mixed[] $expectedConfigValues
+     * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
+     * @see EnvironmentConfig::detectBottommostDirectoryPath()
+     * @see ScriptAbstract::newConfig()
+     */
+    public function testAutoloadFromFilesForSubcommands(
+        string $scriptPath,
+        string $parametersString,
+        array $expectedConfigValues,
+    ): void {
+        $outputJson   = static::assertNoErrorsOutput($scriptPath, $parametersString)->getStdOut();
+        $actualValues = json_decode($outputJson, true, flags: JSON_THROW_ON_ERROR);
+
+        assertSame($expectedConfigValues, $actualValues);
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideAutoloadFromFilesForSubcommands(): array {
+        return [
+            'autoload-main' => [
+                'scriptPath' => __DIR__ . '/' . 'AutoloadWithClasses/scripts/autoloaded.php',
+                'parametersString' => 'test-some',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'h', // From 'AutoloadWithClasses' dir config.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 10,  // From 'AutoloadWithClasses/ScriptClasses/TestSome' dir config.
+                    'helpGeneratorShortDescriptionCharsMax'               => 2,   // From 'AutoloadWithClasses' dir config.
+                ]
+            ],
+            // 'AutoloadWithClasses/ScriptClasses/TestSome/parametizer.env.json' should be ignored:
+            // the non-"final" (not used directly, parent) subcommand class location should not be considered.
+            'autoload-child' => [
+                'scriptPath' => __DIR__ . '/' . 'AutoloadWithClasses/scripts/autoloaded.php',
+                'parametersString' => 'test-child',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'h', // From 'AutoloadWithClasses' dir config.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 1,  // From 'AutoloadWithClasses' dir config.
+                    'helpGeneratorShortDescriptionCharsMax'               => 20, // From 'AutoloadWithClasses/ScriptClasses/TestChild' dir config.
+                ]
+            ],
+
+            // Only the config instance created inside 'AutoloadWithClasses/scripts/manual-config.php'
+            // should be considered.
+            'override-with-config-main' => [
+                'scriptPath' => __DIR__ . '/' . 'AutoloadWithClasses/scripts/manual-config.php',
+                'parametersString' => 'test-some',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'C', // From a custom environment config instance.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 40,  /** From {@see EnvironmentConfig} defaults. */
+                    'helpGeneratorShortDescriptionCharsMax'               => 70,  /** From {@see EnvironmentConfig} defaults. */
+                ]
+            ],
+            'override-with-config-child' => [
+                'scriptPath' => __DIR__ . '/' . 'AutoloadWithClasses/scripts/manual-config.php',
+                'parametersString' => 'test-child',
+                'expectedConfigValues' => [
+                    'optionHelpShortName'                                 => 'C', // From a custom environment config instance.
+                    'helpGeneratorShortDescriptionCharsMinBeforeFullStop' => 40,  /** From {@see EnvironmentConfig} defaults. */
+                    'helpGeneratorShortDescriptionCharsMax'               => 70,  /** From {@see EnvironmentConfig} defaults. */
+                ]
+            ],
+        ];
+    }
+
     #[DataProvider('provideThrowingOnExceptions')]
     /**
      * Tests if all environment config autoload-related methods process `$throwOnException` flag correctly.
@@ -155,7 +268,7 @@ STDERR_OUTPUT,
             // This way `$throwOnException` flag is passed to a config builder:
             $parametersString = '1';
 
-            self::assertAnyErrorOutput(
+            static::assertAnyErrorOutput(
                 $scriptPath,
                 $expectedErrorOutput,
                 $parametersString,
@@ -166,7 +279,7 @@ STDERR_OUTPUT,
             // This way `$throwOnException` flag is not passed to a config builder, throwing is disabled:
             $parametersString = '';
 
-            assertSame($expectedStdOutput, self::assertNoErrorsOutput($scriptPath, $parametersString)->getStdOut());
+            assertSame($expectedStdOutput, static::assertNoErrorsOutput($scriptPath, $parametersString)->getStdOut());
         }
     }
 
@@ -239,6 +352,6 @@ STDERR_OUTPUT,
      * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
      */
     public function testUnreachableTopmost(): void {
-        assertSame('', self::assertNoErrorsOutput(__DIR__ . '/autoload/unreachable-topmost.php')->getStdOut());
+        assertSame('', static::assertNoErrorsOutput(__DIR__ . '/autoload/unreachable-topmost.php')->getStdOut());
     }
 }

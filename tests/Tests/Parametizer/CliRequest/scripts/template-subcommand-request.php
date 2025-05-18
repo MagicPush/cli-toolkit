@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../../init-console.php';
 
 $config = TestUtils::newConfig();
 
-$subcommandName = $argv[1] ?? null;
+$subcommandName = $_SERVER['argv'][1] ?? null;
 if (null !== $subcommandName) {
     $config
         ->newSubcommandSwitch('subcommand-name')

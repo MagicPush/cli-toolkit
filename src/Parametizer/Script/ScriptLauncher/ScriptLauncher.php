@@ -11,38 +11,77 @@ use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
 
 class ScriptLauncher {
-    public readonly ScriptDetector $scriptDetector;
-    public readonly ConfigBuilder $configBuilder;
+    protected readonly ScriptDetector $scriptDetector;
+    protected readonly ConfigBuilder  $configBuilder;
+
+    protected bool $useParentEnvConfigForSubcommands = false;
+    protected bool $throwOnException                 = false;
 
 
     public function __construct(?ScriptDetector $scriptDetector = null, ?ConfigBuilder $configBuilder = null) {
-        if (null === $scriptDetector) {
-            $scriptDetector = new ScriptDetector();
-            $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            $launcherPath   = $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? '';
-            if ('' !== $launcherPath) {
+        if (null !== $scriptDetector) {
+            $this->scriptDetector = $scriptDetector;
+        }
+        if (null !== $configBuilder) {
+            $this->configBuilder = $configBuilder;
+        }
+    }
+
+    /**
+     * The flag does not affect built-in subcommands - those always utilize a parent environment config.
+     */
+    public function useParentEnvConfigForSubcommands(bool $isEnabled = true): static {
+        $this->useParentEnvConfigForSubcommands = $isEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Always affects detected subcommands. Affects {@see ScriptDetector} and {@see ConfigBuilder} instances only if
+     * those are created automatically - if `null` is passed instead of an instance to {@see static::__construct()}.
+     *
+     * @see ScriptDetector::__construct()
+     * @see Parametizer::newConfig()
+     */
+    public function throwOnException(bool $isEnabled = true): static {
+        $this->throwOnException = $isEnabled;
+
+        return $this;
+    }
+
+    public function execute(): void {
+        if (!isset($this->scriptDetector)) {
+            $this->scriptDetector = new ScriptDetector(throwOnException: $this->throwOnException);
+            $debugBacktrace       = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            $launcherPath         = $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? null;
+            if (null !== $launcherPath) {
                 $launcherDirectoryPath = dirname($launcherPath);
-                $scriptDetector
+                $this->scriptDetector
                     ->searchClassPath($launcherDirectoryPath)
                     ->cacheFilePath($launcherDirectoryPath . '/' . basename($launcherPath, '.php') . '.json');
             }
         }
-        $this->scriptDetector = $scriptDetector;
-
-        if (null === $configBuilder) {
-            $configBuilder = Parametizer::newConfig();
+        if (!isset($this->configBuilder)) {
+            $this->configBuilder = Parametizer::newConfig(throwOnException: $this->throwOnException);
         }
-        $this->configBuilder = $configBuilder;
-    }
 
-    public function execute(): void {
+        $envConfigForSubcommands = $this->useParentEnvConfigForSubcommands
+            ? $this->configBuilder->getConfig()->getEnvConfig()
+            : null;
+
         $classNamesBySubcommandNames = $this->scriptDetector
             ->detect()
             ->getFQClassNamesByScriptNames();
 
         $this->configBuilder->newSubcommandSwitch('subcommand');
         foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
-            $this->configBuilder->newSubcommand($subcommandName, $className::getConfiguration());
+            $this->configBuilder->newSubcommand(
+                $subcommandName,
+                $className::getConfiguration(
+                    envConfig: $envConfigForSubcommands,
+                    throwOnException: $this->throwOnException,
+                ),
+            );
         }
 
         if ($this->scriptDetector->doesCacheFileExist()) {
@@ -51,7 +90,11 @@ class ScriptLauncher {
 
             $this->configBuilder->newSubcommand(
                 $subcommandNameClearCache,
-                ClearCache::getConfiguration($contextClearCache),
+                ClearCache::getConfiguration(
+                    envConfig: $envConfigForSubcommands,
+                    throwOnException: $this->throwOnException,
+                    context: $contextClearCache,
+                ),
             );
         } else {
             $subcommandNameClearCache = null;

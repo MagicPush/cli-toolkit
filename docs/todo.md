@@ -79,62 +79,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Support `EnvironmentConfig` setup:
-        1. - [ ] See if `$_SERVER` may be used instead of `debug_backtrace()`.
-        1. - [ ] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
-             a script launcher or (otherwise) created from scratch (including the config file autoloader).
-            * If an `EnvironmentConfig` instance is passed from a launcher to a script class, it should be treated
-              as a default config (not a forced only-config) - a script class should be able to _update_ parameters.
-        1. - [ ] A script class skeleton should be also able to load an `EnvironmentConfig` instance from config files.
-            * Think about the load priorities: a) launcher env config instance, b) script class subtree config files.
-
-       <details>
-       <summary>Base class implementation idea</summary>
-
-       ```php
-        <?php
-
-        declare(strict_types=1);
-
-        abstract class ParametizerPoweredAbstract {
-            protected BuilderInterface $builder;
-
-
-            public function __construct(protected ?EnvironmentConfig $launcherEnvConfig = null) {
-                $this->builder = Parametizer::newConfig($this->createEnvironmentConfig());
-            }
-
-            protected function createEnvironmentConfig(): EnvironmentConfig {
-                // Start reading config files from the actual script classes directory.
-                // 'x' should be calculated, but may be a hardcoded trace jumps count.
-                $bottom = debug_backtrace()[last-x];
-
-                // Also test if __DIR__ placed as a default property value is transformed into
-                // a current instance class directory, not the base abstract class directory.
-
-                $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy($bottom);
-
-                if (isset($this->launcherEnvConfig)) {
-                    // New method: fill only the settings not filled from config files.
-                    // But do it once (or mark all fields filled from files),
-                    // otherwise other attempts will overwrite all settings.
-                    $envConfig->appendNotFilledFromFiles($this->launcherEnvConfig);
-                }
-
-                return $envConfig;
-            }
-
-            abstract public function configure(): void;
-
-            abstract public function execute(CliRequest $request): void;
-        }
-
-       ```
-       </details>
-
-        1. - [ ] Try moving `ScriptAbstract::NAME_*` constants into `EnvironmentConfig`
-        1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
-             instance "automatically" by making `getConfiguration()` non-static or in a separate method.
     1. - [ ] Make `newSubcommandSwitch()` optional.
         * Only a single subcommand switch is possible, so there is no need to specify its name explicitly
           (but it's still should be possible if a custom switch name is preferred).
@@ -182,7 +126,7 @@ The list of plans and ideas for future development.
             1. - [ ] Invalid / not readable paths.
         1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
             1. - [ ] Defaults in the constructor: a detector (with caching enabled) and a config.
-        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/Subcommand/ScriptAbstract.php)
+        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
             1. - [ ] Simple and composite names.
             1. - [ ] `getLocalName()` must not be empty.
             1. - [ ] `getLocalName()` auto name generation:
@@ -275,6 +219,16 @@ The list of plans and ideas for future development.
     1. - [x] Add `ScriptLauncher` to keep all launchers common code.
         * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
           a single search path `__DIR__` and its own path as an exception.
+    1. - [x] Support `EnvironmentConfig` setup:
+        1. - [x] ~~See if `$_SERVER` may be used instead of `debug_backtrace()`.~~
+        1. - [x] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
+             a script launcher or (otherwise) created from scratch (including the config file autoloader).
+            * ~~If an `EnvironmentConfig` instance is passed from a launcher to a script class, it should be treated
+              as a default config (not a forced only-config) - a script class should be able to _update_ parameters.~~
+        1. - [x] ~~Think about the load priorities: a) launcher env config instance,
+             b) script class subtree config files.~~
+        1. - [x] ~~Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
+             instance "automatically" by making `getConfiguration()` non-static or in a separate method.~~
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

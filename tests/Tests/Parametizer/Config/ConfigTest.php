@@ -8,6 +8,8 @@ use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function PHPUnit\Framework\assertSame;
+
 class ConfigTest extends TestCaseAbstract {
     #[DataProvider('provideConfigLogicExceptions')]
     /**
@@ -61,8 +63,8 @@ class ConfigTest extends TestCaseAbstract {
 
             'argument-after-array-argument' => [
                 'scriptPath'  => __DIR__ . '/' . 'scripts/error-argument-after-array-argument.php',
-                'errorOutput' => "'singlearg' >>> Config error: extra arguments are not allowed after already registered array"
-                    . " argument ('multiarg') due to ambiguous parsing. Register 'multiarg' argument as the last one.",
+                'errorOutput' => "'single-arg' >>> Config error: extra arguments are not allowed after already registered array"
+                    . " argument ('multi-arg') due to ambiguous parsing. Register 'multi-arg' argument as the last one.",
             ],
 
             'required-argument-with-default-value' => [
@@ -259,12 +261,12 @@ class ConfigTest extends TestCaseAbstract {
      * @see Option::shortName()
      */
     public function testOptionShortNameCaseSensitive(): void {
-        self::assertSame(
+        assertSame(
             '"-F" stands for "--flag-two"',
             static::assertNoErrorsOutput(__DIR__ . '/scripts/option-short-name-case-sensitive.php', '-F')->getStdOut(),
         );
 
-        self::assertSame(
+        assertSame(
             '"-f" stands for "--flag-one"',
             static::assertNoErrorsOutput(__DIR__ . '/scripts/option-short-name-case-sensitive.php', '-f')->getStdOut(),
         );

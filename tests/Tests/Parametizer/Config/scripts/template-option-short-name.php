@@ -6,4 +6,4 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
 
-TestUtils::newConfig()->newOption('--name', $argv[1] ?? null);
+TestUtils::newConfig()->newOption('--name', $_SERVER['argv'][1] ?? null);

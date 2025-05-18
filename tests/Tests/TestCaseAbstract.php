@@ -16,7 +16,7 @@ use function PHPUnit\Framework\assertStringContainsString;
 abstract class TestCaseAbstract extends TestCase {
     protected static function assertNoErrorsOutput(string $scriptPath, string $parametersString = ''): CliProcess {
         $command = 'php ' . escapeshellarg($scriptPath);
-        if ($parametersString) {
+        if ('' !== $parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);
@@ -40,7 +40,7 @@ abstract class TestCaseAbstract extends TestCase {
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): CliProcess {
-        return self::assertAnyErrorOutput(
+        return static::assertAnyErrorOutput(
             $scriptPath,
             $expectedErrorOutputSubstring,
             $parametersString,
@@ -56,7 +56,7 @@ abstract class TestCaseAbstract extends TestCase {
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): void {
-        self::assertAnyErrorOutput(
+        static::assertAnyErrorOutput(
             $scriptPath,
             $expectedErrorOutputSubstring,
             $parametersString,
@@ -74,7 +74,7 @@ abstract class TestCaseAbstract extends TestCase {
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
     ): void {
-        self::assertAnyErrorOutput(
+        static::assertAnyErrorOutput(
             $scriptPath,
             $expectedErrorOutputSubstring,
             $parametersString,
@@ -91,7 +91,7 @@ abstract class TestCaseAbstract extends TestCase {
         bool $shouldAssertExitCode = false,
     ): CliProcess {
         $command = 'php ' . escapeshellarg($scriptPath);
-        if ($parametersString) {
+        if ('' !== $parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);
@@ -129,7 +129,7 @@ abstract class TestCaseAbstract extends TestCase {
         string $parametersString,
     ): void {
         $command = 'php ' . escapeshellarg($scriptPath);
-        if ($parametersString) {
+        if ('' !== $parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\Subcommand;
+namespace MagicPush\CliToolkit\Parametizer\Script;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
@@ -98,15 +98,24 @@ abstract class ScriptAbstract {
         return $fullName;
     }
 
-    protected static function newConfig(?EnvironmentConfig $envConfig = null): ConfigBuilder {
-        return Parametizer::newConfig($envConfig);
+    /**
+     * @param bool $throwOnException Useful to debug automatic environment config creation, if `$envConfig` is `null`.
+     */
+    protected static function newConfig(?EnvironmentConfig $envConfig, bool $throwOnException): ConfigBuilder {
+        return Parametizer::newConfig(envConfig: $envConfig, throwOnException: $throwOnException);
     }
 
 
     public function __construct(protected CliRequest $request) { }
 
 
-    abstract public static function getConfiguration(): BuilderInterface;
+    /**
+     * @param bool $throwOnException Useful to debug automatic environment config creation, if `$envConfig` is `null`.
+     */
+    abstract public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface;
 
     abstract public function execute(): void;
 }

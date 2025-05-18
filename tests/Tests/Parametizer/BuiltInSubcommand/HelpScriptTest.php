@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\HelpScript;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\HelpScript;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 

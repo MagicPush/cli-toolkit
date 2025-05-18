@@ -15,9 +15,9 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\HelpScript;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn\ListScript;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\ListScript;
 
 class Config {
     public const string PARAMETER_NAME_LIST               = 'list';
@@ -78,12 +78,6 @@ class Config {
 
     protected ?string $subcommandSwitchName       = null;
     protected bool    $isSubcommandSwitchCommited = false;
-
-    /**
-     * @var array<string, ScriptAbstract|string> (string) subcommand name set in the config =>
-     *                                           (string) Fully qualified class name that extends {@see ScriptAbstract}
-     */
-    protected array $builtInSubcommandClassBySubcommandName = [];
 
     /** Not obligatory but useful for subcommand usage template help ({@see HelpGenerator::getUsageTemplate()}) */
     protected ?self $parent = null;
@@ -275,12 +269,23 @@ class Config {
         return $this;
     }
 
-    protected function addBuiltInSubcommands(): static {
-        $this->builtInSubcommandClassBySubcommandName[static::PARAMETER_NAME_LIST] = ListScript::class;
-        $this->builtInSubcommandClassBySubcommandName[static::OPTION_NAME_HELP]    = HelpScript::class;
+    /**
+     * @return array<string, ScriptAbstract|string> (string) subcommand name to be set in a config =>
+     *                                              (string) Fully qualified class name that extends {@see ScriptAbstract}
+     */
+    public static function getBuiltInSubcommandClassesBySubcommandNames(): array {
+        return [
+            static::PARAMETER_NAME_LIST => ListScript::class,
+            static::OPTION_NAME_HELP    => HelpScript::class,
+        ];
+    }
 
-        foreach ($this->builtInSubcommandClassBySubcommandName as $subcommandName => $subcommandClass) {
-            $this->newSubcommand($subcommandName, $subcommandClass::getConfiguration()->getConfig());
+    protected function addBuiltInSubcommands(): static {
+        foreach (static::getBuiltInSubcommandClassesBySubcommandNames() as $subcommandName => $subcommandClass) {
+            $this->newSubcommand(
+                $subcommandName,
+                $subcommandClass::getConfiguration(envConfig: $this->envConfig)->getConfig(),
+            );
         }
 
         $this->arguments[$this->subcommandSwitchName]
@@ -294,7 +299,7 @@ class Config {
      * @return ScriptAbstract|string|null Fully qualified class name that extends {@see ScriptAbstract}.
      */
     public function getBuiltInSubcommandClass(string $subcommandName): ?string {
-        return $this->builtInSubcommandClassBySubcommandName[$subcommandName] ?? null;
+        return static::getBuiltInSubcommandClassesBySubcommandNames()[$subcommandName] ?? null;
     }
 
     /**
@@ -302,7 +307,7 @@ class Config {
      */
     public function getBuiltInSubcommands(): array {
         $builtInSubcommands = [];
-        foreach ($this->builtInSubcommandClassBySubcommandName as $subcommandName => $notUsed) {
+        foreach (array_keys(static::getBuiltInSubcommandClassesBySubcommandNames()) as $subcommandName) {
             $subcommandConfig = $this->getBranch($subcommandName);
             if (null !== $subcommandConfig) {
                 $builtInSubcommands[$subcommandName] = $subcommandConfig;

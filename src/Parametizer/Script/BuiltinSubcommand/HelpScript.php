@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn;
+namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 class HelpScript extends ScriptAbstract {
     public const string ARGUMENT_SUBCOMMAND_NAME = 'subcommand-name';
@@ -18,11 +19,14 @@ class HelpScript extends ScriptAbstract {
     protected readonly string $subcommandName;
 
 
-    public static function getConfiguration(): BuilderInterface {
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
         $listSubcommandName = Config::PARAMETER_NAME_LIST;
         $formatter          = HelpFormatter::createForStdOut();
 
-        return static::newConfig()
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description('Outputs a help page for a specified subcommand.')
 
             ->newArgument(static::ARGUMENT_SUBCOMMAND_NAME)

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\TerminalFormatter;
 
 class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
@@ -14,7 +15,10 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
     private const int    NON_EXISTENT_CODE = -1;
 
 
-    public static function getConfiguration(): BuilderInterface {
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
         $formatter = TerminalFormatter::createForStdOut();
 
         $exampleInDescription         = $formatter->apply(
@@ -26,7 +30,7 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
             [TerminalFormatter::STYLE_BOLD, TerminalFormatter::FONT_CYAN],
         );
 
-        return static::newConfig()
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description("
                 Shows an example substring ('{$exampleInDescription}') with each standard terminal font color
                 and some styles, plus custom color examples.

@@ -12,8 +12,11 @@ use RuntimeException;
 use Throwable;
 
 class GenerateEnvConfig extends CliToolkitScriptAbstract {
-    public static function getConfiguration(): BuilderInterface {
-        return static::newConfig()
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description('
                 Generates an environment config file with all possible settings. All settings are set to default values.
                 Then you may alter the settings you wish to affect your Parametizer-powered scripts.

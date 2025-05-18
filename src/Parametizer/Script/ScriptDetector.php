@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Script;
 
+use Exception;
 use FilesystemIterator;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -35,7 +35,10 @@ class ScriptDetector {
     }
 
 
-    public function __construct(protected bool $throwOnException = false) { }
+    /**
+     * @param bool $throwOnException Useful to debug issues with paths (read / write).
+     */
+    public function __construct(protected readonly bool $throwOnException = false) { }
 
     public function cacheFilePath(?string $cacheFilePath): static {
         $cacheFilePathReal = null !== $cacheFilePath ? realpath($cacheFilePath) : false;
@@ -166,23 +169,28 @@ class ScriptDetector {
         if ('' === $cacheFileContents) {
             if ($this->throwOnException) {
                 throw new RuntimeException(
-                    'Could not read scripts cache file: ' . var_export($this->cacheFilePath, true),
+                    'Could not read the cache file: ' . var_export($this->cacheFilePath, true),
                 );
             }
 
             return $this;
         }
 
-        $jsonDecodeFlags = 0;
-        if ($this->throwOnException) {
-            $jsonDecodeFlags |= JSON_THROW_ON_ERROR;
-        }
+        try {
+            $rawFQClassNames = json_decode(
+                json: file_get_contents($this->cacheFilePath),
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (Exception $e) {
+            if (!$this->throwOnException) {
+                return $this;
+            }
 
-        $rawFQClassNames = (array) json_decode(
-            json: file_get_contents($this->cacheFilePath),
-            associative: true,
-            flags: $jsonDecodeFlags,
-        );
+            throw new RuntimeException(
+                "Unable to read the cache file '" . var_export($this->cacheFilePath, true) . "': {$e->getMessage()}",
+            );
+        }
         foreach ($rawFQClassNames as $fqClassName) {
             if (!is_subclass_of($fqClassName, ScriptAbstract::class)) {
                 if ($this->throwOnException) {
@@ -217,11 +225,21 @@ class ScriptDetector {
             }
         }
 
-        $jsonEncodeFlags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
-        if ($this->throwOnException) {
-            $jsonEncodeFlags |= JSON_THROW_ON_ERROR;
+        try {
+            $cacheFileContents = json_encode(
+                value: $this->detectedFQClassNames,
+                flags: JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR,
+            );
+        } catch (Exception $e) {
+            if (!$this->throwOnException) {
+                return $this;
+            }
+
+            throw new RuntimeException(
+                "Unable to create JSON contents for the cache file '" . var_export($this->cacheFilePath, true)
+                    . "': {$e->getMessage()}",
+            );
         }
-        $cacheFileContents = json_encode($this->detectedFQClassNames, flags: $jsonEncodeFlags);
 
         if (
             false === file_put_contents($this->cacheFilePath, $cacheFileContents, LOCK_EX)
@@ -235,7 +253,7 @@ class ScriptDetector {
         $cacheFilePathReal = realpath($this->cacheFilePath);
         if (false === $cacheFilePathReal) {
             throw new RuntimeException(
-                "Unable to get the realpath from just created cache file: {$this->cacheFilePath}",
+                "Unable to get the realpath from the just created cache file: {$this->cacheFilePath}",
             );
         }
         $this->cacheFilePath = $cacheFilePathReal;

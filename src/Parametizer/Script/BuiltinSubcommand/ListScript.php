@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\Subcommand\BuiltIn;
+namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
 
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
@@ -11,7 +11,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\Subcommand\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 class ListScript extends ScriptAbstract {
     protected const string PADDING_BLOCK = '    ';
@@ -28,8 +28,11 @@ class ListScript extends ScriptAbstract {
     protected readonly string $subcommandNamePart;
 
 
-    public static function getConfiguration(): BuilderInterface {
-        return static::newConfig()
+    public static function getConfiguration(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): BuilderInterface {
+        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->shortDescription('Shows available subcommands.')
             ->description('Shows the sorted list of available subcommands with their short descriptions.')
 

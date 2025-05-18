@@ -42,6 +42,8 @@ This change log references the repository changes and releases, which respect [s
 1. Removed "minimum 2 subcommands" constraint from `Config::commitSubcommandSwitch()`.
 1. [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php) as a basement for
    class-based Parametizer-powered scripts.
+    1. `EnvironmentConfig::detectBottommostDirectoryPath()` now tries to detect the class' "child" location when
+       possible. Otherwise backwards to a launched script location.
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
 1. [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) for different script types auto-detection.
@@ -50,12 +52,15 @@ This change log references the repository changes and releases, which respect [s
    `help` ([HelpScript.php](../src/Parametizer/Script/BuiltIn/HelpScript.php))
    and `list` ([ListScript.php](../src/Parametizer/Script/BuiltIn/ListScript.php)) built-in subcommands.
     1. Every subcommand switch goes with `list` as its default value.
+    1. All built-in subcommands always utilize a parent
+       [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) instance
+       (from a parent [Config.php](../src/Parametizer/Config/Config.php)).
 1. Added [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) to ease launcher scripts
-   creation. That includes:
+   creation. That includes (but not limits to):
     1. The default auto-generated [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) that looks for
-       all scripts inside the same directory recursively plus caching is enabled.
+       all scripts inside the same directory recursively plus enables caching.
     1. [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
-       is automatically added to a launcher, if a launcher's script detector enables caching.
+       is automatically added to a launcher, if a launcher's script detector enables caching and a cache file exists.
        The subcommand lets you delete a created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
    the description shortener. Useful when environment settings are not optimal for all descriptions.
@@ -87,7 +92,7 @@ This change log references the repository changes and releases, which respect [s
    to stabilize completion output due to the default subcommand switch value.
 1. [Config.php](../src/Parametizer/Config/Config.php):
     1. Added `PARAMETER_NAME_LIST` public constant to keep the listing built-in subcommand name.
-    1. Added `$builtInSubcommandClassBySubcommandName` protected property and the related methods:
+    1. Added public `getBuiltInSubcommandClassesBySubcommandNames()` method and the related methods:
         * public `getSubcommandSwitchName()` - to get a subcommand switch parameter name if present in a config;
         * public `getBuiltInSubcommandClass()` - to get a subcommand fully qualified class name by a subcommand name;
         * public `getBuiltInSubcommands()` - to get the list of built-in subcommand configs by their names;

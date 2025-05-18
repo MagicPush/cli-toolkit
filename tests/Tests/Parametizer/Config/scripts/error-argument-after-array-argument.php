@@ -7,6 +7,6 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 require_once __DIR__ . '/../../../init-console.php';
 
 TestUtils::newConfig()
-    ->newArrayArgument('multiarg')
-    ->newArgument('singlearg')
+    ->newArrayArgument('multi-arg')
+    ->newArgument('single-arg')
     ->run();
