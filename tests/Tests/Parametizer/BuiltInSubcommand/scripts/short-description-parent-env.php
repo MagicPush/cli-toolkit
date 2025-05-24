@@ -22,7 +22,6 @@ unset($_SERVER['argv'][2]);
 $isCustomEnvSetForSubcommand = !$isCustomEnvSetForParent;
 
 TestUtils::newConfig($isCustomEnvSetForParent ? $envConfigForSuperShortDescription : null)
-    ->newSubcommandSwitch('subcommand')
     ->newSubcommand(
         'avocado',
         TestUtils::newConfig($isCustomEnvSetForSubcommand ? $envConfigForSuperShortDescription : null)

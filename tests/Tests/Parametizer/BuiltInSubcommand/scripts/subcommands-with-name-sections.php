@@ -17,8 +17,6 @@ $description = <<<TEXT
 TEXT;
 
 TestUtils::newConfig()
-    ->newSubcommandSwitch('subcommand-name')
-
     // Let's add subcommands with names in a "random" order. The sorting logic should fix the order.
     ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['yellow', 'banana', 'ice-cream']), TestUtils::newConfig()->description($description))
     ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['test']), TestUtils::newConfig()->description($description))

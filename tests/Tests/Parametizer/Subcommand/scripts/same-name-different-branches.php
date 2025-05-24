@@ -11,7 +11,6 @@ $request = TestUtils::newConfig()
     ->newOption('--opt')
     ->default('opt-level-1')
 
-    ->newSubcommandSwitch('branch')
     ->newSubcommand(
         'branch-red',
         TestUtils::newConfig()

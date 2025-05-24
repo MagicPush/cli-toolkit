@@ -53,7 +53,7 @@ interface BuilderInterface {
      * When an input parameter is processed, if it is a subcommand switch, all following parameters
      * are processed with the subcommand config.
      */
-    public function newSubcommand(string $subcommandValue, BuilderInterface $builder): ConfigBuilder;
+    public function newSubcommand(string $subcommandName, BuilderInterface $builder): ConfigBuilder;
 
     /**
      * Processes the input parameters, validates options and other configured things,

@@ -18,7 +18,6 @@ TestUtils::newConfig()
     ->newFlag('--not-used-flag-2', '-a')
     ->newOption('--not-used-option', '-f')
 
-    ->newSubcommandSwitch('sub-script')
     ->newSubcommand('different-params', DifferentParams::getConfigBuilder())
     ->newSubcommand('smart-autocomplete', SmartAutocomplete::getConfigBuilder())
 

@@ -34,6 +34,10 @@ This change log references the repository changes and releases, which respect [s
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
     1. Removed `getBaseScriptName()` obsolete method.
+1. Renaming:
+    1. `Config::newSubcommand()` first parameter `$subcommandValue` -> `$subcommandName`.
+    1. `BuilderInterface::newSubcommand()` (so as `BuilderAbstract` and `ConfigBuilder`) first parameter
+       `$subcommandValue` -> `$subcommandName`.
 1. [composer.json](../composer.json): the `type` is changed from `project` to `library`.
    Not sure if it should be treated as incompatibility, but let's note it here just in case.
 
@@ -87,7 +91,7 @@ This change log references the repository changes and releases, which respect [s
     1. Added `executeBuiltInSubcommandIfRequested()` method for built-in subcommands automatic execution;
        the method is utilized by `Parametizer::run()`.
 1. Added `CliRequestProcessor::parseSubcommandParameters()` protected method
-   to ease processing of the default subcommand value.
+   to ease processing of the default subcommand switch value.
 1. Added `CliRequestProcessor::$isForCompletion` readonly flag (settable in `__construct()`). The flag is used
    to stabilize completion output due to the default subcommand switch value.
 1. [Config.php](../src/Parametizer/Config/Config.php):
@@ -134,7 +138,7 @@ This change log references the repository changes and releases, which respect [s
     1. Fixed scripts main description block - stopped counting symbols in space-only lines.
        Previously it caused too much padding for descriptions with too short space-only lines.
     1. Improved subcommand help usage block - when `--help` is called for a subcommand, all manual usage lines
-       include the whole path (subcommand values) starting from the topmost config.
+       include the whole path (subcommand names) starting from the topmost config.
 
 ## v2.0.0
 
@@ -153,7 +157,6 @@ This change log references the repository changes and releases, which respect [s
 1. `Parametizer::setExceptionHandlerForParsing()` renders both an error message and a help block in STDERR (previously
    a help block was rendered in STDOUT).
 1. `Option::getOptionCleanFullName()` is deleted because of no usage.
-
 1. Renaming:
     1. `CliRequest::getCommandRequest()` -> `getSubcommandRequest()`
     1. `CliRequestProcessor::getAllowedArguments()` -> `getInnermostBranchAllowedArguments()`
@@ -178,7 +181,7 @@ when outputting a help page for a script with a list of available subcommands.
 ### Patches
 
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
-1. Formatted subcommand value in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
+1. Formatted subcommand name in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
 'COMMANDS' section of a help page with a list of available subcommands.
 1. Fixed autocompletion for option short names in subcommands.
 1. Made autocompletion smarter: duplicate option and value mentioning is not completed.

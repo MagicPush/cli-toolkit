@@ -12,7 +12,6 @@ $parentEnvConfig = new EnvironmentConfig();
 $parentEnvConfig->optionHelpShortName = 'X';
 
 TestUtils::newConfig($parentEnvConfig)
-    ->newSubcommandSwitch('subcommand-name')
     ->newSubcommand('something', TestUtils::newConfig())
 
     ->run();

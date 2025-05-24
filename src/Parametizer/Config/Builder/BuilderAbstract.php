@@ -77,8 +77,8 @@ abstract class BuilderAbstract implements BuilderInterface {
         return $this->configBuilder->newSubcommandSwitch($name);
     }
 
-    public function newSubcommand(string $subcommandValue, BuilderInterface $builder): ConfigBuilder {
-        return $this->configBuilder->newSubcommand($subcommandValue, $builder);
+    public function newSubcommand(string $subcommandName, BuilderInterface $builder): ConfigBuilder {
+        return $this->configBuilder->newSubcommand($subcommandName, $builder);
     }
 
     public function run(): CliRequest {

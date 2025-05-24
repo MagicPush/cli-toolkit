@@ -79,11 +79,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Make `newSubcommandSwitch()` optional.
-        * Only a single subcommand switch is possible, so there is no need to specify its name explicitly
-          (but it's still should be possible if a custom switch name is preferred).
-        * Rename `$subcommandName` to `$subcommandSwitchName`.
-        * Rename "subcommand value" to "subcommand name" throughout the whole project.
     1. - [ ] Test performance on many files.
         1. - [x] Create test classes generator to generate lost of class-based scripts.
         1. - [x] Compare file tokenizer vs regexp.
@@ -166,7 +161,7 @@ The list of plans and ideas for future development.
          a script, that may be also called via `gas` or `generate-completion` aliases.
 
          ... Or try making a subcommand alias via an autocompletion script.
-    1. - [ ] Detected script names may be accessed as subcommand values by specifying their full names
+    1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
          (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
          scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
         1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
@@ -210,7 +205,8 @@ The list of plans and ideas for future development.
         1. - [x] Remove `@noinspection SpellCheckingInspection` where possible
              by replacing substrings with "more typo friendly".
     1. - [x] Make `list` as the default value for a subcommand switch.
-    1. - [x] Ensure a parent config parameter is not shadowed by a subcommand value.
+    1. - [x] Ensure a parent config parameter is not shadowed by a subcommand name as a key for
+         a subcommand request subarray.
 
          Example: add `list` argument to a launcher and lose it's value after `CliRequestProcessor` replaces it with
          `list` subcommand branch request.
@@ -229,6 +225,16 @@ The list of plans and ideas for future development.
              b) script class subtree config files.~~
         1. - [x] ~~Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
              instance "automatically" by making `getConfiguration()` non-static or in a separate method.~~
+   1. - [x] Make `newSubcommandSwitch()` optional.
+
+        Only a single subcommand switch is possible, so there is no need to specify its name explicitly
+        (but it's still should be possible if customization is preferred).
+
+        Also, rename  throughout the whole project:
+
+       1. - [x] "subcommandValue" to "subcommandName".
+       1. - [x] "subcommand value" to "subcommand name".
+       1. - [x] "subcommandSwitchValue" to "subcommandName".
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

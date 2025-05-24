@@ -289,9 +289,9 @@ class CliRequestTest extends TestCaseAbstract {
             'argument' => [
                 'parametersString'          => 'some-argument argument',
                 'expectedRequestParameters' => [
-                    'argument'   => 'some-argument',
-                    'option'     => 'option-default',
-                    'subcommand' => 'argument',
+                    'argument'        => 'some-argument',
+                    'option'          => 'option-default',
+                    'subcommand-name' => 'argument',
 
                     CliRequest::SUBCOMMAND_PREFIX . 'argument' => [],
                 ],
@@ -299,9 +299,9 @@ class CliRequestTest extends TestCaseAbstract {
             'option' => [
                 'parametersString'          => 'some-argument option',
                 'expectedRequestParameters' => [
-                    'argument'   => 'some-argument',
-                    'option'     => 'option-default',
-                    'subcommand' => 'option',
+                    'argument'        => 'some-argument',
+                    'option'          => 'option-default',
+                    'subcommand-name' => 'option',
 
                     CliRequest::SUBCOMMAND_PREFIX . 'option' => [],
                 ],
@@ -354,7 +354,7 @@ class CliRequestTest extends TestCaseAbstract {
             ],
             'subcommand' => [
                 'parameterType'                       => 'subcommand',
-                'expectedErrorOutputSubstringMessage' => "'subcommand' subcommand >>> Config error: invalid characters in value '{$prefix}something'. Must start with a latin (lower);",
+                'expectedErrorOutputSubstringMessage' => "'subcommand-name' subcommand >>> Config error: invalid characters in value '{$prefix}something'. Must start with a latin (lower);",
                 'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Config->newSubcommand()',
             ],
         ];

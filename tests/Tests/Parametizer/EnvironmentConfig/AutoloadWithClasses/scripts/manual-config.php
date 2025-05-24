@@ -15,7 +15,6 @@ $subcommandsEnvConfig = new EnvironmentConfig();
 $subcommandsEnvConfig->optionHelpShortName = 'C';
 
 $request = Parametizer::newConfig(throwOnException: true)
-    ->newSubcommandSwitch('subcommand')
     ->newSubcommand(
         TestSome::getFullName(),
         TestSome::getConfiguration(envConfig: $subcommandsEnvConfig, throwOnException: true),

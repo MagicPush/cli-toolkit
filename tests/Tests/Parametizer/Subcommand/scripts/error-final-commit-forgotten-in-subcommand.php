@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../../init-console.php';
  */
 
 TestUtils::newConfig()
-    ->newSubcommandSwitch('subcommand-name')
+    ->newSubcommandSwitch('subcommand-name-l1')
 
     ->newSubcommand(
         'test11',

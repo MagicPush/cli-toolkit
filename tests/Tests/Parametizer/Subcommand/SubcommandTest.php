@@ -13,6 +13,7 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertStringContainsString;
 
 /**
  * Tests for subcommands.
@@ -41,6 +42,37 @@ class SubcommandTest extends TestCaseAbstract {
             'deep-nesting' => [
                 'script'           => __DIR__ . '/scripts/deep-nesting.php',
                 'parametersString' => 'test11 --name-l2=superName test23 test31',
+            ],
+        ];
+    }
+
+    #[DataProvider('provideSubcommandSwitches')]
+    /**
+     * Tests that subcommand switches may be manually added and customized.
+     */
+    public function testSubcommandSwitches(string $scriptPath, string $expectedHelpSubstring): void {
+        assertStringContainsString(
+            $expectedHelpSubstring,
+            self::assertNoErrorsOutput($scriptPath, '--' . Config::OPTION_NAME_HELP)
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideSubcommandSwitches(): array {
+        return [
+            'auto' => [
+                'scriptPath'            => __DIR__ . '/scripts/simple.php',
+                'expectedHelpSubstring' => '<subcommand-name>   Allowed values:',
+            ],
+            'custom' => [
+                'scriptPath'            => __DIR__ . '/scripts/custom-switch.php',
+                'expectedHelpSubstring' => <<<TEXT
+                  <super-switch>   Pick a cool subcommand here!
+                                   Allowed values:
+                TEXT,
             ],
         ];
     }
@@ -102,10 +134,6 @@ class SubcommandTest extends TestCaseAbstract {
                 'errorOutput' => "'forbidden' >>> Config error: extra arguments are not allowed on the same level AFTER"
                     . " a subcommand switch ('subcommand-name') is registered;"
                     . " you should add arguments BEFORE 'subcommand-name' or to subcommands.",
-            ],
-            'subcommand-switch-forgotten' => [
-                'script'      => __DIR__ . '/' . 'scripts/error-subcommand-switch-forgotten.php',
-                'errorOutput' => "subcommand value 'test1' >>> Config error: a subcommand switch must be specified first.",
             ],
 
             // Here we test the recursive handling of config branches.

@@ -141,7 +141,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 // Also a direct attempt to delete the file should fail:
                 static::assertAnyErrorOutput(
                     $launcherScriptPath,
-                    "Incorrect value '{$clearCacheSubcommandName}' for argument <subcommand>",
+                    "Incorrect value '{$clearCacheSubcommandName}' for argument <subcommand-name>",
                     "{$parametersBaseString} {$clearCacheSubcommandName}",
                 );
             }

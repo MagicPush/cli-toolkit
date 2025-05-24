@@ -57,8 +57,8 @@ class ConfigBuilder implements BuilderInterface {
         return $this;
     }
 
-    public function newSubcommand(string $subcommandValue, BuilderInterface $builder): static {
-        $this->config->newSubcommand($subcommandValue, $builder->getConfig());
+    public function newSubcommand(string $subcommandName, BuilderInterface $builder): static {
+        $this->config->newSubcommand($subcommandName, $builder->getConfig());
 
         return $this;
     }

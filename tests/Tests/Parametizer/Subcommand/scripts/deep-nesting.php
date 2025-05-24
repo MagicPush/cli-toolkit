@@ -11,7 +11,7 @@ $configBuilder = TestUtils::newConfig();
 $config        = $configBuilder->getConfig();
 
 $configBuilder
-    ->newSubcommandSwitch('subcommand-name')
+    ->newSubcommandSwitch('subcommand-name-l1')
     ->newSubcommand(
         'test11',
         TestUtils::newConfig()

@@ -73,7 +73,9 @@ class ScriptLauncher {
             ->detect()
             ->getFQClassNamesByScriptNames();
 
-        $this->configBuilder->newSubcommandSwitch('subcommand');
+        // Init a subcommand switch - ensure built-in subcommands are added even if no custom subcommands are detected.
+        $this->configBuilder->newSubcommandSwitch('subcommand-name');
+
         foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
             $this->configBuilder->newSubcommand(
                 $subcommandName,

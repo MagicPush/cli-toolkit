@@ -21,7 +21,7 @@ Here are more detailed descriptions for different features you may find in the p
 one-letter aliases, for instance `-v` for `--verbose`.
 - _Options_ may be specified in any position - before, after or even between _arguments_:
   `$ php my-cool-script.php --chunk-size=100 data.csv --chunk-pause=500`
-    - The exception is subcommands: options must be specified before a subcommand value (before "moving to a lower
+    - The exception is subcommands: options must be specified before a subcommand name (before "moving to a lower
       level parameters").
 - _Options_ configured with short names may be specified as one word (`-xvalue`) or in a separate manner ('-x value'):
   `$ php my-cool-script.php -s 100 data.csv -p500`, where `100` is `-s` _option_ value,
@@ -158,7 +158,9 @@ $request = Parametizer::newConfig()
     
     /*
      * The subcommand switch name works like an argument with a few exceptions:
-     *  - can not be optional;
+     *  - the method call may be omitted - `newSubcommand()` call will invoke adding a switch automatically;
+     *      * call this method directly only if you want a custom name, description
+     *        or any other customization for the switch;
      *  - must be the last argument in the current config
      *  (thus also excluding a possibility to define more subcommand switches in the same config).
      */
@@ -257,7 +259,6 @@ If your script supports subcommands, ensure providing all subcommands with envir
 unless you want the default behavior for all or some of subcommands:
 ```php
 $request = Parametizer::newConfig($envConfig)
-    ->newSubcommandSwitch('operation')
     ->newSubcommand(
         'command-1',
         Parametizer::newConfig($envConfig)

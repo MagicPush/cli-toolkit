@@ -7,7 +7,8 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 require_once __DIR__ . '/../../../init-console.php';
 
 TestUtils::newConfig()
-    // Forgot to set up the subcommand switch.
+    ->newSubcommandSwitch('super-switch')
+    ->description('Pick a cool subcommand here!')
     ->newSubcommand('test1', TestUtils::newConfig())
     ->newSubcommand('test2', TestUtils::newConfig())
     ->run();

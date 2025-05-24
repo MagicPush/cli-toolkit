@@ -12,7 +12,6 @@ $request = TestUtils::newConfig()
     ->newOption('--option')
     ->default('option-default')
 
-    ->newSubcommandSwitch('subcommand')
     ->newSubcommand('argument', TestUtils::newConfig())
     ->newSubcommand('option', TestUtils::newConfig())
 

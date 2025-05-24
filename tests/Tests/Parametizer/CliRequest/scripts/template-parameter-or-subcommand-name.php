@@ -24,7 +24,6 @@ switch ($parameterType) {
 
     case 'subcommand':
         $configBuilder
-            ->newSubcommandSwitch('subcommand')
             ->newSubcommand($parameterName, TestUtils::newConfig());
         break;
 

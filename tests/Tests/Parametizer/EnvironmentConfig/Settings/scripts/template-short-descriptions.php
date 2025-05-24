@@ -14,7 +14,6 @@ $envConfig->helpGeneratorShortDescriptionCharsMax               = (int) $argv[3]
 unset($_SERVER['argv'][2], $_SERVER['argv'][3]);
 
 TestUtils::newConfig($envConfig)
-    ->newSubcommandSwitch('subcommand-name')
     ->newSubcommand(
         'conf-s1',
         TestUtils::newConfig()

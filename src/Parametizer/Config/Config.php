@@ -82,7 +82,7 @@ class Config {
     /** Not obligatory but useful for subcommand usage template help ({@see HelpGenerator::getUsageTemplate()}) */
     protected ?self $parent = null;
 
-    /** @var array<string, Config> (string) Subcommand value => (Config) branch config */
+    /** @var array<string, Config> (string) Subcommand name => (Config) branch config */
     protected array $branches = [];
 
 
@@ -231,39 +231,36 @@ class Config {
     /**
      * Read the description in {@see BuilderInterface::newSubcommand()}.
      */
-    public function newSubcommand(string $subcommandValue, Config $config): static {
-        $errorFormatter           = HelpFormatter::createForStdErr();
-        $subcommandValueFormatted = $errorFormatter->paramValue($subcommandValue);
-
+    public function newSubcommand(string $subcommandName, Config $config): static {
         if (null === $this->subcommandSwitchName) {
-            throw new ConfigException(
-                "subcommand value '{$subcommandValueFormatted}' >>> Config error:"
-                . ' a subcommand switch must be specified first.',
-            );
+            $this->registerArgument((new Argument('subcommand-name'))->setIsSubcommandSwitch());
         }
 
+        $errorFormatter                = HelpFormatter::createForStdErr();
+        $subcommandNameFormatted       = $errorFormatter->paramValue($subcommandName);
         $subcommandSwitchNameFormatted = $errorFormatter->paramTitle($this->subcommandSwitchName);
         $errorMessagePrefix            = "'{$subcommandSwitchNameFormatted}' subcommand >>> Config error:";
 
-        if (mb_strlen($subcommandValue) < 1) {
+        if (mb_strlen($subcommandName) < 1) {
             throw new ConfigException("{$errorMessagePrefix} empty value; must contain at least 1 symbol.");
         }
-        if (!preg_match('/^[a-z][a-z0-9_\-:]+$/u', $subcommandValue)) {
+        if (!preg_match('/^[a-z][a-z0-9_\-:]+$/u', $subcommandName)) {
             throw new ConfigException(
-                "{$errorMessagePrefix} invalid characters in value '{$subcommandValueFormatted}'. Must start with"
+                "{$errorMessagePrefix} invalid characters in value '{$subcommandNameFormatted}'. Must start with"
                 . ' a latin (lower); the rest symbols may be of latin (lower), digit, underscore, colon or hyphen.',
             );
         }
 
-        if (isset($this->branches[$subcommandValue])) {
+        if (isset($this->branches[$subcommandName])) {
             throw new ConfigException(
-                "'{$subcommandSwitchNameFormatted}' subcommand >>> Config error: duplicate value '{$subcommandValueFormatted}'.",
+                "'{$subcommandSwitchNameFormatted}' subcommand >>> Config error: duplicate value "
+                    . "'{$subcommandNameFormatted}'.",
             );
         }
 
-        $this->branches[$subcommandValue] = $config
+        $this->branches[$subcommandName] = $config
             ->parent($this)
-            ->scriptName($subcommandValue);
+            ->scriptName($subcommandName);
         $config->addDefaultOptions();
 
         return $this;

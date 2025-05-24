@@ -14,7 +14,7 @@ TestUtils::newConfig()
         'Very deep call',
     )
 
-    ->newSubcommandSwitch('subcommand-name')
+    ->newSubcommandSwitch('subcommand-name-l1')
     ->description('LEVEL 1')
     ->newSubcommand(
         'test11',
