@@ -79,18 +79,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Test performance on many files.
-        1. - [x] Create test classes generator to generate lost of class-based scripts.
-        1. - [x] Compare file tokenizer vs regexp.
-            * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
-        1. - [ ] A generated launcher should also show time elapsed and RAM usage.
-        1. - [ ] Remove [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
-             from the launcher, make it not detectable
-             by [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
-        1. - [ ] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
-        1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
-            * Searching in large projects (~ 5GB) may last for 30+ seconds!
-        1. - [ ] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
     1. - [ ] Additions to [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
         1. - [ ] Different ways to include/exclude files and/or directories.
         1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
@@ -130,6 +118,9 @@ The list of plans and ideas for future development.
             1. - [ ] `GenerateAutocompletionScript` that detects no-class scripts via `ScriptLauncher`.
 
                  ... Unless the detection is made via `ScriptDetector`.
+    1. - [ ] Add the "first steps" files generator. Something that will help users to start using the library quickly
+         and easily. For instance, it should create a launcher with some default detection (no cache), maybe add
+         an autocompletion script right away, maybe generate a blank script class, etc.
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
@@ -235,6 +226,19 @@ The list of plans and ideas for future development.
        1. - [x] "subcommandValue" to "subcommandName".
        1. - [x] "subcommand value" to "subcommand name".
        1. - [x] "subcommandSwitchValue" to "subcommandName".
+   1. - [x] Test performance on many files.
+       1. - [x] Create test classes generator to generate lost of class-based scripts.
+       1. - [x] Compare file tokenizer vs regexp.
+           * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
+       1. - [x] A generated launcher should also show time elapsed and RAM usage.
+       1. - [x] ~~Remove
+            [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) from
+            the launcher, make it not detectable by
+            [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).~~
+       1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
+       1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
+           * Searching in large projects (~ 5GB) may last for 30+ seconds!
+       1. - [x] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

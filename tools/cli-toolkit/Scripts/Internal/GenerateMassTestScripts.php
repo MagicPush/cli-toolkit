@@ -69,8 +69,9 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         $formatter = HelpFormatter::createForStdOut();
 
         return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
+            ->shortDescription('Generates dummy scripts for performance testing.')
             ->description('
-                Generates script classes, a launcher and supplementary files.
+                Generates a batch of dummy script classes, a launcher and supplementary files for performance testing.
 
                 By default all files are deleted each time the script is launched,
                 unless ' . $formatter->paramTitle('--interactive') . ' is specified
@@ -434,7 +435,7 @@ TEXT;
     }
 
     protected function generateLauncher(): static {
-        $contents = <<<TEXT
+        $contents = <<<PHP
 <?php
 
 declare(strict_types=1);
@@ -447,11 +448,38 @@ use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 \$scriptDetector = (new ScriptDetector(throwOnException: true))
     ->searchClassPath(__DIR__ . '/Scripts');
 
+// PERFORMANCE STATS ->
+memory_reset_peak_usage();
+\$memPeakStart = memory_get_peak_usage(false);
+\$tsStart      = hrtime(true);
+
+register_shutdown_function(
+    function () use (\$memPeakStart, \$tsStart) {
+        \$tsEnd      = hrtime(true);
+        \$memPeakEnd = memory_get_peak_usage(false);
+
+        \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
+        \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
+
+        fwrite(
+            STDERR,
+            <<<TEXT
+
+            Stats:
+                time elapsed, seconds: {\$timeElapsed}
+                memory peak usage, MB: {\$memoryPeakUsage}
+
+            TEXT,
+        );
+    },
+);
+// <- PERFORMANCE STATS
+
 (new ScriptLauncher(\$scriptDetector))
     ->throwOnException()
     ->execute();
 
-TEXT;
+PHP;
 
         $launcherFileName = static::LAUNCHER_NAME;
         $pathLauncher     = $this->pathDirectoryBase . "/{$launcherFileName}.php";

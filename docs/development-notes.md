@@ -5,6 +5,8 @@
 - [Class-based scripts mass tests](#class-based-scripts-mass-tests)
     - [Tokenizer vs RegExp](#tokenizer-vs-regexp)
     - [Scripts detection performance](#scripts-detection-performance)
+    - [EnvironmentConfig load performance](#environmentconfig-load-performance)
+    - [RegExp in subcommand name validation](#regexp-in-subcommand-name-validation)
 
 ## Class-based scripts mass tests
 
@@ -66,3 +68,17 @@ or even dozens of seconds.
 Possible solutions:
 1. Specify paths that are "closer" to actual scripts (less directories and files to parse).
 2. Support caching that may be enabled when needed.
+
+### EnvironmentConfig load performance
+
+Negligible. `--dir-count=50 --dir-max-level=5 2000`:
+
+|                                                           Condition | Seconds | Memory, MB |
+|--------------------------------------------------------------------:|:--------|:-----------|
+|                                        Autoload ON + no config file | `0.183` | `27.041`   |
+|                 Autoload ON + a config file in `MassTest` directory | `0.2`   | `27.041`   |
+| Autoload OFF - `ScriptLauncher::useParentEnvConfigForSubcommands()` | `0.14`  | `25.313`   |
+
+### RegExp in subcommand name validation
+
+Removing regexp check in `Config::newSubcommand()` changes nothing on _milliseconds_ scale.
