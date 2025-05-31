@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use RuntimeException;
 
 class ClearCacheContext {

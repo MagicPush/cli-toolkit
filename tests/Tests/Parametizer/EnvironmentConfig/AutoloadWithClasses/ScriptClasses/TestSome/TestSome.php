@@ -13,7 +13,7 @@ class TestSome extends ScriptAbstract {
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,
     ): BuilderInterface {
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException);
+        return static::newConfig($envConfig, $throwOnException);
     }
 
     public function execute(): void { }

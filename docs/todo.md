@@ -79,36 +79,33 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Additions to [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
-        1. - [ ] Different ways to include/exclude files and/or directories.
-        1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
-             the huge project's root directory. A full scan may take a while.
-
-             Consider caching:
-            * ~~by a setting and/or based on all scanned files count;~~
-            * ~~possible automatic invalidation condition;~~
-            * easy to use manual cache clear tool.
-        1. - [ ] Do not process duplicate paths (local vs real paths).
+    1. Renaming section:
+        1. `ScriptDetector` -> `ScriptClassDetector`
+            1. `ScriptDetector*Test` -> `ScriptClassDetector*Test`
+        1. `ScriptAbstract` -> `ScriptClassAbstract`
     1. TEST
-        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
-            1. - [ ] Detection:
-                1. - [ ] Script classes.
-                1. - [ ] Plain Parametizer-based scripts.
-                1. - [ ] Regular plain scripts.
-                1. - [ ] A cache file is created and later used when a cache file path is set.
-            1. - [ ] There may be no namespace.
-            1. - [ ] No abstract classes detected.
-            1. - [ ] Final classes are detected too.
-            1. - [ ] Classes without namespace are detected too.
-            1. - [ ] Several search paths.
-            1. - [ ] Ignore (black) masked lists for search paths.
-            1. - [ ] Include (white) masked lists for search paths.
-            1. - [ ] Force-ignore (black-over-whitelist) exact paths.
-            1. - [ ] Force-include (white-over-black) exact paths.
-            1. - [ ] Names are naturally sorted (`script2` is placed above `script10`).
-            1. - [ ] Invalid / not readable paths.
-        1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
-            1. - [ ] Defaults in the constructor: a detector (with caching enabled) and a config.
+        1. - [x] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
+            1. - [x] Base script classes detection.
+            1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
+                 the huge project's root directory. A full scan may take a while.
+
+                 Consider caching:
+
+                    * ~~by a setting and/or based on all scanned files count;~~
+                    * ~~possible automatic invalidation condition;~~
+                    * easy to use manual cache clear tool.
+            1. - [x] No abstract classes are detected ~~and (if possible) loaded into memory~~.
+            1. - [x] Final classes are detected too.
+            1. - [x] Classes without namespaces are detected too.
+            1. - [x] Several search paths.
+            1. - [x] Exclude (black-list) exact paths ~~or parts of~~.
+            1. - [x] ~~Force-include (white-over-black) parts of paths.~~
+            1. - [x] ~~Force-include (white-over-black) exact paths.~~
+            1. - [x] Invalid / not readable paths.
+            1. - [x] Names are naturally sorted (`script2` is placed above `script10`).
+            1. - [x] Do not process duplicate paths (local vs real paths).
+        1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
+            1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
         1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
             1. - [ ] Simple and composite names.
             1. - [ ] `getLocalName()` must not be empty.
@@ -164,6 +161,14 @@ The list of plans and ideas for future development.
          
          In future, there may also be a path to a settings config file (see the "_Environment Config_" feature below)
          or the config contents itself.
+    1. - [ ] Add an alternate script detector. Use it inside
+         [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
+        1. - [ ] Plain Parametizer-based scripts.
+        1. - [ ] Regular plain scripts.
+        1. - [ ] Different detections within a single process.
+
+             Consider a case: search `A/×` except `A/z/×` and set the alias `one`. Then search `A/z/×` and set
+             the alias `another`. It may be solved via several `detect()` calls with different search settings.
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
 

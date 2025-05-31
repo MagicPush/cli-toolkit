@@ -442,11 +442,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/init.php';
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
 \$scriptDetector = (new ScriptDetector(throwOnException: true))
-    ->searchClassPath(__DIR__ . '/Scripts');
+    ->searchDirectory(__DIR__ . '/Scripts');
 
 // PERFORMANCE STATS ->
 memory_reset_peak_usage();

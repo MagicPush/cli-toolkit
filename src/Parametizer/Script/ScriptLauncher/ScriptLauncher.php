@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
 
@@ -51,15 +51,8 @@ class ScriptLauncher {
 
     public function execute(): void {
         if (!isset($this->scriptDetector)) {
-            $this->scriptDetector = new ScriptDetector(throwOnException: $this->throwOnException);
-            $debugBacktrace       = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            $launcherPath         = $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? null;
-            if (null !== $launcherPath) {
-                $launcherDirectoryPath = dirname($launcherPath);
-                $this->scriptDetector
-                    ->searchClassPath($launcherDirectoryPath)
-                    ->cacheFilePath($launcherDirectoryPath . '/' . basename($launcherPath, '.php') . '.json');
-            }
+            $this->scriptDetector = (new ScriptDetector(throwOnException: $this->throwOnException))
+                ->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));
         }
         if (!isset($this->configBuilder)) {
             $this->configBuilder = Parametizer::newConfig(throwOnException: $this->throwOnException);
@@ -70,7 +63,6 @@ class ScriptLauncher {
             : null;
 
         $classNamesBySubcommandNames = $this->scriptDetector
-            ->detect()
             ->getFQClassNamesByScriptNames();
 
         // Init a subcommand switch - ensure built-in subcommands are added even if no custom subcommands are detected.

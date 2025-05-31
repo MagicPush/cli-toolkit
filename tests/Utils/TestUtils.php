@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 
 final class TestUtils {
     public static function newConfig(?EnvironmentConfig $envConfig = null) {
-        return Parametizer::newConfig(envConfig: $envConfig, throwOnException: true);
+        return Parametizer::newConfig($envConfig, throwOnException: true);
     }
 
     public static function getEnvironmentConfigPartJson(EnvironmentConfig $envConfig): string {

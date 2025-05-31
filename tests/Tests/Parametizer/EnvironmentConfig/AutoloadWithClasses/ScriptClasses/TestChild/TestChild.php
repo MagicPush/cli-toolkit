@@ -14,6 +14,6 @@ class TestChild extends TestSome {
         bool $throwOnException = false,
     ): BuilderInterface {
         // This "useless" parent call without any additions is necessary for EnvironmentConfig file config detection.
-        return parent::getConfiguration(envConfig: $envConfig, throwOnException: $throwOnException);
+        return parent::getConfiguration($envConfig, $throwOnException);
     }
 }

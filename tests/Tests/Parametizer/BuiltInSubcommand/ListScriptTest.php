@@ -14,6 +14,31 @@ use function PHPUnit\Framework\assertSame;
 
 class ListScriptTest extends TestCaseAbstract {
     /**
+     * Tests natural sorting for registered subcommand names.
+     *
+     * @see ListScript::outputNode()
+     */
+    public function testNamesNaturalSorting(): void {
+        assertSame(
+            <<<TEXT
+             Built-in subcommands:
+                help        Outputs a help page for a specified subcommand.
+                list        Shows available subcommands.
+
+             --
+                script
+                script1
+                script2
+                script10
+                scripts
+
+            TEXT,
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-natural-sorting.php', Config::PARAMETER_NAME_LIST)
+                ->getStdOut(),
+        );
+    }
+
+    /**
      * Tests correct subcommand names sort with different name section levels.
      *
      * Also:

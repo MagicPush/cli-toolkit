@@ -6,6 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Subcommand;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
@@ -49,6 +50,10 @@ class SubcommandTest extends TestCaseAbstract {
     #[DataProvider('provideSubcommandSwitches')]
     /**
      * Tests that subcommand switches may be manually added and customized.
+     *
+     * @see ConfigBuilder::newSubcommandSwitch()
+     * @see Config::registerArgument()
+     * @see Config::newSubcommand()
      */
     public function testSubcommandSwitches(string $scriptPath, string $expectedHelpSubstring): void {
         assertStringContainsString(

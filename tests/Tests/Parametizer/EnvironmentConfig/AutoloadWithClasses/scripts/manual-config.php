@@ -17,11 +17,11 @@ $subcommandsEnvConfig->optionHelpShortName = 'C';
 $request = Parametizer::newConfig(throwOnException: true)
     ->newSubcommand(
         TestSome::getFullName(),
-        TestSome::getConfiguration(envConfig: $subcommandsEnvConfig, throwOnException: true),
+        TestSome::getConfiguration($subcommandsEnvConfig, throwOnException: true),
     )
     ->newSubcommand(
         TestChild::getFullName(),
-        TestChild::getConfiguration(envConfig: $subcommandsEnvConfig, throwOnException: true),
+        TestChild::getConfiguration($subcommandsEnvConfig, throwOnException: true),
     )
 
     ->run();
