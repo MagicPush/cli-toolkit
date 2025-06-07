@@ -104,9 +104,9 @@ This change log references the repository changes and releases, which respect [s
           script that contains a subcommand switch parameter.
     1. Added `getArgumentsByNames()` that has argument names as keys, while `getArguments()` still renders numeric keys.
     1. Added `$shortDescription` protected property, the setter `shortDescription` and the getter `getShortDescription`.
-1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/Scripts/CliToolkitScriptAbstract.php) as a basement for all
+1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/ScriptClasses/CliToolkitScriptAbstract.php) as a basement for all
    [tools/cli-toolkit](../tools/cli-toolkit) scripts.
-1. [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) as a tool
+1. [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) as a tool
    to test the performance and other "law of large numbers" cases, when a launcher includes lots of class scripts.
 1. Formatters:
     1. Added `HelpFormatter::invert()`.

@@ -65,7 +65,10 @@ class ScriptDetector {
         return null !== $this->cacheFilePath && file_exists($this->cacheFilePath);
     }
 
-    public function scriptFQClassName(string $fQClassName): static {
+    /**
+     * @param string $fQClassName Fully qualified class name that extends {@see ScriptAbstract}
+     */
+    public function scriptClassName(string $fQClassName): static {
         if (array_key_exists($fQClassName, $this->searchedFQClassNames)) {
             if ($this->throwOnException) {
                 throw new RuntimeException("Duplicate fully qualified class name search requested: {$fQClassName}");
@@ -81,11 +84,11 @@ class ScriptDetector {
 
     /**
      * @param ScriptAbstract|string[] $fQClassNames (string) Fully Qualified class name
-     *                                              that extends {@see ScriptAbstract}.
+     *                                              that extends {@see ScriptAbstract}
      */
-    public function scriptFQClassNames(array $fQClassNames): static {
+    public function scriptClassNames(array $fQClassNames): static {
         foreach ($fQClassNames as $fQClassName) {
-            $this->scriptFQClassName($fQClassName);
+            $this->scriptClassName($fQClassName);
         }
 
         return $this;
@@ -528,7 +531,7 @@ class ScriptDetector {
      * @return array<string, ScriptAbstract|string> (string) script name => (string) Fully Qualified class name
      *                                              that extends {@see ScriptAbstract}
      */
-    public function getFQClassNamesByScriptNames(): array {
+    public function getClassNamesByScriptNames(): array {
         $this->detect();
 
         $detectedFQClassNamesByScriptNames = [];

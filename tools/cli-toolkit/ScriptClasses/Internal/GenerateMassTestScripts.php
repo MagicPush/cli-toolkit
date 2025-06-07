@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts\Internal;
+namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Internal;
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
@@ -13,7 +13,7 @@ use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
-use MagicPush\CliToolkit\Tools\CliToolkit\Scripts\CliToolkitScriptAbstract;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\CliToolkitScriptAbstract;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;

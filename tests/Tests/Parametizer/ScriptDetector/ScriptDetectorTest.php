@@ -49,7 +49,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         }
 
         // This assertion should happen only if no exception is thrown during the detector object's setup:
-        assertSame([], (new ScriptDetector($throwOnException))->getFQClassNamesByScriptNames());
+        assertSame([], (new ScriptDetector($throwOnException))->getClassNamesByScriptNames());
     }
 
     #[DataProvider('provideSearchAndExclude')]
@@ -58,8 +58,8 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      *
      * @param array<string, string> $expectedClasses
      * @param array<string, string> $actualClasses
-     * @see ScriptDetector::scriptFQClassName()
-     * @see ScriptDetector::scriptFQClassNames()
+     * @see ScriptDetector::scriptClassName()
+     * @see ScriptDetector::scriptClassNames()
      * @see ScriptDetector::searchDirectory()
      * @see ScriptDetector::searchDirectories()
      * @see ScriptDetector::excludeDirectory()
@@ -83,16 +83,16 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'script-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX',
                 ],
                 'actualClasses' => self::createScriptDetector()
-                    ->scriptFQClassName(
+                    ->scriptClassName(
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1::class,
                     )
-                    ->scriptFQClassName(
+                    ->scriptClassName(
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Script4::class,
                     )
-                    ->scriptFQClassName(
+                    ->scriptClassName(
                         ScriptX::class,
                     )
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
             'exact-script-classes-arr' => [
                 'expectedClasses' => [
@@ -101,12 +101,12 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'script-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX',
                 ],
                 'actualClasses' => self::createScriptDetector()
-                    ->scriptFQClassNames([
+                    ->scriptClassNames([
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1::class,
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Script4::class,
                         ScriptX::class,
                     ])
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
 
             'exact-dirs-recursive-and-not-1' => [
@@ -118,7 +118,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 'actualClasses' => self::createScriptDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: true)
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', isRecursive: false)
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
             'exact-dirs-recursive-and-not-2' => [
                 'expectedClasses' => [
@@ -129,7 +129,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 'actualClasses' => self::createScriptDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: false)
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', isRecursive: true)
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
             'exact-dirs-arr-recursive' => [
                 'expectedClasses' => [
@@ -146,7 +146,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                         ],
                         isRecursive: true,
                     )
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
             'exact-dirs-arr-non-recursive' => [
                 'expectedClasses' => [
@@ -161,7 +161,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                         ],
                         isRecursive: false,
                     )
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
 
             'exclude-dirs' => [
@@ -178,7 +178,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     ->excludeDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft')
                     ->excludeDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft2')
                     ->excludeDirectory(__DIR__ . '/ScriptClasses/Red/RedRight/Subdirectory')
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
             'exclude-dirs-arr' => [
                 'expectedClasses' => [
@@ -196,7 +196,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                         __DIR__ . '/ScriptClasses/Red/RedLeft2',
                         __DIR__ . '/ScriptClasses/Red/RedRight/Subdirectory',
                     ])
-                    ->getFQClassNamesByScriptNames(),
+                    ->getClassNamesByScriptNames(),
             ],
         ];
     }
@@ -234,7 +234,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             self::createScriptDetector()
                 ->searchDirectory(__DIR__ . '/ScriptClasses', isRecursive: false)
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: false)
-                ->getFQClassNamesByScriptNames(),
+                ->getClassNamesByScriptNames(),
         );
     }
 
@@ -272,7 +272,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             (new ScriptDetector($throwOnException))
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', $isSearchRecursive)
                 ->excludeDirectory($excludedPath)
-                ->getFQClassNamesByScriptNames(),
+                ->getClassNamesByScriptNames(),
         );
     }
 
@@ -356,7 +356,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             (new ScriptDetector($throwOnException))
                 ->searchDirectory($searchContext->normalizedPath, $searchContext->isRecursive)
                 ->excludeDirectory($excludeDirectory)
-                ->getFQClassNamesByScriptNames(),
+                ->getClassNamesByScriptNames(),
         );
     }
 
@@ -465,7 +465,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             [], // Nothing should be found in any case.
             (new ScriptDetector($throwOnException))
                 ->searchDirectory($path)
-                ->getFQClassNamesByScriptNames(),
+                ->getClassNamesByScriptNames(),
         );
     }
 
@@ -490,7 +490,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             (new ScriptDetector($throwOnException))
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: true)
                 ->excludeDirectory($path)
-                ->getFQClassNamesByScriptNames(),
+                ->getClassNamesByScriptNames(),
         );
     }
 }

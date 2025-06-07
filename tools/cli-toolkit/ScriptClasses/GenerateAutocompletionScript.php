@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
+namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses;
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;

@@ -10,7 +10,7 @@
 
 ## Class-based scripts mass tests
 
-See [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
+See [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
 
 ### Tokenizer vs RegExp
 

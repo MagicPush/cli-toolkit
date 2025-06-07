@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
 $scriptDetector = (new ScriptDetector(throwOnException: true))
-    ->searchDirectory(__DIR__ . '/Scripts');
+    ->searchDirectory(__DIR__ . '/ScriptClasses');
 $configBuilder = Parametizer::newConfig(throwOnException: true);
 $configBuilder->description('A launcher for cli-toolkit stock scripts.');
 

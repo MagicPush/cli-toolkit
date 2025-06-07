@@ -20,7 +20,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
     /**
      * Tests duplicate fully qualified names processing.
      *
-     * @see ScriptDetector::scriptFQClassName()
+     * @see ScriptDetector::scriptClassName()
      */
     public function testDuplicateFQNames(bool $throwOnException): void {
         if ($throwOnException) {
@@ -30,10 +30,10 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
         }
 
         $detector = (new ScriptDetectorMock($throwOnException))
-            ->scriptFQClassNames([
+            ->scriptClassNames([
                 ScriptX::class,
                 Script5::class,
-                ScriptX::class,    // Duplicate (first; is mentioned in the exception thrown).
+                ScriptX::class,    // Duplicate (first; is mentioned in the exception being thrown).
                 ScriptZero::class,
                 ScriptZero::class, // Duplicate.
             ]);
@@ -56,7 +56,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
                 'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                 'script'      => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\ScriptZero',
             ],
-            $detector->getFQClassNamesByScriptNames(),
+            $detector->getClassNamesByScriptNames(),
         );
     }
 
@@ -110,7 +110,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
         ];
         assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
 
-        assertSame($expectedClasses, $detector->getFQClassNamesByScriptNames());
+        assertSame($expectedClasses, $detector->getClassNamesByScriptNames());
     }
 
     /**
@@ -192,7 +192,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
         ];
         assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
 
-        assertSame($expectedClasses, $detector->getFQClassNamesByScriptNames());
+        assertSame($expectedClasses, $detector->getClassNamesByScriptNames());
     }
 
     /**
@@ -269,7 +269,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
         // in a detector - we should not process same directories more than once.
         assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
 
-        assertSame($expectedClasses, $detector->getFQClassNamesByScriptNames());
+        assertSame($expectedClasses, $detector->getClassNamesByScriptNames());
     }
 
     /**
@@ -546,7 +546,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
                 'red:script3' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft2\Script3',
                 'red:script1' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1',
             ],
-            $detector->getFQClassNamesByScriptNames(),
+            $detector->getClassNamesByScriptNames(),
         );
     }
 
@@ -584,7 +584,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
                 'script-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX',
                 'red:script1' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1',
             ],
-            $detector->getFQClassNamesByScriptNames(),
+            $detector->getClassNamesByScriptNames(),
         );
     }
 
@@ -710,7 +710,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
                 'script'              => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\ScriptZero',
                 'script-no-namespace' => 'ScriptNoNamespace',
             ],
-            $detector->getFQClassNamesByScriptNames(),
+            $detector->getClassNamesByScriptNames(),
         );
     }
 }

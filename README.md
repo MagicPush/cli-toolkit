@@ -87,10 +87,10 @@ For more cool stuff to know see [Features Manual](docs/features-manual.md).
 
 ## Examples
 
-Here are [useful scripts](tools/cli-toolkit/Scripts)
+Here are [useful scripts](tools/cli-toolkit/ScriptClasses)
 that also utilize some Parametizer features (so may be studied as examples).
 
-- [GenerateAutocompletionScript.php](tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php):
+- [GenerateAutocompletionScript.php](tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php):
   you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
     - Launch the script and read the details:
       ```sh
@@ -100,10 +100,10 @@ that also utilize some Parametizer features (so may be studied as examples).
       ```sh
       php tools/cli-toolkit/launcher.php cli-toolkit:generate-autocompletion-script --help
       ```
-- [GenerateEnvConfig.php](tools/cli-toolkit/Scripts/GenerateEnvConfig.php):
+- [GenerateEnvConfig.php](tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php):
   helps to configure environment settings for your scripts.
   See [Environment Config manual](docs/features-manual.md#environment-config) for details.
-- [TerminalFormatterShowcase.php](tools/cli-toolkit/Scripts/TerminalFormatterShowcase.php):
+- [TerminalFormatterShowcase.php](tools/cli-toolkit/ScriptClasses/TerminalFormatterShowcase.php):
   this script shows examples and codes for a terminal coloring and formatting by utilizing
   the [TerminalFormatter](src/TerminalFormatter.php) class included in the project. See usage:
   ```sh

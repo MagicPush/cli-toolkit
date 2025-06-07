@@ -83,6 +83,7 @@ class ConfigTest extends TestCaseAbstract {
      * Tests names and short names for parameters.
      *
      * @see ParameterAbstract::__construct()
+     * @see Config::newSubcommand()
      * @see Option::shortName()
      * @see BuilderAbstract::getValidatedOptionName()
      * @see BuilderAbstract::getValidatedOptionShortName()

@@ -22,7 +22,7 @@ The list of plans and ideas for future development.
 1. Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
      to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. Support a config file for
-   [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php). It will ease
+   [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php). It will ease
    specifying the script settings for multiple launches.
 1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
@@ -106,15 +106,18 @@ The list of plans and ideas for future development.
             1. - [x] Do not process duplicate paths (local vs real paths).
         1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
             1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
-        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
-            1. - [ ] Simple and composite names.
-            1. - [ ] `getLocalName()` must not be empty.
-            1. - [ ] `getLocalName()` auto name generation:
+        1. - [x] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
+            1. - [x] Simple and composite names (with sections).
+            1. - [x] `getLocalName()` must not be empty.
+            1. - [x] `getLocalName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [ ] [cli-toolkit](../tools/cli-toolkit)
-            1. - [ ] `GenerateAutocompletionScript` that detects no-class scripts via `ScriptLauncher`.
+            1. - [ ] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
 
-                 ... Unless the detection is made via `ScriptDetector`.
+                 Functional tests that compare an ideal file with a generated one.
+            1. - [ ] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
+
+                 Just assert generated file's contents.
     1. - [ ] Add the "first steps" files generator. Something that will help users to start using the library quickly
          and easily. For instance, it should create a launcher with some default detection (no cache), maybe add
          an autocompletion script right away, maybe generate a blank script class, etc.
@@ -162,7 +165,7 @@ The list of plans and ideas for future development.
          In future, there may also be a path to a settings config file (see the "_Environment Config_" feature below)
          or the config contents itself.
     1. - [ ] Add an alternate script detector. Use it inside
-         [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).
+         [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).
         1. - [ ] Plain Parametizer-based scripts.
         1. - [ ] Regular plain scripts.
         1. - [ ] Different detections within a single process.
@@ -183,7 +186,7 @@ The list of plans and ideas for future development.
          or replace repeating code with script classes usages.
     1. - [x] Add a built-in subcommand `list` to list all detected scripts with their names and short descriptions.
          Also consider this:
-        1. - [x] Update [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php)
+        1. - [x] Update [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
              by adding name sections.
         1. - [x] Add the command automatically for all configs with switches.
         1. - [x] Add filtering by a substring.
@@ -237,9 +240,9 @@ The list of plans and ideas for future development.
            * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
        1. - [x] A generated launcher should also show time elapsed and RAM usage.
        1. - [x] ~~Remove
-            [GenerateMassTestScripts.php](../tools/cli-toolkit/Scripts/Internal/GenerateMassTestScripts.php) from
+            [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) from
             the launcher, make it not detectable by
-            [GenerateAutocompletionScript.php](../tools/cli-toolkit/Scripts/GenerateAutocompletionScript.php).~~
+            [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).~~
        1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
        1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
            * Searching in large projects (~ 5GB) may last for 30+ seconds!

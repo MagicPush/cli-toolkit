@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tools\CliToolkit\Scripts;
+namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses;
 
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
