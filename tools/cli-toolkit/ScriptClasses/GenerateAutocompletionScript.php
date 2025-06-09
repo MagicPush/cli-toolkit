@@ -59,10 +59,19 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
 
             ->newOption('--alias-prefix', '-p')
             ->description('
+                Specify ' . $helpFormatter->paramValue('" "'). ' (a space character) to disable prefixes.
+            
                 For example, your script "/some/path/cool-script.php" with the prefix "s-"
                 will become available by the alias "s-cool-script" from any path.
             ')
             ->default('s-')
+            ->validatorCallback(
+                function (&$value) {
+                    $value = trim($value);
+
+                    return true;
+                },
+            )
 
             ->newOption('--output-filepath', '-o')
             ->description('Location of the generated file.')
@@ -85,9 +94,9 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
                 function (&$value) {
                     $value = realpath(trim($value));
 
-                    return false !== $value && is_readable($value);
+                    return false !== $value && is_readable($value) && is_dir($value);
                 },
-                'Path should be readable.',
+                'Path should be a readable directory.',
             );
     }
 
@@ -105,7 +114,7 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
 
         $scriptPathsByAliases = [];
         if ($isVerbose) {
-            echo $executionFormatter->section('=== SCANNING SEARCH PATHS for Pararmetizer-based scripts ===')
+            echo $executionFormatter->section('=== SCANNING SEARCH PATHS for Parametizer-based scripts ===')
                 . PHP_EOL. PHP_EOL;
         }
         foreach ($searchPaths as $searchPath) {
@@ -127,13 +136,9 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
                     continue;
                 }
 
-                if (__FILE__ === $path) {
-                    continue;
-                }
-
                 $contents = file_get_contents($path);
                 $isScriptDetected =
-                    !preg_match('/' . PHP_EOL . '([a-z]* )?class .+' . PHP_EOL . '?{/', $contents)
+                    !preg_match('/' . PHP_EOL . '([a-z]* )*class .+' . PHP_EOL . '?{/', $contents)
                     && (
                         (
                             str_contains($contents, 'Parametizer::newConfig(') /** @see Parametizer::newConfig() */
@@ -167,16 +172,12 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
         $outputFilepath = $this->request->getParamAsString('output-filepath');
 
         if (!$scriptPathsByAliases) {
-            if ($isVerbose) {
-                echo $executionFormatter->error('No scripts were found') . PHP_EOL;
-
-                // Let's try removing the output file (if exists) to indicate the situation more explicitly:
-                if (file_exists($outputFilepath)) {
-                    unlink($outputFilepath);
-                }
+            // Let's try removing the output file (if exists) to indicate the situation more explicitly:
+            if (file_exists($outputFilepath)) {
+                unlink($outputFilepath);
             }
 
-            exit(Parametizer::ERROR_EXIT_CODE);
+            throw new RuntimeException('No scripts were found');
         }
 
         if ($isVerbose) {
@@ -215,7 +216,6 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
             }
 
             if ($isVerbose) {
-
                 $outputFilepathReal = realpath($outputFilepath);
                 $bashIncludeCommand = $executionFormatter->command(
                     PHP_EOL

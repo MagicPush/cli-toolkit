@@ -112,15 +112,22 @@ The list of plans and ideas for future development.
             1. - [x] `getLocalName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [ ] [cli-toolkit](../tools/cli-toolkit)
-            1. - [ ] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
+            1. - [x] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
 
-                 Functional tests that compare an ideal file with a generated one.
+                 Functional tests that look for substrings in generated files.
             1. - [ ] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
 
                  Just assert generated file's contents.
-    1. - [ ] Add the "first steps" files generator. Something that will help users to start using the library quickly
-         and easily. For instance, it should create a launcher with some default detection (no cache), maybe add
-         an autocompletion script right away, maybe generate a blank script class, etc.
+    1. - [ ] Split `TestCaseAbstract` into all-tests-related and parametizer-only-related.
+
+         Use the former for non-parametizer tests.
+    1. - [ ] "First steps" files generator.
+        1. - [ ] Add the generator itself.
+
+             Something that will help users to start using the library quickly and easily. For instance, it should
+             create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
+             maybe generate a blank script class, etc.
+        1. - [ ] Test it.
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
@@ -174,6 +181,7 @@ The list of plans and ideas for future development.
              the alias `another`. It may be solved via several `detect()` calls with different search settings.
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
+    1. - [ ] Create a document about values and / or goals of the library.
 
     </details>
     <details>
