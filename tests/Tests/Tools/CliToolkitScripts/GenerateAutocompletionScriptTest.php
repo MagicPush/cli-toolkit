@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
+
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\GenerateAutocompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -88,11 +90,10 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see GenerateAutocompletionScript::execute()
      */
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
-        self::assertAnyErrorOutput(
+        self::assertParseErrorOutput(
             self::LAUNCHER_PATH,
             $expectedErrorSubstring,
             sprintf('%s --output-filepath=%s', $this->subcommandName, $outputPath),
-            shouldAssertExitCode: true,
         );
     }
 
@@ -220,7 +221,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see GenerateAutocompletionScript::getConfiguration()
      */
     public function testInvalidSearchPaths(string $searchPath): void {
-        self::assertAnyErrorOutput(
+        self::assertParseErrorOutput(
             self::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
@@ -229,7 +230,6 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 self::COMPLETION_SCRIPT_PATH,
                 $searchPath,
             ),
-            shouldAssertExitCode: true,
         );
     }
 
@@ -240,7 +240,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         return [
             'not-existing'    => ['searchPath' => '/non-existing-path'],
             'not-a-directory' => ['searchPath' => self::LAUNCHER_PATH],
-            'not-readable'    => ['searchPath' => '/etc/shadow'],
+            'not-readable'    => ['searchPath' => '/root'],
         ];
     }
 

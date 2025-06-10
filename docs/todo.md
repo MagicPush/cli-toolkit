@@ -83,44 +83,10 @@ The list of plans and ideas for future development.
         1. `ScriptDetector` -> `ScriptClassDetector`
             1. `ScriptDetector*Test` -> `ScriptClassDetector*Test`
         1. `ScriptAbstract` -> `ScriptClassAbstract`
-    1. TEST
-        1. - [x] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
-            1. - [x] Base script classes detection.
-            1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
-                 the huge project's root directory. A full scan may take a while.
-
-                 Consider caching:
-
-                    * ~~by a setting and/or based on all scanned files count;~~
-                    * ~~possible automatic invalidation condition;~~
-                    * easy to use manual cache clear tool.
-            1. - [x] No abstract classes are detected ~~and (if possible) loaded into memory~~.
-            1. - [x] Final classes are detected too.
-            1. - [x] Classes without namespaces are detected too.
-            1. - [x] Several search paths.
-            1. - [x] Exclude (black-list) exact paths ~~or parts of~~.
-            1. - [x] ~~Force-include (white-over-black) parts of paths.~~
-            1. - [x] ~~Force-include (white-over-black) exact paths.~~
-            1. - [x] Invalid / not readable paths.
-            1. - [x] Names are naturally sorted (`script2` is placed above `script10`).
-            1. - [x] Do not process duplicate paths (local vs real paths).
-        1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
-            1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
-        1. - [x] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
-            1. - [x] Simple and composite names (with sections).
-            1. - [x] `getLocalName()` must not be empty.
-            1. - [x] `getLocalName()` auto name generation:
-                 `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
-        1. - [ ] [cli-toolkit](../tools/cli-toolkit)
-            1. - [x] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
-
-                 Functional tests that look for substrings in generated files.
-            1. - [ ] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
-
-                 Just assert generated file's contents.
     1. - [ ] Split `TestCaseAbstract` into all-tests-related and parametizer-only-related.
 
          Use the former for non-parametizer tests.
+    1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration.
     1. - [ ] "First steps" files generator.
         1. - [ ] Add the generator itself.
 
@@ -232,29 +198,64 @@ The list of plans and ideas for future development.
              b) script class subtree config files.~~
         1. - [x] ~~Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
              instance "automatically" by making `getConfiguration()` non-static or in a separate method.~~
-   1. - [x] Make `newSubcommandSwitch()` optional.
+    1. - [x] Make `newSubcommandSwitch()` optional.
 
-        Only a single subcommand switch is possible, so there is no need to specify its name explicitly
-        (but it's still should be possible if customization is preferred).
+         Only a single subcommand switch is possible, so there is no need to specify its name explicitly
+         (but it's still should be possible if customization is preferred).
 
-        Also, rename  throughout the whole project:
+         Also, rename  throughout the whole project:
 
-       1. - [x] "subcommandValue" to "subcommandName".
-       1. - [x] "subcommand value" to "subcommand name".
-       1. - [x] "subcommandSwitchValue" to "subcommandName".
-   1. - [x] Test performance on many files.
-       1. - [x] Create test classes generator to generate lost of class-based scripts.
-       1. - [x] Compare file tokenizer vs regexp.
-           * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
-       1. - [x] A generated launcher should also show time elapsed and RAM usage.
-       1. - [x] ~~Remove
-            [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) from
-            the launcher, make it not detectable by
-            [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).~~
-       1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
-       1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
-           * Searching in large projects (~ 5GB) may last for 30+ seconds!
-       1. - [x] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
+        1. - [x] "subcommandValue" to "subcommandName".
+        1. - [x] "subcommand value" to "subcommand name".
+        1. - [x] "subcommandSwitchValue" to "subcommandName".
+    1. - [x] Test performance on many files.
+        1. - [x] Create test classes generator to generate lost of class-based scripts.
+        1. - [x] Compare file tokenizer vs regexp.
+            * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
+        1. - [x] A generated launcher should also show time elapsed and RAM usage.
+        1. - [x] ~~Remove
+             [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) from
+             the launcher, make it not detectable by
+             [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).~~
+        1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
+        1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
+            * Searching in large projects (~ 5GB) may last for 30+ seconds!
+        1. - [x] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
+    1. - [x] TEST
+        1. - [x] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
+            1. - [x] Base script classes detection.
+            1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
+                 the huge project's root directory. A full scan may take a while.
+ 
+                 Consider caching:
+ 
+                * ~~by a setting and/or based on all scanned files count;~~
+                * ~~possible automatic invalidation condition;~~
+                * easy to use manual cache clear tool.
+            1. - [x] No abstract classes are detected ~~and (if possible) loaded into memory~~.
+            1. - [x] Final classes are detected too.
+            1. - [x] Classes without namespaces are detected too.
+            1. - [x] Several search paths.
+            1. - [x] Exclude (black-list) exact paths ~~or parts of~~.
+            1. - [x] ~~Force-include (white-over-black) parts of paths.~~
+            1. - [x] ~~Force-include (white-over-black) exact paths.~~
+            1. - [x] Invalid / not readable paths.
+            1. - [x] Names are naturally sorted (`script2` is placed above `script10`).
+            1. - [x] Do not process duplicate paths (local vs real paths).
+        1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
+            1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
+        1. - [x] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
+            1. - [x] Simple and composite names (with sections).
+            1. - [x] `getLocalName()` must not be empty.
+            1. - [x] `getLocalName()` auto name generation:
+                 `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
+        1. - [x] [cli-toolkit](../tools/cli-toolkit)
+            1. - [x] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
+ 
+                 Functional tests that look for substrings in generated files.
+            1. - [x] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
+ 
+                 Just assert generated file's contents.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

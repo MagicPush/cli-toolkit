@@ -32,7 +32,6 @@ class GenerateEnvConfig extends CliToolkitScriptAbstract {
 
             ->newArgument('path')
             ->description('Location of the generated file.')
-            ->default(getcwd())
             ->validatorCallback(
                 function (&$value) {
                     $value = realpath(trim($value));
