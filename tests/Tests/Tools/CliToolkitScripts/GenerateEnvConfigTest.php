@@ -41,7 +41,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
      * @see GenerateEnvConfig::getConfiguration()
      */
     public function testInvalidPaths(string $path): void {
-        self::assertParseErrorOutput(
+        self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             'Path should be a readable directory.',
             "{$this->subcommandName} {$path}",
@@ -85,7 +85,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
         assertNull(json_decode(file_get_contents(self::CONFIG_PATH), true));
 
         // Trying to overwrite the file with correct data... But it fails without `--force`.
-        self::assertParseErrorOutput(
+        self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             "File '" . realpath(self::CONFIG_PATH) . "' already exists.",
             "{$this->subcommandName} " . dirname(self::CONFIG_PATH),

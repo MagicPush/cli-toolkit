@@ -134,7 +134,7 @@ class HelpScriptTest extends TestCaseAbstract {
      * @see Config::commitSubcommandSwitch()
      */
     public function testHelpInvalidSubcommand(): void {
-        static::assertParseErrorOutput(
+        static::assertExecutionErrorOutput(
             __DIR__ . '/scripts/subcommands-with-name-sections.php',
             <<<TEXT
             Incorrect value 'black:flower:tea' for argument <subcommand-name>

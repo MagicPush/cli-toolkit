@@ -97,9 +97,10 @@ class ScriptLauncherTest extends TestCaseAbstract {
             // Cache file is expected but failed to be created:
             ? static::assertAnyErrorOutput(
                 $launcherScriptPath,
-                'PHP Warning:  mkdir()',
+                'mkdir(): File exists in',
                 "{$parametersBaseString} " . Config::PARAMETER_NAME_LIST,
                 shouldAssertExitCode: false,
+                shouldAssertStdErr: false,
             )
             : static::assertNoErrorsOutput(
                 $launcherScriptPath,
@@ -139,7 +140,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 assertFileDoesNotExist($detectorCacheFilePath);
 
                 // Also a direct attempt to delete the file should fail:
-                static::assertAnyErrorOutput(
+                static::assertExecutionErrorOutput(
                     $launcherScriptPath,
                     "Incorrect value '{$clearCacheSubcommandName}' for argument <subcommand-name>",
                     "{$parametersBaseString} {$clearCacheSubcommandName}",
@@ -209,17 +210,18 @@ class ScriptLauncherTest extends TestCaseAbstract {
             return;
         }
 
-        $stdErr = static::assertAnyErrorOutput(
+        $result = static::assertAnyErrorOutput(
             __DIR__ . '/' . 'ThrowOnException/setting-throw-on-exception.php',
             $expectedErrorMessage,
             '1 ' . (int) $damageScriptFilepath,
-        )
-            ->getStdErr();
+            shouldAssertExitCode: false,
+            shouldAssertStdErr: false,
+        );
 
         if (null !== $invalidJsonFilePath) {
             // Let's be sure that a thrown exception is connected with a specific (parent or child) config file.
             // Or with a cache file (in case of ScriptDetector).
-            assertStringContainsString($invalidJsonFilePath, $stdErr);
+            assertStringContainsString($invalidJsonFilePath, $result->getStdAll());
         }
     }
 
@@ -238,7 +240,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 'invalidJsonFilePath'  => null,
                 'damageScriptFilepath' => true,
                 'throwOnException'     => true,
-                'expectedErrorMessage' => "Search path is unreadable: ''",
+                'expectedErrorMessage' => "Path should be a readable directory: ''",
             ],
             'env-config-parent-silent' => [
                 'invalidJsonFilePath'  => __DIR__ . '/' . 'ThrowOnException/' . EnvironmentConfig::CONFIG_FILENAME,

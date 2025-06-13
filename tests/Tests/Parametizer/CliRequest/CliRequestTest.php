@@ -8,7 +8,6 @@ use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
-use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -61,7 +60,7 @@ class CliRequestTest extends TestCaseAbstract {
      * @see CliRequest::getParam()
      */
     public function testGettingParameterValueByInvalidName(): void {
-        static::assertLogicExceptionOutput(
+        static::assertExecutionLogicExceptionOutput(
             __DIR__ . '/scripts/template-request-parameter-name.php',
             "Parameter 'cool-parameter' not found in the request."
                 . ' The parameters being parsed: option-parameter, argument-parameter',
@@ -157,7 +156,7 @@ class CliRequestTest extends TestCaseAbstract {
         string $castType,
         string $expectedErrorSubstring,
     ): void {
-        static::assertLogicExceptionOutput($scriptPath, $expectedErrorSubstring, "--type={$castType}");
+        static::assertExecutionLogicExceptionOutput($scriptPath, $expectedErrorSubstring, "--type={$castType}");
     }
 
     /**
@@ -325,14 +324,13 @@ class CliRequestTest extends TestCaseAbstract {
         string $expectedErrorOutputSubstringMessage,
         string $expectedErrorOutputSubstringTrace,
     ): void {
-        $result = static::assertAnyErrorOutput(
+        $result = static::assertConfigExceptionOutput(
             __DIR__ . '/' . 'scripts/template-parameter-or-subcommand-name.php',
             $expectedErrorOutputSubstringMessage,
             $parameterType,
-            ConfigException::class . ': ',
         );
 
-        assertStringContainsString($expectedErrorOutputSubstringTrace, $result->getStdErr());
+        assertStringContainsString($expectedErrorOutputSubstringTrace, $result->getStdAll());
     }
 
     /**
@@ -345,17 +343,17 @@ class CliRequestTest extends TestCaseAbstract {
             'argument' => [
                 'parameterType'                       => 'argument',
                 'expectedErrorOutputSubstringMessage' => "'{$prefix}something' >>> Config error: invalid characters. Must start with latin (lower);",
-                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\ArgumentBuilder->__construct()',
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\ArgumentBuilder->__construct(',
             ],
             'option' => [
                 'parameterType'                       => 'option',
                 'expectedErrorOutputSubstringMessage' => "'{$prefix}something' >>> Config error: invalid characters. Must start with latin (lower);",
-                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\OptionBuilder->__construct()',
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Builder\OptionBuilder->__construct(',
             ],
             'subcommand' => [
                 'parameterType'                       => 'subcommand',
                 'expectedErrorOutputSubstringMessage' => "'subcommand-name' subcommand >>> Config error: invalid characters in value '{$prefix}something'. Must start with a latin (lower);",
-                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Config->newSubcommand()',
+                'expectedErrorOutputSubstringTrace'   => 'MagicPush\CliToolkit\Parametizer\Config\Config->newSubcommand(',
             ],
         ];
     }

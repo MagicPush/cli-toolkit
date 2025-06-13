@@ -25,14 +25,16 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      */
     public static function provideInvalidPaths(): array {
         return [
-            'empty-string-throw'        => ['throwOnException' => true, 'path' => ''],
-            'empty-string-ignore'       => ['throwOnException' => false, 'path' => ''],
-            'new-line-character-throw'  => ['throwOnException' => true, 'path' => PHP_EOL],
-            'new-line-character-ignore' => ['throwOnException' => false, 'path' => PHP_EOL],
-            'non-existing-throw'        => ['throwOnException' => true, 'path' => 'asd'],
-            'non-existing-ignore'       => ['throwOnException' => false, 'path' => 'asd'],
-            'non-readable-throw'        => ['throwOnException' => true, 'path' => '/etc/shadow'],
-            'non-readable-ignore'       => ['throwOnException' => false, 'path' => '/etc/shadow'],
+            'empty-string-throw'         => ['throwOnException' => true, 'path' => ''],
+            'empty-string-ignore'        => ['throwOnException' => false, 'path' => ''],
+            'new-line-character-throw'   => ['throwOnException' => true, 'path' => PHP_EOL],
+            'new-line-character-ignore'  => ['throwOnException' => false, 'path' => PHP_EOL],
+            'non-existing-throw'         => ['throwOnException' => true, 'path' => 'asd'],
+            'non-existing-ignore'        => ['throwOnException' => false, 'path' => 'asd'],
+            'non-readable-throw'         => ['throwOnException' => true, 'path' => '/root'],
+            'non-readable-ignore'        => ['throwOnException' => false, 'path' => '/root'],
+            'non-directory-throw'        => ['throwOnException' => true, 'path' => __DIR__ . '/ScriptClasses/ScriptZero.php'],
+            'non-directory-ignore'       => ['throwOnException' => false, 'path' => __DIR__ . '/ScriptClasses/ScriptZero.php'],
         ];
     }
 
@@ -457,7 +459,9 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      */
     public function testInvalidPathsSearch(bool $throwOnException, string $path): void {
         if ($throwOnException) {
-            $this->expectExceptionObject(new RuntimeException('Search path is unreadable: ' . var_export($path, true)));
+            $this->expectExceptionObject(
+                new RuntimeException('Path should be a readable directory: ' . var_export($path, true)),
+            );
         }
 
         // This assertion should happen only if no exception is thrown during the detector object's setup:
@@ -478,7 +482,9 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      */
     public function testInvalidPathsExclude(bool $throwOnException, string $path): void {
         if ($throwOnException) {
-            $this->expectExceptionObject(new RuntimeException('Search path is unreadable: ' . var_export($path, true)));
+            $this->expectExceptionObject(
+                new RuntimeException('Path should be a readable directory: ' . var_export($path, true)),
+            );
         }
 
         // This assertion should happen only if no exception is thrown during the detector object's setup:

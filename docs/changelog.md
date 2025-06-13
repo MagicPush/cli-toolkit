@@ -34,6 +34,10 @@ This change log references the repository changes and releases, which respect [s
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
     1. Removed `getBaseScriptName()` obsolete method.
+1. `TerminalFormatter::__construct()` expects `bool $isDisabled` instead of `int|resource $resource`: now it is
+   possible to instantiate a formatter object that applies (or not) formatting with guarantee.
+
+   `createForStdOut()` and `createForStdErr()` work as usual (`stream_isatty()` call is moved in those methods).
 1. Renaming:
     1. `Config::newSubcommand()` first parameter `$subcommandValue` -> `$subcommandName`.
     1. `BuilderInterface::newSubcommand()` (so as `BuilderAbstract` and `ConfigBuilder`) first parameter

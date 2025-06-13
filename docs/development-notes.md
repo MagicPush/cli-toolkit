@@ -2,11 +2,45 @@
 
 ## Contents
 
+- [PHPUnit](#phpunit)
+    - [Launching test scripts inside PHPUnit processes](#launching-test-scripts-inside-phpunit-processes)
 - [Class-based scripts mass tests](#class-based-scripts-mass-tests)
     - [Tokenizer vs RegExp](#tokenizer-vs-regexp)
     - [Scripts detection performance](#scripts-detection-performance)
     - [EnvironmentConfig load performance](#environmentconfig-load-performance)
     - [RegExp in subcommand name validation](#regexp-in-subcommand-name-validation)
+    
+## PHPUnit
+
+### Launching test scripts inside PHPUnit processes
+
+It is generally possible, but requires notable library refactoring.
+
+#### Now
+
+All test cases are based on external script launches:
+
+1. Launch a script (optionally) with some parameters.
+1. Assert exit code.
+1. Assert `STDOUT` and/or `STDERR` contents.
+    * STDERR contents are based on naturally thrown exceptions or `set_exception_handler()` setup.
+    
+#### Main issue
+
+0% of coverage - because the actual code is launched in a separate process, so xdebug "does not see" actual
+function calls.
+
+#### Possible solution
+
+Test scripts could be launched within the same PHPUnit process (for instance, by including a script file),
+but it would require:
+
+1. Rewriting several `$_SERVER` elements before each script launch, because `Parametizer` naturally relies on those
+   (as a CLI scripts framework).
+1. Rewriting the library code in places with `exit` calls (_if it is a test environment, then do this..._),
+   so a PHPUnit process would continue its job.
+1. Catching / expecting `STDOUT` and `STDERR` or rewriting the library to support setting up interfaces
+   for output and error streams.
 
 ## Class-based scripts mass tests
 

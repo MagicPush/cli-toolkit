@@ -1,0 +1,20 @@
+# Cheat sheet
+#
+# 1. Build:             ./build.sh
+# 2. Enter shell:       docker compose run --rm php-cli sh
+# 3. Launch all tests:  ./vendor/cli-toolkit-phpunit/phpunit.phar --configuration tests/Utils/phpunit/phpunit.xml
+
+name: magic-push
+
+services:
+  php-cli:
+    build:
+      dockerfile: 'Dockerfile'
+      args:
+        PHP_VERSION: '${PHP_VERSION}'
+    image: 'magic-push-php-cli:${PHP_VERSION}'
+    working_dir: '${WORKING_DIRECTORY}'
+    volumes:
+      - "../../../../:${WORKING_DIRECTORY}"
+    container_name: 'magic-push-php${PHP_VERSION}'
+    restart: on-failure

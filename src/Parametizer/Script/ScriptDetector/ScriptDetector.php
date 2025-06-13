@@ -102,12 +102,13 @@ class ScriptDetector {
             '' === $pathTrimmed             // realpath('') renders current working directory.
             || false === $pathValidated
             || !is_readable($pathValidated)
+            || !is_dir($pathValidated)
         ) {
             if ($this->throwOnException) {
-                throw new RuntimeException('Search path is unreadable: ' . var_export($path, true));
+                throw new RuntimeException('Path should be a readable directory: ' . var_export($path, true));
             }
 
-            $pathValidated = null;
+            return null;
         }
 
         return $pathValidated;

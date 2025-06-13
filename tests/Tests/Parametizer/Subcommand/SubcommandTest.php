@@ -96,14 +96,14 @@ class SubcommandTest extends TestCaseAbstract {
         static::assertNoErrorsOutput($script, 'test11 --name-l2=superName test21');
 
         // You can not specify option from a higher level after a subcommand of a deeper level has been specified.
-        static::assertParseErrorOutput(
+        static::assertExecutionErrorOutput(
             $script,
             "Unknown option '--name-l2'",
             'test11 test21 --name-l2=superName',
         );
 
         // Vice versa: you can not specify some deeper-level option before you specify a corresponding subcommand.
-        static::assertParseErrorOutput(
+        static::assertExecutionErrorOutput(
             $script,
             "Unknown option '--name-l3'",
             'test11 --name-l3=superName test23 test31',
@@ -394,11 +394,10 @@ STDERR_OUTPUT,
         $scriptPath = __DIR__ . '/' . 'scripts/no-error-if-built-in-subcommand-is-called.php';
 
         if ($isExceptionExpected) {
-            static::assertAnyErrorOutput(
+            static::assertExecutionErrorOutput(
                 $scriptPath,
                 'No built-in subcommand call',
                 $subcommandName,
-                shouldAssertExitCode: true,
             );
         } else {
             static::assertNoErrorsOutput($scriptPath, $subcommandName);

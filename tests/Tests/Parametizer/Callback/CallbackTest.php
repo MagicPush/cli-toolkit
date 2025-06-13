@@ -59,7 +59,7 @@ class CallbackTest extends TestCaseAbstract {
     public function testCallbackIsExecutedAfterValidator(): void {
         $script = __DIR__ . '/scripts/callback-after-validator.php';
 
-        $result = static::assertParseErrorOutput(
+        $result = static::assertExecutionErrorOutput(
             $script,
             "Incorrect value 'test' for argument <arg>. Only digits are allowed for <arg>",
             'test --opt=test',
@@ -67,7 +67,7 @@ class CallbackTest extends TestCaseAbstract {
         // Here we have strings in STDERR only, because no callback was able to execute.
         assertSame('', $result->getStdOut());
 
-        $result = static::assertParseErrorOutput(
+        $result = static::assertExecutionErrorOutput(
             $script,
             "Incorrect value 'test' for option --opt. Only digits are allowed for --opt",
             '10 --opt=test',

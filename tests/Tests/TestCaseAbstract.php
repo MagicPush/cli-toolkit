@@ -33,9 +33,9 @@ abstract class TestCaseAbstract extends TestCase {
     }
 
     /**
-     * Asserts that an error message was printed without a stack trace.
+     * Asserts that an error message was printed in {@see STDERR} (without a stack trace) during a script execution.
      */
-    protected static function assertParseErrorOutput(
+    protected static function assertExecutionErrorOutput(
         string $scriptPath,
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
@@ -45,31 +45,35 @@ abstract class TestCaseAbstract extends TestCase {
             $expectedErrorOutputSubstring,
             $parametersString,
             shouldAssertExitCode: true,
+            shouldAssertStdErr: true,
         );
     }
 
     /**
-     * Asserts that a {@see ConfigException} exception was printed out. Exit code may vary thus is not asserted.
+     * Asserts that a {@see ConfigException} exception was printed out during a script configuration.
+     * Exit code may vary thus is not asserted.
      */
     protected static function assertConfigExceptionOutput(
         string $scriptPath,
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
-    ): void {
-        static::assertAnyErrorOutput(
+    ): CliProcess {
+        return static::assertAnyErrorOutput(
             $scriptPath,
             $expectedErrorOutputSubstring,
             $parametersString,
             exceptionHeaderSubstring: ConfigException::class . ': ',
             // Config exceptions happen before a specific error code is set for the exception handler:
             shouldAssertExitCode: false,
+            shouldAssertStdErr: false,
         );
     }
 
     /**
-     * Asserts that a {@see LogicException} exception was printed out.
+     * Asserts that a {@see LogicException} exception was printed in {@see STDERR} (without a stack trace)
+     * during a script execution.
      */
-    protected static function assertLogicExceptionOutput(
+    protected static function assertExecutionLogicExceptionOutput(
         string $scriptPath,
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
@@ -80,22 +84,28 @@ abstract class TestCaseAbstract extends TestCase {
             $parametersString,
             exceptionHeaderSubstring: LogicException::class . ': ',
             shouldAssertExitCode: true,
+            shouldAssertStdErr: true,
         );
     }
 
+    /**
+     * @param bool $shouldAssertStdErr Otherwise asserts a substring in {@see STDOUT} and {@see STDERR} concatenated.
+     *                                 On some configurations unhandled exceptions are shown
+     *                                 in {@see STDOUT} instead of {@see STDERR}.
+     */
     protected static function assertAnyErrorOutput(
         string $scriptPath,
         string $expectedErrorOutputSubstring,
         string $parametersString = '',
         ?string $exceptionHeaderSubstring = null,
-        bool $shouldAssertExitCode = false,
+        bool $shouldAssertExitCode = true,
+        bool $shouldAssertStdErr = true,
     ): CliProcess {
         $command = 'php ' . escapeshellarg($scriptPath);
         if ('' !== $parametersString) {
             $command .= " {$parametersString}";
         }
         $result = new CliProcess($command);
-        $stdErr = $result->getStdErr();
 
         // The heading space before a script name is needed for a script being clickable in PhpStorm console log
         // as a script file link.
@@ -110,10 +120,16 @@ abstract class TestCaseAbstract extends TestCase {
             );
         }
 
-        $assertOutputMessage = "{$assertOutputPrefix}Unexpected STDERR: {$stdErr}";
+        if ($shouldAssertStdErr) {
+            $actualContents = $result->getStdErr();
+            $assertOutputMessage = "{$assertOutputPrefix}Unexpected STDERR: {$actualContents}";
+        } else {
+            $actualContents = $result->getStdAll();
+            $assertOutputMessage = "{$assertOutputPrefix}Unexpected output: {$actualContents}";
+        }
         assertStringContainsString(
             ($exceptionHeaderSubstring ?? '') . $expectedErrorOutputSubstring,
-            $stdErr,
+            $actualContents,
             $assertOutputMessage,
         );
 

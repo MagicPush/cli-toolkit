@@ -79,21 +79,14 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. Renaming section:
-        1. `ScriptDetector` -> `ScriptClassDetector`
-            1. `ScriptDetector*Test` -> `ScriptClassDetector*Test`
-        1. `ScriptAbstract` -> `ScriptClassAbstract`
-    1. - [ ] Split `TestCaseAbstract` into all-tests-related and parametizer-only-related.
-
-         Use the former for non-parametizer tests.
-    1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration.
-    1. - [ ] "First steps" files generator.
+    1. - [ ] "First steps" skeleton generator for script classes launching.
         1. - [ ] Add the generator itself.
-
+ 
              Something that will help users to start using the library quickly and easily. For instance, it should
              create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
              maybe generate a blank script class, etc.
         1. - [ ] Test it.
+        1. - [ ] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
@@ -102,25 +95,7 @@ The list of plans and ideas for future development.
         1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
         1. - [ ] `ConfigBuilder::shortDescription()`
-    1. - [ ] Scripts launcher may detect ordinal Parametizer-based scripts
-         (one of the launcher / "_Environment Config_" config settings).
-
-         Thoughts about such scripts naming:
-        * Generate default names by minimal unambiguous paths.
-        * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
-          and add those to a launcher available commands list.
-    1. - [ ] Implement a "typo guesser" like in `composer`:
-         
-         ```
-         $ composer lizstz
-
-
-         Command "lizstz" is not defined.
-         
-         
-         Do you want to run "list" instead?  (yes/no) [no]:
-         >
-         ```
+    1. - [ ] Create a document about values and / or goals of the library.
     1. - [ ] Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for
          a script, that may be also called via `gas` or `generate-completion` aliases.
 
@@ -133,21 +108,40 @@ The list of plans and ideas for future development.
              (if it is unambiguous enough - there are no other scripts named `c*:g*`).
         1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
              (switched on/off by a flag option).
-    1. - [ ] Add a scripts launcher generator that initially stores a path to the CliToolkit engine.
-         
-         In future, there may also be a path to a settings config file (see the "_Environment Config_" feature below)
-         or the config contents itself.
+    1. - [ ] Implement a "typo guesser" like in `composer`:
+ 
+         ```
+         $ composer lizstz
+ 
+         Command "lizstz" is not defined.
+
+         Do you want to run "list" instead?  (yes/no) [no]:
+         >
+         ```
     1. - [ ] Add an alternate script detector. Use it inside
          [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).
-        1. - [ ] Plain Parametizer-based scripts.
+        1. - [ ] Plain Parametizer-based scripts (just move there `GenerateAutocompletionScript` current logic).
         1. - [ ] Regular plain scripts.
         1. - [ ] Different detections within a single process.
 
              Consider a case: search `A/×` except `A/z/×` and set the alias `one`. Then search `A/z/×` and set
              the alias `another`. It may be solved via several `detect()` calls with different search settings.
-    1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
-       the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
-    1. - [ ] Create a document about values and / or goals of the library.
+
+             Thoughts about such scripts naming:
+            * Generate default names by minimal unambiguous paths.
+            * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
+          and add those to a launcher available commands list.
+    1. - [ ] FINISHING MOVES:
+        1. - [ ] Renaming section:
+            1. `ScriptDetector` -> `ScriptClassDetector`
+                1. `ScriptDetector*Test` -> `ScriptClassDetector*Test`
+            1. `ScriptAbstract` -> `ScriptClassAbstract`
+        1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration. Consider:
+    
+            - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
+            - making `getConfiguration()` non-static, creating `ConfigBuilder` instance inside `__construct()`.
+        1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
+           the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
 
     </details>
     <details>
@@ -256,6 +250,13 @@ The list of plans and ideas for future development.
             1. - [x] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
  
                  Just assert generated file's contents.
+    1. - [x] Provide a docker config / build script for tests. And rewrite tests.
+ 
+         Before that the tests are environment-dependent:
+ 
+        1. PHP "development" config setup causes exceptions printed in `STDOUT` instead of `STDERR`.
+        1. Tests are launched under `root`, so file permission-related tests fail.
+        1. `posix_isatty()` / `stream_isatty()` always return false in a container launched from PhpStorm.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

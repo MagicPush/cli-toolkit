@@ -37,7 +37,7 @@ class ValidatorTest extends TestCaseAbstract {
         ?string $errorOutput,
     ): void {
         if (null !== $errorOutput) {
-            static::assertParseErrorOutput($script, $errorOutput, $parametersString);
+            static::assertExecutionErrorOutput($script, $errorOutput, $parametersString);
         } else {
             static::assertNoErrorsOutput($script, $parametersString);
         }

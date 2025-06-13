@@ -138,22 +138,11 @@ class TerminalFormatter {
     final public const int RESET_BACKGROUND = 49;
 
     /**
-     * If the font functionality is disabled.
-     *
-     * Useful when redirecting a stream with some formatted text into a file or somewhere else (like `less` tool),
-     * where font escape sequences are not processed.
+     * @param bool $isDisabled If the font functionality is disabled. Useful in combination with {@see stream_isatty()}
+     *                         or {@see posix_isatty()} when redirecting a stream with some formatted text into a file
+     *                         or somewhere else (like `less` tool), where font escape sequences are not processed.
      */
-    protected readonly bool $isDisabled;
-
-
-    /**
-     * @param false|resource $resource Output stream or file descriptor is used for auto-detection,
-     *                                 if real output happens in terminal or somewhere else ({@see posix_isatty()}):
-     *                                 actual styling is disabled if output happens not in an interactive terminal.
-     */
-    public function __construct(mixed $resource) {
-        $this->isDisabled = !posix_isatty($resource);
-    }
+    public function __construct(protected readonly bool $isDisabled = false) { }
 
     /**
      * Returns a **new** instance for {@see STDOUT} output.
@@ -162,7 +151,7 @@ class TerminalFormatter {
      * is disabled.
      */
     public static function createForStdOut(): static {
-        return new static(STDOUT);
+        return new static(!stream_isatty(STDOUT));
     }
 
     /**
@@ -172,7 +161,7 @@ class TerminalFormatter {
      * is disabled.
      */
     public static function createForStdErr(): static {
-        return new static(STDERR);
+        return new static(!stream_isatty(STDERR));
     }
 
     /**

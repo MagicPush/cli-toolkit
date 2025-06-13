@@ -10,17 +10,14 @@ class CliProcess {
     final protected const int DESCRIPTOR_STDOUT = 1;
     final protected const int DESCRIPTOR_STDERR = 2;
 
-    private readonly int $exitCode;
+    private readonly int    $exitCode;
     private readonly string $stdOut;
     private readonly string $stdErr;
 
     /**
      * Executes the command to launch a process, stores the results in corresponding properties.
-     *
-     * @param string $command
      */
-    public function __construct(string $command)
-    {
+    public function __construct(string $command) {
         $descriptors = [
             static::DESCRIPTOR_STDOUT => ['pipe', 'w'],
             static::DESCRIPTOR_STDERR => ['pipe', 'w'],
@@ -54,13 +51,11 @@ class CliProcess {
         }
     }
 
-    public function getExitCode(): int
-    {
+    public function getExitCode(): int {
         return $this->exitCode;
     }
 
-    public function getStdOut(): string
-    {
+    public function getStdOut(): string {
         return $this->stdOut;
     }
 
@@ -69,8 +64,7 @@ class CliProcess {
      *
      * @return string[]
      */
-    public function getStdOutAsArray(): array
-    {
+    public function getStdOutAsArray(): array {
         if (empty($this->stdOut)) {
             return [];
         }
@@ -83,8 +77,24 @@ class CliProcess {
         return $lines;
     }
 
-    public function getStdErr(): string
-    {
+    public function getStdErr(): string {
         return $this->stdErr;
+    }
+
+    public function getStdAll(): string {
+        $stdContents = [
+            $this->getStdOut(),
+            $this->getStdErr(),
+        ];
+
+        $result = '';
+        foreach ($stdContents as $contents) {
+            if ('' !== $result && '' !== $contents) {
+                $result .= PHP_EOL;
+            }
+            $result .= $contents;
+        }
+
+        return $result;
     }
 }

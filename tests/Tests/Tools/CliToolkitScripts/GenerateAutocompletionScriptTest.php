@@ -61,14 +61,14 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      */
     public function testOutputPathSubdirectories(): void {
         // Previous launch cleanup:
-        if (file_exists(__DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh')) {
-            assertTrue(unlink(__DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh')) {
+            assertTrue(unlink(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh'));
         }
-        if (file_exists(__DIR__ . '/generated/subdirectory1/subdirectory2')) {
-            assertTrue(rmdir(__DIR__ . '/generated/subdirectory1/subdirectory2'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2')) {
+            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2'));
         }
-        if (file_exists(__DIR__ . '/generated/subdirectory1')) {
-            assertTrue(rmdir(__DIR__ . '/generated/subdirectory1'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1')) {
+            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1'));
         }
 
         self::assertNoErrorsOutput(
@@ -90,7 +90,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see GenerateAutocompletionScript::execute()
      */
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
-        self::assertParseErrorOutput(
+        self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             $expectedErrorSubstring,
             sprintf('%s --output-filepath=%s', $this->subcommandName, $outputPath),
@@ -221,7 +221,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see GenerateAutocompletionScript::getConfiguration()
      */
     public function testInvalidSearchPaths(string $searchPath): void {
-        self::assertParseErrorOutput(
+        self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
@@ -295,14 +295,14 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      */
     public function testVerbosity(): void {
         // Previous launch cleanup:
-        if (file_exists(__DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh')) {
-            assertTrue(unlink(__DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh')) {
+            assertTrue(unlink(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh'));
         }
-        if (file_exists(__DIR__ . '/generated/subdirectory1/subdirectory2')) {
-            assertTrue(rmdir(__DIR__ . '/generated/subdirectory1/subdirectory2'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2')) {
+            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2'));
         }
-        if (file_exists(__DIR__ . '/generated/subdirectory1')) {
-            assertTrue(rmdir(__DIR__ . '/generated/subdirectory1'));
+        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1')) {
+            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1'));
         }
 
         /** @noinspection PhpFormatFunctionParametersMismatchInspection */

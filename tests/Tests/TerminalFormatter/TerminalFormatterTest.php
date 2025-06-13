@@ -15,7 +15,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
     protected function setUp(): void {
         parent::setUp();
 
-        $this->formatter = TerminalFormatter::createForStdOut();
+        $this->formatter = new TerminalFormatter(isDisabled: false);
     }
 
     /**

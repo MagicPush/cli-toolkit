@@ -273,7 +273,8 @@ STDERR_OUTPUT,
                 $expectedErrorOutput,
                 $parametersString,
                 RuntimeException::class . ': ',
-                false,
+                shouldAssertExitCode: false,
+                shouldAssertStdErr: false,
             );
         } else {
             // This way `$throwOnException` flag is not passed to a config builder, throwing is disabled:
