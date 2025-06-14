@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses;
+namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
@@ -18,7 +18,7 @@ use RuntimeException;
 use SplFileInfo;
 use Throwable;
 
-class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
+class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,
@@ -75,7 +75,7 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
 
             ->newOption('--output-filepath', '-o')
             ->description('Location of the generated file.')
-            ->default(realpath(__DIR__ . '/../../..') . '/local/cli-tools-autocompletion.sh')
+            ->default(realpath(__DIR__ . '/' . '../../../..') . '/local/cli-toolkit-autocompletion.sh')
 
             ->newFlag('--verbose', '-v')
             ->description('
@@ -89,7 +89,7 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
                 You may specify absolute or relative paths - each element will be processed with `'
                         . $helpFormatter->command('realpath()') . '` by the validator.
             ')
-            ->default([realpath(__DIR__ . '/..')])
+            ->default([realpath(__DIR__ . '/' . '../../')])
             ->validatorCallback(
                 function (&$value) {
                     $value = realpath(trim($value));
@@ -115,7 +115,7 @@ class GenerateAutocompletionScript extends CliToolkitScriptAbstract {
         $scriptPathsByAliases = [];
         if ($isVerbose) {
             echo $executionFormatter->section('=== SCANNING SEARCH PATHS for Parametizer-based scripts ===')
-                . PHP_EOL. PHP_EOL;
+                . PHP_EOL . PHP_EOL;
         }
         foreach ($searchPaths as $searchPath) {
             if ($isVerbose) {

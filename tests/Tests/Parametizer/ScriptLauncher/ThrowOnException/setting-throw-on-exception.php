@@ -14,8 +14,8 @@ if ($damageScriptFilename) {
     $_SERVER['SCRIPT_FILENAME'] = '';
 }
 
-// Neither ScriptDetector nor ConfigBuilder instances must be specified to ensure `throwOnException` flag is passed
-// to the automatically created instances.
-(new ScriptLauncher(scriptDetector: null, configBuilder: null))
+// Neither ScriptClassDetector nor ConfigBuilder instances must be specified to ensure `throwOnException` flag
+// is passed to the automatically created instances.
+(new ScriptLauncher(scriptClassDetector: null, configBuilder: null))
     ->throwOnException($launcherThrowOnException)
     ->execute();

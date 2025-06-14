@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses;
+namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
@@ -11,7 +11,7 @@ use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RuntimeException;
 use Throwable;
 
-class GenerateEnvConfig extends CliToolkitScriptAbstract {
+class EnvConfig extends CliToolkitGenerateScriptAbstract {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,

@@ -54,8 +54,9 @@ This change log references the repository changes and releases, which respect [s
        possible. Otherwise backwards to a launched script location.
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
-1. [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) for different script types auto-detection.
-   For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts are supported.
+1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) for different script
+   types auto-detection. For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts
+   are supported.
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
    `help` ([HelpScript.php](../src/Parametizer/Script/BuiltIn/HelpScript.php))
    and `list` ([ListScript.php](../src/Parametizer/Script/BuiltIn/ListScript.php)) built-in subcommands.
@@ -65,7 +66,8 @@ This change log references the repository changes and releases, which respect [s
        (from a parent [Config.php](../src/Parametizer/Config/Config.php)).
 1. Added [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) to ease launcher scripts
    creation. That includes (but not limits to):
-    1. The default auto-generated [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) that looks for
+    1. The default auto-generated
+       [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) that looks for
        all scripts inside the same directory recursively plus enables caching.
     1. [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
        is automatically added to a launcher, if a launcher's script detector enables caching and a cache file exists.
@@ -108,8 +110,8 @@ This change log references the repository changes and releases, which respect [s
           script that contains a subcommand switch parameter.
     1. Added `getArgumentsByNames()` that has argument names as keys, while `getArguments()` still renders numeric keys.
     1. Added `$shortDescription` protected property, the setter `shortDescription` and the getter `getShortDescription`.
-1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/ScriptClasses/CliToolkitScriptAbstract.php) as a basement for all
-   [tools/cli-toolkit](../tools/cli-toolkit) scripts.
+1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/ScriptClasses/CliToolkitScriptAbstract.php) as a basement for
+   all [tools/cli-toolkit](../tools/cli-toolkit) scripts.
 1. [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) as a tool
    to test the performance and other "law of large numbers" cases, when a launcher includes lots of class scripts.
 1. Formatters:

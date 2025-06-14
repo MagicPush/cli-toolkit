@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector;
 
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\SearchDirectoryContext;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\SearchDirectoryContext;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedAbstract;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Zcript;
@@ -15,9 +15,9 @@ use RuntimeException;
 
 use function PHPUnit\Framework\assertSame;
 
-class ScriptDetectorTest extends ScriptDetectorTestAbstract {
-    private static function createScriptDetector(): ScriptDetector {
-        return new ScriptDetector(throwOnException: true);
+class ScriptClassDetectorTest extends ScriptClassDetectorTestAbstract {
+    private static function createScriptClassDetector(): ScriptClassDetector {
+        return new ScriptClassDetector(throwOnException: true);
     }
 
     /**
@@ -43,7 +43,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     /**
      * Tests the case when a detector is not initialized.
      *
-     * @see ScriptDetector::detectBySettings()
+     * @see ScriptClassDetector::detectBySettings()
      */
     public function testNoSearchSettings(bool $throwOnException): void {
         if ($throwOnException) {
@@ -51,7 +51,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         }
 
         // This assertion should happen only if no exception is thrown during the detector object's setup:
-        assertSame([], (new ScriptDetector($throwOnException))->getClassNamesByScriptNames());
+        assertSame([], (new ScriptClassDetector($throwOnException))->getClassNamesByScriptNames());
     }
 
     #[DataProvider('provideSearchAndExclude')]
@@ -60,13 +60,13 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      *
      * @param array<string, string> $expectedClasses
      * @param array<string, string> $actualClasses
-     * @see ScriptDetector::scriptClassName()
-     * @see ScriptDetector::scriptClassNames()
-     * @see ScriptDetector::searchDirectory()
-     * @see ScriptDetector::searchDirectories()
-     * @see ScriptDetector::excludeDirectory()
-     * @see ScriptDetector::excludeDirectories()
-     * @see ScriptDetector::detectBySettings()
+     * @see ScriptClassDetector::scriptClassName()
+     * @see ScriptClassDetector::scriptClassNames()
+     * @see ScriptClassDetector::searchDirectory()
+     * @see ScriptClassDetector::searchDirectories()
+     * @see ScriptClassDetector::excludeDirectory()
+     * @see ScriptClassDetector::excludeDirectories()
+     * @see ScriptClassDetector::detectBySettings()
      */
     public function testSearchAndExclude(array $expectedClasses, array $actualClasses): void {
         assertSame($expectedClasses, $actualClasses);
@@ -84,7 +84,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script4' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Script4',
                     'script-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->scriptClassName(
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1::class,
                     )
@@ -102,7 +102,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script4' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Script4',
                     'script-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->scriptClassNames([
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1::class,
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Script4::class,
@@ -117,7 +117,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script7' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedRight\Script7',
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: true)
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', isRecursive: false)
                     ->getClassNamesByScriptNames(),
@@ -128,7 +128,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script6' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Subdirectory\Script6',
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: false)
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', isRecursive: true)
                     ->getClassNamesByScriptNames(),
@@ -140,7 +140,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script6' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Subdirectory\Script6',
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectories(
                         [
                             __DIR__ . '/ScriptClasses/Red/RedRight',
@@ -155,7 +155,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script7' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedRight\Script7',
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectories(
                         [
                             __DIR__ . '/ScriptClasses/Red/RedRight',
@@ -175,7 +175,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                     'red:script1' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: true)
                     ->excludeDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft')
                     ->excludeDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft2')
@@ -191,7 +191,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     'red:script5' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5',
                     'red:script1' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Script1',
                 ],
-                'actualClasses' => self::createScriptDetector()
+                'actualClasses' => self::createScriptClassDetector()
                     ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: true)
                     ->excludeDirectories([
                         __DIR__ . '/ScriptClasses/Red/RedLeft',
@@ -206,7 +206,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     /**
      * Tests detecting or ignoring different special types of classes.
      *
-     * @see ScriptDetector::detectBySettings()
+     * @see ScriptClassDetector::detectBySettings()
      */
     public function testAbstractFinalAndNotBaseClass(): void {
         assertSame(
@@ -233,7 +233,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                  * the same methods, but a completely different parent.
                  */
             ],
-            self::createScriptDetector()
+            self::createScriptClassDetector()
                 ->searchDirectory(__DIR__ . '/ScriptClasses', isRecursive: false)
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: false)
                 ->getClassNamesByScriptNames(),
@@ -244,8 +244,8 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     /**
      * Tests a detection process when a searching directory is excluded by the same or a wider (higher) path.
      *
-     * @see ScriptDetector::validateSearchingAndExcludedPathsIntersections()
-     * @see ScriptDetector::detectBySettings()
+     * @see ScriptClassDetector::validateSearchingAndExcludedPathsIntersections()
+     * @see ScriptClassDetector::detectBySettings()
      */
     public function testExcludeSameOrWiderThanSearch(
         bool $throwOnException,
@@ -271,7 +271,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             [], // Nothing should be found in any case.
-            (new ScriptDetector($throwOnException))
+            (new ScriptClassDetector($throwOnException))
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedLeft3', $isSearchRecursive)
                 ->excludeDirectory($excludedPath)
                 ->getClassNamesByScriptNames(),
@@ -332,7 +332,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * Tests cases when an excluded directory is not related to a directory being searched.
      *
      * @param array<string, string> $expectedClasses
-     * @see ScriptDetector::validateSearchingAndExcludedPathsIntersections()
+     * @see ScriptClassDetector::validateSearchingAndExcludedPathsIntersections()
      */
     public function testExcludeUnrelatedPath(
         bool $throwOnException,
@@ -355,7 +355,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             $expectedClasses,
-            (new ScriptDetector($throwOnException))
+            (new ScriptClassDetector($throwOnException))
                 ->searchDirectory($searchContext->normalizedPath, $searchContext->isRecursive)
                 ->excludeDirectory($excludeDirectory)
                 ->getClassNamesByScriptNames(),
@@ -454,8 +454,8 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     /**
      * Tests invalid paths processing for a searching directory.
      *
-     * @see ScriptDetector::getValidatedRealPath()
-     * @see ScriptDetector::searchDirectory()
+     * @see ScriptClassDetector::getValidatedRealPath()
+     * @see ScriptClassDetector::searchDirectory()
      */
     public function testInvalidPathsSearch(bool $throwOnException, string $path): void {
         if ($throwOnException) {
@@ -467,7 +467,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             [], // Nothing should be found in any case.
-            (new ScriptDetector($throwOnException))
+            (new ScriptClassDetector($throwOnException))
                 ->searchDirectory($path)
                 ->getClassNamesByScriptNames(),
         );
@@ -477,8 +477,8 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     /**
      * Tests invalid paths processing for a searching directory.
      *
-     * @see ScriptDetector::getValidatedRealPath()
-     * @see ScriptDetector::excludeDirectory()
+     * @see ScriptClassDetector::getValidatedRealPath()
+     * @see ScriptClassDetector::excludeDirectory()
      */
     public function testInvalidPathsExclude(bool $throwOnException, string $path): void {
         if ($throwOnException) {
@@ -493,7 +493,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 'red:script8' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedRight\Subdirectory\Script8',
                 'red:script7' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedRight\Script7',
             ],
-            (new ScriptDetector($throwOnException))
+            (new ScriptClassDetector($throwOnException))
                 ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', isRecursive: true)
                 ->excludeDirectory($path)
                 ->getClassNamesByScriptNames(),

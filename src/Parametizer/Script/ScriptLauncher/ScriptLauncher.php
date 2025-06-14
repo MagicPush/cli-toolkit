@@ -6,21 +6,24 @@ namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 class ScriptLauncher {
-    protected readonly ScriptDetector $scriptDetector;
-    protected readonly ConfigBuilder  $configBuilder;
+    protected readonly ScriptClassDetector $scriptClassDetector;
+    protected readonly ConfigBuilder       $configBuilder;
 
     protected bool $useParentEnvConfigForSubcommands = false;
     protected bool $throwOnException                 = false;
 
 
-    public function __construct(?ScriptDetector $scriptDetector = null, ?ConfigBuilder $configBuilder = null) {
-        if (null !== $scriptDetector) {
-            $this->scriptDetector = $scriptDetector;
+    public function __construct(
+        ?ScriptClassDetector $scriptClassDetector = null,
+        ?ConfigBuilder $configBuilder = null,
+    ) {
+        if (null !== $scriptClassDetector) {
+            $this->scriptClassDetector = $scriptClassDetector;
         }
         if (null !== $configBuilder) {
             $this->configBuilder = $configBuilder;
@@ -37,10 +40,11 @@ class ScriptLauncher {
     }
 
     /**
-     * Always affects detected subcommands. Affects {@see ScriptDetector} and {@see ConfigBuilder} instances only if
-     * those are created automatically - if `null` is passed instead of an instance to {@see static::__construct()}.
+     * Always affects detected subcommands. Affects {@see ScriptClassDetector} and {@see ConfigBuilder}
+     * instances only if those are created automatically - if `null` is passed instead of an instance
+     * to {@see static::__construct()}.
      *
-     * @see ScriptDetector::__construct()
+     * @see ScriptClassDetector::__construct()
      * @see Parametizer::newConfig()
      */
     public function throwOnException(bool $isEnabled = true): static {
@@ -50,8 +54,8 @@ class ScriptLauncher {
     }
 
     public function execute(): void {
-        if (!isset($this->scriptDetector)) {
-            $this->scriptDetector = (new ScriptDetector(throwOnException: $this->throwOnException))
+        if (!isset($this->scriptClassDetector)) {
+            $this->scriptClassDetector = (new ScriptClassDetector(throwOnException: $this->throwOnException))
                 ->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));
         }
         if (!isset($this->configBuilder)) {
@@ -62,7 +66,7 @@ class ScriptLauncher {
             ? $this->configBuilder->getConfig()->getEnvConfig()
             : null;
 
-        $classNamesBySubcommandNames = $this->scriptDetector
+        $classNamesBySubcommandNames = $this->scriptClassDetector
             ->getClassNamesByScriptNames();
 
         // Init a subcommand switch - ensure built-in subcommands are added even if no custom subcommands are detected.
@@ -78,9 +82,9 @@ class ScriptLauncher {
             );
         }
 
-        if ($this->scriptDetector->doesCacheFileExist()) {
+        if ($this->scriptClassDetector->doesCacheFileExist()) {
             $subcommandNameClearCache = ClearCache::getFullName();
-            $contextClearCache        = new ClearCacheContext($this->scriptDetector->getCacheFilePath());
+            $contextClearCache        = new ClearCacheContext($this->scriptClassDetector->getCacheFilePath());
 
             $this->configBuilder->newSubcommand(
                 $subcommandNameClearCache,

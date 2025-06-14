@@ -21,9 +21,6 @@ The list of plans and ideas for future development.
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
 1. Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
      to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
-1. Support a config file for
-   [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php). It will ease
-   specifying the script settings for multiple launches.
 1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
        files or any other kinds of streams.
@@ -79,6 +76,35 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
+    1. - [ ] Add an alternate script detector.
+
+        1. - [ ] Forbid duplicate script names.
+
+             Now duplicates are not processed (the latest duplicate takes place).
+        1. - [ ] Plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
+        1. - [ ] Regular plain scripts.
+        1. - [ ] Different detections within a single process.
+ 
+             Consider a case: search `A/×` except `A/z/×` and set the alias `one`. Then search `A/z/×` and set
+             the alias `another`. It may be solved via several `detect()` calls with different search settings.
+ 
+             Thoughts about such scripts naming:
+            * Generate default names by minimal unambiguous paths.
+            * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such
+              scripts and add those to a launcher available commands list.
+        1. - [ ] Test (at least, manually) the future skeleton scenarios:
+            1. Include everything except [tests](../tests) and [cli-toolkit](../tools/cli-toolkit).
+            1. Include some directories recursively plus the current one (the skeleton launcher location)
+               non-recursively.
+        1. - [ ] Replace internal detection in
+             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+             with the created detector class.
+    1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
+        1. - [ ] Exclude [tests](../tests). At least, when launched somewhere "higher" than the stock
+             [cli-toolkit](../tools/cli-toolkit). It will be needed later for the skeleton.
+             
+             Alternatively, remove the default detector, always require a detector setup instead.
+        1. - [ ] Ensure tests cover that default exclusion, but otherwise execute themselves without failures.
     1. - [ ] "First steps" skeleton generator for script classes launching.
         1. - [ ] Add the generator itself.
  
@@ -92,11 +118,11 @@ The list of plans and ideas for future development.
             1. - [ ] `list` as a default value.
                  No other parameters are processed correctly unless `list` is specified explicitly.
         1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
-        1. - [ ] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php)
+        1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
         1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] Create a document about values and / or goals of the library.
-    1. - [ ] Support single-named aliases: `cli-toolkit:generate-autocompletion-scripts` is the "main" name for
+    1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
          a script, that may be also called via `gas` or `generate-completion` aliases.
 
          ... Or try making a subcommand alias via an autocompletion script.
@@ -104,8 +130,8 @@ The list of plans and ideas for future development.
          (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
          scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
         1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
-             `cli-toolkit:generate-autocompletion-scripts` you should specify `c:g`
-             (if it is unambiguous enough - there are no other scripts named `c*:g*`).
+             `cli-toolkit:generate:autocompletion-scripts` you should specify `c:g:a`
+             (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
         1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
              (switched on/off by a flag option).
     1. - [ ] Implement a "typo guesser" like in `composer`:
@@ -118,24 +144,10 @@ The list of plans and ideas for future development.
          Do you want to run "list" instead?  (yes/no) [no]:
          >
          ```
-    1. - [ ] Add an alternate script detector. Use it inside
-         [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).
-        1. - [ ] Plain Parametizer-based scripts (just move there `GenerateAutocompletionScript` current logic).
-        1. - [ ] Regular plain scripts.
-        1. - [ ] Different detections within a single process.
-
-             Consider a case: search `A/×` except `A/z/×` and set the alias `one`. Then search `A/z/×` and set
-             the alias `another`. It may be solved via several `detect()` calls with different search settings.
-
-             Thoughts about such scripts naming:
-            * Generate default names by minimal unambiguous paths.
-            * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such scripts
-          and add those to a launcher available commands list.
     1. - [ ] FINISHING MOVES:
         1. - [ ] Renaming section:
-            1. `ScriptDetector` -> `ScriptClassDetector`
-                1. `ScriptDetector*Test` -> `ScriptClassDetector*Test`
-            1. `ScriptAbstract` -> `ScriptClassAbstract`
+            1. [Script](../src/Parametizer/Script) -> `ScriptClass`
+            1. (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
         1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration. Consider:
     
             - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
@@ -180,8 +192,8 @@ The list of plans and ideas for future development.
     1. - [x] Add manual short description support - in case automatic short description is not so good.
         1. - [x] Add a short description to built-in subcommands where needed.
     1. - [x] Add `ScriptLauncher` to keep all launchers common code.
-        * [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) may be created by default with
-          a single search path `__DIR__` and its own path as an exception.
+        * [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) may be created
+          by default with a single search path `__DIR__` and its own path as an exception.
     1. - [x] Support `EnvironmentConfig` setup:
         1. - [x] ~~See if `$_SERVER` may be used instead of `debug_backtrace()`.~~
         1. - [x] A script class skeleton should support a method to set an `EnvironmentConfig` instance received from
@@ -208,15 +220,17 @@ The list of plans and ideas for future development.
             * Tokenizer works 20% slower, same memory usage. Replaced with regexp.
         1. - [x] A generated launcher should also show time elapsed and RAM usage.
         1. - [x] ~~Remove
-             [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) from
-             the launcher, make it not detectable by
-             [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php).~~
+             [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
+             from the launcher, make it not detectable by
+             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php).~~
         1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
-        1. - [x] Consider adding optional caching in [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php).
+        1. - [x] Consider adding optional caching in
+             [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php).
+
             * Searching in large projects (~ 5GB) may last for 30+ seconds!
         1. - [x] Test `EnvironmentConfig` config autoload performance with lots (1K+) of files.
     1. - [x] TEST
-        1. - [x] [ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php):
+        1. - [x] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php):
             1. - [x] Base script classes detection.
             1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
                  the huge project's root directory. A full scan may take a while.
@@ -244,10 +258,10 @@ The list of plans and ideas for future development.
             1. - [x] `getLocalName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [x] [cli-toolkit](../tools/cli-toolkit)
-            1. - [x] [GenerateAutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php)
+            1. - [x] [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
  
                  Functional tests that look for substrings in generated files.
-            1. - [x] [GenerateEnvConfig.php](../tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php)
+            1. - [x] [EnvConfig.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvConfig.php)
  
                  Just assert generated file's contents.
     1. - [x] Provide a docker config / build script for tests. And rewrite tests.

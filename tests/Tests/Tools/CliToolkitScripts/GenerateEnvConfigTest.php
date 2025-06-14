@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
-use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\GenerateEnvConfig;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\EnvConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertFileExists;
@@ -26,7 +26,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
         parent::setUp();
 
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = GenerateEnvConfig::getFullName();
+        $this->subcommandName = EnvConfig::getFullName();
 
         if (file_exists(self::CONFIG_PATH)) {
             assertTrue(unlink(self::CONFIG_PATH));
@@ -38,7 +38,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests various types of invalid directory paths (`path` argument) for a generated file.
      *
-     * @see GenerateEnvConfig::getConfiguration()
+     * @see EnvConfig::getConfiguration()
      */
     public function testInvalidPaths(string $path): void {
         self::assertExecutionErrorOutput(
@@ -62,7 +62,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests the generated file contents.
      *
-     * @see GenerateEnvConfig::execute()
+     * @see EnvConfig::execute()
      */
     public function testContents(): void {
         self::assertNoErrorsOutput(
@@ -77,7 +77,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests that `--force` flags allows overwriting of previously generated config files.
      *
-     * @see GenerateEnvConfig::execute()
+     * @see EnvConfig::execute()
      */
     public function testForce(): void {
         // Ensure the file initially exists and contains non-JSON data:

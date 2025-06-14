@@ -8,9 +8,9 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\EnvironmentConfigTest;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -184,8 +184,8 @@ class ScriptLauncherTest extends TestCaseAbstract {
      *
      * @see ScriptLauncher::throwOnException() The flag is set here.
      * @see ScriptLauncher::execute() Here the instances with the flag passed are created.
-     * @see ScriptDetector::__construct() Here the flag is set for the instance.
-     * @see ScriptDetector::detectFromCache() Here the flag affects if an exception is thrown.
+     * @see ScriptClassDetector::__construct() Here the flag is set for the instance.
+     * @see ScriptClassDetector::detectFromCache() Here the flag affects if an exception is thrown.
      * @see Parametizer::newConfig() Here the flag is set for the instance.
      * @see EnvironmentConfig::fillFromJsonConfigFile() Here the flag affects if an exception is thrown.
      */
@@ -220,7 +220,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
 
         if (null !== $invalidJsonFilePath) {
             // Let's be sure that a thrown exception is connected with a specific (parent or child) config file.
-            // Or with a cache file (in case of ScriptDetector).
+            // Or with a cache file (in case of ScriptClassDetector).
             assertStringContainsString($invalidJsonFilePath, $result->getStdAll());
         }
     }

@@ -56,10 +56,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
 
     public static function getNameSections(): array {
-        $nameSections   = parent::getNameSections();
-        $nameSections[] = 'internal';
-
-        return $nameSections;
+        return array_merge(parent::getNameSections(), ['internal']);
     }
 
     public static function getConfiguration(
@@ -442,10 +439,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/init.php';
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
-\$scriptDetector = (new ScriptDetector(throwOnException: true))
+\$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
     ->searchDirectory(__DIR__ . '/Scripts');
 
 // PERFORMANCE STATS ->
@@ -475,7 +472,7 @@ register_shutdown_function(
 );
 // <- PERFORMANCE STATS
 
-(new ScriptLauncher(\$scriptDetector))
+(new ScriptLauncher(\$scriptClassDetector))
     ->throwOnException()
     ->execute();
 

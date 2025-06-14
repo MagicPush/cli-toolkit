@@ -90,17 +90,17 @@ For more cool stuff to know see [Features Manual](docs/features-manual.md).
 Here are [useful scripts](tools/cli-toolkit/ScriptClasses)
 that also utilize some Parametizer features (so may be studied as examples).
 
-- [GenerateAutocompletionScript.php](tools/cli-toolkit/ScriptClasses/GenerateAutocompletionScript.php):
+- [AutocompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php):
   you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
     - Launch the script and read the details:
       ```sh
-      php tools/cli-toolkit/launcher.php cli-toolkit:generate-autocompletion-script --verbose
+      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --verbose
       ```
     - Read it's manual for further customization:
       ```sh
-      php tools/cli-toolkit/launcher.php cli-toolkit:generate-autocompletion-script --help
+      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --help
       ```
-- [GenerateEnvConfig.php](tools/cli-toolkit/ScriptClasses/GenerateEnvConfig.php):
+- [EnvConfig.php](tools/cli-toolkit/ScriptClasses/Generate/EnvConfig.php):
   helps to configure environment settings for your scripts.
   See [Environment Config manual](docs/features-manual.md#environment-config) for details.
 - [TerminalFormatterShowcase.php](tools/cli-toolkit/ScriptClasses/TerminalFormatterShowcase.php):

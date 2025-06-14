@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector;
 
 use Exception;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptDetector;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\SearchDirectoryContext;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\SearchDirectoryContext;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Script5;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\ScriptX;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\ScriptZero;
@@ -15,12 +15,12 @@ use RuntimeException;
 
 use function PHPUnit\Framework\assertSame;
 
-class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
+class ScriptClassDetectorDuplicateTest extends ScriptClassDetectorTestAbstract {
     #[DataProvider('provideThrowOnException')]
     /**
      * Tests duplicate fully qualified names processing.
      *
-     * @see ScriptDetector::scriptClassName()
+     * @see ScriptClassDetector::scriptClassName()
      */
     public function testDuplicateFQNames(bool $throwOnException): void {
         if ($throwOnException) {
@@ -29,7 +29,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = (new ScriptClassDetectorMock($throwOnException))
             ->scriptClassNames([
                 ScriptX::class,
                 Script5::class,
@@ -65,7 +65,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
      * Tests duplicate search paths processing with the same recursion state.
      *
      * @param array<string, string> $expectedClasses
-     * @see ScriptDetector::searchDirectory()
+     * @see ScriptClassDetector::searchDirectory()
      */
     public function testDuplicateSearchSameRecursion(
         bool $throwOnException,
@@ -84,7 +84,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = (new ScriptClassDetectorMock($throwOnException))
             ->searchDirectories(
                 [
                     __DIR__ . '/ScriptClasses/Red/RedRight',
@@ -158,7 +158,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
      * validation ignores recursion state.
      *
      * @param array<string, string> $expectedClasses
-     * @see ScriptDetector::searchDirectory()
+     * @see ScriptClassDetector::searchDirectory()
      */
     public function testDuplicateSearchDifferentRecursion(
         bool $throwOnException,
@@ -177,7 +177,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = (new ScriptClassDetectorMock($throwOnException))
             ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', $isFirstRecursive)
             ->searchDirectory(__DIR__ . '/ScriptClasses/Red/RedRight', !$isFirstRecursive);
 
@@ -241,7 +241,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
      * @param SearchDirectoryContext[] $inputSearchingContexts
      * @param SearchDirectoryContext[] $expectedFinalSearchingContexts
      * @param array<string, string> $expectedClasses
-     * @see ScriptDetector::searchDirectory()
+     * @see ScriptClassDetector::searchDirectory()
      */
     public function testDuplicateSearchSubdirectory(
         bool $throwOnException,
@@ -250,7 +250,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
         array $expectedFinalSearchingContexts,
         array $expectedClasses,
     ): void {
-        $detector = new ScriptDetectorMock($throwOnException);
+        $detector = new ScriptClassDetectorMock($throwOnException);
 
         if ($expectedException) {
             $this->expectExceptionObject($expectedException);
@@ -501,7 +501,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
     /**
      * Tests excluded directories' duplicates processing.
      *
-     * @see ScriptDetector::excludeDirectory()
+     * @see ScriptClassDetector::excludeDirectory()
      */
     public function testDuplicateExclusion(bool $throwOnException): void {
         if ($throwOnException) {
@@ -516,7 +516,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = (new ScriptClassDetectorMock($throwOnException))
             ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: true)
             ->excludeDirectories([
                 __DIR__ . '/ScriptClasses/Red/RedRight',
@@ -556,7 +556,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
      *
      * @param array<string, string> $inputExcludeDirectories
      * @param array<string, string> $expectedFinalExcludedDirectories
-     * @see ScriptDetector::excludeDirectory()
+     * @see ScriptClassDetector::excludeDirectory()
      */
     public function testDuplicateExclusionSubdirectory(
         bool $throwOnException,
@@ -568,7 +568,7 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
             $this->expectExceptionObject($expectedException);
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = (new ScriptClassDetectorMock($throwOnException))
             ->searchDirectory(__DIR__ . '/ScriptClasses/Red', isRecursive: true)
             ->excludeDirectories($inputExcludeDirectories);
 
@@ -680,10 +680,10 @@ class ScriptDetectorDuplicateTest extends ScriptDetectorTestAbstract {
     /**
      * Tests the case when a more "wide" (more levels "higher") directory incorporates excluded subdirectories.
      *
-     * @see ScriptDetector::excludeDirectory()
+     * @see ScriptClassDetector::excludeDirectory()
      */
     public function testDuplicateEvenWiderExclusionInMiddle(): void {
-        $detector = (new ScriptDetectorMock(throwOnException: false))
+        $detector = (new ScriptClassDetectorMock(throwOnException: false))
             ->searchDirectory(__DIR__ . '/ScriptClasses', isRecursive: true)
             ->excludeDirectories([
                 __DIR__ . '/ScriptClasses/Red/RedRight', // A "wider/higher" directory.

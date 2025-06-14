@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\ScriptDetector;
+namespace MagicPush\CliToolkit\Parametizer\ScriptDetector;
 
 use Exception;
 use FilesystemIterator;
@@ -13,7 +13,7 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use SplFileInfo;
 
-class ScriptDetector {
+class ScriptClassDetector {
     protected ?string $cacheFilePath = null;
 
     /**

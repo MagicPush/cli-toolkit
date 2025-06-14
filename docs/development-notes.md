@@ -49,7 +49,7 @@ See [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/Ge
 ### Tokenizer vs RegExp
 
 Comparison between `PhpToken::tokenize` and `preg_match` in
-[ScriptDetector.php](../src/Parametizer/Script/ScriptDetector.php) filtering:
+[ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) filtering:
 - Same memory usage (MB).
 - Tokenizer is 20% slower than regexp.
 

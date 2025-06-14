@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector;
 
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
-abstract class ScriptDetectorTestAbstract extends TestCaseAbstract {
+abstract class ScriptClassDetectorTestAbstract extends TestCaseAbstract {
     protected function setUp(): void {
         parent::setUp();
 

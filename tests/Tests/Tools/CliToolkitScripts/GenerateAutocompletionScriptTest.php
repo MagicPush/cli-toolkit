@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
-use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\GenerateAutocompletionScript;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\AutocompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertFileDoesNotExist;
@@ -26,7 +26,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         parent::setUp();
 
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = GenerateAutocompletionScript::getFullName();
+        $this->subcommandName = AutocompletionScript::getFullName();
 
         if (file_exists(self::COMPLETION_SCRIPT_PATH)) {
             assertTrue(unlink(self::COMPLETION_SCRIPT_PATH));
@@ -37,7 +37,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests the output file path is trimmed of space characters.
      *
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testOutputPathWithSpaceChars(): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -57,7 +57,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests that subdirectories are created recursively along the way when needed.
      *
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testOutputPathSubdirectories(): void {
         // Previous launch cleanup:
@@ -87,7 +87,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests cases when `--output-filepath` contains an invalid path.
      *
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
         self::assertExecutionErrorOutput(
@@ -127,7 +127,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      *
      * @param string[] $searchPaths
      * @param string[] $detectedPaths
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testScriptsDetection(array $searchPaths, array $detectedPaths): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -190,7 +190,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests zero detection for an empty string and an error message.
      *
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testErrorIfNothingDetected(): void {
         // Ensure an empty directory exists.
@@ -218,7 +218,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
     #[DataProvider('provideInvalidSearchPaths')]
     /**
-     * @see GenerateAutocompletionScript::getConfiguration()
+     * @see AutocompletionScript::getConfiguration()
      */
     public function testInvalidSearchPaths(string $searchPath): void {
         self::assertExecutionErrorOutput(
@@ -248,8 +248,8 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests different prefixes for script aliases.
      *
-     * @see GenerateAutocompletionScript::getConfiguration()
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::getConfiguration()
+     * @see AutocompletionScript::execute()
      */
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {
         self::assertNoErrorsOutput(
@@ -291,7 +291,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests output contents with `--verbose` flag being passed.
      *
-     * @see GenerateAutocompletionScript::execute()
+     * @see AutocompletionScript::execute()
      */
     public function testVerbosity(): void {
         // Previous launch cleanup:
