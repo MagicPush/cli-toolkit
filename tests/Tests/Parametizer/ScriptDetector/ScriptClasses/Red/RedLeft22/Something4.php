@@ -2,17 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedBase;
 
-final class ScriptZero extends ScriptAbstract {
-    public static function getLocalName(): string {
-        return 'script';
-    }
-
+class Something4 extends RedBase {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,

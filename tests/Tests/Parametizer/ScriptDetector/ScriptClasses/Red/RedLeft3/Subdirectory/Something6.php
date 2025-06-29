@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Subdirectory;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedAbstract;
+use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedBase;
 
-class Script5 extends RedAbstract {
+class Something6 extends RedBase {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,

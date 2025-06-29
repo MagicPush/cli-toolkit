@@ -30,16 +30,11 @@ class EnvConfig extends CliToolkitGenerateScriptAbstract {
                 Replace the file with the generated one.
             ')
 
-            ->newArgument('path')
-            ->description('Location of the generated file.')
-            ->validatorCallback(
-                function (&$value) {
-                    $value = realpath(trim($value));
-
-                    return false !== $value && is_readable($value) && is_dir($value);
-                },
-                'Path should be a readable directory.',
-            );
+            ->newArgument('directory-path')
+            ->description('
+                The generated file directory path.
+                If the directory does not exist, the script will attempt to create it.
+            ');
     }
 
     public function execute(): void {
@@ -50,13 +45,25 @@ class EnvConfig extends CliToolkitGenerateScriptAbstract {
         });
 
         $isForced           = $this->request->getParamAsBool('force');
-        $filePath           = $this->request->getParamAsString('path') . '/' . EnvironmentConfig::CONFIG_FILENAME;
+        $directoryPath      = $this->request->getParamAsString('directory-path');
         $executionFormatter = ScriptFormatter::createForStdOut();
+
+        if (!file_exists($directoryPath)) {
+            if (!mkdir(directory: $directoryPath, recursive: true)) {
+                throw new RuntimeException('Unable to create a directory: ' . var_export($directoryPath, true));
+            }
+            echo 'A directory has been created: '
+                . $executionFormatter->success($directoryPath)
+                . PHP_EOL;
+        }
+
+        $directoryPath = realpath($directoryPath);
+        $filePath      = $directoryPath . '/' . EnvironmentConfig::CONFIG_FILENAME;
 
         if (!$isForced && file_exists($filePath)) {
             throw new RuntimeException(
                 "File '" . $executionFormatter->pathMentioned($filePath)
-                    . "' already exists. Add '--force' ('-f') to overwrite it.",
+                . "' already exists. Add '--force' ('-f') to overwrite it.",
             );
         }
 

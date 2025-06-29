@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedRight\Subdirectory;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedAbstract;
 
-class Script8 extends RedAbstract {
+// This class is always ignored because of the file extension.
+class SomethingIgnored extends RedBase {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,

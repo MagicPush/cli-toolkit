@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClas
 
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-abstract class RedAbstract extends ScriptAbstract {
+abstract class RedBase extends ScriptAbstract {
     public static function getNameSections(): array {
         return array_merge(parent::getNameSections(), ['red']);
     }

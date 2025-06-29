@@ -4,16 +4,48 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests;
 
+use FilesystemIterator;
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\Utils\CliProcess;
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 
+use function PHPUnit\Framework\assertNotFalse;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
+use function PHPUnit\Framework\assertTrue;
 
 abstract class TestCaseAbstract extends TestCase {
+    protected static function removeDirectoryRecursively(string $directoryPath): void {
+        if (!file_exists($directoryPath)) {
+            return;
+        }
+
+        $directoryIterator = new RecursiveDirectoryIterator(
+            $directoryPath,
+            FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS,
+        );
+        $filesRecursiveIterator = new RecursiveIteratorIterator(
+            $directoryIterator,
+            RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($filesRecursiveIterator as $item) {
+            /** @var SplFileInfo $item */
+            $itemRealPath = $item->getRealPath();
+            assertNotFalse($itemRealPath);
+            if ($item->isDir()) {
+                assertTrue(rmdir($itemRealPath));
+            } else {
+                assertTrue(unlink($itemRealPath));
+            }
+        }
+        assertTrue(rmdir($directoryPath));
+    }
+
     protected static function assertNoErrorsOutput(string $scriptPath, string $parametersString = ''): CliProcess {
         $command = 'php ' . escapeshellarg($scriptPath);
         if ('' !== $parametersString) {

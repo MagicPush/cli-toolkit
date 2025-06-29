@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft;
+
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedBase;
 
-final class ScriptNoNamespace extends ScriptAbstract {
+class Something2 extends RedBase {
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,

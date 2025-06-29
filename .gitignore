@@ -1,2 +1,7 @@
-/local/
 /vendor
+
+# Files generated for production:
+/local/
+
+# Files generated for tests:
+/tests/Tests/**/generated/

@@ -15,8 +15,12 @@ use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertTrue;
 
 final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
-    private const string COMPLETION_SCRIPT_PATH = __DIR__ . '/generated/completion.sh';
-    private const string LAUNCHER_PATH          = __DIR__ . '/' . '../../../../tools/cli-toolkit/launcher.php';
+    private const string LAUNCHER_PATH = __DIR__ . '/' . '../../../../tools/cli-toolkit/launcher.php';
+
+    private const string GENERATED_DIRECTORY_PATH = __DIR__ . '/generated';
+
+    /** The path should contain 2+ directories to test that directories are created recursively. */
+    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/generated/completion/completion.sh';
 
 
     private string $subcommandName;
@@ -28,9 +32,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
         $this->subcommandName = AutocompletionScript::getFullName();
 
-        if (file_exists(self::COMPLETION_SCRIPT_PATH)) {
-            assertTrue(unlink(self::COMPLETION_SCRIPT_PATH));
-        }
+        static::removeDirectoryRecursively(self::GENERATED_DIRECTORY_PATH);
     }
 
 
@@ -52,35 +54,6 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         );
 
         assertFileIsReadable(self::COMPLETION_SCRIPT_PATH);
-    }
-
-    /**
-     * Tests that subdirectories are created recursively along the way when needed.
-     *
-     * @see AutocompletionScript::execute()
-     */
-    public function testOutputPathSubdirectories(): void {
-        // Previous launch cleanup:
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh')) {
-            assertTrue(unlink(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh'));
-        }
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2')) {
-            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2'));
-        }
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1')) {
-            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1'));
-        }
-
-        self::assertNoErrorsOutput(
-            self::LAUNCHER_PATH,
-            sprintf(
-                '%s --output-filepath=%s',
-                $this->subcommandName,
-                __DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh',
-            ),
-        );
-
-        assertFileIsReadable(__DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh');
     }
 
     #[DataProvider('provideInvalidOutputFilePath')]
@@ -200,6 +173,10 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
         // The completion file should be deleted if no scripts were detected.
         // So let's ensure the file exists before the detection takes place.
+        $completionDirectory = dirname(self::COMPLETION_SCRIPT_PATH);
+        if (!file_exists($completionDirectory)) {
+            assertTrue(mkdir($completionDirectory, recursive: true));
+        }
         assertTrue(touch(self::COMPLETION_SCRIPT_PATH));
 
         self::assertFullErrorOutput(
@@ -269,20 +246,19 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
     /**
      * @return array[]
-     * @noinspection SpellCheckingInspection
      */
     public static function provideAliasPrefixes(): array {
         return [
             'space-characters-as-no-prefix' => [
-                'aliasPrefix'         => ' 	' . PHP_EOL,
+                'aliasPrefix'         => ' ' . PHP_EOL,
                 'expectedScriptAlias' => 'launcher',
             ],
             'some-alias' => [
-                'aliasPrefix'         => 'mega',
-                'expectedScriptAlias' => 'megalauncher',
+                'aliasPrefix'         => '1',
+                'expectedScriptAlias' => '1launcher',
             ],
             'some-alias-trimmed-spaces' => [
-                'aliasPrefix'         => 'mega- 	' . PHP_EOL,
+                'aliasPrefix'         => ' 	mega-	 ' . PHP_EOL,
                 'expectedScriptAlias' => 'mega-launcher',
             ],
         ];
@@ -294,17 +270,6 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see AutocompletionScript::execute()
      */
     public function testVerbosity(): void {
-        // Previous launch cleanup:
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh')) {
-            assertTrue(unlink(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2/completion.sh'));
-        }
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2')) {
-            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1/subdirectory2'));
-        }
-        if (file_exists(__DIR__ . '/' . 'generated/subdirectory1')) {
-            assertTrue(rmdir(__DIR__ . '/' . 'generated/subdirectory1'));
-        }
-
         /** @noinspection PhpFormatFunctionParametersMismatchInspection */
         assertSame(
             sprintf(
@@ -331,17 +296,17 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
 
                 TEXT,
-                realpath(dirname(self::LAUNCHER_PATH)) . '/',
-                realpath(self::LAUNCHER_PATH),
-                dirname(realpath(__DIR__ . '/generated') . '/subdirectory1/subdirectory2/completion.sh'),
-                realpath(__DIR__ . '/generated') . '/subdirectory1/subdirectory2/completion.sh',
+                /* #1 */ realpath(dirname(self::LAUNCHER_PATH)) . '/',
+                /* #2 */ realpath(self::LAUNCHER_PATH),
+                /* #3 */ dirname(self::COMPLETION_SCRIPT_PATH),
+                /* #4 */ self::COMPLETION_SCRIPT_PATH,
             ),
             self::assertNoErrorsOutput(
                 self::LAUNCHER_PATH,
                 sprintf(
                     '%s --output-filepath=%s %s --verbose',
                     $this->subcommandName,
-                    __DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh',
+                    self::COMPLETION_SCRIPT_PATH,
                     dirname(self::LAUNCHER_PATH),
                 ),
             )
@@ -356,7 +321,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 sprintf(
                     '%s --output-filepath=%s %s',
                     $this->subcommandName,
-                    __DIR__ . '/generated/subdirectory1/subdirectory2/completion.sh',
+                    self::COMPLETION_SCRIPT_PATH,
                     dirname(self::LAUNCHER_PATH),
                 ),
             )
