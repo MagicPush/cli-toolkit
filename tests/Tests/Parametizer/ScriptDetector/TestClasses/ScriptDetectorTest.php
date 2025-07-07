@@ -6,17 +6,93 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasse
 
 use Exception;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorRuntimeException;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\SearchDirectoryContext;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\Mocks\ScriptDetectorMock;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RuntimeException;
 
 use function PHPUnit\Framework\assertSame;
 
 /**
  * Tests {@see ScriptDetectorAbstract}, thus any child class would suffice here.
+ * But prefer using a mock class {@see ScriptDetectorMock}.
  */
 class ScriptDetectorTest extends ScriptDetectorTestAbstract {
+    #[DataProvider('provideMinimalSearchSettings')]
+    /**
+     * Tests minimal viable search settings validation.
+     *
+     * @see ScriptDetectorAbstract::detectBySettings()
+     * @see ScriptDetectorAbstract::hasMinimalCustomSearchSettings()
+     */
+    public function testMinimalSearchSettings(
+        bool $throwOnException,
+        bool $hasMinimalCustomSearchSettings,
+        bool $hasSearchedDirectorySetting,
+        bool $isExceptionExpected,
+    ): void {
+        if ($isExceptionExpected) {
+            $this->expectExceptionObject(new ScriptDetectorRuntimeException('There are no search settings specified.'));
+        }
+
+        $detector = $this->getMockBuilder(ScriptDetectorMock::class)
+            ->onlyMethods(['hasMinimalCustomSearchSettings'])
+            ->setConstructorArgs(['throwOnException' => $throwOnException])
+            ->getMock();
+        $detector
+            ->method('hasMinimalCustomSearchSettings')
+            ->willReturn($hasMinimalCustomSearchSettings);
+        if ($hasSearchedDirectorySetting) {
+            $detector->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft2');
+        }
+
+        // This assertion should happen if no exception is thrown:
+        assertSame(
+            $hasSearchedDirectorySetting
+                ? [realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft2/Something3.php')]
+                : [],
+            $detector->getDetectedData(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideMinimalSearchSettings(): array {
+        return [
+            'ok-custom' => [
+                'throwOnException'               => true,
+                'hasMinimalCustomSearchSettings' => true,
+                'hasSearchedDirectorySetting'    => false,
+                'isExceptionExpected'            => false,
+            ],
+            'ok-minimal' => [
+                'throwOnException'               => true,
+                'hasMinimalCustomSearchSettings' => false,
+                'hasSearchedDirectorySetting'    => true,
+                'isExceptionExpected'            => false,
+            ],
+            'ok-both' => [
+                'throwOnException'               => true,
+                'hasMinimalCustomSearchSettings' => true,
+                'hasSearchedDirectorySetting'    => true,
+                'isExceptionExpected'            => false,
+            ],
+            'throw-nothing' => [
+                'throwOnException'               => true,
+                'hasMinimalCustomSearchSettings' => false,
+                'hasSearchedDirectorySetting'    => false,
+                'isExceptionExpected'            => true,
+            ],
+            'ignore-nothing' => [
+                'throwOnException'               => false,
+                'hasMinimalCustomSearchSettings' => false,
+                'hasSearchedDirectorySetting'    => false,
+                'isExceptionExpected'            => false,
+            ],
+        ];
+    }
+
     #[DataProvider('provideInvalidPaths')]
     /**
      * Tests invalid paths processing for a searching directory.
@@ -27,7 +103,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     public function testInvalidPathsSearch(bool $throwOnException, string $path): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException('Path should be a readable directory: ' . var_export($path, true)),
+                new ScriptDetectorRuntimeException('Path should be a readable directory: ' . var_export($path, true)),
             );
         }
 
@@ -50,7 +126,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     public function testInvalidPathsExclude(bool $throwOnException, string $path): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException('Path should be a readable directory: ' . var_export($path, true)),
+                new ScriptDetectorRuntimeException('Path should be a readable directory: ' . var_export($path, true)),
             );
         }
 
@@ -211,12 +287,12 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
 
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Excluded path '%s' fully excludes searching path '%s'",
                         $excludedPath,
                         realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft3'),
-                    )
+                    ),
                 ),
             );
         }
@@ -296,7 +372,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     ): void {
         if ($isExceptionExpected) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Excluded path '%s' is not related to any of specified searching paths.",
                         realpath($excludeDirectory),
@@ -417,7 +493,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     ): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Duplicate searching directory path: %s (raw value: '%s')",
                         realpath(__DIR__ . '/../ScriptClasses/Red/RedRight'),
@@ -512,7 +588,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     ): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Duplicate searching directory path: %s (raw value: '%s')",
                         realpath(__DIR__ . '/../ScriptClasses/Red/RedRight'),
@@ -626,7 +702,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         return [
             'recursive-throw-wider-first' => [
                 'throwOnException' => true,
-                'expectedException' => new RuntimeException(
+                'expectedException' => new ScriptDetectorRuntimeException(
                     sprintf(
                         "Previously added directory's searching recursive scope '%s'"
                         . " includes just added directory path '%s' (raw value: '%s')",
@@ -652,7 +728,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             ],
             'recursive-throw-wider-last' => [
                 'throwOnException' => true,
-                'expectedException' => new RuntimeException(
+                'expectedException' => new ScriptDetectorRuntimeException(
                     sprintf(
                         "Just added directory's searching recursive scope '%s' (raw value: '%s')"
                         . " includes previously added directory path '%s'",
@@ -854,7 +930,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     public function testDuplicateExclusion(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Duplicate excluded directory path: %s (raw value: '%s')",
                         realpath(__DIR__ . '/../ScriptClasses/Red/RedRight'),
@@ -945,7 +1021,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         return [
             'throw-wider-first' => [
                 'throwOnException' => true,
-                'expectedException' => new RuntimeException(
+                'expectedException' => new ScriptDetectorRuntimeException(
                     sprintf(
                         "Previously excluded directory '%s'"
                         . " incorporates just excluded directory path '%s' (raw value: '%s')",
@@ -968,7 +1044,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             ],
             'throw-wider-last' => [
                 'throwOnException' => true,
-                'expectedException' => new RuntimeException(
+                'expectedException' => new ScriptDetectorRuntimeException(
                     sprintf(
                         "Just excluded directory '%s' (raw value: '%s')"
                         . " incorporates previously excluded directory path '%s'",
@@ -1077,6 +1153,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 realpath(__DIR__ . '/../ScriptClasses/AnotherThing.php'),
                 realpath(__DIR__ . '/../ScriptClasses/AnotherThingAbstract.php'),
                 realpath(__DIR__ . '/../ScriptClasses/SomethingZero.php'),
+                realpath(__DIR__ . '/../ScriptClasses/Blue/SomethingZeroShadow.php'),
             ],
             $detector->getDetectedData(),
         );

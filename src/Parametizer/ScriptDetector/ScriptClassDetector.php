@@ -6,7 +6,6 @@ namespace MagicPush\CliToolkit\Parametizer\ScriptDetector;
 
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use Override;
-use RuntimeException;
 
 /**
  * @method array<\string, ScriptAbstract|\string> getDetectedData() (string) script name => (string) Fully Qualified class name that extends {@see ScriptAbstract}
@@ -28,11 +27,13 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
      */
     public function scriptClassName(string $fQClassName): static {
         if (array_key_exists($fQClassName, $this->searchedFQClassNames)) {
-            if ($this->throwOnException) {
-                throw new RuntimeException("Duplicate fully qualified class name search requested: {$fQClassName}");
+            if (!$this->throwOnException) {
+                return $this;
             }
 
-            return $this;
+            throw new ScriptDetectorRuntimeException(
+                "Duplicate fully qualified class name search requested: {$fQClassName}",
+            );
         }
 
         $this->searchedFQClassNames[$fQClassName] = $fQClassName;
@@ -58,7 +59,7 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     }
 
     #[Override]
-    protected function hasMinimalSearchSettings(): bool {
+    protected function hasMinimalCustomSearchSettings(): bool {
         return (bool) $this->searchedFQClassNames;
     }
 
@@ -68,44 +69,44 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
             return;
         }
 
-        $fileNamespace = null;
+        $classNamespace = null;
         if (preg_match('/' . PHP_EOL . 'namespace\s+(\S+);' . PHP_EOL . '/', $fileContents, $matches)) {
-            $fileNamespace = $matches[1];
+            $classNamespace = $matches[1];
         }
 
         if (
             !preg_match(
-                '/' . PHP_EOL . '[a-z ]*class (.+) extends .+' . PHP_EOL . '?{/',
+                '/' . PHP_EOL . '[a-z ]*class (\S+) extends .+' . PHP_EOL . '?{/',
                 $fileContents,
                 $matches,
             )
         ) {
             return;
         }
-        $fileClassName = $matches[1];
+        $fullyQualifiedClassName = $matches[1];
 
-        if (null === $fileClassName) {
+        if (null !== $classNamespace) {
+            $fullyQualifiedClassName = "{$classNamespace}\\{$fullyQualifiedClassName}";
+        }
+
+        if (!is_subclass_of($fullyQualifiedClassName, ScriptAbstract::class)) {
             return;
         }
 
-        $fullyQualifiedName = '';
-        if (null !== $fileNamespace) {
-            $fullyQualifiedName .= "{$fileNamespace}\\";
-        }
-        $fullyQualifiedName .= $fileClassName;
-
-        if (!is_subclass_of($fullyQualifiedName, ScriptAbstract::class)) {
-            return;
-        }
-
-        $this->detectedFQClassNames[] = $fullyQualifiedName;
+        $this->detectedFQClassNames[] = $fullyQualifiedClassName;
     }
 
     #[Override]
     protected function processCustomDetections(): void {
+        $baseFQClassName = ScriptAbstract::class;
+
         foreach ($this->searchedFQClassNames as $fQClassName) {
-            if (!is_subclass_of($fQClassName, ScriptAbstract::class)) {
-                continue;
+            if (!is_subclass_of($fQClassName, $baseFQClassName)) {
+                if (!$this->throwOnException) {
+                    continue;
+                }
+
+                throw new ScriptDetectorRuntimeException("'{$fQClassName}' must be a subclass of '{$baseFQClassName}'");
             }
 
             $this->detectedFQClassNames[] = $fQClassName;
@@ -120,11 +121,13 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     protected function loadDataFromCache(array $dataFromCache): void {
         foreach ($dataFromCache as $fQClassName) {
             if (!is_subclass_of($fQClassName, ScriptAbstract::class)) {
-                if ($this->throwOnException) {
-                    throw new RuntimeException("'{$fQClassName}' is not a subclass of " . ScriptAbstract::class);
+                if (!$this->throwOnException) {
+                    continue;
                 }
 
-                continue;
+                throw new ScriptDetectorRuntimeException(
+                    "'{$fQClassName}' is not a subclass of " . ScriptAbstract::class,
+                );
             }
 
             $this->detectedFQClassNames[] = $fQClassName;
@@ -140,14 +143,22 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     }
 
     #[Override]
-    /**
-     * @return array<string, ScriptAbstract|string> (string) script name => (string) Fully Qualified class name
-     *                                              that extends {@see ScriptAbstract}
-     */
     protected function getDataProcessedAfterDetection(): array {
         $detectedFQClassNamesByScriptNames = [];
-        foreach ($this->detectedFQClassNames as $fullyQualifiedName) {
-            $detectedFQClassNamesByScriptNames[$fullyQualifiedName::getFullName()] = $fullyQualifiedName;
+        foreach ($this->detectedFQClassNames as $fullyQualifiedClassName) {
+            $scriptName = $fullyQualifiedClassName::getFullName();
+            if (array_key_exists($scriptName, $detectedFQClassNamesByScriptNames)) {
+                if (!$this->throwOnException) {
+                    continue;
+                }
+
+                throw new ScriptDetectorRuntimeException(
+                    "Duplicate script name '{$scriptName}' detected in class '{$fullyQualifiedClassName}'."
+                        . " Already registered class: {$detectedFQClassNamesByScriptNames[$scriptName]}",
+                );
+            }
+
+            $detectedFQClassNamesByScriptNames[$scriptName] = $fullyQualifiedClassName;
         }
 
         return $detectedFQClassNamesByScriptNames;

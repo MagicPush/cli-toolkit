@@ -94,7 +94,7 @@ that also utilize some Parametizer features (so may be studied as examples).
   you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
     - Launch the script and read the details:
       ```sh
-      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --verbose
+      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --search-directory-recursive=tools/cli-toolkit --verbose
       ```
     - Read it's manual for further customization:
       ```sh

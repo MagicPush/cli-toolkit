@@ -27,7 +27,7 @@ class EnvConfig extends CliToolkitGenerateScriptAbstract {
             ->newFlag('--force', '-f')
             ->description('
                 Do not throw an exception if a config file already exists.
-                Replace the file with the generated one.
+                Instead replace the file with the generated one.
             ')
 
             ->newArgument('directory-path')
@@ -49,7 +49,7 @@ class EnvConfig extends CliToolkitGenerateScriptAbstract {
         $executionFormatter = ScriptFormatter::createForStdOut();
 
         if (!file_exists($directoryPath)) {
-            if (!mkdir(directory: $directoryPath, recursive: true)) {
+            if (!mkdir($directoryPath, recursive: true)) {
                 throw new RuntimeException('Unable to create a directory: ' . var_export($directoryPath, true));
             }
             echo 'A directory has been created: '

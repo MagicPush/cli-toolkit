@@ -295,7 +295,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
         assertStringContainsString(
             $expectedSubstringParent,
             static::assertNoErrorsOutput(
-                __DIR__ . '/SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
+                __DIR__ . '/' . 'SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
                 sprintf(
                     '%d %d --%s',
                     $isSameEnvConfigForSubcommands,
@@ -310,7 +310,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
         assertStringContainsString(
             $expectedSubstringSubcommand,
             static::assertNoErrorsOutput(
-                __DIR__ . '/SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
+                __DIR__ . '/' . 'SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
                 sprintf(
                     '%d %d test-some --%s',
                     $isSameEnvConfigForSubcommands,

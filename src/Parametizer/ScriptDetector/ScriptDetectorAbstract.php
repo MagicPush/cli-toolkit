@@ -9,10 +9,12 @@ use FilesystemIterator;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
 use SplFileInfo;
 
 abstract class ScriptDetectorAbstract {
+    protected const string FILE_EXTENSION = 'php';
+
+
     protected ?string $cacheFilePath = null;
 
     /** @var array<string, SearchDirectoryContext> (string) searching real path => {@see SearchDirectoryContext} */
@@ -53,11 +55,11 @@ abstract class ScriptDetectorAbstract {
             || !is_readable($pathValidated)
             || !is_dir($pathValidated)
         ) {
-            if ($this->throwOnException) {
-                throw new RuntimeException('Path should be a readable directory: ' . var_export($path, true));
+            if (!$this->throwOnException) {
+                return null;
             }
 
-            return null;
+            throw new ScriptDetectorRuntimeException('Path should be a readable directory: ' . var_export($path, true));
         }
 
         return $pathValidated;
@@ -70,17 +72,17 @@ abstract class ScriptDetectorAbstract {
         }
 
         if (array_key_exists($normalizedPath, $this->searchingDirectories)) {
-            if ($this->throwOnException) {
-                throw new RuntimeException(
-                    sprintf(
-                        "Duplicate searching directory path: %s (raw value: '%s')",
-                        $normalizedPath,
-                        $path,
-                    ),
-                );
+            if (!$this->throwOnException) {
+                return $this;
             }
 
-            return $this;
+            throw new ScriptDetectorRuntimeException(
+                sprintf(
+                    "Duplicate searching directory path: %s (raw value: '%s')",
+                    $normalizedPath,
+                    $path,
+                ),
+            );
         }
 
         foreach ($this->searchingDirectories as $index => $searchDirectoryContext) {
@@ -90,7 +92,7 @@ abstract class ScriptDetectorAbstract {
                 && str_starts_with($searchDirectoryContext->normalizedPath, "{$normalizedPath}/")
             ) {
                 if ($this->throwOnException) {
-                    throw new RuntimeException(
+                    throw new ScriptDetectorRuntimeException(
                         sprintf(
                             "Just added directory's searching recursive scope '%s' (raw value: '%s')"
                                 . " includes previously added directory path '%s'",
@@ -115,19 +117,19 @@ abstract class ScriptDetectorAbstract {
                 $searchDirectoryContext->isRecursive
                 && str_starts_with($normalizedPath, "{$searchDirectoryContext->normalizedPath}/")
             ) {
-                if ($this->throwOnException) {
-                    throw new RuntimeException(
-                        sprintf(
-                            "Previously added directory's searching recursive scope '%s'"
-                                . " includes just added directory path '%s' (raw value: '%s')",
-                            $searchDirectoryContext->normalizedPath,
-                            $normalizedPath,
-                            $path,
-                        ),
-                    );
+                if (!$this->throwOnException) {
+                    return $this;
                 }
 
-                return $this;
+                throw new ScriptDetectorRuntimeException(
+                    sprintf(
+                        "Previously added directory's searching recursive scope '%s'"
+                            . " includes just added directory path '%s' (raw value: '%s')",
+                        $searchDirectoryContext->normalizedPath,
+                        $normalizedPath,
+                        $path,
+                    ),
+                );
             }
         }
 
@@ -155,7 +157,7 @@ abstract class ScriptDetectorAbstract {
 
         if (array_key_exists($normalizedPath, $this->excludedDirectoryPaths)) {
             if ($this->throwOnException) {
-                throw new RuntimeException(
+                throw new ScriptDetectorRuntimeException(
                     sprintf(
                         "Duplicate excluded directory path: %s (raw value: '%s')",
                         $normalizedPath,
@@ -171,7 +173,7 @@ abstract class ScriptDetectorAbstract {
             // Let's compare paths from both sides:
             if (str_starts_with($alreadyExcludedDirectoryPath, "{$normalizedPath}/")) {
                 if ($this->throwOnException) {
-                    throw new RuntimeException(
+                    throw new ScriptDetectorRuntimeException(
                         sprintf(
                             "Just excluded directory '%s' (raw value: '%s')"
                                 . " incorporates previously excluded directory path '%s'",
@@ -190,19 +192,19 @@ abstract class ScriptDetectorAbstract {
 
                 // Let's continue the loop and remove other possible "narrow" paths...
             } elseif (str_starts_with($normalizedPath, "{$alreadyExcludedDirectoryPath}/")) {
-                if ($this->throwOnException) {
-                    throw new RuntimeException(
-                        sprintf(
-                            "Previously excluded directory '%s'"
-                                . " incorporates just excluded directory path '%s' (raw value: '%s')",
-                            $alreadyExcludedDirectoryPath,
-                            $normalizedPath,
-                            $path,
-                        ),
-                    );
+                if (!$this->throwOnException) {
+                    return $this;
                 }
 
-                return $this;
+                throw new ScriptDetectorRuntimeException(
+                    sprintf(
+                        "Previously excluded directory '%s'"
+                            . " incorporates just excluded directory path '%s' (raw value: '%s')",
+                        $alreadyExcludedDirectoryPath,
+                        $normalizedPath,
+                        $path,
+                    ),
+                );
             }
         }
 
@@ -248,7 +250,7 @@ abstract class ScriptDetectorAbstract {
                 // Searching path is completely excluded:
                 if (str_starts_with($searchingPathWithSlash, $excludedPathWithSlash)) {
                     if ($this->throwOnException) {
-                        throw new RuntimeException(
+                        throw new ScriptDetectorRuntimeException(
                             "Excluded path '{$excludedPath}' fully excludes"
                             . " searching path '{$searchDirectoryContext->normalizedPath}'",
                         );
@@ -277,14 +279,14 @@ abstract class ScriptDetectorAbstract {
             }
 
             if ($isExcludedPathUnrelated && $this->throwOnException) {
-                throw new RuntimeException(
+                throw new ScriptDetectorRuntimeException(
                     "Excluded path '{$excludedPath}' is not related to any of specified searching paths.",
                 );
             }
         }
     }
 
-    abstract protected function hasMinimalSearchSettings(): bool;
+    abstract protected function hasMinimalCustomSearchSettings(): bool;
 
     /**
      * Process the detected file contents: make context-related validations and store processed data in an instance.
@@ -297,12 +299,12 @@ abstract class ScriptDetectorAbstract {
     abstract protected function processCustomDetections(): void;
 
     protected function detectBySettings(): void {
-        if (!$this->searchingDirectories && !$this->hasMinimalSearchSettings()) {
-            if ($this->throwOnException) {
-                throw new RuntimeException('There are no search settings specified.');
+        if (!$this->searchingDirectories && !$this->hasMinimalCustomSearchSettings()) {
+            if (!$this->throwOnException) {
+                return;
             }
 
-            return;
+            throw new ScriptDetectorRuntimeException('There are no search settings specified.');
         }
 
         $this->processCustomDetections();
@@ -341,7 +343,7 @@ abstract class ScriptDetectorAbstract {
                     continue;
                 }
 
-                if ('php' !== $file->getExtension()) {
+                if (static::FILE_EXTENSION !== $file->getExtension()) {
                     continue;
                 }
 
@@ -365,13 +367,13 @@ abstract class ScriptDetectorAbstract {
     protected function detectFromCache(): void {
         $cacheFileContents = is_readable($this->cacheFilePath) ? (string) file_get_contents($this->cacheFilePath) : '';
         if ('' === $cacheFileContents) {
-            if ($this->throwOnException) {
-                throw new RuntimeException(
-                    'Could not read the cache file: ' . var_export($this->cacheFilePath, true),
-                );
+            if (!$this->throwOnException) {
+                return;
             }
 
-            return;
+            throw new ScriptDetectorRuntimeException(
+                'Could not read the cache file: ' . var_export($this->cacheFilePath, true),
+            );
         }
 
         try {
@@ -385,7 +387,7 @@ abstract class ScriptDetectorAbstract {
                 return;
             }
 
-            throw new RuntimeException(
+            throw new ScriptDetectorRuntimeException(
                 'Unable to parse JSON from the cache file ' . var_export($this->cacheFilePath, true)
                     . ": {$e->getMessage()}",
             );
@@ -407,55 +409,48 @@ abstract class ScriptDetectorAbstract {
         }
 
         $cacheDirPath = dirname($this->cacheFilePath);
-        if (!is_dir($cacheDirPath)) {
-            if (!mkdir($cacheDirPath, recursive: true)) {
-                if ($this->throwOnException) {
-                    throw new RuntimeException(
+        try {
+            if (!is_dir($cacheDirPath)) {
+                if (!mkdir($cacheDirPath, recursive: true)) {
+                    throw new ScriptDetectorRuntimeException(
                         "Unable to create a directory '{$cacheDirPath}' for the cache file: "
                             . var_export($this->cacheFilePath, true),
                     );
                 }
-
-                return;
             }
-        }
 
-        try {
-            $cacheFileContents = json_encode(
-                value: $this->getDataToStoreInCache(),
-                flags: JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR,
-            );
-        } catch (Exception $e) {
+            try {
+                $cacheFileContents = json_encode(
+                    value: $this->getDataToStoreInCache(),
+                    flags: JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR,
+                );
+            } catch (Exception $e) {
+                throw new ScriptDetectorRuntimeException(
+                    "Unable to create JSON contents for the cache file " . var_export($this->cacheFilePath, true)
+                        . ": {$e->getMessage()}",
+                );
+            }
+
+            if (false === file_put_contents($this->cacheFilePath, $cacheFileContents, LOCK_EX)) {
+                throw new ScriptDetectorRuntimeException(
+                    'Unable to write data into the cache file: ' . var_export($this->cacheFilePath, true),
+                );
+            }
+
+            $cacheFilePathReal = realpath($this->cacheFilePath);
+            if (false === $cacheFilePathReal) {
+                throw new ScriptDetectorRuntimeException(
+                    "Unable to get the real path from the just created cache file: {$this->cacheFilePath}",
+                );
+            }
+        } catch (ScriptDetectorRuntimeException $e) {
             if (!$this->throwOnException) {
                 return;
             }
 
-            throw new RuntimeException(
-                "Unable to create JSON contents for the cache file " . var_export($this->cacheFilePath, true)
-                    . ": {$e->getMessage()}",
-            );
+            throw $e;
         }
 
-        if (false === file_put_contents($this->cacheFilePath, $cacheFileContents, LOCK_EX)) {
-            if (!$this->throwOnException) {
-                return;
-            }
-
-            throw new RuntimeException(
-                'Unable to write data into the cache file: ' . var_export($this->cacheFilePath, true),
-            );
-        }
-
-        $cacheFilePathReal = realpath($this->cacheFilePath);
-        if (false === $cacheFilePathReal) {
-            if (!$this->throwOnException) {
-                return;
-            }
-
-            throw new RuntimeException(
-                "Unable to get the real path from the just created cache file: {$this->cacheFilePath}",
-            );
-        }
         $this->cacheFilePath = $cacheFilePathReal;
     }
 

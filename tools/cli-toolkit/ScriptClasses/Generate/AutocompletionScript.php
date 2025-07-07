@@ -4,26 +4,35 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 
-use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RuntimeException;
-use SplFileInfo;
 use Throwable;
 
 class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
+    protected static function validateReadableDirectory(mixed &$path): bool {
+        $path = realpath(trim((string) $path));
+        if (false === $path || !is_readable($path) || !is_dir($path)) {
+            throw new RuntimeException('Path should be a readable directory.');
+        }
+
+        return true;
+    }
+
+
     public static function getConfiguration(
         ?EnvironmentConfig $envConfig = null,
         bool $throwOnException = false,
     ): BuilderInterface {
         $helpFormatter = HelpFormatter::createForStdOut();
+
+        $pathValidationDescription = 'You may specify absolute or relative paths - each element will be processed'
+            . ' with `' . $helpFormatter->command('realpath()') . '` by the validator.';
 
         return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
             ->description('
@@ -35,8 +44,7 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                         . ' is loaded into your session.
         
                 The script works this way:
-                    1. Detects all Parametizer-powered php scripts located in '
-                        . $helpFormatter->paramTitle('<search-paths>') . ' (recursive scan).
+                    1. Detects all Parametizer-powered php scripts based on search and exclude settings.
                     2. Compiles aliases that consist of ' . $helpFormatter->paramTitle('--alias-prefix')
                         . ' + script names (without extensions).
                     3. Generates a Bash completion script for each detected script and its compiled alias.
@@ -50,11 +58,16 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                     (if a list of allowed values is specified for a particular parameter).
             ')
 
-            ->usage('', 'If you are OK with the default values, just launch the script without any params')
             ->usage(
-                '--output-filepath=my-cool-project/generated/autocompletion.sh'
-                    . ' my-cool-project/console/main my-cool-project/console/debug --verbose',
-                'Set your own paths for the generated file and source directories, observe all the process details',
+                '\
+                    --output-filepath=my-cool-project/generated/autocompletion.sh \
+                    --search-directory-recursive=my-cool-project/console \
+                    --exclude-directory=my-cool-project/console/debug \
+                    --search-directory-recursive=' . realpath(__DIR__ . '/' . '../../') . ' \
+                    --verbose
+                ',
+                'Set your own paths for the generated file and source directories (also include this library scripts)'
+                    . ', observe all the process details',
             )
 
             ->newOption('--alias-prefix', '-p')
@@ -77,27 +90,47 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
             ->description('Location of the generated file.')
             ->default(realpath(__DIR__ . '/' . '../../../..') . '/local/cli-toolkit-autocompletion.sh')
 
+            ->newArrayOption('--search-directory-recursive', '-r')
+            ->description("
+                Scan these directories " . $helpFormatter->helpNote('recursively') . " for scripts.
+                {$pathValidationDescription}
+            ")
+            ->validatorCallback(static::validateReadableDirectory(...))
+
+            ->newArrayOption('--search-directory', '-d')
+            ->description("
+                Scan these exact directories for scripts.
+                {$pathValidationDescription}
+            ")
+            ->validatorCallback(static::validateReadableDirectory(...))
+
+            ->newArrayOption('--exclude-directory', '-e')
+            ->description("
+                Exclude these directories while searching through "
+                . $helpFormatter->paramTitle('--search-directory-recursive') . " list.
+                {$pathValidationDescription}
+            ")
+            ->validatorCallback(static::validateReadableDirectory(...))
+
+            ->newArrayOption('--include-script', '-s')
+            ->description("
+                Include scripts by these exact file paths.
+                {$pathValidationDescription}
+            ")
+            ->validatorCallback(
+                function (&$value): bool {
+                    $value = realpath(trim($value));
+
+                    return false !== $value && is_readable($value) && is_file($value);
+                },
+                'Path should be a readable file.',
+            )
+
             ->newFlag('--verbose', '-v')
             ->description('
                 Show various details during the generation process.
                 Also show a ready-to-copy-and-paste command to include the generated file.
-            ')
-
-            ->newArrayArgument('search-paths')
-            ->description('
-                Scan this list of directories recursively to detect all Parametizer-powered php scripts.
-                You may specify absolute or relative paths - each element will be processed with `'
-                        . $helpFormatter->command('realpath()') . '` by the validator.
-            ')
-            ->default([realpath(__DIR__ . '/' . '../../')])
-            ->validatorCallback(
-                function (&$value) {
-                    $value = realpath(trim($value));
-
-                    return false !== $value && is_readable($value) && is_dir($value);
-                },
-                'Path should be a readable directory.',
-            );
+            ');
     }
 
     public function execute(): void {
@@ -107,66 +140,48 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
             exit(Parametizer::ERROR_EXIT_CODE);
         });
 
-        $searchPaths        = $this->request->getParamAsStringList('search-paths');
         $isVerbose          = $this->request->getParamAsBool('verbose');
         $aliasPrefix        = $this->request->getParamAsString('alias-prefix');
         $executionFormatter = ScriptFormatter::createForStdOut();
 
-        $scriptPathsByAliases = [];
         if ($isVerbose) {
             echo $executionFormatter->section('=== SCANNING SEARCH PATHS for Parametizer-based scripts ===')
                 . PHP_EOL . PHP_EOL;
         }
-        foreach ($searchPaths as $searchPath) {
-            if ($isVerbose) {
-                echo 'Search path: ' . $executionFormatter->pathProcessed($searchPath . '/') . PHP_EOL;
+
+        $scriptPathsByAliases = [];
+        $detectedScripts      = (new ScriptFileDetector(throwOnException: true))
+            ->searchDirectories($this->request->getParamAsStringList('search-directory'), isRecursive: false)
+            ->searchDirectories($this->request->getParamAsStringList('search-directory-recursive'), isRecursive: true)
+            ->excludeDirectories($this->request->getParamAsStringList('exclude-directory'))
+            ->scriptPaths($this->request->getParamAsStringList('include-script'))
+            ->getDetectedData();
+
+        $scriptNameMaxLength = 0;
+        foreach ($detectedScripts as $scriptName => $scriptPath) {
+            $scriptPathsByAliases[$aliasPrefix . $scriptName] = $scriptPath;
+
+            $scriptNameLength = mb_strlen($executionFormatter->success($scriptName));
+            if ($scriptNameMaxLength < $scriptNameLength) {
+                $scriptNameMaxLength = $scriptNameLength;
             }
+        }
 
-            /** @var SplFileInfo[] $files */
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($searchPath, FilesystemIterator::SKIP_DOTS),
-            );
-            foreach ($files as $file) {
-                if ('php' !== $file->getExtension()) {
-                    continue;
-                }
-
-                $path = $file->getRealPath();
-                if (false === $path) {
-                    continue;
-                }
-
-                $contents = file_get_contents($path);
-                $isScriptDetected =
-                    !preg_match('/' . PHP_EOL . '([a-z]* )*class .+' . PHP_EOL . '?{/', $contents)
-                    && (
-                        (
-                            str_contains($contents, 'Parametizer::newConfig(') /** @see Parametizer::newConfig() */
-                            && str_contains($contents, '->run()')              /** @see Parametizer::run() */
-                        )
-                        || (
-                            str_contains($contents, 'new ScriptLauncher(')  /** @see ScriptLauncher::__construct() */
-                            && str_contains($contents, '->execute()')       /** @see ScriptLauncher::execute() */
-                        )
-                    );
-                if (!$isScriptDetected) {
-                    continue;
-                }
-
-                $scriptPathsByAliases[$aliasPrefix . $file->getBasename('.' . $file->getExtension())] = $path;
+        if ($isVerbose) {
+            $numberLength = mb_strlen((string) count($detectedScripts));
+            $pathNumber   = 0;
+            echo 'Scripts found:' . PHP_EOL;
+            foreach ($detectedScripts as $scriptName => $scriptPath) {
+                $pathNumber++;
+                echo sprintf(
+                    '    %s. %s => %s%s',
+                    mb_str_pad((string) $pathNumber, $numberLength, pad_type: STR_PAD_LEFT),
+                    mb_str_pad($executionFormatter->success($scriptName), $scriptNameMaxLength, pad_type: STR_PAD_RIGHT),
+                    $executionFormatter->pathMentioned($scriptPath),
+                    PHP_EOL,
+                );
             }
-
-            if ($isVerbose) {
-                $numberLength = mb_strlen((string) count($scriptPathsByAliases));
-                $pathNumber   = 0;
-                echo 'Scripts found:' . PHP_EOL;
-                foreach ($scriptPathsByAliases as $path) {
-                    $pathNumber++;
-                    echo '    ' . mb_str_pad((string) $pathNumber, $numberLength, pad_type: STR_PAD_LEFT) . '. '
-                        . $executionFormatter->pathMentioned($path) . PHP_EOL;
-                }
-                echo PHP_EOL;
-            }
+            echo PHP_EOL;
         }
 
         $outputFilepath = $this->request->getParamAsString('output-filepath');
@@ -186,7 +201,7 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
         }
         $outputDirectory = dirname($outputFilepath);
         if (!file_exists($outputDirectory)) {
-            if (!mkdir(directory: $outputDirectory, recursive: true)) {
+            if (!mkdir($outputDirectory, recursive: true)) {
                 throw new RuntimeException('Unable to create a directory: ' . var_export($outputDirectory, true));
             }
             if ($isVerbose) {
@@ -225,15 +240,6 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                     . '>> ~/.bashrc' . PHP_EOL
                     . PHP_EOL,
                 );
-
-                $numberLength = mb_strlen((string) count($scriptPathsByAliases));
-                $aliasNumber  = 0;
-                echo 'Entries added:' . PHP_EOL;
-                foreach ($scriptPathsByAliases as $alias => $notUsed) {
-                    $aliasNumber++;
-                    echo '    ' . mb_str_pad((string) $aliasNumber, $numberLength, pad_type: STR_PAD_LEFT) . '. '
-                        . $executionFormatter->success($alias) . PHP_EOL;
-                }
 
                 echo PHP_EOL . 'Include the generated file into your bash profile (execute the command below):'
                     . PHP_EOL

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasses;
 
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorRuntimeException;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\Mocks\ScriptDetectorMock;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RuntimeException;
 
 use function PHPUnit\Framework\assertFileDoesNotExist;
 use function PHPUnit\Framework\assertSame;
@@ -42,7 +42,9 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      */
     public function testCacheFileNotReadable(bool $throwOnException): void {
         if ($throwOnException) {
-            $this->expectExceptionObject(new RuntimeException("Could not read the cache file: '/etc/shadow'"));
+            $this->expectExceptionObject(
+                new ScriptDetectorRuntimeException("Could not read the cache file: '/etc/shadow'"),
+            );
         }
 
         assertSame(
@@ -67,7 +69,7 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
 
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Unable to parse JSON from the cache file '%s': %s",
                         realpath(static::CACHE_FILE_RELATIVE_PATH),
@@ -97,7 +99,9 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
     public function testUnableToCreateDirectory(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException("Unable to create a directory '/asd' for the cache file: '/asd/zxc'"),
+                new ScriptDetectorRuntimeException(
+                    "Unable to create a directory '/asd' for the cache file: '/asd/zxc'",
+                ),
             );
         }
 
@@ -139,7 +143,7 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
     public function testStoringInvalidData(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException(
+                new ScriptDetectorRuntimeException(
                     sprintf(
                         "Unable to create JSON contents for the cache file '%s': %s",
                         static::CACHE_FILE_RELATIVE_PATH,
@@ -150,7 +154,6 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         }
 
         $detector = $this->getMockBuilder(ScriptDetectorMock::class)
-            ->enableOriginalConstructor()
             ->onlyMethods(['getDataToStoreInCache'])
             ->setConstructorArgs(['throwOnException' => $throwOnException])
             ->getMock();
@@ -182,7 +185,7 @@ class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
     public function testUnableToWriteIntoFile(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
-                new RuntimeException("Unable to write data into the cache file: '/root/asd'"),
+                new ScriptDetectorRuntimeException("Unable to write data into the cache file: '/root/asd'"),
             );
         }
 

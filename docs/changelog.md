@@ -25,6 +25,9 @@ This change log references the repository changes and releases, which respect [s
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
    [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts
    and a [launcher.php](../tools/cli-toolkit/launcher.php).
+    1. [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php) now utilizes
+       [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php),
+       thus the search-related parameters were changed accordingly. 
 1. `HelpGenerator::getSubcommandsBlock()` is removed - replaced with `list` built-in subcommand.
 1. `CliRequest::getSubcommandRequest()`: removed `$subcommandName` parameter, changed return type hint
    from `string` to `?string`:
@@ -54,9 +57,6 @@ This change log references the repository changes and releases, which respect [s
        possible. Otherwise backwards to a launched script location.
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
-1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) for different script
-   types auto-detection. For now only [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts
-   are supported.
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
    `help` ([HelpScript.php](../src/Parametizer/Script/BuiltIn/HelpScript.php))
    and `list` ([ListScript.php](../src/Parametizer/Script/BuiltIn/ListScript.php)) built-in subcommands.
@@ -64,14 +64,21 @@ This change log references the repository changes and releases, which respect [s
     1. All built-in subcommands always utilize a parent
        [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) instance
        (from a parent [Config.php](../src/Parametizer/Config/Config.php)).
-1. Added [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) to ease launcher scripts
-   creation. That includes (but not limits to):
+1. [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php) detects plain `Parametizer`-based
+   scripts. The result is mainly used to compile a completion script by
+   [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) detects
+   [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts. The result is mainly used
+   as subcommands for [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) (see below).
+1. [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean to load
+   and launch [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts.
+   That includes (but does not limit to):
     1. The default auto-generated
        [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) that looks for
-       all scripts inside the same directory recursively plus enables caching.
+       all script classes inside the same directory recursively. You may replace that instance with your custom setup.
     1. [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
        is automatically added to a launcher, if a launcher's script detector enables caching and a cache file exists.
-       The subcommand lets you delete a created cache file.
+       The subcommand lets you delete the created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
    the description shortener. Useful when environment settings are not optimal for all descriptions.
 1. [VariableBuilderAbstract.php](../src/Parametizer/Config/Builder/VariableBuilderAbstract.php):

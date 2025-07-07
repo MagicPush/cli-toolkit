@@ -26,10 +26,10 @@ class ScriptDetectorMock extends ScriptDetectorAbstract {
     }
 
     #[Override]
-    protected function hasMinimalSearchSettings(): bool {
+    protected function hasMinimalCustomSearchSettings(): bool {
         // This method should be tested for each child implementation.
         // This mock detector lacks custom processing, so this exact implementation should not be tested.
-        return true;
+        return false;
     }
 
     #[Override]

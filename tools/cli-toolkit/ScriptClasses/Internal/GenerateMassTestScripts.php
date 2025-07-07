@@ -11,6 +11,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\CliToolkitScriptAbstract;
@@ -318,7 +320,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
     protected function createDirectory(string $absolutePath): string {
         if (!is_dir($absolutePath)) {
-            if (!mkdir(directory: $absolutePath, recursive: true)) {
+            if (!mkdir($absolutePath, recursive: true)) {
                 throw new RuntimeException("Unable to create a directory: {$absolutePath}");
             }
 
@@ -432,6 +434,15 @@ TEXT;
     }
 
     protected function generateLauncher(): static {
+        /**
+         * This names processing is needed solely for {@see ScriptFileDetector::processDetectedFileContents()} rules
+         * to not consider this class as a plain script (because af specific substrings presented here).
+         */
+        /** @var callable $launcherCallable This hint is needed only for the class method to be IDE-detectable. */
+        $launcherCallable       = [ScriptLauncher::class, 'execute'];
+        $launcherClassBaseName  = mb_substr($launcherCallable[0], mb_strrpos($launcherCallable[0], '\\') + 1);
+        $launcherExecMethodName = $launcherCallable[1];
+
         $contents = <<<PHP
 <?php
 
@@ -439,8 +450,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/init.php';
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptDetector\ScriptClassDetector;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use {$launcherCallable[0]};
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 \$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
     ->searchDirectory(__DIR__ . '/Scripts');
@@ -472,9 +483,9 @@ register_shutdown_function(
 );
 // <- PERFORMANCE STATS
 
-(new ScriptLauncher(\$scriptClassDetector))
+(new {$launcherClassBaseName}(\$scriptClassDetector))
     ->throwOnException()
-    ->execute();
+    ->{$launcherExecMethodName}();
 
 PHP;
 

@@ -78,25 +78,16 @@ The list of plans and ideas for future development.
 
     1. - [ ] Add an alternate script detector.
 
-        1. - [ ] Forbid duplicate script names.
+        1. - [ ] Forbid duplicate script names - change duplicate names to be unique.
 
              Now duplicates are not processed (the latest duplicate takes place).
-        1. - [ ] Plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
-        1. - [ ] Regular plain scripts.
-        1. - [ ] Different detections within a single process.
- 
-             Consider a case: search `A/×` except `A/z/×` and set the alias `one`. Then search `A/z/×` and set
-             the alias `another`. It may be solved via several `detect()` calls with different search settings.
- 
-             Thoughts about such scripts naming:
-            * Generate default names by minimal unambiguous paths.
-            * Add a Parametizer config option to set a script name (and aliases). Use it as a way to detect such
-              scripts and add those to a launcher available commands list.
-        1. - [ ] Test (at least, manually) the future skeleton scenarios:
+        1. - [x] Plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
+        1. - [ ] ~~Regular plain scripts.~~
+        1. - [x] Test (at least, manually) the future skeleton scenarios:
             1. Include everything except [tests](../tests) and [cli-toolkit](../tools/cli-toolkit).
             1. Include some directories recursively plus the current one (the skeleton launcher location)
                non-recursively.
-        1. - [ ] Replace internal detection in
+        1. - [x] Replace internal detection in
              [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
              with the created detector class.
     1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):

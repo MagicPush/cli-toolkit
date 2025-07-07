@@ -47,9 +47,10 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         self::assertNoErrorsOutput(
             self::LAUNCHER_PATH,
             sprintf(
-                '%s --output-filepath=%s',
+                '%s --output-filepath=%s --search-directory=%s',
                 $this->subcommandName,
-                sprintf('%1$s	 %2$s ', self::COMPLETION_SCRIPT_PATH, PHP_EOL),
+                sprintf('%s	 \\%s ', self::COMPLETION_SCRIPT_PATH, PHP_EOL),
+                __DIR__ . '/ScriptFiles/Red',
             ),
         );
 
@@ -66,7 +67,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             $expectedErrorSubstring,
-            sprintf('%s --output-filepath=%s', $this->subcommandName, $outputPath),
+            sprintf(
+                '%s --output-filepath=%s --search-directory=%s',
+                $this->subcommandName,
+                $outputPath,
+                __DIR__ . '/ScriptFiles/Red',
+            ),
         );
     }
 
@@ -79,8 +85,8 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 'outputPath'             => '',
                 'expectedErrorSubstring' => 'No value for option --output-filepath',
             ],
-            'spaced' => [
-                'outputPath'             => ' 	' . PHP_EOL,
+            'space-and-tab' => [
+                'outputPath'             => ' 	\\' . PHP_EOL,
                 'expectedErrorSubstring' => 'No value for option --output-filepath',
             ],
             'no-access-mkdir' => [
@@ -96,22 +102,25 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
     #[DataProvider('provideScriptsDetection')]
     /**
-     * Tests `search-paths` and various scripts detection.
+     * Tests detection parameters available in {@see AutocompletionScript::getConfiguration()}.
      *
-     * @param string[] $searchPaths
-     * @param string[] $detectedPaths
+     * @param array<string, string> $detectedPathsByNames (string) script name => (string) script absolute path
      * @see AutocompletionScript::execute()
+     * @see AutocompletionScript::getConfiguration()
      */
-    public function testScriptsDetection(array $searchPaths, array $detectedPaths): void {
+    public function testScriptsDetection(
+        string $parametersString,
+        array $detectedPathsByNames,
+    ): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
         self::assertNoErrorsOutput(
             self::LAUNCHER_PATH,
             sprintf(
-                '%s --output-filepath=%s %s',
+                '%s --output-filepath=%s --alias-prefix="a-"%s',
                 $this->subcommandName,
                 self::COMPLETION_SCRIPT_PATH,
-                $searchPaths ? "'" . implode("' '", $searchPaths) . "'" : '',
+                $parametersString ? " {$parametersString}" : '',
             ),
         );
 
@@ -119,11 +128,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         $completionFileContents = file_get_contents(self::COMPLETION_SCRIPT_PATH);
 
         assertSame(
-            count($detectedPaths),
+            count($detectedPathsByNames),
             mb_substr_count($completionFileContents, 'function _parametizer-autocomplete_'),
         );
-        foreach ($detectedPaths as $path) {
-            assertStringContainsString(sprintf("'%s'", realpath($path)), $completionFileContents);
+        foreach ($detectedPathsByNames as $scriptName => $scriptPath) {
+            assertStringContainsString("alias 'a-{$scriptName}'=", $completionFileContents);
+            assertStringContainsString("'{$scriptPath}'", $completionFileContents);
         }
     }
 
@@ -134,28 +144,175 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         return [
             // The library stock functionality:
             'cli-toolkit' => [
-                'searchPaths'   => [dirname(self::LAUNCHER_PATH)],
-                'detectedPaths' => [self::LAUNCHER_PATH],
+                'parametersString'     => '--search-directory-recursive=' . dirname(self::LAUNCHER_PATH),
+                'detectedPathsByNames' => [basename(self::LAUNCHER_PATH, '.php') => realpath(self::LAUNCHER_PATH)],
             ],
 
-            // Here we test the parameter's default value.
-            // It should be the same as above - the detection result should be the same.
-            'cli-toolkit-default-search' => [
-                'searchPaths'   => [],
-                'detectedPaths' => [self::LAUNCHER_PATH],
+            'distinguish-scripts' => [
+                'parametersString'     => '--search-directory=' . (__DIR__ . '/ScriptFiles/Blue'),
+                'detectedPathsByNames' => [
+                    'somewhat-l'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-l.php'),
+                    'somewhat-6'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-6.php'),
+                    'somewhat-l-another' => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-l-another.php'),
+                    'somewhat-3'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-3.php'),
+                    'somewhat-2'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-2.php'),
+                    'somewhat-another'   => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-another.php'),
+                    'somewhat-5'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-5.php'),
+                    'somewhat'           => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat.php'),
+                    'somewhat-4'         => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-4.php'),
+                    'somewhat-class'     => realpath(__DIR__ . '/ScriptFiles/Blue/somewhat-class.php'),
+                    /**
+                     * These files are not (and should not be) detected:
+                     *  * 'construction-launch-mismatch':   wrong pairs of 'construct' and 'exec' substrings;
+                     *  * 'construction-launch-mismatch-2': same as above;
+                     *  * 'no-config-no-launcher':          no exact 'construct' substrings detected,
+                     *                                          {@see ScriptFileDetector::SUBSTR_*_CONSTRUCT};
+                     *  * 'no-run-no-execute':              no exact 'exec' substrings detected,
+                     *                                          {@see ScriptFileDetector::SUBSTR_*_EXEC};
+                     *  * 'Something':                      lacks at least proper 'exec' substring
+                     *                                      (for now we assume that this is good enough to distinguish
+                     *                                      plain scripts and script classes);
+                     *  * 'somewhat-wrong-ext':             wrong extension file
+                     *                                          (not {@see ScriptDetectorAbstract::FILE_EXTENSION}).
+                     */
+                ],
             ],
 
-            'artificial-examples' => [
-                // The parameter should be able to process an array of paths:
-                'searchPaths'   => [
-                    __DIR__ . '/stuff-to-detect/red', // Should be red recursively
-                    __DIR__ . '/stuff-to-detect/blue',
+            'recursive' => [
+                'parametersString'     => '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Red'),
+                'detectedPathsByNames' => [
+                    'somewhat-l' => realpath(__DIR__ . '/ScriptFiles/Red/Subdirectory/somewhat-l.php'),
+                    'somewhat'   => realpath(__DIR__ . '/ScriptFiles/Red/somewhat.php'),
                 ],
-                'detectedPaths' => [
-                    __DIR__ . '/' . 'stuff-to-detect/blue/class-processor.php',
-                    __DIR__ . '/' . 'stuff-to-detect/red/plain.php',
-                    __DIR__ . '/' . 'stuff-to-detect/red/subdirectory/plain-multiline.php',
+            ],
+            'non-recursive' => [
+                'parametersString'     => '--search-directory=' . (__DIR__ . '/ScriptFiles/Red'),
+                'detectedPathsByNames' => [
+                    'somewhat' => realpath(__DIR__ . '/ScriptFiles/Red/somewhat.php'),
                 ],
+            ],
+            'recursive-and-exclude' => [
+                'parametersString'     =>
+                    '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Red')
+                    . ' --exclude-directory=' . (__DIR__ . '/ScriptFiles/Red/Subdirectory'),
+                'detectedPathsByNames' => [
+                    'somewhat' => realpath(__DIR__ . '/ScriptFiles/Red/somewhat.php'),
+                ],
+            ],
+
+            'array-search' => [
+                'parametersString'     =>
+                    '--search-directory=' . (__DIR__ . '/ScriptFiles/Red')
+                    . ' --search-directory=' . (__DIR__ . '/ScriptFiles/Green'),
+                'detectedPathsByNames' => [
+                    'somewhat'         => realpath(__DIR__ . '/ScriptFiles/Red/somewhat.php'),
+                    'somewhat-another' => realpath(__DIR__ . '/ScriptFiles/Green/somewhat-another.php'),
+                ],
+            ],
+            'array-search-recursive' => [
+                'parametersString'     =>
+                    '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Red')
+                    . ' --search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Green'),
+                'detectedPathsByNames' => [
+                    'somewhat-l'         => realpath(__DIR__ . '/' . 'ScriptFiles/Red/Subdirectory/somewhat-l.php'),
+                    'somewhat'           => realpath(__DIR__ . '/' . 'ScriptFiles/Red/somewhat.php'),
+                    'somewhat-l-another' => realpath(__DIR__ . '/' . 'ScriptFiles/Green/Subdirectory/somewhat-l-another.php'),
+                    'somewhat-another'   => realpath(__DIR__ . '/' . 'ScriptFiles/Green/somewhat-another.php'),
+                ],
+            ],
+            'array-exclude' => [
+                'parametersString'     =>
+                    '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles')
+                    . ' --exclude-directory=' . (__DIR__ . '/ScriptFiles/Red')
+                    . ' --exclude-directory=' . (__DIR__ . '/ScriptFiles/Green')
+                    . ' --exclude-directory=' . (__DIR__ . '/ScriptFiles/Blue'),
+                'detectedPathsByNames' => [
+                    'somewhat' => realpath(__DIR__ . '/' . 'ScriptFiles/Yellow/somewhat.php'),
+                ],
+            ],
+
+            'include-script' => [
+                'parametersString'     =>
+                    '--include-script=' . (__DIR__ . '/ScriptFiles/Red/Subdirectory/somewhat-l.php'),
+                'detectedPathsByNames' => [
+                    'somewhat-l' => realpath(__DIR__ . '/ScriptFiles/Red/Subdirectory/somewhat-l.php')
+                ],
+            ],
+            'include-script-array' => [
+                'parametersString'     =>
+                    '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Yellow')
+                    . ' --include-script=' . (__DIR__ . '/ScriptFiles/Red/Subdirectory/somewhat-l.php')
+                    . ' --include-script=' . (__DIR__ . '/ScriptFiles/Green/somewhat-another.php'),
+                'detectedPathsByNames' => [
+                    'somewhat'         => realpath(__DIR__ . '/' . 'ScriptFiles/Yellow/somewhat.php'),
+                    'somewhat-l'       => realpath(__DIR__ . '/ScriptFiles/Red/Subdirectory/somewhat-l.php'),
+                    'somewhat-another' => realpath(__DIR__ . '/ScriptFiles/Green/somewhat-another.php'),
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideErrorIfNoSearchSettings')]
+    /**
+     * Tests an error appearance if no search setting was provided.
+     *
+     * @see AutocompletionScript::execute()
+     */
+    public function testErrorIfNoSearchSettings(string $parametersSubstring, ?string $errorMessage): void {
+        $parametersString = sprintf(
+            '%s --output-filepath=%s%s',
+            $this->subcommandName,
+            self::COMPLETION_SCRIPT_PATH,
+            $parametersSubstring ? " {$parametersSubstring}" : '',
+        );
+
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
+        if (null !== $errorMessage) {
+            self::assertExecutionErrorOutput(
+                self::LAUNCHER_PATH,
+                $errorMessage,
+                $parametersString,
+            );
+
+            assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+        } else {
+            self::assertNoErrorsOutput(
+                self::LAUNCHER_PATH,
+                $parametersString,
+            );
+
+            assertFileIsReadable(self::COMPLETION_SCRIPT_PATH);
+        }
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideErrorIfNoSearchSettings(): array {
+        return [
+            'nothing-error' => [
+                'parametersSubstring' => '',
+                'errorMessage'        => 'There are no search settings specified.',
+            ],
+            'search-ok' => [
+                'parametersSubstring' => '--search-directory=' . (__DIR__ . '/ScriptFiles/Red'),
+                'errorMessage'        => null,
+            ],
+            'search-recursive-ok' => [
+                'parametersSubstring' => '--search-directory-recursive=' . (__DIR__ . '/ScriptFiles/Red'),
+                'errorMessage'        => null,
+            ],
+            'exclude-error' => [
+                'parametersSubstring' => '--exclude-directory=' . (__DIR__ . '/ScriptFiles/Red'),
+                'errorMessage'        => sprintf(
+                    "Excluded path '%s' is not related to any of specified searching paths.",
+                    realpath(__DIR__ . '/ScriptFiles/Red'),
+                ),
+            ],
+            'script-ok' => [
+                'parametersSubstring' => '--include-script=' . (__DIR__ . '/ScriptFiles/Red/somewhat.php'),
+                'errorMessage'        => null,
             ],
         ];
     }
@@ -167,8 +324,8 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      */
     public function testErrorIfNothingDetected(): void {
         // Ensure an empty directory exists.
-        if (!file_exists(__DIR__ . '/stuff-to-detect/green')) {
-            assertTrue(mkdir(__DIR__ . '/stuff-to-detect/green'));
+        if (!file_exists(__DIR__ . '/ScriptFiles/EmptyDirectory')) {
+            assertTrue(mkdir(__DIR__ . '/ScriptFiles/EmptyDirectory'));
         }
 
         // The completion file should be deleted if no scripts were detected.
@@ -183,41 +340,127 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
             self::LAUNCHER_PATH,
             'No scripts were found' . PHP_EOL,
             sprintf(
-                '%s --output-filepath=%s %s',
+                '%s --output-filepath=%s --search-directory-recursive=%s',
                 $this->subcommandName,
                 self::COMPLETION_SCRIPT_PATH,
-                sprintf("'%s'", __DIR__ . '/stuff-to-detect/green'),
+                __DIR__ . '/ScriptFiles/EmptyDirectory',
             ),
         );
 
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
     }
 
-    #[DataProvider('provideInvalidSearchPaths')]
+    #[DataProvider('provideInvalidDirectoryPaths')]
     /**
-     * @see AutocompletionScript::getConfiguration()
+     * Tests invalid '--search-directory' paths.
+     *
+     * @see AutocompletionScript::execute()
      */
-    public function testInvalidSearchPaths(string $searchPath): void {
+    public function testInvalidSearchPaths(string $directoryPath): void {
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
         self::assertExecutionErrorOutput(
             self::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
-                '%s --output-filepath=%s %s',
+                '%s --output-filepath=%s --search-directory=%s',
                 $this->subcommandName,
                 self::COMPLETION_SCRIPT_PATH,
-                $searchPath,
+                $directoryPath,
             ),
         );
+
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+    }
+
+    #[DataProvider('provideInvalidDirectoryPaths')]
+    /**
+     * Tests invalid '--search-directory-recursive' paths.
+     *
+     * @see AutocompletionScript::execute()
+     */
+    public function testInvalidRecursiveSearchPaths(string $directoryPath): void {
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
+        self::assertExecutionErrorOutput(
+            self::LAUNCHER_PATH,
+            'Path should be a readable directory.',
+            sprintf(
+                '%s --output-filepath=%s --search-directory-recursive=%s',
+                $this->subcommandName,
+                self::COMPLETION_SCRIPT_PATH,
+                $directoryPath,
+            ),
+        );
+
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+    }
+
+    #[DataProvider('provideInvalidDirectoryPaths')]
+    /**
+     * Tests invalid '--exclude-directory' paths.
+     *
+     * @see AutocompletionScript::execute()
+     */
+    public function testInvalidExcludePaths(string $directoryPath): void {
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
+        self::assertExecutionErrorOutput(
+            self::LAUNCHER_PATH,
+            'Path should be a readable directory.',
+            sprintf(
+                '%s --output-filepath=%s --exclude-directory=%s',
+                $this->subcommandName,
+                self::COMPLETION_SCRIPT_PATH,
+                $directoryPath,
+            ),
+        );
+
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
     }
 
     /**
      * @return array[]
      */
-    public static function provideInvalidSearchPaths(): array {
+    public static function provideInvalidDirectoryPaths(): array {
         return [
-            'not-existing'    => ['searchPath' => '/non-existing-path'],
-            'not-a-directory' => ['searchPath' => self::LAUNCHER_PATH],
-            'not-readable'    => ['searchPath' => '/root'],
+            'not-existing'    => ['directoryPath' => __DIR__ . '/asd'],
+            'not-a-directory' => ['directoryPath' => self::LAUNCHER_PATH],
+            'not-readable'    => ['directoryPath' => '/root'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidIncludeScriptPaths')]
+    /**
+     * Tests invalid '--include-script' paths.
+     *
+     * @see AutocompletionScript::execute()
+     */
+    public function testInvalidIncludeScriptPaths(string $scriptPath): void {
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
+        self::assertExecutionErrorOutput(
+            self::LAUNCHER_PATH,
+            'Path should be a readable file.',
+            sprintf(
+                '%s --output-filepath=%s --include-script=%s',
+                $this->subcommandName,
+                self::COMPLETION_SCRIPT_PATH,
+                $scriptPath,
+            ),
+        );
+
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideInvalidIncludeScriptPaths(): array {
+        return [
+            'not-existing' => ['scriptPath' => __DIR__ . '/asd'],
+            'not-a-file'   => ['scriptPath' => dirname(self::LAUNCHER_PATH)],
+            'not-readable' => ['scriptPath' => '/root'],
         ];
     }
 
@@ -229,10 +472,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see AutocompletionScript::execute()
      */
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {
+        assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
+
         self::assertNoErrorsOutput(
             self::LAUNCHER_PATH,
             sprintf(
-                "%s --output-filepath=%s --alias-prefix='%s' %s",
+                "%s --output-filepath=%s --alias-prefix='%s' --search-directory-recursive=%s",
                 $this->subcommandName,
                 self::COMPLETION_SCRIPT_PATH,
                 $aliasPrefix,
@@ -257,7 +502,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 'aliasPrefix'         => '1',
                 'expectedScriptAlias' => '1launcher',
             ],
-            'some-alias-trimmed-spaces' => [
+            'some-alias-trimmed-spaces-and-tabs' => [
                 'aliasPrefix'         => ' 	mega-	 ' . PHP_EOL,
                 'expectedScriptAlias' => 'mega-launcher',
             ],
@@ -276,38 +521,43 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 <<<TEXT
                 === SCANNING SEARCH PATHS for Parametizer-based scripts ===
 
-                Search path: %1\$s
                 Scripts found:
-                    1. %2\$s
+                     1. somewhat-l         => %1\$s/ScriptFiles/Blue/somewhat-l.php
+                     2. somewhat-6         => %1\$s/ScriptFiles/Blue/somewhat-6.php
+                     3. somewhat-l-another => %1\$s/ScriptFiles/Blue/somewhat-l-another.php
+                     4. somewhat-3         => %1\$s/ScriptFiles/Blue/somewhat-3.php
+                     5. somewhat-2         => %1\$s/ScriptFiles/Blue/somewhat-2.php
+                     6. somewhat-another   => %1\$s/ScriptFiles/Blue/somewhat-another.php
+                     7. somewhat-5         => %1\$s/ScriptFiles/Blue/somewhat-5.php
+                     8. somewhat           => %1\$s/ScriptFiles/Blue/somewhat.php
+                     9. somewhat-4         => %1\$s/ScriptFiles/Blue/somewhat-4.php
+                    10. somewhat-class     => %1\$s/ScriptFiles/Blue/somewhat-class.php
 
                 === GENERATING A FILE with aliases and auto-complete scripts ===
 
-                A directory has been created: %3\$s
-                Writing stuff into %4\$s ...
-                Entries added:
-                    1. s-launcher
+                A directory has been created: %2\$s
+                Writing stuff into %3\$s ...
 
                 Include the generated file into your bash profile (execute the command below):
 
-                echo -e "if [ -f %4\$s ]; then" \
-                "\\n    source %4\$s" \
+                echo -e "if [ -f %3\$s ]; then" \
+                "\\n    source %3\$s" \
                 "\\nfi\\n" \
                 >> ~/.bashrc
 
 
                 TEXT,
-                /* #1 */ realpath(dirname(self::LAUNCHER_PATH)) . '/',
-                /* #2 */ realpath(self::LAUNCHER_PATH),
-                /* #3 */ dirname(self::COMPLETION_SCRIPT_PATH),
-                /* #4 */ self::COMPLETION_SCRIPT_PATH,
+                /* #1 */ realpath(__DIR__),
+                /* #2 */ dirname(self::COMPLETION_SCRIPT_PATH),
+                /* #3 */ self::COMPLETION_SCRIPT_PATH,
             ),
             self::assertNoErrorsOutput(
                 self::LAUNCHER_PATH,
                 sprintf(
-                    '%s --output-filepath=%s %s --verbose',
+                    '%s --output-filepath=%s --search-directory-recursive=%s --verbose',
                     $this->subcommandName,
                     self::COMPLETION_SCRIPT_PATH,
-                    dirname(self::LAUNCHER_PATH),
+                    __DIR__ . '/ScriptFiles/Blue',
                 ),
             )
                 ->getStdOut(),
@@ -319,10 +569,10 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
             self::assertNoErrorsOutput(
                 self::LAUNCHER_PATH,
                 sprintf(
-                    '%s --output-filepath=%s %s',
+                    '%s --output-filepath=%s --search-directory-recursive=%s',
                     $this->subcommandName,
                     self::COMPLETION_SCRIPT_PATH,
-                    dirname(self::LAUNCHER_PATH),
+                    __DIR__ . '/ScriptFiles/Blue',
                 ),
             )
                 ->getStdOut(),
