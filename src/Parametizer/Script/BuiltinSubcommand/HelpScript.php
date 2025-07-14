@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
-use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
@@ -19,15 +18,13 @@ class HelpScript extends ScriptAbstract {
     protected readonly string $subcommandName;
 
 
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void {
+        parent::setUpConfig($configBuilder);
+
         $listSubcommandName = Config::PARAMETER_NAME_LIST;
         $formatter          = HelpFormatter::createForStdOut();
 
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
-            ->description('Outputs a help page for a specified subcommand.')
+        $configBuilder->description('Outputs a help page for a specified subcommand.')
 
             ->newArgument(static::ARGUMENT_SUBCOMMAND_NAME)
             ->description("
@@ -36,6 +33,7 @@ class HelpScript extends ScriptAbstract {
             ")
             ->default(Config::OPTION_NAME_HELP);
     }
+
 
     public function __construct(CliRequest $request) {
         parent::__construct($request);

@@ -6,7 +6,6 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
@@ -189,7 +188,6 @@ STDERR_OUTPUT,
      * @param mixed[] $expectedConfigValues
      * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
      * @see EnvironmentConfig::detectBottommostDirectoryPath()
-     * @see ScriptAbstract::newConfig()
      */
     public function testAutoloadFromFilesForSubcommands(
         string $scriptPath,

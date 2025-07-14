@@ -30,7 +30,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
         parent::setUp();
 
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = EnvConfig::getFullName();
+        $this->subcommandName = EnvConfig::getScriptName();
 
         static::removeDirectoryRecursively(self::GENERATED_DIRECTORY_PATH);
     }

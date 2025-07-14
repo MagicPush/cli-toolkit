@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
 
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
@@ -28,11 +28,10 @@ class ListScript extends ScriptAbstract {
     protected readonly string $subcommandNamePart;
 
 
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void {
+        parent::setUpConfig($configBuilder);
+
+        $configBuilder
             ->shortDescription('Shows available subcommands.')
             ->description('Shows the sorted list of available subcommands with their short descriptions.')
 
@@ -43,6 +42,7 @@ class ListScript extends ScriptAbstract {
             ->description('Show subcommands with names containing this substring.')
             ->required(false);
     }
+
 
     public function __construct(CliRequest $request) {
         parent::__construct($request);

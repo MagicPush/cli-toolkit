@@ -9,8 +9,8 @@ use MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\AutoloadWithC
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 $request = TestUtils::newConfig()
-    ->newSubcommand(TestSome::getFullName(), TestSome::getConfiguration(throwOnException: true))
-    ->newSubcommand(TestChild::getFullName(), TestChild::getConfiguration(throwOnException: true))
+    ->newSubcommand(TestSome::getScriptName(), TestSome::getConfigBuilder(throwOnException: true))
+    ->newSubcommand(TestChild::getScriptName(), TestChild::getConfigBuilder(throwOnException: true))
 
     ->run();
 

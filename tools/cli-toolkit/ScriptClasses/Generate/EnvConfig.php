@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
@@ -12,11 +12,10 @@ use RuntimeException;
 use Throwable;
 
 class EnvConfig extends CliToolkitGenerateScriptAbstract {
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void {
+        parent::setUpConfig($configBuilder);
+
+        $configBuilder
             ->description('
                 Generates an environment config file with all possible settings. All settings are set to default values.
                 Then you may alter the settings you wish to affect your Parametizer-powered scripts.
@@ -36,6 +35,7 @@ class EnvConfig extends CliToolkitGenerateScriptAbstract {
                 If the directory does not exist, the script will attempt to create it.
             ');
     }
+
 
     public function execute(): void {
         set_exception_handler(function (Throwable $e) {

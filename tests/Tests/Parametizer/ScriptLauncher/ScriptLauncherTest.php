@@ -77,7 +77,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
      * Tests {@see ClearCache} subcommand availability and execution if a specified cache file exists.
      *
      * @see ScriptLauncher::execute()
-     * @see ClearCache::getConfiguration()
+     * @see ClearCache::getConfigBuilder()
      * @see ClearCache::execute()
      */
     public function testDetectorCacheCleanup(
@@ -91,7 +91,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
 
         $launcherScriptPath       = __DIR__ . '/scripts/launcher-with-cache.php';
         $parametersBaseString     = (int) $doesDetectorThrowOnException . " '{$detectorCacheFilePath}'";
-        $clearCacheSubcommandName = ClearCache::getFullName();
+        $clearCacheSubcommandName = ClearCache::getScriptName();
 
         $result = null !== $detectorCacheFilePath && !$isClearCacheSubcommandAvailable
             // Cache file is expected but failed to be created:
@@ -283,7 +283,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
      * @see ScriptLauncher::useParentEnvConfigForSubcommands() The flag is set here.
      * @see ScriptLauncher::execute() Here the parent config {@see EnvironmentConfig} instance is passed
      * (or not) to subcommand configs.
-     * @see ScriptAbstract::getConfiguration() Here the parent config may be passed to a subcommand.
+     * @see ScriptAbstract::getConfigBuilder() Here the parent config may be passed to a subcommand.
      */
     public function testLauncherSettingSameEnvConfigForSubcommands(
         bool $isSameEnvConfigForSubcommands,

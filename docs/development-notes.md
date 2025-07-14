@@ -101,17 +101,17 @@ or even dozens of seconds.
 
 Possible solutions:
 1. Specify paths that are "closer" to actual scripts (less directories and files to parse).
-2. Support caching that may be enabled when needed.
+2. Enable caching.
 
 ### EnvironmentConfig load performance
 
 Negligible. `--dir-count=50 --dir-max-level=5 2000`:
 
-|                                                           Condition | Seconds | Memory, MB |
-|--------------------------------------------------------------------:|:--------|:-----------|
-|                                        Autoload ON + no config file | `0.183` | `27.041`   |
-|                 Autoload ON + a config file in `MassTest` directory | `0.2`   | `27.041`   |
-| Autoload OFF - `ScriptLauncher::useParentEnvConfigForSubcommands()` | `0.14`  | `25.313`   |
+|                                                          Condition | Seconds | Memory, MB |
+|-------------------------------------------------------------------:|:--------|:-----------|
+| Autoload OFF: `ScriptLauncher::useParentEnvConfigForSubcommands()` | `0.150` | `25.898`   |
+|                                       Autoload ON + no config file | `0.185` | `26.809`   |
+|      Autoload ON + a config file somewhere in `MassTest` directory | `0.215` | `27.69`    |
 
 ### RegExp in subcommand name validation
 

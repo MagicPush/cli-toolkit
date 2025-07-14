@@ -146,7 +146,7 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     protected function getDataProcessedAfterDetection(): array {
         $detectedFQClassNamesByScriptNames = [];
         foreach ($this->detectedFQClassNames as $fullyQualifiedClassName) {
-            $scriptName = $fullyQualifiedClassName::getFullName();
+            $scriptName = $fullyQualifiedClassName::getScriptName();
             if (array_key_exists($scriptName, $detectedFQClassNamesByScriptNames)) {
                 if (!$this->throwOnException) {
                     continue;

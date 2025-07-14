@@ -4,21 +4,13 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Blue;
 
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 final class SomethingZeroShadow extends ScriptAbstract {
-    public static function getLocalName(): string {
-        return 'something'; /** The same value as in {@see SomethingZero::getFullName()} */
+    public static function getScriptInnerName(): string {
+        return 'something'; /** The same value as in {@see SomethingZero::getScriptName()} */
     }
 
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
-        return static::newConfig($envConfig, $throwOnException);
-    }
 
     public function execute(): void { }
 }

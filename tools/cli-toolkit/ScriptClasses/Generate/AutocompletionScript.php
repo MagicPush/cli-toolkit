@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
-use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
@@ -24,17 +23,15 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
         return true;
     }
 
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void {
+        parent::setUpConfig($configBuilder);
 
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
         $helpFormatter = HelpFormatter::createForStdOut();
 
         $pathValidationDescription = 'You may specify absolute or relative paths - each element will be processed'
             . ' with `' . $helpFormatter->command('realpath()') . '` by the validator.';
 
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
+        $configBuilder
             ->description('
                 Generates a file with Bash completion scripts, which you can include in your Bash profile.
         
@@ -132,6 +129,7 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                 Also show a ready-to-copy-and-paste command to include the generated file.
             ');
     }
+
 
     public function execute(): void {
         set_exception_handler(function (Throwable $e) {

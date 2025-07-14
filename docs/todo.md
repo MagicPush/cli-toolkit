@@ -139,10 +139,10 @@ The list of plans and ideas for future development.
         1. - [ ] Renaming section:
             1. [Script](../src/Parametizer/Script) -> `ScriptClass`
             1. (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
-        1. - [ ] Try easing `ScriptAbstract::getConfiguration()` declaration. Consider:
+        1. - [x] Try easing `ScriptAbstract::getConfigBuilder()` declaration. Consider:
     
             - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
-            - making `getConfiguration()` non-static, creating `ConfigBuilder` instance inside `__construct()`.
+            - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
         1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
            the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
 
@@ -193,8 +193,8 @@ The list of plans and ideas for future development.
               as a default config (not a forced only-config) - a script class should be able to _update_ parameters.~~
         1. - [x] ~~Think about the load priorities: a) launcher env config instance,
              b) script class subtree config files.~~
-        1. - [x] ~~Try easing `ScriptAbstract::getConfiguration()` declaration, consider making an empty `ConfigBuilder`
-             instance "automatically" by making `getConfiguration()` non-static or in a separate method.~~
+        1. - [x] ~~Try easing `ScriptAbstract::getConfigBuilder()` declaration, consider making an empty `ConfigBuilder`
+             instance "automatically" by making `getConfigBuilder()` non-static or in a separate method.~~
     1. - [x] Make `newSubcommandSwitch()` optional.
 
          Only a single subcommand switch is possible, so there is no need to specify its name explicitly
@@ -245,8 +245,8 @@ The list of plans and ideas for future development.
             1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
         1. - [x] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
             1. - [x] Simple and composite names (with sections).
-            1. - [x] `getLocalName()` must not be empty.
-            1. - [x] `getLocalName()` auto name generation:
+            1. - [x] `getScriptInnerName()` must not be empty.
+            1. - [x] `getScriptInnerName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [x] [cli-toolkit](../tools/cli-toolkit)
             1. - [x] [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)

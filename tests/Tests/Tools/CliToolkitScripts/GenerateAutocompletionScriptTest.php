@@ -30,7 +30,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         parent::setUp();
 
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = AutocompletionScript::getFullName();
+        $this->subcommandName = AutocompletionScript::getScriptName();
 
         static::removeDirectoryRecursively(self::GENERATED_DIRECTORY_PATH);
     }
@@ -102,11 +102,11 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
 
     #[DataProvider('provideScriptsDetection')]
     /**
-     * Tests detection parameters available in {@see AutocompletionScript::getConfiguration()}.
+     * Tests detection parameters available in {@see AutocompletionScript::getConfigBuilder()}.
      *
      * @param array<string, string> $detectedPathsByNames (string) script name => (string) script absolute path
      * @see AutocompletionScript::execute()
-     * @see AutocompletionScript::getConfiguration()
+     * @see AutocompletionScript::getConfigBuilder()
      */
     public function testScriptsDetection(
         string $parametersString,
@@ -468,7 +468,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     /**
      * Tests different prefixes for script aliases.
      *
-     * @see AutocompletionScript::getConfiguration()
+     * @see AutocompletionScript::getConfigBuilder()
      * @see AutocompletionScript::execute()
      */
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {

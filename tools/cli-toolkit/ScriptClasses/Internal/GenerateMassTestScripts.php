@@ -6,9 +6,8 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Internal;
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
-use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
@@ -61,13 +60,12 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         return array_merge(parent::getNameSections(), ['internal']);
     }
 
-    public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface {
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void {
+        parent::setUpConfig($configBuilder);
+
         $formatter = HelpFormatter::createForStdOut();
 
-        return static::newConfig(envConfig: $envConfig, throwOnException: $throwOnException)
+        $configBuilder
             ->shortDescription('Generates dummy scripts for performance testing.')
             ->description('
                 Generates a batch of dummy script classes, a launcher and supplementary files for performance testing.
@@ -440,7 +438,7 @@ TEXT;
          */
         /** @var callable $launcherCallable This hint is needed only for the class method to be IDE-detectable. */
         $launcherCallable       = [ScriptLauncher::class, 'execute'];
-        $launcherClassBaseName  = mb_substr($launcherCallable[0], mb_strrpos($launcherCallable[0], '\\') + 1);
+        $launcherClassShortName = mb_substr(mb_strrchr($launcherCallable[0], '\\'), 1);
         $launcherExecMethodName = $launcherCallable[1];
 
         $contents = <<<PHP
@@ -483,7 +481,7 @@ register_shutdown_function(
 );
 // <- PERFORMANCE STATS
 
-(new {$launcherClassBaseName}(\$scriptClassDetector))
+(new {$launcherClassShortName}(\$scriptClassDetector))
     ->throwOnException()
     ->{$launcherExecMethodName}();
 
@@ -612,16 +610,14 @@ declare(strict_types=1);
 
 namespace {$namespace};
 
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
-use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
 final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
-    public static function getConfiguration(
-        ?EnvironmentConfig \$envConfig = null,
-        bool \$throwOnException = false
-    ): BuilderInterface {
-        return static::newConfig(envConfig: \$envConfig, throwOnException: \$throwOnException)
+    protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
+        parent::setUpConfig(\$configBuilder);
+
+        \$configBuilder
             ->description('
                 %%SCRIPT_DESCRIPTION%%
             ')
@@ -633,6 +629,7 @@ final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
             ->newArgument('%%ARGUMENT_NAME%%')
             ->required(false);
     }
+
 
     public function execute(): void {
         %%EXECUTION%%

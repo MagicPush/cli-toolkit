@@ -75,7 +75,7 @@ class ScriptLauncher {
         foreach ($classNamesBySubcommandNames as $subcommandName => $className) {
             $this->configBuilder->newSubcommand(
                 $subcommandName,
-                $className::getConfiguration(
+                $className::getConfigBuilder(
                     envConfig: $envConfigForSubcommands,
                     throwOnException: $this->throwOnException,
                 ),
@@ -83,12 +83,12 @@ class ScriptLauncher {
         }
 
         if ($this->scriptClassDetector->doesCacheFileExist()) {
-            $subcommandNameClearCache = ClearCache::getFullName();
+            $subcommandNameClearCache = ClearCache::getScriptName();
             $contextClearCache        = new ClearCacheContext($this->scriptClassDetector->getCacheFilePath());
 
             $this->configBuilder->newSubcommand(
                 $subcommandNameClearCache,
-                ClearCache::getConfiguration(
+                ClearCache::getConfigBuilder(
                     envConfig: $envConfigForSubcommands,
                     throwOnException: $this->throwOnException,
                     context: $contextClearCache,

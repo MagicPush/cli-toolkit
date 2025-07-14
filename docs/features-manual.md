@@ -303,11 +303,6 @@ The detection works this way:
        [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php), then such the backtrace entry closest
        to the launched script is chosen. Thus the detected subcommand class location is prioritized over
        the launched script location (see _Example 2_ below).
-
-       **The caveat**: `EnvironmentConfig` autoloader will detect config files near only those subcommand classes
-      with `getConfiguration()` method defined explicitly, even if the method just calls it's parent.
-      The detection is based on `debug_backtrace()` output, so a class location is detected only
-      if exactly that class `getConfiguration()` version is called.
 1. If a config file is not found or contains only a part of settings, move 1 directory above the current and repeat.
 1. Continue the search until all settings have been read from found files or the _topmost directory_ is reached.
 

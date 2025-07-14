@@ -16,7 +16,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests that a script local name can not be empty.
      *
-     * @see ScriptAbstract::getFullName()
+     * @see ScriptAbstract::getScriptName()
      */
     public function testEmptyLocalNames(string $className): void {
         self::assertConfigExceptionOutput(
@@ -40,7 +40,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests local names automatic generation based on class names.
      *
-     * @see ScriptAbstract::getLocalName()
+     * @see ScriptAbstract::getScriptInnerName()
      * @noinspection SpellCheckingInspection
      */
     public function testAutoLocalName(): void {
@@ -68,7 +68,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests local names automatic generation based on class names.
      *
-     * @see ScriptAbstract::getFullName()
+     * @see ScriptAbstract::getScriptName()
      */
     public function testNamesWithSections(): void {
         assertSame(

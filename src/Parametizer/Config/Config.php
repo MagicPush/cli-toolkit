@@ -281,7 +281,7 @@ class Config {
         foreach (static::getBuiltInSubcommandClassesBySubcommandNames() as $subcommandName => $subcommandClass) {
             $this->newSubcommand(
                 $subcommandName,
-                $subcommandClass::getConfiguration(envConfig: $this->envConfig)->getConfig(),
+                $subcommandClass::getConfigBuilder(envConfig: $this->envConfig)->getConfig(),
             );
         }
 

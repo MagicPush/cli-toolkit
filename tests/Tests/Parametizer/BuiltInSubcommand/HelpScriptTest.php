@@ -16,7 +16,7 @@ class HelpScriptTest extends TestCaseAbstract {
     /**
      * Tests help output for different parameters (subcommand names).
      *
-     * @see HelpScript::getConfiguration()
+     * @see HelpScript::getConfigBuilder()
      * @see HelpScript::execute()
      * @see Config::commitSubcommandSwitch()
      */
@@ -129,7 +129,7 @@ class HelpScriptTest extends TestCaseAbstract {
     /**
      * Tests error output if an invalid subcommand name is specified.
      *
-     * @see HelpScript::getConfiguration()
+     * @see HelpScript::getConfigBuilder()
      * @see HelpScript::execute()
      * @see Config::commitSubcommandSwitch()
      */

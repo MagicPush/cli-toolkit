@@ -176,22 +176,7 @@ class EnvironmentConfig {
     protected static function detectBottommostDirectoryPath(): ?string {
         $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
-        $traceIndexLast = array_key_last($debugBacktrace);
-        for ($traceIndex = $traceIndexLast; $traceIndex > 0; $traceIndex--) {
-            $traceElement = $debugBacktrace[$traceIndex];
-
-            if (
-                !empty($traceElement['class'])
-                && is_subclass_of(
-                    $traceElement['class'],
-                    ScriptAbstract::class,
-                )
-            ) {
-                return $debugBacktrace[$traceIndex - 1]['file'] ?? null;
-            }
-        }
-
-        return $debugBacktrace[$traceIndexLast]['file'] ?? null;
+        return $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? null;
     }
 
     /**

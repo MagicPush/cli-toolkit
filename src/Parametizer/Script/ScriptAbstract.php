@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer\Script;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
-use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use ReflectionClass;
 
 abstract class ScriptAbstract {
     /** @see Config::newSubcommand() - allowed characters validation */
@@ -20,10 +20,12 @@ abstract class ScriptAbstract {
     public const string NAME_PART_SEPARATOR = '-';
 
 
-    public static function getLocalName(): string {
-        $classNameParts = explode('\\', static::class);
-        $classShortName = $classNameParts[array_key_last($classNameParts)];
-
+    /**
+     * In comparison with {@see static::getScriptName()} the method returns only the last part
+     * of a full script name - without {@see static::getNameSections()}.
+     */
+    public static function getScriptInnerName(): string {
+        $classShortName      = mb_substr(mb_strrchr('\\' . static::class, '\\'), 1);
         $scriptName          = '';
         $previousSymbolUpper = null;
         $pendingAbbreviation = '';
@@ -69,12 +71,15 @@ abstract class ScriptAbstract {
         return [];
     }
 
-    public static function getFullName(): string {
-        $errorFormatter = HelpFormatter::createForStdErr();
+    /**
+     * Returns full script name including {@see static::getNameSections()}.
+     */
+    public static function getScriptName(): string {
+        $errorFormatter     = HelpFormatter::createForStdErr();
         $classNameFormatted = $errorFormatter->helpNote(static::class);
         $errorMessagePrefix = "Script '{$classNameFormatted}' >>> Config error:";
 
-        $localName = trim(static::getLocalName());
+        $localName = trim(static::getScriptInnerName());
         if ('' === $localName) {
             throw new ConfigException("{$errorMessagePrefix} local name can not be empty.");
         }
@@ -98,24 +103,40 @@ abstract class ScriptAbstract {
         return $fullName;
     }
 
+    protected static function setUpConfig(ConfigBuilder $configBuilder): void { }
+
     /**
-     * @param bool $throwOnException Useful to debug automatic environment config creation, if `$envConfig` is `null`.
+     * @param bool $throwOnException {@see Parametizer::newConfig()}
      */
-    protected static function newConfig(?EnvironmentConfig $envConfig, bool $throwOnException): ConfigBuilder {
-        return Parametizer::newConfig(envConfig: $envConfig, throwOnException: $throwOnException);
+    public static function getConfigBuilder(
+        ?EnvironmentConfig $envConfig = null,
+        bool $throwOnException = false,
+    ): ConfigBuilder {
+        /*
+         * Here we want to detect environment config files starting from the launched script class location.
+         *
+         * debug_backtrace() does not contain script classes mentioning until this method is redefined explicitly.
+         * That's why we here explicitly specify the bottommost directory path.
+         */
+        if (null === $envConfig && is_subclass_of(static::class, ScriptAbstract::class)) {
+            $staticClassReflection = new ReflectionClass(static::class);
+            $staticClassFilePath   = $staticClassReflection->getFileName();
+            if (false !== $staticClassFilePath && !$staticClassReflection->isAbstract()) {
+                $envConfig = EnvironmentConfig::createFromConfigsBottomUpHierarchy(
+                    bottommostDirectoryPath: dirname($staticClassFilePath),
+                    throwOnException: $throwOnException,
+                );
+            }
+        }
+
+        $configBuilder = Parametizer::newConfig($envConfig, $throwOnException);
+        static::setUpConfig($configBuilder);
+
+        return $configBuilder;
     }
 
 
-    public function __construct(protected CliRequest $request) { }
-
-
-    /**
-     * @param bool $throwOnException Useful to debug automatic environment config creation, if `$envConfig` is `null`.
-     */
-    abstract public static function getConfiguration(
-        ?EnvironmentConfig $envConfig = null,
-        bool $throwOnException = false,
-    ): BuilderInterface;
+    public function __construct(protected readonly CliRequest $request) { }
 
     abstract public function execute(): void;
 }

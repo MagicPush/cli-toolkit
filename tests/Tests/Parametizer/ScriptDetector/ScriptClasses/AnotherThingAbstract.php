@@ -13,7 +13,7 @@ abstract class AnotherThingAbstract {
         return Parametizer::newConfig($envConfig, $throwOnException);
     }
 
-    public static function getFullName(): string {
+    public static function getScriptName(): string {
         return 'you-should-not-see-this';
     }
 }
