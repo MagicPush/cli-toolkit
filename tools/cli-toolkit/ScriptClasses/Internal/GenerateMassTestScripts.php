@@ -409,11 +409,11 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
 declare(strict_types=1);
 
-require_once '{$this->pathDirectoryProject}/vendor/autoload.php';
+require_once '{$this->pathDirectoryProject}/tools/cli-toolkit/init.php';
 
 use Composer\Autoload\ClassLoader;
 
-\$composerLoader = new ClassLoader('{$this->pathDirectoryProject}/vendor');
+\$composerLoader = new ClassLoader();
 \$composerLoader->addPsr4('{$searchNamespacePSR4}', [__DIR__]);
 \$composerLoader->register();
 

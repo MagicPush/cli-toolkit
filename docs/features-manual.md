@@ -279,7 +279,7 @@ However if you want to affect a large amount of scripts or even all of those, th
 ### How to: Automatically via config files
 
 1. Generate a config file via Parametizer-powered
-   [EnvConfig.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvConfig.php),
+   [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php),
    ```sh
    php ../tools/cli-toolkit/launcher.php cli-toolkit:generate:env-config --help
    ```

@@ -29,8 +29,9 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
         );
 
         $configBuilder
+            ->shortDescription('Shows examples of formatting a substring in a terminal.')
             ->description("
-                Shows an example substring ('{$exampleInDescription}') with each standard terminal font color
+                Shows an example substring ('{$exampleInDescription}') in each standard terminal font color
                 and some styles, plus custom color examples.
                 You will find the mentioned codes constants in '{$terminalFormatterDescription}' class.
                 

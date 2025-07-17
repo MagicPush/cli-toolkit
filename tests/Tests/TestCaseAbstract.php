@@ -169,7 +169,7 @@ abstract class TestCaseAbstract extends TestCase {
     }
 
     /**
-     * Asserts an exact math of `$expectedErrorOutput` with STDERR.
+     * Asserts an exact match of `$expectedErrorOutput` with STDERR.
      */
     public static function assertFullErrorOutput(
         string $scriptPath,

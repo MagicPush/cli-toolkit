@@ -11,7 +11,7 @@ use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RuntimeException;
 use Throwable;
 
-class EnvConfig extends CliToolkitGenerateScriptAbstract {
+class EnvironmentConfigFile extends CliToolkitGenerateScriptAbstract {
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 

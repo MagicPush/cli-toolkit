@@ -32,10 +32,11 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
             . ' with `' . $helpFormatter->command('realpath()') . '` by the validator.';
 
         $configBuilder
+            ->shortDescription('Generates a file with Bash completion scripts.')
             ->description('
                 Generates a file with Bash completion scripts, which you can include in your Bash profile.
         
-                Each time you add or delete a Parametizer-powered script, you should:
+                Each time you add or delete a Parametizer-powered plain script (not a class script), you should:
                     1. Launch this script - so the generated completion script is updated.
                     2. Relaunch your Bash (or call the generated script manually) - so the updated list of aliases'
                         . ' is loaded into your session.

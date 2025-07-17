@@ -100,7 +100,7 @@ that also utilize some Parametizer features (so may be studied as examples).
       ```sh
       php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --help
       ```
-- [EnvConfig.php](tools/cli-toolkit/ScriptClasses/Generate/EnvConfig.php):
+- [EnvironmentConfigFile.php](tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php):
   helps to configure environment settings for your scripts.
   See [Environment Config manual](docs/features-manual.md#environment-config) for details.
 - [TerminalFormatterShowcase.php](tools/cli-toolkit/ScriptClasses/TerminalFormatterShowcase.php):

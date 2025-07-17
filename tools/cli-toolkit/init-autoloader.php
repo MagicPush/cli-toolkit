@@ -10,6 +10,6 @@ AutoloadDetector::detectAndRequire();
 
 use Composer\Autoload\ClassLoader;
 
-$composerLoader = new ClassLoader(__DIR__ . '/../../vendor');
+$composerLoader = new ClassLoader();
 $composerLoader->addPsr4('MagicPush\\CliToolkit\\Tools\\CliToolkit\\', [__DIR__]);
 $composerLoader->register();

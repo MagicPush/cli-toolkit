@@ -41,12 +41,11 @@ class HelpGenerator {
 
         $parentConfig = $config->getParent();
         if ($parentConfig) {
-            $usageTemplate .= $this->getUsageTemplate($parentConfig, true) . ' ';
+            $usageTemplate .= $this->getUsageTemplate($parentConfig, true)
+                . ' ' . $this->formatter->paramValue($config->getScriptName());
+        } else {
+            $usageTemplate .= $config->getScriptName();
         }
-
-        $usageTemplate .= $parentConfig
-            ? $this->formatter->paramValue($config->getScriptName())
-            : $config->getScriptName();
 
         $optionTemplateStrings         = [];
         $requiredOptionTemplateStrings = [];

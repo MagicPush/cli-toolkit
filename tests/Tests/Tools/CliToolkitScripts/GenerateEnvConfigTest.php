@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
-use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\EnvConfig;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\EnvironmentConfigFile;
 
 use function PHPUnit\Framework\assertFileExists;
 use function PHPUnit\Framework\assertIsArray;
@@ -30,7 +30,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
         parent::setUp();
 
         require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = EnvConfig::getScriptName();
+        $this->subcommandName = EnvironmentConfigFile::getScriptName();
 
         static::removeDirectoryRecursively(self::GENERATED_DIRECTORY_PATH);
     }
@@ -39,7 +39,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests a failed attempt to create a directory (no access) for a generated file.
      *
-     * @see EnvConfig::execute()
+     * @see EnvironmentConfigFile::execute()
      */
     public function testFailToCreateDirectory(): void {
         self::assertExecutionErrorOutput(
@@ -52,7 +52,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests a failed attempt to generate a file (no access).
      *
-     * @see EnvConfig::execute()
+     * @see EnvironmentConfigFile::execute()
      */
     public function testFailToWriteIntoFile(): void {
         self::assertExecutionErrorOutput(
@@ -65,7 +65,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests the generated file contents and the generator output.
      *
-     * @see EnvConfig::execute()
+     * @see EnvironmentConfigFile::execute()
      */
     public function testSuccess(): void {
         assertSame(
@@ -89,7 +89,7 @@ class GenerateEnvConfigTest extends TestCaseAbstract {
     /**
      * Tests that `--force` flags allows overwriting of previously generated config files.
      *
-     * @see EnvConfig::execute()
+     * @see EnvironmentConfigFile::execute()
      */
     public function testForce(): void {
         // Ensure the file initially exists and contains non-JSON data:

@@ -76,20 +76,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Add an alternate script detector.
-
-        1. - [ ] Forbid duplicate script names - change duplicate names to be unique.
-
-             Now duplicates are not processed (the latest duplicate takes place).
-        1. - [x] Plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
-        1. - [ ] ~~Regular plain scripts.~~
-        1. - [x] Test (at least, manually) the future skeleton scenarios:
-            1. Include everything except [tests](../tests) and [cli-toolkit](../tools/cli-toolkit).
-            1. Include some directories recursively plus the current one (the skeleton launcher location)
-               non-recursively.
-        1. - [x] Replace internal detection in
-             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
-             with the created detector class.
     1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
         1. - [ ] Exclude [tests](../tests). At least, when launched somewhere "higher" than the stock
              [cli-toolkit](../tools/cli-toolkit). It will be needed later for the skeleton.
@@ -109,8 +95,9 @@ The list of plans and ideas for future development.
             1. - [ ] `list` as a default value.
                  No other parameters are processed correctly unless `list` is specified explicitly.
         1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
-        1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+            1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
+            1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
         1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] Create a document about values and / or goals of the library.
     1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
@@ -252,7 +239,7 @@ The list of plans and ideas for future development.
             1. - [x] [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
  
                  Functional tests that look for substrings in generated files.
-            1. - [x] [EnvConfig.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvConfig.php)
+            1. - [x] [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php)
  
                  Just assert generated file's contents.
     1. - [x] Provide a docker config / build script for tests. And rewrite tests.
@@ -262,6 +249,19 @@ The list of plans and ideas for future development.
         1. PHP "development" config setup causes exceptions printed in `STDOUT` instead of `STDERR`.
         1. Tests are launched under `root`, so file permission-related tests fail.
         1. `posix_isatty()` / `stream_isatty()` always return false in a container launched from PhpStorm.
+    1. - [x] Add an alternate script detector.
+        1. - [x] Detects plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
+        1. - [ ] ~~Regular plain scripts.~~
+        1. - [x] Forbid duplicate script names - throw an exception or silently skip duplicates.
+            1. - [ ] ~~Invent a mean to generate unique alternative names for duplicates.~~
+        1. - [x] Test (at least, manually) the future skeleton scenarios:
+            1. Include everything except [tests](../tests) and [cli-toolkit](../tools/cli-toolkit).
+            1. Include some directories recursively plus the current one (the skeleton launcher location)
+               non-recursively.
+        1. - [x] Replace internal detection in
+             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+             with the created detector class.
+    1. - [x] Add a simple script to execute any class script without using a detector.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.
