@@ -13,7 +13,7 @@ unset($_SERVER['argv'][1], $_SERVER['argv'][2]);
 
 $scriptClassDetector = (new ScriptClassDetector((bool) $detectorThrowOnException))
     ->cacheFilePath('' !== $detectorCacheFilePath ? $detectorCacheFilePath : null)
-    ->searchDirectory(__DIR__, false); // It does not matter where to search.
+    ->searchDirectory(__DIR__, isRecursive: false); // It does not matter where to search.
 (new ScriptLauncher($scriptClassDetector))
     ->throwOnException()
     ->execute();

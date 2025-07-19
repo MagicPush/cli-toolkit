@@ -8,11 +8,11 @@ use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ScriptLauncherScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ScriptLauncherSubcommandAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use RuntimeException;
 
-class ClearCache extends ScriptLauncherScriptAbstract {
+class ClearCache extends ScriptLauncherSubcommandAbstract {
     protected readonly HelpFormatter $formatterOutput;
     protected readonly HelpFormatter $formatterError;
 

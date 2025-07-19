@@ -89,7 +89,10 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
             $fullyQualifiedClassName = "{$classNamespace}\\{$fullyQualifiedClassName}";
         }
 
-        if (!is_subclass_of($fullyQualifiedClassName, ScriptAbstract::class)) {
+        if (
+            !is_subclass_of($fullyQualifiedClassName, ScriptAbstract::class)
+            || !$fullyQualifiedClassName::isAvailableByDetector()
+        ) {
             return;
         }
 

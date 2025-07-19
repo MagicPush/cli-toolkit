@@ -54,17 +54,17 @@ class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
 
                     /**
                      * These files are not (and should not be) detected:
-                     *  * 'construction-launch-mismatch':   wrong pairs of 'construct' and 'exec' substrings;
-                     *  * 'construction-launch-mismatch-2': same as above;
-                     *  * 'no-config-no-launcher':          no exact 'construct' substrings detected,
-                     *                                          {@see ScriptFileDetector::SUBSTR_*_CONSTRUCT};
-                     *  * 'no-run-no-execute':              no exact 'exec' substrings detected,
-                     *                                          {@see ScriptFileDetector::SUBSTR_*_EXEC};
-                     *  * 'Something':                      lacks at least proper 'exec' substring
-                     *                                      (for now we assume that this is good enough to distinguish
-                     *                                      plain scripts and script classes);
-                     *  * 'somewhat-wrong-ext':             wrong extension file
-                     *                                          (not {@see ScriptDetectorAbstract::FILE_EXTENSION}).
+                     *  * 'construction-l-mismatch':   wrong pairs of 'construct' and 'exec' substrings;
+                     *  * 'construction-l-mismatch-2': same as above;
+                     *  * 'no-config-no-l':            no exact 'construct' substrings detected,
+                     *                                     {@see ScriptFileDetector::SUBSTR_*_CONSTRUCT};
+                     *  * 'no-run-no-execute':         no exact 'exec' substrings detected,
+                     *                                     {@see ScriptFileDetector::SUBSTR_*_EXEC};
+                     *  * 'Something':                 lacks at least proper 'exec' substring
+                     *                                 (for now we assume that this is good enough to distinguish
+                     *                                 plain scripts and script classes);
+                     *  * 'somewhat-wrong-ext':        wrong extension file
+                     *                                     (not {@see ScriptDetectorAbstract::FILE_EXTENSION}).
                      */
                 ],
                 'detector' => (new ScriptFileDetector(throwOnException: true))

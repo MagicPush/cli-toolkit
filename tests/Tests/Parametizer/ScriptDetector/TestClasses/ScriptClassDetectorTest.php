@@ -358,4 +358,28 @@ class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                 ->getDetectedData(),
         );
     }
+
+    /**
+     * Tests that specifically marked classes (mainly - built-in subcommands) are not detectable.
+     *
+     * @see ScriptClassDetector::processDetectedFileContents()
+     * @see ScriptAbstract::isAvailableByDetector()
+     */
+    public function testIgnoreByScriptClassIsDetectable(): void {
+        assertSame(
+            [],
+            (new ScriptClassDetector(throwOnException: true))
+                // Imagine that a launcher includes everything in the project that is available by an autoloader...
+                ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true)
+                /*
+                 * Here we have to exclude tests explicitly because of the PHPUnit environment:
+                 * the bootstrap script autoloads test classes.
+                 *
+                 * Also some test classes are coded with errors intentionally for testing, what would constantly crash
+                 * this test.
+                 */
+                ->excludeDirectory(__DIR__ . '/../../../../../tests')
+                ->getDetectedData(),
+        );
+    }
 }

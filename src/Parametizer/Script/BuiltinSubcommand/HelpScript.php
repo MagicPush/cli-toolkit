@@ -9,9 +9,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-class HelpScript extends ScriptAbstract {
+class HelpScript extends BuiltinSubcommandAbstract {
     public const string ARGUMENT_SUBCOMMAND_NAME = 'subcommand-name';
 
 

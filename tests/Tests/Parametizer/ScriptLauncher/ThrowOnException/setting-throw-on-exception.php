@@ -7,10 +7,10 @@ require_once __DIR__ . '/../../../init-console.php';
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 
 $launcherThrowOnException = (bool) $_SERVER['argv'][1];
-$damageScriptFilename     = (bool) $_SERVER['argv'][2];
+$damageScriptFilepath     = (bool) $_SERVER['argv'][2];
 unset($_SERVER['argv'][1], $_SERVER['argv'][2]);
 
-if ($damageScriptFilename) {
+if ($damageScriptFilepath) {
     $_SERVER['SCRIPT_FILENAME'] = '';
 }
 

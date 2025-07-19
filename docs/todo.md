@@ -76,12 +76,25 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
+    1. - [ ] Try placing [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+         command in [ListScript.php](../src/Parametizer/Script/BuiltinSubcommand/ListScript.php)
+         in `Built-in subcommands:` or its own uniquely headered section.
     1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
-        1. - [ ] Exclude [tests](../tests). At least, when launched somewhere "higher" than the stock
-             [cli-toolkit](../tools/cli-toolkit). It will be needed later for the skeleton.
-             
-             Alternatively, remove the default detector, always require a detector setup instead.
-        1. - [ ] Ensure tests cover that default exclusion, but otherwise execute themselves without failures.
+        1. - [ ] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
+             default value does not work properly if a launcher is located in some distant directory.
+             Consider any of these options:
+
+            * Detect the "main project" directory path - the same directory where "the highest `vendor`"
+              directory is located.
+            * Set a particular directory in the upcoming skeleton generator's result. It might be again
+              the "main project" directory path or any particular directory set up in the skeleton generator.
+            * Remove the default detector - force the library users always to set up a detector manually.
+              Then just leave a "todo"-comment in the upcoming skeleton generator's result to set the path manually.
+        1. - [ ] Decide if detectors should throw exceptions by default.
+             Connected with the default state of `throwOnException()` and setter methods.
+
+            * If exceptions are still disabled by default,
+              describe the reason somewhere to not thinking about it ever again.
     1. - [ ] "First steps" skeleton generator for script classes launching.
         1. - [ ] Add the generator itself.
  
@@ -98,6 +111,9 @@ The list of plans and ideas for future development.
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
             1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
             1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
+            1. - [ ] Available subcommands.
+
+                 Also describe mass script generator as a useful tool to "play around" with the library.
         1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] Create a document about values and / or goals of the library.
     1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
@@ -126,6 +142,8 @@ The list of plans and ideas for future development.
         1. - [ ] Renaming section:
             1. [Script](../src/Parametizer/Script) -> `ScriptClass`
             1. (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
+        1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be
+           simplified - if a config with 'env' might be created ASAP.
         1. - [x] Try easing `ScriptAbstract::getConfigBuilder()` declaration. Consider:
     
             - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
@@ -262,6 +280,20 @@ The list of plans and ideas for future development.
              [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
              with the created detector class.
     1. - [x] Add a simple script to execute any class script without using a detector.
+    1. - [x] Always hide built-in and
+         [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommands
+         from [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) instances
+         with any setup. Otherwise the "whole project" detection setup causes an exception while trying to include
+         the "detected" `ClearCache` subcommand without its context object.
+        * Implement a method ~~or a constant~~ as a boolean answer like "is a hidden subcommand".
+        * Cover with an autotest.
+        * ~~Try hiding `cli-toolkit:internal:`, but "sometimes" making it available again~~ (see possible options):
+            * In [launcher.php](../tools/cli-toolkit/launcher.php) only.
+            * Only if a launcher (any - considering the script class is detectable) is called within the library solely,
+              not within some other project that includes this library.
+              For instance, check if `.git` directory exists in the library root directory.
+            * [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) new option.
+            * Existence of a particular file in the library `/local/` directory.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

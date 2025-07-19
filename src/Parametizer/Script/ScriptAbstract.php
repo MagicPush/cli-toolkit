@@ -11,6 +11,7 @@ use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use ReflectionClass;
 
 abstract class ScriptAbstract {
@@ -19,6 +20,22 @@ abstract class ScriptAbstract {
     /** @see Config::newSubcommand() - allowed characters validation */
     public const string NAME_PART_SEPARATOR = '-';
 
+
+    /**
+     * The method is utilized by {@see ScriptClassDetector::processDetectedFileContents()} mainly to ignore
+     * built-in subcommands, because those are added explicitly by the library.
+     *
+     * However, this method does NOT restrict script classes to be actually executed.
+     *
+     * You may repurpose this method for any other reason you see fit. Just a few examples:
+     *  * Detect particular scripts for selected environments only.
+     *      Like code generators, which are not very useful on test or production servers.
+     *  * Hide particular scripts from all launchers. Sometimes it might be easier to hide a script here
+     *      rather excluding it in each {@see ScriptClassDetector} instance.
+     */
+    public static function isAvailableByDetector(): bool {
+        return true;
+    }
 
     /**
      * In comparison with {@see static::getScriptName()} the method returns only the last part

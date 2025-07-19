@@ -11,9 +11,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-class ListScript extends ScriptAbstract {
+class ListScript extends BuiltinSubcommandAbstract {
     protected const string PADDING_BLOCK = '    ';
 
     protected const string HEADER_BUILT_IN = 'Built-in subcommands:';

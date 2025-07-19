@@ -17,58 +17,29 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertFileDoesNotExist;
 use function PHPUnit\Framework\assertFileExists;
+use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringNotContainsString;
+use function PHPUnit\Framework\assertTrue;
 
 class ScriptLauncherTest extends TestCaseAbstract {
-    protected function tearDown(): void {
-        switch ($this->nameWithDataSet()) {
-            /** @see static::testDetectorCacheCleanup() */
-            case 'testDetectorCacheCleanup with data set "cache-enabled"':
-                $cachePath = __DIR__ . '/scripts/launcher-with-cache.json';
-                if (file_exists($cachePath)) {
-                    unlink($cachePath);
-                }
-                break;
+    private const string CACHE_PATH = __DIR__ . '/scripts/launcher-with-cache.json';
 
-            /** @see static::testLauncherSettingThrowOnException() */
-            case 'testLauncherSettingThrowOnException with data set "env-config-parent-silent"':
-            case 'testLauncherSettingThrowOnException with data set "env-config-parent-exception"':
-                $configPath = __DIR__ . '/' . 'ThrowOnException/' . EnvironmentConfig::CONFIG_FILENAME;
-                if (file_exists($configPath)) {
-                    unlink($configPath);
-                }
-                break;
+    private const string CONFIG_PATH_LAUNCHER = __DIR__ . '/ThrowOnException/'
+        . EnvironmentConfig::CONFIG_FILENAME;
+    private const string CONFIG_PATH_SCRIPT_CLASSES = __DIR__ . '/ThrowOnException/ScriptClasses/'
+        . EnvironmentConfig::CONFIG_FILENAME;
 
-            /** @see static::testLauncherSettingThrowOnException() */
-            case 'testLauncherSettingThrowOnException with data set "env-config-child-silent"':
-            case 'testLauncherSettingThrowOnException with data set "env-config-child-exception"':
-                $configPath = __DIR__ . '/' . 'ThrowOnException/ScriptClasses/' . EnvironmentConfig::CONFIG_FILENAME;
-                if (file_exists($configPath)) {
-                    unlink($configPath);
-                }
-                break;
 
-            default:
-                // Do nothing.
-                break;
+    protected function setUp(): void {
+        parent::setUp();
+
+        $filesToDelete = [self::CACHE_PATH, self::CONFIG_PATH_LAUNCHER, self::CONFIG_PATH_SCRIPT_CLASSES];
+        foreach ($filesToDelete as $filePath) {
+            if (file_exists($filePath)) {
+                assertTrue(unlink($filePath));
+            }
         }
-
-        switch ($this->name()) {
-            /** @see static::testLauncherSettingThrowOnException() */
-            case 'testLauncherSettingThrowOnException':
-                $cachePath = __DIR__ . '/' . 'ThrowOnException/setting-throw-on-exception.json';
-                if (file_exists($cachePath)) {
-                    unlink($cachePath);
-                }
-                break;
-
-            default:
-                // Do nothing.
-                break;
-        }
-
-        parent::tearDown();
     }
 
 
@@ -89,7 +60,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
             assertFileDoesNotExist($detectorCacheFilePath);
         }
 
-        $launcherScriptPath       = __DIR__ . '/scripts/launcher-with-cache.php';
+        $launcherScriptPath       = __DIR__ . '/scripts/l-with-cache.php';
         $parametersBaseString     = (int) $doesDetectorThrowOnException . " '{$detectorCacheFilePath}'";
         $clearCacheSubcommandName = ClearCache::getScriptName();
 
@@ -161,7 +132,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
             ],
             'cache-enabled' => [
                 'doesDetectorThrowOnException'    => true,
-                'detectorCacheFilePath'           => __DIR__ . '/scripts/launcher-with-cache.json',
+                'detectorCacheFilePath'           => self::CACHE_PATH,
                 'isClearCacheSubcommandAvailable' => true,
             ],
 
@@ -199,6 +170,9 @@ class ScriptLauncherTest extends TestCaseAbstract {
             // One of possible exceptions for tested instances - if a JSON file (cache or EnvironmentConfig)
             // does not contain valid JSON. So let's create an expected file with invalid JSON.
             file_put_contents($invalidJsonFilePath, '[[definitely not a JSON string}');
+        } else {
+            assertFileDoesNotExist(self::CONFIG_PATH_LAUNCHER);
+            assertFileDoesNotExist(self::CONFIG_PATH_SCRIPT_CLASSES);
         }
 
         if (!$throwOnException) {
@@ -220,7 +194,6 @@ class ScriptLauncherTest extends TestCaseAbstract {
 
         if (null !== $invalidJsonFilePath) {
             // Let's be sure that a thrown exception is connected with a specific (parent or child) config file.
-            // Or with a cache file (in case of ScriptClassDetector).
             assertStringContainsString($invalidJsonFilePath, $result->getStdAll());
         }
     }
@@ -243,25 +216,25 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 'expectedErrorMessage' => "Path should be a readable directory: ''",
             ],
             'env-config-parent-silent' => [
-                'invalidJsonFilePath'  => __DIR__ . '/' . 'ThrowOnException/' . EnvironmentConfig::CONFIG_FILENAME,
+                'invalidJsonFilePath'  => self::CONFIG_PATH_LAUNCHER,
                 'damageScriptFilepath' => false,
                 'throwOnException'     => false,
                 'expectedErrorMessage' => '',
             ],
             'env-config-parent-exception' => [
-                'invalidJsonFilePath'  => __DIR__ . '/' . 'ThrowOnException/' . EnvironmentConfig::CONFIG_FILENAME,
+                'invalidJsonFilePath'  => self::CONFIG_PATH_LAUNCHER,
                 'damageScriptFilepath' => false,
                 'throwOnException'     => true,
                 'expectedErrorMessage' => 'Unable to read the environment config',
             ],
             'env-config-child-silent' => [
-                'invalidJsonFilePath'  => __DIR__ . '/' . 'ThrowOnException/ScriptClasses/' . EnvironmentConfig::CONFIG_FILENAME,
+                'invalidJsonFilePath'  => self::CONFIG_PATH_SCRIPT_CLASSES,
                 'damageScriptFilepath' => false,
                 'throwOnException'     => false,
                 'expectedErrorMessage' => '',
             ],
             'env-config-child-exception' => [
-                'invalidJsonFilePath'  => __DIR__ . '/' . 'ThrowOnException/ScriptClasses/' . EnvironmentConfig::CONFIG_FILENAME,
+                'invalidJsonFilePath'  => self::CONFIG_PATH_SCRIPT_CLASSES,
                 'damageScriptFilepath' => false,
                 'throwOnException'     => true,
                 'expectedErrorMessage' => 'Unable to read the environment config',
@@ -352,5 +325,28 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 'expectedSubstringSubcommand'   => '-M, --' . Config::OPTION_NAME_HELP,
             ],
         ];
+    }
+
+    /**
+     * Tests the case with global scope detection that no stock subcommands must be detected:
+     * no built-in subcommands, no stock "cli-toolkit" subcommands, no test script classes.
+     *
+     * @see ScriptLauncher::execute()
+     * @see ScriptClassDetector::processDetectedFileContents()
+     * @see ScriptAbstract::isAvailableByDetector()
+     */
+    public function testBuiltInCommandsAreAlwaysIgnored(): void {
+        assertSame(
+            <<<TEXT
+            help    Outputs a help page for a specified subcommand.
+            list    Shows available subcommands.
+
+            TEXT,
+            self::assertNoErrorsOutput(
+                __DIR__ . '/scripts/l-global.php',
+                Config::PARAMETER_NAME_LIST . ' --slim',
+            )
+                ->getStdOut(),
+        );
     }
 }
