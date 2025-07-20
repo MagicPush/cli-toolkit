@@ -21,7 +21,7 @@ class ListScriptTest extends TestCaseAbstract {
     public function testNamesNaturalSorting(): void {
         assertSame(
             <<<TEXT
-             Built-in subcommands:
+             Built-in:
                 help        Outputs a help page for a specified subcommand.
                 list        Shows available subcommands.
 
@@ -42,7 +42,7 @@ class ListScriptTest extends TestCaseAbstract {
      * Tests correct subcommand names sort with different name section levels.
      *
      * Also:
-     *  * Built-in subcommands must be sorted separately and appear at the top.
+     *  * Subcommands under custom headers (like built-in subcommands) must be sorted separately and appear at the top.
      *  * Short descriptions must be aligned based on the longest subcommand name and it's "level".
      *
      * @see ListScript::execute()
@@ -51,7 +51,7 @@ class ListScriptTest extends TestCaseAbstract {
     public function testNameSectionsSorting(): void {
         assertSame(
             <<<TEXT
-             Built-in subcommands:
+             Built-in:
                 help                                                Outputs a help page for a specified subcommand.
                 list                                                Shows available subcommands.
 
@@ -117,7 +117,7 @@ class ListScriptTest extends TestCaseAbstract {
             'nothing-found' => [
                 'subcommandNamePart' => 'subcommand-that-does-not-exist',
                 'expectedOutput'     => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help    Outputs a help page for a specified subcommand.
                     list    Shows available subcommands.
 
@@ -128,7 +128,7 @@ class ListScriptTest extends TestCaseAbstract {
             'starts-with' => [
                 'subcommandNamePart' => 'red',
                 'expectedOutput'     => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help                  Outputs a help page for a specified subcommand.
                     list                  Shows available subcommands.
 
@@ -149,7 +149,7 @@ class ListScriptTest extends TestCaseAbstract {
             'substring-in-middle' => [
                 'subcommandNamePart' => 'flower',
                 'expectedOutput'     => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help                   Outputs a help page for a specified subcommand.
                     list                   Shows available subcommands.
 
@@ -169,7 +169,7 @@ class ListScriptTest extends TestCaseAbstract {
             'one-letter' => [
                 'subcommandNamePart' => 'u',
                 'expectedOutput'     => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help                                                Outputs a help page for a specified subcommand.
                     list                                                Shows available subcommands.
 
@@ -194,7 +194,8 @@ class ListScriptTest extends TestCaseAbstract {
      * Affects:
      *  * sections: no section headers in output;
      *  * sort: all subcommands names are sorted within a single list (because of no section headers);
-     *          however, built-in subcommands are still sorted separately and put at the top of the outputted list.
+     *          however, subcommands under custom headers are still sorted separately (within each custom header)
+     *          and put above the rest of subcommands in a custom predefined order.
      *
      * @see ListScript::outputNode()
      */
@@ -256,7 +257,7 @@ class ListScriptTest extends TestCaseAbstract {
             'default' => [
                 'parametersString' => '0',
                 'expectedOutput'   => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help       Outputs a help page for a specified subcommand.
                     list       Shows available subcommands.
                 
@@ -270,7 +271,7 @@ class ListScriptTest extends TestCaseAbstract {
             'custom' => [
                 'parametersString' => '1',
                 'expectedOutput'   => <<<TEXT
-                 Built-in subcommands:
+                 Built-in:
                     help       Outputs a help page
                     list       Shows available subcommands.
                 

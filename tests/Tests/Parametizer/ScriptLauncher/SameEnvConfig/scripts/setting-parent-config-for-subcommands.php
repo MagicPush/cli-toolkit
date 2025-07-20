@@ -11,9 +11,11 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 $isSameEnvConfigForSubcommands = (bool) $_SERVER['argv'][1];
 $isEnvConfigManual             = (bool) $_SERVER['argv'][2];
-unset($_SERVER['argv'][1], $_SERVER['argv'][2]);
+$cacheFilePath                 = $_SERVER['argv'][3];
+unset($_SERVER['argv'][1], $_SERVER['argv'][2], $_SERVER['argv'][3]);
 
 $scriptClassDetector = (new ScriptClassDetector(true))
+    ->cacheFilePath($cacheFilePath)
     ->searchDirectory(__DIR__ . '/../ScriptClasses');
 
 if ($isEnvConfigManual) {

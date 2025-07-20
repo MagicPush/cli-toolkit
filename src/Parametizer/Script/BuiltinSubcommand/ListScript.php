@@ -11,12 +11,12 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
+use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
 
 class ListScript extends BuiltinSubcommandAbstract {
     protected const string PADDING_BLOCK = '    ';
 
-    protected const string HEADER_BUILT_IN = 'Built-in subcommands:';
-    protected const string HEADER_MAIN     = '--';
+    protected const string HEADER_DEFAULT = '--';
 
 
     protected readonly HelpFormatter     $formatter;
@@ -55,20 +55,52 @@ class ListScript extends BuiltinSubcommandAbstract {
     }
 
     public function execute(): void {
-        $builtInSubcommands           = $this->parentConfig->getBuiltInSubcommands();
-        $subcommandData               = [];
+        $builtInSubcommands            = $this->parentConfig->getBuiltInSubcommands();
+        $subcommandNameGroupsByHeaders = [
+            'Built-in:'        => array_keys($builtInSubcommands),
+            'Script launcher:' => [ClearCache::getScriptName()],
+        ];
+
+        /** @var array<string, string> $headersBySubcommandsLookup */
+        $headersBySubcommandsLookup = [];
+        foreach ($subcommandNameGroupsByHeaders as $header => $subcommandNames) {
+            $headersBySubcommandsLookup = array_merge(
+                $headersBySubcommandsLookup,
+                array_fill_keys($subcommandNames, $header),
+            );
+        }
+
+        // Init headered groups to ensure that those groups are listed in a particular order.
+        // The rest will be sorted.
+        /** @var array<string, Config|array> $subcommandGroupsByHeaders Headered groups */
+        $subcommandGroupsByHeaders = array_fill_keys(array_keys($subcommandNameGroupsByHeaders), []);
+
+        /**
+         * @var array<string, Config|array> $subcommandGroupsAuto Groups without predefined positioned headers.
+         *                                                        The headers for these groups are detected
+         *                                                        automatically based on subcommand name sections.
+         */
+        $subcommandGroupsAuto = [];
+
         $subcommandNameColumnWidthMax = 0;
         $padBlockWidth                = mb_strlen(static::PADDING_BLOCK);
         foreach ($this->parentConfig->getBranches() as $subcommandName => $subcommandConfig) {
             $isBuiltInSubcommand = array_key_exists($subcommandName, $builtInSubcommands);
 
-            if ('' !== $this->subcommandNamePart && !str_contains($subcommandName, $this->subcommandNamePart)) {
+            if (
+                !$isBuiltInSubcommand
+                && '' !== $this->subcommandNamePart
+                && !str_contains($subcommandName, $this->subcommandNamePart)
+            ) {
                 continue;
             }
 
+            $subcommandGlobalHeader = $headersBySubcommandsLookup[$subcommandName] ?? null;
+            $hasHeader              = null !== $subcommandGlobalHeader;
+
             if ($this->isSlim) {
                 $nodeLevel = 0;
-            } elseif ($isBuiltInSubcommand) {
+            } elseif ($hasHeader) {
                 $nodeLevel = 1;
             } else {
                 $nodeLevel = mb_substr_count($subcommandName, static::NAME_SECTION_SEPARATOR);
@@ -79,48 +111,80 @@ class ListScript extends BuiltinSubcommandAbstract {
                 $subcommandNameColumnWidthMax = $subcommandNameColumnWidth;
             }
 
-            // Slim list is treated in a much simpler way.
-            // Built-in subcommand list is treated separately.
-            if ($this->isSlim || $isBuiltInSubcommand) {
-                if (!$isBuiltInSubcommand) {
-                    $subcommandData[$subcommandName] = $subcommandConfig;
+            // Slim and headered lists are treated in a much simpler way.
+            if ($hasHeader || $this->isSlim) {
+                if ($hasHeader) {
+                    $subcommandGroupsByHeaders[$subcommandGlobalHeader][$subcommandName] = $subcommandConfig;
+                } elseif ($this->isSlim) {
+                    $subcommandGroupsAuto[$subcommandName] = $subcommandConfig;
                 }
 
                 continue;
             }
 
-            $nameParts       = explode(static::NAME_SECTION_SEPARATOR, $subcommandName);
-            $nameNumberLast  = array_key_last($nameParts);
-            $nameAccumulated = '';
-            $elementLink     = &$subcommandData;
-            foreach ($nameParts as $nameNumber => $namePart) {
+            $nameParts         = explode(static::NAME_SECTION_SEPARATOR, $subcommandName);
+            $namePartIndexLast = array_key_last($nameParts);
+            $nameAccumulated   = '';
+            $elementLink       = &$subcommandGroupsAuto;
+            foreach ($nameParts as $namePartIndex => $namePart) {
                 $nameAccumulated .= $namePart;
-                if ($nameNumber === $nameNumberLast) {
+                if ($namePartIndex === $namePartIndexLast) {
+                    // Here level 0 + last name part == a subcommand config without name sections.
                     if (0 === $nodeLevel) {
-                        $elementLink[static::HEADER_MAIN][$subcommandName] = $subcommandConfig;
+                        $elementLink[static::HEADER_DEFAULT][$subcommandName] = $subcommandConfig;
                     } else {
                         $elementLink[$nameAccumulated] = $subcommandConfig;
                     }
-                } else {
-                    $nameAccumulated .= static::NAME_SECTION_SEPARATOR;
-                    $elementLink     = &$elementLink[$nameAccumulated];
+
+                    break;
                 }
+
+                $nameAccumulated .= static::NAME_SECTION_SEPARATOR;
+                $elementLink     = &$elementLink[$nameAccumulated];
             }
+            unset($elementLink);
         }
 
         if ($this->isSlim) {
-            $this->outputNode($builtInSubcommands, $subcommandNameColumnWidthMax);
-            $this->outputNode($subcommandData, $subcommandNameColumnWidthMax);
+            foreach ($subcommandGroupsByHeaders as $subcommandGroup) {
+                if (!$subcommandGroup) {
+                    continue;
+                }
+
+                $this->outputNode($subcommandGroup, $subcommandNameColumnWidthMax);
+            }
+            $this->outputNode($subcommandGroupsAuto, $subcommandNameColumnWidthMax);
 
             return;
         }
 
-        $this->outputNode([static::HEADER_BUILT_IN => $builtInSubcommands], $subcommandNameColumnWidthMax);
-        echo PHP_EOL;
-        $this->outputNode($subcommandData, $subcommandNameColumnWidthMax);
+        foreach ($subcommandGroupsByHeaders as $header => $subcommandGroup) {
+            if (!$subcommandGroup) {
+                continue;
+            }
+
+            $this->outputNode(
+                [$header => $subcommandGroup], // Pass groups with headers one by one
+                                               // to prevent global (positioned) headers sorting.
+                $subcommandNameColumnWidthMax,
+            );
+            echo PHP_EOL;
+        }
+        $this->outputNode($subcommandGroupsAuto, $subcommandNameColumnWidthMax);
     }
 
-    protected function outputNode(array $nodeData, int $subcommandNameColumnWidthMax, int $nodeLevel = 0): void {
+    /**
+     * @param array<string, Config|array> $nodeData (string) node header => (Config) script config OR (array) subnode
+     */
+    protected function outputNode(
+        array $nodeData,
+        int $subcommandNameColumnWidthMax,
+        int $nodeLevel = 0,
+    ): void {
+        if (!$nodeData) {
+            return;
+        }
+
         if ($nodeLevel < 0) {
             throw new LogicException(
                 sprintf(
@@ -149,8 +213,7 @@ class ListScript extends BuiltinSubcommandAbstract {
 
         $firstElementKey = array_key_first($nodeData);
         foreach ($nodeData as $elementName => $elementValue) {
-            $isFirstElement = ($firstElementKey === $elementName);
-            if (is_array($elementValue) && !$isFirstElement) {
+            if ($elementName !== $firstElementKey && is_array($elementValue)) {
                 echo PHP_EOL;
             }
 
@@ -183,7 +246,11 @@ class ListScript extends BuiltinSubcommandAbstract {
             echo PHP_EOL;
 
             if (is_array($elementValue)) {
-                $this->outputNode($elementValue, $subcommandNameColumnWidthMax, $nodeLevel + 1);
+                $this->outputNode(
+                    $elementValue,
+                    $subcommandNameColumnWidthMax,
+                    $nodeLevel + 1,
+                );
             }
         }
     }

@@ -55,11 +55,11 @@ class ScriptLauncher {
 
     public function execute(): void {
         if (!isset($this->scriptClassDetector)) {
-            $this->scriptClassDetector = (new ScriptClassDetector(throwOnException: $this->throwOnException))
+            $this->scriptClassDetector = (new ScriptClassDetector($this->throwOnException))
                 ->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));
         }
         if (!isset($this->configBuilder)) {
-            $this->configBuilder = Parametizer::newConfig(throwOnException: $this->throwOnException);
+            $this->configBuilder = Parametizer::newConfig(null, $this->throwOnException);
         }
 
         $envConfigForSubcommands = $this->useParentEnvConfigForSubcommands
@@ -76,8 +76,8 @@ class ScriptLauncher {
             $this->configBuilder->newSubcommand(
                 $subcommandName,
                 $className::getConfigBuilder(
-                    envConfig: $envConfigForSubcommands,
-                    throwOnException: $this->throwOnException,
+                    $envConfigForSubcommands,
+                    $this->throwOnException,
                 ),
             );
         }
@@ -88,10 +88,11 @@ class ScriptLauncher {
 
             $this->configBuilder->newSubcommand(
                 $subcommandNameClearCache,
+                // Like other built-in subcommands, this one should utilize a parent (launcher's) config.
                 ClearCache::getConfigBuilder(
-                    envConfig: $envConfigForSubcommands,
-                    throwOnException: $this->throwOnException,
-                    context: $contextClearCache,
+                    $this->configBuilder->getConfig()->getEnvConfig(),
+                    $this->throwOnException,
+                    $contextClearCache,
                 ),
             );
         } else {

@@ -76,9 +76,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] Try placing [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
-         command in [ListScript.php](../src/Parametizer/Script/BuiltinSubcommand/ListScript.php)
-         in `Built-in subcommands:` or its own uniquely headered section.
     1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
         1. - [ ] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
              default value does not work properly if a launcher is located in some distant directory.
@@ -115,29 +112,59 @@ The list of plans and ideas for future development.
 
                  Also describe mass script generator as a useful tool to "play around" with the library.
         1. - [ ] `ConfigBuilder::shortDescription()`
-    1. - [ ] Create a document about values and / or goals of the library.
-    1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
-         a script, that may be also called via `gas` or `generate-completion` aliases.
+    1. - [ ] BONUS TASKS:
+        1. - [ ] Create a document about values and / or goals of the library.
+        1. - [ ] Support positioned headered groups for subcommands (like `Built-in:`).
 
-         ... Or try making a subcommand alias via an autocompletion script.
-    1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
-         (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
-         scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
-        1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
-             `cli-toolkit:generate:autocompletion-scripts` you should specify `c:g:a`
-             (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
-        1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
-             (switched on/off by a flag option).
-    1. - [ ] Implement a "typo guesser" like in `composer`:
- 
-         ```
-         $ composer lizstz
- 
-         Command "lizstz" is not defined.
+             A possible implementation:
 
-         Do you want to run "list" instead?  (yes/no) [no]:
-         >
-         ```
+             ```php
+             // ConfigBuilder...
+                 // empty group
+                 ->newSubcommand('something', Parametizer::newConfig() ...)
+                 ->newSubcommand('other-thing', Parametizer::newConfig() ...)
+                 ...
+
+                 ->newSubcommandGroup('Database tools')
+                 ->newSubcommand('restart', Parametizer::newConfig() ...)
+                 ->newSubcommand('update-schema', Parametizer::newConfig() ...)
+                 ...
+
+                 ->newSubcommandGroup('Special tools')
+                 ->newSubcommand('order-tea', Parametizer::newConfig() ...)
+                 ->newSubcommand('buy-cookies', Parametizer::newConfig() ...)
+                 ...
+             ```
+
+            1. [ ] Test:
+                1. [ ] `--` is not shown if there is no zero-section scripts.
+                1. [ ] No subgroups by name sections are created in headered groups.
+                1. [ ] Headered group names are NOT sorted. But auto-group names (based on name sections) ARE sorted.
+                1. [ ] In `slim` mode all subcommands are sorted within groups only,
+                   where "auto" is considered as a single group.
+
+        1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
+             a script, that may be also called via `gas` or `generate-completion` aliases.
+
+             ... Or try making a subcommand alias via an autocompletion script.
+        1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
+             (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
+             scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
+            1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
+                 `cli-toolkit:generate:autocompletion-scripts` you should specify `c:g:a`
+                 (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
+            1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
+                 (switched on/off by a flag option).
+        1. - [ ] Implement a "typo guesser" like in `composer`:
+
+             ```
+             $ composer lizstz
+     
+             Command "lizstz" is not defined.
+
+             Do you want to run "list" instead?  (yes/no) [no]:
+             >
+             ```
     1. - [ ] FINISHING MOVES:
         1. - [ ] Renaming section:
             1. [Script](../src/Parametizer/Script) -> `ScriptClass`
@@ -145,7 +172,7 @@ The list of plans and ideas for future development.
         1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be
            simplified - if a config with 'env' might be created ASAP.
         1. - [x] Try easing `ScriptAbstract::getConfigBuilder()` declaration. Consider:
-    
+
             - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
             - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
         1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
@@ -294,6 +321,11 @@ The list of plans and ideas for future development.
               For instance, check if `.git` directory exists in the library root directory.
             * [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) new option.
             * Existence of a particular file in the library `/local/` directory.
+    1. - [x] Place [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+         command for [ListScript.php](../src/Parametizer/Script/BuiltinSubcommand/ListScript.php)
+         in its own uniquely headered section.
+        1. [x] Test `ClearCache` is placed in a headered group.
+        1. [x] Test `ClearCache` subcommand always utilizes its parent environment config.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.

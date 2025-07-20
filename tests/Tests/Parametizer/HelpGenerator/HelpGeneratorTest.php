@@ -174,7 +174,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
     public function testSubcommandHelpShortDescription(): void {
         assertSame(
             <<<HELP
-             Built-in subcommands:
+             Built-in:
                 help                          Outputs a help page for a specified subcommand.
                 list                          Shows available subcommands.
             
@@ -270,7 +270,7 @@ class HelpGeneratorTest extends TestCaseAbstract {
     public function testShortDescriptionReplacesFullInHelp(): void {
         assertSame(
             <<<HELP
-             Built-in subcommands:
+             Built-in:
                 help         Outputs a help page for a specified subcommand.
                 list         Shows available subcommands.
 

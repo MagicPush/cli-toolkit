@@ -7,6 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\ListScript;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
@@ -19,11 +20,14 @@ use function PHPUnit\Framework\assertFileDoesNotExist;
 use function PHPUnit\Framework\assertFileExists;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
-use function PHPUnit\Framework\assertStringNotContainsString;
+use function PHPUnit\Framework\assertStringEndsWith;
 use function PHPUnit\Framework\assertTrue;
 
 class ScriptLauncherTest extends TestCaseAbstract {
-    private const string CACHE_PATH = __DIR__ . '/scripts/launcher-with-cache.json';
+    private const string CACHE_PATH = __DIR__ . '/scripts/l-with-cache.json';
+
+    private const string ENV_TEST_CACHE_PATH =
+        __DIR__ . '/SameEnvConfig/scripts/setting-parent-config-for-subcommands.json';
 
     private const string CONFIG_PATH_LAUNCHER = __DIR__ . '/ThrowOnException/'
         . EnvironmentConfig::CONFIG_FILENAME;
@@ -34,7 +38,12 @@ class ScriptLauncherTest extends TestCaseAbstract {
     protected function setUp(): void {
         parent::setUp();
 
-        $filesToDelete = [self::CACHE_PATH, self::CONFIG_PATH_LAUNCHER, self::CONFIG_PATH_SCRIPT_CLASSES];
+        $filesToDelete = [
+            self::CACHE_PATH,
+            self::ENV_TEST_CACHE_PATH,
+            self::CONFIG_PATH_LAUNCHER,
+            self::CONFIG_PATH_SCRIPT_CLASSES,
+        ];
         foreach ($filesToDelete as $filePath) {
             if (file_exists($filePath)) {
                 assertTrue(unlink($filePath));
@@ -48,6 +57,8 @@ class ScriptLauncherTest extends TestCaseAbstract {
      * Tests {@see ClearCache} subcommand availability and execution if a specified cache file exists.
      *
      * @see ScriptLauncher::execute()
+     * @see ListScript::execute() Adds {@see ClearCache} script name to a unique header.
+     * @see ListScript::outputNode() Outputs {@see ClearCache} under a unique header in a specific headers order.
      * @see ClearCache::getConfigBuilder()
      * @see ClearCache::execute()
      */
@@ -81,9 +92,18 @@ class ScriptLauncherTest extends TestCaseAbstract {
         if (null !== $detectorCacheFilePath && $isClearCacheSubcommandAvailable) {
             assertFileExists($detectorCacheFilePath);
 
-            // "clear-cache" subcommand is available and shown in a launcher's "list" output:
-            assertStringContainsString(
-                $clearCacheSubcommandName,
+            // "clear-cache" subcommand is available and shown in a launcher's "list" output under its own header:
+            assertSame(
+                <<<TEXT
+                 Built-in:
+                    help                           Outputs a help page for a specified subcommand.
+                    list                           Shows available subcommands.
+
+                 Script launcher:
+                    script-launcher:clear-cache    Removes ScriptClassDetector's cache file.
+
+
+                TEXT,
                 $result->getStdOut(),
             );
 
@@ -101,12 +121,22 @@ class ScriptLauncherTest extends TestCaseAbstract {
             static::assertNoErrorsOutput($launcherScriptPath, "{$parametersBaseString} {$clearCacheSubcommandName}");
             assertFileDoesNotExist($detectorCacheFilePath);
         } else {
-            assertStringNotContainsString(
-                $clearCacheSubcommandName,
+            // Substring-based assertion is made here (instead of `assertSame()`) because of PHP "Warning":
+            // it is fired in STDOUT or STDERR depending on a server configuration and thus "sometimes" fails the test.
+
+            // 'clear-cache' subcommand is missing in listing:
+            assertStringEndsWith(
+                <<<TEXT
+                 Built-in:
+                    help    Outputs a help page for a specified subcommand.
+                    list    Shows available subcommands.
+
+
+                TEXT,
                 $result->getStdOut(),
             );
 
-            // There should be no file still if an invalid path is set:
+            // There should be no file if an invalid path is set:
             if (null !== $detectorCacheFilePath) {
                 assertFileDoesNotExist($detectorCacheFilePath);
 
@@ -140,7 +170,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
             // a cache file path is set, but the file itself is not created, thus the subcommand is not available.
             'cache-not-generated' => [
                 'doesDetectorThrowOnException'    => false,
-                'detectorCacheFilePath'           => '/dev/null/launcher-cache.json',
+                'detectorCacheFilePath'           => '/dev/null/l-cache.json',
                 'isClearCacheSubcommandAvailable' => false,
             ],
         ];
@@ -245,13 +275,13 @@ class ScriptLauncherTest extends TestCaseAbstract {
     #[DataProvider('provideLauncherSettingSameEnvConfigForSubcommands')]
     /**
      * Tests that {@see EnvironmentConfig} instance set for a parent config is also utilized by subcommands,
-     * if the corresponding setting is enabled.
+     * if the corresponding setting is enabled...
+     *
+     * {@see ClearCache} uses a parent (launcher's) env config (like a built-in subcommand). Though standard
+     * built-in subcommands are tested in {@see EnvironmentConfigTest::testBuiltInSubcommandsUtilizeParentEnvConfig()}.
      *
      * Here id does not matter what exact {@see EnvironmentConfig} setting is analyzed.
      * The point is to assert that the expected {@see EnvironmentConfig} instance is used.
-     *
-     * Built-in subcommands are tested here:
-     * {@see EnvironmentConfigTest::testBuiltInSubcommandsUtilizeParentEnvConfig()}.
      *
      * @see ScriptLauncher::useParentEnvConfigForSubcommands() The flag is set here.
      * @see ScriptLauncher::execute() Here the parent config {@see EnvironmentConfig} instance is passed
@@ -262,6 +292,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
         bool $isSameEnvConfigForSubcommands,
         bool $isEnvConfigManual,
         string $expectedSubstringParent,
+        string $expectedSubstringClearCache,
         string $expectedSubstringSubcommand,
     ): void {
         // Assert the env config setting affecting the parent config:
@@ -270,24 +301,43 @@ class ScriptLauncherTest extends TestCaseAbstract {
             static::assertNoErrorsOutput(
                 __DIR__ . '/' . 'SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
                 sprintf(
-                    '%d %d --%s',
+                    "%d %d '%s' --%s",
                     $isSameEnvConfigForSubcommands,
                     $isEnvConfigManual,
+                    self::ENV_TEST_CACHE_PATH,
                     Config::OPTION_NAME_HELP,
                 ),
             )
                 ->getStdOut(),
         );
 
-        // Then assert the state of the same env config setting for a subcommand:
+        // Ensure the same env config instance is used for a launcher's built-in "clear-cache" script:
+        assertStringContainsString(
+            $expectedSubstringParent,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/' . 'SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
+                sprintf(
+                    "%d %d '%s' '%s' --%s",
+                    $expectedSubstringClearCache,
+                    $isEnvConfigManual,
+                    self::ENV_TEST_CACHE_PATH,
+                    ClearCache::getScriptName(),
+                    Config::OPTION_NAME_HELP,
+                ),
+            )
+                ->getStdOut(),
+        );
+
+        // Then assert the state of the same setting from an env config instance used for a subcommand:
         assertStringContainsString(
             $expectedSubstringSubcommand,
             static::assertNoErrorsOutput(
                 __DIR__ . '/' . 'SameEnvConfig/scripts/setting-parent-config-for-subcommands.php',
                 sprintf(
-                    '%d %d test-some --%s',
+                    "%d %d '%s' test-some --%s",
                     $isSameEnvConfigForSubcommands,
                     $isEnvConfigManual,
+                    self::ENV_TEST_CACHE_PATH,
                     Config::OPTION_NAME_HELP,
                 ),
             )
@@ -304,24 +354,28 @@ class ScriptLauncherTest extends TestCaseAbstract {
                 'isSameEnvConfigForSubcommands' => false,
                 'isEnvConfigManual'             => false,
                 'expectedSubstringParent'       => '-A, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringClearCache'   => '-A, --' . Config::OPTION_NAME_HELP,
                 'expectedSubstringSubcommand'   => '-L, --' . Config::OPTION_NAME_HELP,
             ],
             'same-configs-parent-autoload' => [
                 'isSameEnvConfigForSubcommands' => true,
                 'isEnvConfigManual'             => false,
                 'expectedSubstringParent'       => '-A, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringClearCache'   => '-A, --' . Config::OPTION_NAME_HELP,
                 'expectedSubstringSubcommand'   => '-A, --' . Config::OPTION_NAME_HELP,
             ],
             'different-configs-parent-manual' => [
                 'isSameEnvConfigForSubcommands' => false,
                 'isEnvConfigManual'             => true,
                 'expectedSubstringParent'       => '-M, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringClearCache'   => '-M, --' . Config::OPTION_NAME_HELP,
                 'expectedSubstringSubcommand'   => '-L, --' . Config::OPTION_NAME_HELP,
             ],
             'same-configs-parent-manual' => [
                 'isSameEnvConfigForSubcommands' => true,
                 'isEnvConfigManual'             => true,
                 'expectedSubstringParent'       => '-M, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringClearCache'   => '-M, --' . Config::OPTION_NAME_HELP,
                 'expectedSubstringSubcommand'   => '-M, --' . Config::OPTION_NAME_HELP,
             ],
         ];

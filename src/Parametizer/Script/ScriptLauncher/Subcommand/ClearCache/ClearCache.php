@@ -41,9 +41,9 @@ class ClearCache extends ScriptLauncherSubcommandAbstract {
         );
 
         $configBuilder
-            ->shortDescription("Clears {$detectorClassLastNameFormatted}'s cache file.")
+            ->shortDescription("Removes {$detectorClassLastNameFormatted}'s cache file.")
             ->description("
-                Clears {$detectorClassLastNameFormatted}'s cache file: "
+                Removes {$detectorClassLastNameFormatted}'s cache file: "
                     . $formatter->paramValue($context->cacheFilePath) . "
             ")
 
