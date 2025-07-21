@@ -15,8 +15,8 @@ declare(strict_types=1);
  *
  * When you would want to use this "class script caller":
  *  1. You've just created a new class script located outside of the standard launcher detector's scope. At first, you
- *      want to test your new script. And only then you will decide if you should include it into a launcher
- *      (or move to a directory that is parsed by a launcher).
+ *      want to test your new script. And only then you will decide if you should include it into a specific launcher
+ *      (or move to a directory that is parsed by your target launcher).
  *  2. You have a few "plumber" scripts that you do not want to appear in the standard launcher's list of available
  *      subcommands. And you do not want to create a separate launcher solely for those "plumber" scripts.
  *  3. Something nasty is happening on your production server right now, but a script that could stop or fix it

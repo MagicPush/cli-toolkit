@@ -27,7 +27,7 @@ abstract class ScriptDetectorAbstract {
     /**
      * @param bool $throwOnException Useful to debug issues with paths (read / write).
      */
-    public function __construct(protected readonly bool $throwOnException = false) { }
+    public function __construct(protected readonly bool $throwOnException = true) { }
 
     public function cacheFilePath(?string $cacheFilePath): static {
         $cacheFilePathReal = null !== $cacheFilePath ? realpath($cacheFilePath) : false;

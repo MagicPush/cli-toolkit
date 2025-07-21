@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer;
 
 use Exception;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use RuntimeException;
 use TypeError;
 

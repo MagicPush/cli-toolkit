@@ -9,12 +9,13 @@
     - [Scripts detection performance](#scripts-detection-performance)
     - [EnvironmentConfig load performance](#environmentconfig-load-performance)
     - [RegExp in subcommand name validation](#regexp-in-subcommand-name-validation)
-    
+- [Throwing or ignoring exceptions default policy](#throwing-or-ignoring-exceptions-default-policy)
+
 ## PHPUnit
 
 ### Launching test scripts inside PHPUnit processes
 
-It is generally possible, but requires notable library refactoring.
+It is generally possible, but requires notable library refactoring (including backward incompatibilities).
 
 #### Now
 
@@ -116,3 +117,34 @@ Negligible. `--dir-count=50 --dir-max-level=5 2000`:
 ### RegExp in subcommand name validation
 
 Removing regexp check in `Config::newSubcommand()` changes nothing on _milliseconds_ scale.
+
+## Throwing or ignoring exceptions default policy
+
+The main question here is what default values should be for the corresponding settings in
+[ScriptDetectorAbstract.php](../src/Parametizer/ScriptDetector/ScriptDetectorAbstract.php) descendants
+and all scripts' [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) instances.
+
+The current policy:
+
+1. [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) default: **silence** exceptions.
+    * Considering how damaging `EnvironmentConfig` construction's exception might be (effectively breaking up to all
+      console scripts), it is safer to silence those exceptions, until the library user will want to debug exceptions
+      in a controlled environment.
+
+      Also, at least for now, the [environment settings](features-manual.md#available-settings) are not so significant
+      for scripts' operating to worry about invalid setups.
+2. [ScriptDetectorAbstract.php](../src/Parametizer/ScriptDetector/ScriptDetectorAbstract.php) descendants' default:
+   **throw** exceptions.
+    * A script detector's setup is much more crucial, because its exceptions in most cases mean that some portions of
+      (or even all) scripts are not available. So users should know about such exceptions in the first place.
+
+      In case of emergency, if users do not have time to fix their detector setup on production,
+      for [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts they can use the alternative,
+      manual launcher - [execute-class.php](../tools/cli-toolkit/execute-class.php).
+3. Additionally, the launcher skeleton created by
+
+[//]: # (   TODO the skeleton generator )
+   will explicitly set the same corresponding default values both for a detector and environment configs.
+    * Even if the library users do not read the documentation, at the first time they read a generated launcher script,
+      they will know about a possibility to silence (or enable) exceptions. And then they decide if they prefer
+      a zero-bug or production-safe setup.

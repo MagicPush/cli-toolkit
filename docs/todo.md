@@ -87,11 +87,10 @@ The list of plans and ideas for future development.
               the "main project" directory path or any particular directory set up in the skeleton generator.
             * Remove the default detector - force the library users always to set up a detector manually.
               Then just leave a "todo"-comment in the upcoming skeleton generator's result to set the path manually.
-        1. - [ ] Decide if detectors should throw exceptions by default.
+        1. - [x] Decide if detectors should throw exceptions by default.
              Connected with the default state of `throwOnException()` and setter methods.
 
-            * If exceptions are still disabled by default,
-              describe the reason somewhere to not thinking about it ever again.
+            1. - [x] Describe the choice of default values somewhere, so you will not forget the reasons.
     1. - [ ] "First steps" skeleton generator for script classes launching.
         1. - [ ] Add the generator itself.
  
@@ -100,6 +99,8 @@ The list of plans and ideas for future development.
              maybe generate a blank script class, etc.
         1. - [ ] Test it.
         1. - [ ] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
+        1. - [ ] Fill `TODO` placeholder in
+             [development-notes.md](development-notes.md#throwing-or-ignoring-exceptions-default-policy).
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
