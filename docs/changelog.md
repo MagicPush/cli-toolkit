@@ -72,13 +72,11 @@ This change log references the repository changes and releases, which respect [s
    as subcommands for [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) (see below).
 1. [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean to load
    and launch [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts.
-   That includes (but does not limit to):
-    1. The default auto-generated
-       [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) that looks for
-       all script classes inside the same directory recursively. You may replace that instance with your custom setup.
-    1. [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
-       is automatically added to a launcher, if a launcher's script detector enables caching and a cache file exists.
-       The subcommand lets you delete the created cache file.
+
+   The launcher class includes
+   [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
+   is automatically added to a launcher's config, if a launcher's script detector enables caching and a cache file
+   exists. The subcommand lets you delete the created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
    the description shortener. Useful when environment settings are not optimal for all descriptions.
 1. [VariableBuilderAbstract.php](../src/Parametizer/Config/Builder/VariableBuilderAbstract.php):

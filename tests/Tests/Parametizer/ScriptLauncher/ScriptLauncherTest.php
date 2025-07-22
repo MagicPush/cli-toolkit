@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptLauncher;
 
+use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
@@ -178,37 +179,29 @@ class ScriptLauncherTest extends TestCaseAbstract {
 
     #[DataProvider('provideLauncherSettingThrowOnException')]
     /**
-     * Tests that the corresponding launcher setting is enabled for both internal instances.
+     * Tests that the corresponding launcher setting is enabled for automatically created {@see ConfigBuilder} instance.
      *
      * Here id does not matter what exact exceptions occur.
      * The point is to assert exceptions happening if a setting is enabled.
      *
      * @see ScriptLauncher::throwOnException() The flag is set here.
      * @see ScriptLauncher::execute() Here the instances with the flag passed are created.
-     * @see ScriptClassDetector::__construct() Here the flag is set for the instance.
-     * @see ScriptClassDetector::detectFromCache() Here the flag affects if an exception is thrown.
      * @see Parametizer::newConfig() Here the flag is set for the instance.
      * @see EnvironmentConfig::fillFromJsonConfigFile() Here the flag affects if an exception is thrown.
      */
     public function testLauncherSettingThrowOnException(
-        ?string $invalidJsonFilePath,
-        bool $damageScriptFilepath,
+        string $invalidJsonFilePath,
         bool $throwOnException,
         string $expectedErrorMessage,
     ): void {
-        if (null !== $invalidJsonFilePath) {
-            // One of possible exceptions for tested instances - if a JSON file (cache or EnvironmentConfig)
-            // does not contain valid JSON. So let's create an expected file with invalid JSON.
-            file_put_contents($invalidJsonFilePath, '[[definitely not a JSON string}');
-        } else {
-            assertFileDoesNotExist(self::CONFIG_PATH_LAUNCHER);
-            assertFileDoesNotExist(self::CONFIG_PATH_SCRIPT_CLASSES);
-        }
+        // One of possible exceptions for tested instances - if an EnvironmentConfig JSON file
+        // does not contain valid JSON. So let's create an expected file with invalid JSON.
+        file_put_contents($invalidJsonFilePath, '[[definitely not a JSON string}');
 
         if (!$throwOnException) {
             static::assertNoErrorsOutput(
                 __DIR__ . '/' . 'ThrowOnException/setting-throw-on-exception.php',
-                '0 ' . (int) $damageScriptFilepath,
+                '0',
             );
 
             return;
@@ -217,15 +210,13 @@ class ScriptLauncherTest extends TestCaseAbstract {
         $result = static::assertAnyErrorOutput(
             __DIR__ . '/' . 'ThrowOnException/setting-throw-on-exception.php',
             $expectedErrorMessage,
-            '1 ' . (int) $damageScriptFilepath,
+            '1',
             shouldAssertExitCode: false,
             shouldAssertStdErr: false,
         );
 
-        if (null !== $invalidJsonFilePath) {
-            // Let's be sure that a thrown exception is connected with a specific (parent or child) config file.
-            assertStringContainsString($invalidJsonFilePath, $result->getStdAll());
-        }
+        // Let's be sure that a thrown exception is connected with a specific (parent or child) config file.
+        assertStringContainsString($invalidJsonFilePath, $result->getStdAll());
     }
 
     /**
@@ -233,39 +224,23 @@ class ScriptLauncherTest extends TestCaseAbstract {
      */
     public static function provideLauncherSettingThrowOnException(): array {
         return [
-            'detector-silent' => [
-                'invalidJsonFilePath'  => null,
-                'damageScriptFilepath' => true,
-                'throwOnException'     => false,
-                'expectedErrorMessage' => '',
-            ],
-            'detector-exception' => [
-                'invalidJsonFilePath'  => null,
-                'damageScriptFilepath' => true,
-                'throwOnException'     => true,
-                'expectedErrorMessage' => "Path should be a readable directory: ''",
-            ],
             'env-config-parent-silent' => [
                 'invalidJsonFilePath'  => self::CONFIG_PATH_LAUNCHER,
-                'damageScriptFilepath' => false,
                 'throwOnException'     => false,
                 'expectedErrorMessage' => '',
             ],
             'env-config-parent-exception' => [
                 'invalidJsonFilePath'  => self::CONFIG_PATH_LAUNCHER,
-                'damageScriptFilepath' => false,
                 'throwOnException'     => true,
                 'expectedErrorMessage' => 'Unable to read the environment config',
             ],
             'env-config-child-silent' => [
                 'invalidJsonFilePath'  => self::CONFIG_PATH_SCRIPT_CLASSES,
-                'damageScriptFilepath' => false,
                 'throwOnException'     => false,
                 'expectedErrorMessage' => '',
             ],
             'env-config-child-exception' => [
                 'invalidJsonFilePath'  => self::CONFIG_PATH_SCRIPT_CLASSES,
-                'damageScriptFilepath' => false,
                 'throwOnException'     => true,
                 'expectedErrorMessage' => 'Unable to read the environment config',
             ],

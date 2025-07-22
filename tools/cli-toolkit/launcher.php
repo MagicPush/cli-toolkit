@@ -14,4 +14,5 @@ $configBuilder = Parametizer::newConfig(throwOnException: true);
 $configBuilder->description('A launcher for cli-toolkit stock scripts.');
 
 (new ScriptLauncher($scriptClassDetector, $configBuilder))
+    ->throwOnException()
     ->execute();

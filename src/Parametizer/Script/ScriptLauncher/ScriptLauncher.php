@@ -11,20 +11,16 @@ use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 class ScriptLauncher {
-    protected readonly ScriptClassDetector $scriptClassDetector;
-    protected readonly ConfigBuilder       $configBuilder;
+    protected readonly ConfigBuilder $configBuilder;
 
     protected bool $useParentEnvConfigForSubcommands = false;
     protected bool $throwOnException                 = false;
 
 
     public function __construct(
-        ?ScriptClassDetector $scriptClassDetector = null,
+        protected readonly ScriptClassDetector $scriptClassDetector,
         ?ConfigBuilder $configBuilder = null,
     ) {
-        if (null !== $scriptClassDetector) {
-            $this->scriptClassDetector = $scriptClassDetector;
-        }
         if (null !== $configBuilder) {
             $this->configBuilder = $configBuilder;
         }
@@ -40,11 +36,11 @@ class ScriptLauncher {
     }
 
     /**
-     * Always affects detected subcommands. Affects {@see ScriptClassDetector} and {@see ConfigBuilder}
-     * instances only if those are created automatically - if `null` is passed instead of an instance
-     * to {@see static::__construct()}.
+     * Always affects subcommands. Also, affects main {@see ConfigBuilder} instance only if the latter is created
+     * automatically - if `null` (default value) is passed to {@see static::__construct()} as the relevant parameter.
      *
-     * @see ScriptClassDetector::__construct()
+     * By default (without this method call), the corresponding internal property value is `false`.
+     *
      * @see Parametizer::newConfig()
      */
     public function throwOnException(bool $isEnabled = true): static {
@@ -54,10 +50,6 @@ class ScriptLauncher {
     }
 
     public function execute(): void {
-        if (!isset($this->scriptClassDetector)) {
-            $this->scriptClassDetector = (new ScriptClassDetector($this->throwOnException))
-                ->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));
-        }
         if (!isset($this->configBuilder)) {
             $this->configBuilder = Parametizer::newConfig(null, $this->throwOnException);
         }

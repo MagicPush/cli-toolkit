@@ -28,7 +28,7 @@ The list of plans and ideas for future development.
           (see [Large feature ideas](#large-feature-ideas)).
         * Think about config types where to store stream sources: `EnvironmentConfig` or a new config type like
           a "runtime config".
-          
+
           Consider a case: normally a script utilizes STD* streams. But when launched in background,
           this script should write output and error strings into files.
     1. Try to cover formatting in tests.
@@ -76,24 +76,9 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
-        1. - [ ] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
-             default value does not work properly if a launcher is located in some distant directory.
-             Consider any of these options:
-
-            * Detect the "main project" directory path - the same directory where "the highest `vendor`"
-              directory is located.
-            * Set a particular directory in the upcoming skeleton generator's result. It might be again
-              the "main project" directory path or any particular directory set up in the skeleton generator.
-            * Remove the default detector - force the library users always to set up a detector manually.
-              Then just leave a "todo"-comment in the upcoming skeleton generator's result to set the path manually.
-        1. - [x] Decide if detectors should throw exceptions by default.
-             Connected with the default state of `throwOnException()` and setter methods.
-
-            1. - [x] Describe the choice of default values somewhere, so you will not forget the reasons.
     1. - [ ] "First steps" skeleton generator for script classes launching.
         1. - [ ] Add the generator itself.
- 
+
              Something that will help users to start using the library quickly and easily. For instance, it should
              create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
              maybe generate a blank script class, etc.
@@ -160,7 +145,7 @@ The list of plans and ideas for future development.
 
              ```
              $ composer lizstz
-     
+
              Command "lizstz" is not defined.
 
              Do you want to run "list" instead?  (yes/no) [no]:
@@ -258,9 +243,9 @@ The list of plans and ideas for future development.
             1. - [x] Base script classes detection.
             1. - [x] Consider a case: script classes are spread all over a huge project. The only search path is
                  the huge project's root directory. A full scan may take a while.
- 
+
                  Consider caching:
- 
+
                 * ~~by a setting and/or based on all scanned files count;~~
                 * ~~possible automatic invalidation condition;~~
                 * easy to use manual cache clear tool.
@@ -283,15 +268,15 @@ The list of plans and ideas for future development.
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [x] [cli-toolkit](../tools/cli-toolkit)
             1. - [x] [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
- 
+
                  Functional tests that look for substrings in generated files.
             1. - [x] [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php)
- 
+
                  Just assert generated file's contents.
     1. - [x] Provide a docker config / build script for tests. And rewrite tests.
- 
+
          Before that the tests are environment-dependent:
- 
+
         1. PHP "development" config setup causes exceptions printed in `STDOUT` instead of `STDERR`.
         1. Tests are launched under `root`, so file permission-related tests fail.
         1. `posix_isatty()` / `stream_isatty()` always return false in a container launched from PhpStorm.
@@ -327,6 +312,20 @@ The list of plans and ideas for future development.
          in its own uniquely headered section.
         1. [x] Test `ClearCache` is placed in a headered group.
         1. [x] Test `ClearCache` subcommand always utilizes its parent environment config.
+    1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
+        1. - [x] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
+             default value does not work properly if a launcher is located in some distant directory.
+             Consider any / some of these options:
+
+            1. - [ ] ~~Detect the "main project" directory path - the same directory where "the highest `vendor`"
+                 directory is located.~~ Will be done in a skeleton generator.
+            1. - [x] Set a particular directory in the upcoming skeleton generator's result. It might be
+                 the "main project" directory path or any particular directory set up in the skeleton generator.
+            1. - [x] Remove the default detector - force the library users always to set up a detector manually.
+        1. - [x] Decide if detectors should throw exceptions by default.
+             Connected with the default state of `throwOnException()` and setter methods.
+
+            1. - [x] Describe the choice of default values somewhere, so you will not forget the reasons.
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.
@@ -342,6 +341,7 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
 1. Renaming:
     1. All `Config::OPTION_NAME_*` (or, at least, `OPTION_NAME_HELP`) -> `PARAMETER_NAME_*`.
     1. `Config::getParams()` -> `getParameters()`. And related methods and properties too.
+    1. `Parametizer::newConfig()` -> `newConfigBuilder()`.
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
 

@@ -10,6 +10,7 @@ use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ScriptLauncherSubcommandAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
+use MagicPush\CliToolkit\ToolBelt;
 use RuntimeException;
 
 class ClearCache extends ScriptLauncherSubcommandAbstract {
@@ -36,15 +37,13 @@ class ClearCache extends ScriptLauncherSubcommandAbstract {
         }
 
         $formatter                      = HelpFormatter::createForStdOut();
-        $detectorClassLastNameFormatted = $formatter->helpNote(
-            mb_substr(mb_strrchr(ScriptClassDetector::class, '\\'), 1),
-        );
+        $detectorClassLastNameFormatted = $formatter->helpNote(ToolBelt::getClassShortName(ScriptClassDetector::class));
 
         $configBuilder
             ->shortDescription("Removes {$detectorClassLastNameFormatted}'s cache file.")
             ->description("
                 Removes {$detectorClassLastNameFormatted}'s cache file: "
-                    . $formatter->paramValue($context->cacheFilePath) . "
+                    . $formatter->paramValue($context->detectorCacheFilePath) . "
             ")
 
             ->newFlag('--verbose', '-v')
@@ -65,18 +64,18 @@ class ClearCache extends ScriptLauncherSubcommandAbstract {
     public function execute(): void {
         $this->logOutput(
             'Deleting the script detector cache file '
-            . $this->formatterOutput->paramValue($this->context->cacheFilePath)
-            . '...',
+                . $this->formatterOutput->paramValue($this->context->detectorCacheFilePath)
+                . '...',
         );
 
-        if (unlink($this->context->cacheFilePath)) {
+        if (unlink($this->context->detectorCacheFilePath)) {
             $this->logOutput(' OK' . PHP_EOL);
         } else {
             $this->logOutput(PHP_EOL)
                 ->logError(
                     $this->formatterError->error('Unable to delete the script detector cache file: ')
-                    . $this->formatterError->paramValue($this->context->cacheFilePath)
-                    . PHP_EOL,
+                        . $this->formatterError->paramValue($this->context->detectorCacheFilePath)
+                        . PHP_EOL,
                 );
         }
     }
