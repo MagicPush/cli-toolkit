@@ -37,7 +37,6 @@ The list of plans and ideas for future development.
     1. `test` is the `-c` value, `-t` flag is not enabled.
     1. `tes` is the `-c` value and `t` is the `-t` flag being enabled.
 1. HelpGenerator: show the same script path as used for calling it - by alias or by relative path.
-1. (if possible) Auto-tests for [Question.php](../src/Question/Question.php).
 1. [Question.php](../src/Question/Question.php): add a demo script showing different types of questions.
 1. Flag+value combined options (`<no mention> | --verbose | --verbose=more`).
 
@@ -347,12 +346,13 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
 
 ## Just fun thoughts to (maybe) implement one day
 
-1. Fix the autocompletion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
-   but get `100` (`-o` is vanished).
-    * Reason: `$COMP_WORDBREAKS` shell variable is considered (not `Completion::COMP_WORDBREAKS`), bash-completion
-      sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.
-    * Possible, but odd solution: alter `$COMP_WORDBREAKS` shell variable during runtime (append an option short name),
-      then restore the variable's original value right before a script is terminated.
+1. Support multiline input for `Question::ask()`.
+
+   Consider a special mode when `getInput()` method is being called indefinitely until a special substring is met
+   to indicate the end of input.
+
+    * Add an option to concatenate multiline input with a specified symbol. This way you may decide if input parts
+    are "glued" by a space character, by a new line character, by some other substring or even by no substring at all.
 1. Complex validators for grouped or dependent parameters.
 
    As for now, validators are fired only within connected parameters.
@@ -376,3 +376,9 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
     * Use this feature to improve current built-in formatting - to simplify and shorten the code.
    </details>
 1. Symfony-like (or not like) progress bar.
+1. Fix the autocompletion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
+   but get `100` (`-o` is vanished).
+    * Reason: `$COMP_WORDBREAKS` shell variable is considered (not `Completion::COMP_WORDBREAKS`), bash-completion
+      sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.
+    * Possible, but odd solution: alter `$COMP_WORDBREAKS` shell variable during runtime (append an option short name),
+      then restore the variable's original value right before a script is terminated.

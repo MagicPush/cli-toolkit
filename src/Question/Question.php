@@ -8,14 +8,12 @@ use LogicException;
 use RuntimeException;
 
 class Question {
-    protected const string QUESTION_POSTFIX = ': ';
-
     protected string $answer;
 
     /** @var string[] * */
     protected array $possibleAnswers = [];
 
-    protected string  $questionPostfix;
+    protected string  $questionPostfix        = ': ';
     protected string  $defaultAnswer          = '';
     protected bool    $isAnswerCaseSensitive  = false;
     protected ?string $answerValidatorPattern = null;
@@ -24,16 +22,12 @@ class Question {
     protected readonly QuestionFormatter $formatter;
 
 
-    /**
-     * Just a handy alternative for {@see __construct()}.
-     */
     public static function create(string $question): static {
         return new static($question);
     }
 
-    public function __construct(protected readonly string $question) {
-        $this->questionPostfix = static::QUESTION_POSTFIX;
-        $this->formatter       = QuestionFormatter::createForStdOut();
+    protected function __construct(protected readonly string $question) {
+        $this->formatter = QuestionFormatter::createForStdOut();
     }
 
     /**
@@ -56,10 +50,17 @@ class Question {
     }
 
     /**
+     * A shortcut to ask any question without answer validation and any other additional setup.
+     */
+    public static function askAway(string $question): string {
+        return static::create($question)->ask();
+    }
+
+    /**
      * Ask a question with possible yes/no answers.
      */
     public static function confirm(string $question): bool {
-        $answer = (new static($question))
+        $answer = static::create($question)
             ->possibleAnswers(['Y', 'N'])
             ->defaultAnswer('N')
             ->ask();
@@ -85,8 +86,6 @@ class Question {
 
     /**
      * What to add after the question string: `My question%SUBSTRING% `. Like a new line character, colon, etc.
-     *
-     * By default the substring is {@see QUESTION_POSTFIX}.
      */
     public function substringAfterQuestion(string $substring): static {
         $this->questionPostfix = $substring;
@@ -106,10 +105,10 @@ class Question {
     public function possibleAnswers(
         array $possibleAnswers,
         bool $isCaseSensitive = false,
-        string $errorMessage = 'Invalid answer',
+        string $errorMessage = 'Invalid answer.',
     ): static {
         if ($this->answerValidatorPattern) {
-            throw new LogicException('Can`t set possible answers when answer validator pattern is set');
+            throw new LogicException('Can not set possible answers: answer validator pattern is set');
         }
 
         $this->possibleAnswers        = $possibleAnswers;
@@ -121,10 +120,10 @@ class Question {
 
     public function answerValidatorPattern(
         string $answerValidatorPattern,
-        string $errorMessage = 'Invalid answer',
+        string $errorMessage = 'Invalid answer.',
     ): static {
         if ($this->possibleAnswers) {
-            throw new LogicException('Can`t set answer validator pattern when possible answers are set');
+            throw new LogicException('Can not set answer validator pattern: a list of possible answers is set');
         }
 
         $this->answerValidatorPattern = $answerValidatorPattern;
@@ -147,22 +146,26 @@ class Question {
      * Return a user answer or default value.
      */
     protected function getAnswerOrDefault(): string {
-        $input = trim($this->getInput());
+        $input = $this->getInput();
 
         return '' === $input ? $this->defaultAnswer : $input;
     }
 
     /**
-     * Get a user input.
+     * Read a user input. Returns a trimmed line.
      */
     protected function getInput(): string {
-        return fgets(STDIN);
+        return trim(fgets(STDIN));
     }
 
     /**
-     * Validate an answer by a pattern or a list of possible values (if anything of that is set).
+     * Validate (and possibly modify) an answer by a pattern or a list of possible values (if anything of that is set).
+     *
+     * The answer case is modified (if it is one of {@see static::possibleAnswers()} with case sensitive mode
+     * disabled - the originally expected case is enforced. For instance, if one of expected answers is 'YES',
+     * but you provide `yes`, then {@see ask()} will return `YES` (an answer with original case).
      */
-    protected function validateAnswer(string $answer): void {
+    protected function validateAnswer(string &$answer): void {
         if ($this->answerValidatorPattern && !preg_match($this->answerValidatorPattern, $answer)) {
             throw new RuntimeException(QuestionFormatter::createForStdErr()->error($this->validationErrorMessage));
         }
@@ -170,20 +173,30 @@ class Question {
         if ($this->possibleAnswers) {
             if ($this->isAnswerCaseSensitive) {
                 $answerToCompare = $answer;
-                $possibleAnswers = $this->possibleAnswers;
+                $possibleAnswers = array_flip($this->possibleAnswers);
             } else {
                 $answerToCompare = mb_strtolower($answer);
-                $possibleAnswers = array_map(function ($possibleAnswer) {
-                    return mb_strtolower($possibleAnswer);
-                }, $this->possibleAnswers);
+                $possibleAnswers = array_combine(
+                    array_map(
+                        function ($possibleAnswer) {
+                            return mb_strtolower($possibleAnswer);
+                        },
+                        $this->possibleAnswers
+                    ),
+                    $this->possibleAnswers,
+                );
             }
 
-            if (in_array($answerToCompare, $possibleAnswers)) {
+            if (array_key_exists($answerToCompare, $possibleAnswers)) {
+                if (!$this->isAnswerCaseSensitive) {
+                    $answer = $possibleAnswers[$answerToCompare];
+                }
+
                 return;
             }
 
             $formatter = QuestionFormatter::createForStdErr();
-            $message   = $formatter->error($this->validationErrorMessage . '. Possible answers: ')
+            $message   = $formatter->error(ltrim("{$this->validationErrorMessage} Possible answers: "))
                 . $formatter->value(implode(', ', $this->possibleAnswers));
 
             throw new RuntimeException($message);

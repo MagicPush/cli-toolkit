@@ -33,6 +33,13 @@ This change log references the repository changes and releases, which respect [s
    from `string` to `?string`:
    now the method always returns the called subcommand's request object or `null` if there was no subcommand call.
 1. `CliRequestProcessor::$config` became readonly - you can not edit it after passing to `__construct()`.
+1. [Question.php](../src/Question/Question.php):
+    1. `__construct()` method became protected. Now `create()` static method is the only way to create an instance.
+    1. `QUESTION_POSTFIX` constant is removed. Now the default value is set directly for `$questionPostfix` property.
+    1. `getInput()` trims the input instead of `getAnswerOrDefault()` that utilizes the former.
+    1. If `possibleAnswers()` are set without `isCaseSensitive` mode enabled, the answer returned by `ask()` method
+       will contain one of original possible answers: if `YES` is expected as one of answers and you provide `yes`,
+       `ask()` will return `YES` as your answer (not `yes`, as was done in a previous version).
 1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
@@ -122,8 +129,23 @@ This change log references the repository changes and releases, which respect [s
 1. Formatters:
     1. Added `HelpFormatter::invert()`.
     1. Added `ScriptFormatter::note()`.
-1. Added `$dieMessage` parameter to `Question::confirmOrDie()` method - outputs a message (if provided)
-   before interrupting script's execution.
+1. [Question.php](../src/Question/Question.php):
+    1. Added `askAway()` static method to shorten code in case there is no need for answer validation
+       or any other setup.
+    1. Added `$dieMessage` parameter to `Question::confirmOrDie()` method - outputs a message (if provided)
+       before interrupting script's execution.
+
+### Patches
+
+1. [Question.php](../src/Question/Question.php):
+    1. `validateAnswer()` adds `errorMessage` only if it was filled in `possibleAnswers()`.
+
+       Also, the dot symbol is removed. So now it is possible to decide yourself if any stop symbol is needed.
+       For instance, you may want to see something like this: `Oops :( Possible answers: ...`,
+       so there is no dot after `:(`.
+    1. Changed `possibleAnswers()` and `answerValidatorPattern()` default `errorMessage` to `Invalid answer.`
+       (added a dot symbol) - because of the change mentioned above.
+    1. Improved a bit exception messages when both a list of possible answers and a validation pattern are set.
 
 ## v2.1.0
 

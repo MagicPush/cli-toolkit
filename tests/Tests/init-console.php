@@ -13,4 +13,4 @@ $composerLoader->register();
 
 mb_internal_encoding('UTF-8');
 setlocale(LC_ALL, 'en_US.UTF-8');
-ini_set('max_execution_time', 2);
+set_time_limit(2);

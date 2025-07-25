@@ -46,19 +46,27 @@ abstract class TestCaseAbstract extends TestCase {
         assertTrue(rmdir($directoryPath));
     }
 
-    protected static function assertNoErrorsOutput(string $scriptPath, string $parametersString = ''): CliProcess {
+    /**
+     * @param string[] $stdinLines {@see CliProcess::__construct()}
+     */
+    protected static function assertNoErrorsOutput(
+        string $scriptPath,
+        string $parametersString = '',
+        array $stdinLines = [],
+        int $expectedExitCode = 0,
+    ): CliProcess {
         $command = 'php ' . escapeshellarg($scriptPath);
         if ('' !== $parametersString) {
             $command .= " {$parametersString}";
         }
-        $result = new CliProcess($command);
+        $result = new CliProcess($command, $stdinLines);
 
         // The heading space before a script name is needed for a script being clickable in PhpStorm console log
         // as a script file link.
         $failedAssertMessage = " {$scriptPath}" . PHP_EOL
             . "COMMAND: {$command}" . PHP_EOL
             . "Unexpected error output: {$result->getStdErr()}";
-        assertSame(0, $result->getExitCode(), $failedAssertMessage);
+        assertSame($expectedExitCode, $result->getExitCode(), $failedAssertMessage);
         assertSame('', $result->getStdErr(), $failedAssertMessage);
 
         return $result;

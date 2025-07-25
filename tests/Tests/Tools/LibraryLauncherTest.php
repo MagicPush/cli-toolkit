@@ -7,7 +7,7 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
 use function PHPUnit\Framework\assertSame;
 
-class LibraryLauncherTest extends TestCaseAbstract {
+final class LibraryLauncherTest extends TestCaseAbstract {
     /**
      * Tests expected availability of the stock launcher commands.
      *
@@ -24,7 +24,7 @@ class LibraryLauncherTest extends TestCaseAbstract {
             cli-toolkit:terminal-formatter-showcase            Shows examples of formatting a substring in a terminal.
 
             TEXT,
-            self::assertNoErrorsOutput(
+            static::assertNoErrorsOutput(
                 __DIR__ . '/../../../tools/cli-toolkit/launcher.php',
                 Config::PARAMETER_NAME_LIST . ' --slim',
             )

@@ -15,7 +15,7 @@ use SomeClassNoNamespace;
 
 use function PHPUnit\Framework\assertSame;
 
-class ExecuteClassTest extends TestCaseAbstract {
+final class ExecuteClassTest extends TestCaseAbstract {
     private const string EXECUTOR_SCRIPT_PATH = __DIR__ . '/scripts/run-with-loaded-test-classes.php';
 
 
@@ -113,7 +113,7 @@ class ExecuteClassTest extends TestCaseAbstract {
      * @see ../../../../tools/cli-toolkit/execute-class.php
      */
     public function testInvalidClasses(string $parametersString, string $expectedErrorSubstring): void {
-        self::assertAnyErrorOutput(
+        static::assertAnyErrorOutput(
             self::EXECUTOR_SCRIPT_PATH,
             $expectedErrorSubstring,
             $parametersString,

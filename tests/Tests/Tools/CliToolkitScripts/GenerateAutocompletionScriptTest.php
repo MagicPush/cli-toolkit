@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
-use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\AutocompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -14,25 +13,18 @@ use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertTrue;
 
-final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
-    private const string LAUNCHER_PATH = __DIR__ . '/' . '../../../../tools/cli-toolkit/launcher.php';
-
-    private const string GENERATED_DIRECTORY_PATH = __DIR__ . '/generated';
-
+final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstract {
     /** The path should contain 2+ directories to test that directories are created recursively. */
-    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/generated/completion/completion.sh';
+    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/completion/completion.sh';
 
 
-    private string $subcommandName;
+    private string $scriptName;
 
 
     protected function setUp(): void {
         parent::setUp();
 
-        require_once __DIR__ . '/' . '../../../../tools/cli-toolkit/init-autoloader.php';
-        $this->subcommandName = AutocompletionScript::getScriptName();
-
-        static::removeDirectoryRecursively(self::GENERATED_DIRECTORY_PATH);
+        $this->scriptName = AutocompletionScript::getScriptName();
     }
 
 
@@ -44,11 +36,11 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testOutputPathWithSpaceChars(): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertNoErrorsOutput(
-            self::LAUNCHER_PATH,
+        static::assertNoErrorsOutput(
+            static::LAUNCHER_PATH,
             sprintf(
                 '%s --output-filepath=%s --search-directory=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 sprintf('%s	 \\%s ', self::COMPLETION_SCRIPT_PATH, PHP_EOL),
                 __DIR__ . '/ScriptFiles/Red',
             ),
@@ -64,12 +56,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
      * @see AutocompletionScript::execute()
      */
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
-        self::assertExecutionErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertExecutionErrorOutput(
+            static::LAUNCHER_PATH,
             $expectedErrorSubstring,
             sprintf(
                 '%s --output-filepath=%s --search-directory=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 $outputPath,
                 __DIR__ . '/ScriptFiles/Red',
             ),
@@ -114,11 +106,11 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     ): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertNoErrorsOutput(
-            self::LAUNCHER_PATH,
+        static::assertNoErrorsOutput(
+            static::LAUNCHER_PATH,
             sprintf(
                 '%s --output-filepath=%s --alias-prefix="a-"%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $parametersString ? " {$parametersString}" : '',
             ),
@@ -144,8 +136,8 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         return [
             // The library stock functionality:
             'cli-toolkit' => [
-                'parametersString'     => '--search-directory-recursive=' . dirname(self::LAUNCHER_PATH),
-                'detectedPathsByNames' => [basename(self::LAUNCHER_PATH, '.php') => realpath(self::LAUNCHER_PATH)],
+                'parametersString'     => '--search-directory-recursive=' . dirname(static::LAUNCHER_PATH),
+                'detectedPathsByNames' => [basename(static::LAUNCHER_PATH, '.php') => realpath(static::LAUNCHER_PATH)],
             ],
 
             'distinguish-scripts' => [
@@ -261,7 +253,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testErrorIfNoSearchSettings(string $parametersSubstring, ?string $errorMessage): void {
         $parametersString = sprintf(
             '%s --output-filepath=%s%s',
-            $this->subcommandName,
+            $this->scriptName,
             self::COMPLETION_SCRIPT_PATH,
             $parametersSubstring ? " {$parametersSubstring}" : '',
         );
@@ -269,16 +261,16 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
         if (null !== $errorMessage) {
-            self::assertExecutionErrorOutput(
-                self::LAUNCHER_PATH,
+            static::assertExecutionErrorOutput(
+                static::LAUNCHER_PATH,
                 $errorMessage,
                 $parametersString,
             );
 
             assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
         } else {
-            self::assertNoErrorsOutput(
-                self::LAUNCHER_PATH,
+            static::assertNoErrorsOutput(
+                static::LAUNCHER_PATH,
                 $parametersString,
             );
 
@@ -336,12 +328,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         }
         assertTrue(touch(self::COMPLETION_SCRIPT_PATH));
 
-        self::assertFullErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertFullErrorOutput(
+            static::LAUNCHER_PATH,
             'No scripts were found' . PHP_EOL,
             sprintf(
                 '%s --output-filepath=%s --search-directory-recursive=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 __DIR__ . '/ScriptFiles/EmptyDirectory',
             ),
@@ -359,12 +351,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testInvalidSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertExecutionErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertExecutionErrorOutput(
+            static::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
                 '%s --output-filepath=%s --search-directory=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $directoryPath,
             ),
@@ -382,12 +374,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testInvalidRecursiveSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertExecutionErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertExecutionErrorOutput(
+            static::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
                 '%s --output-filepath=%s --search-directory-recursive=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $directoryPath,
             ),
@@ -405,12 +397,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testInvalidExcludePaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertExecutionErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertExecutionErrorOutput(
+            static::LAUNCHER_PATH,
             'Path should be a readable directory.',
             sprintf(
                 '%s --output-filepath=%s --exclude-directory=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $directoryPath,
             ),
@@ -425,7 +417,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public static function provideInvalidDirectoryPaths(): array {
         return [
             'not-existing'    => ['directoryPath' => __DIR__ . '/asd'],
-            'not-a-directory' => ['directoryPath' => self::LAUNCHER_PATH],
+            'not-a-directory' => ['directoryPath' => static::LAUNCHER_PATH],
             'not-readable'    => ['directoryPath' => '/root'],
         ];
     }
@@ -439,12 +431,12 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testInvalidIncludeScriptPaths(string $scriptPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertExecutionErrorOutput(
-            self::LAUNCHER_PATH,
+        static::assertExecutionErrorOutput(
+            static::LAUNCHER_PATH,
             'Path should be a readable file.',
             sprintf(
                 '%s --output-filepath=%s --include-script=%s',
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $scriptPath,
             ),
@@ -459,7 +451,7 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public static function provideInvalidIncludeScriptPaths(): array {
         return [
             'not-existing' => ['scriptPath' => __DIR__ . '/asd'],
-            'not-a-file'   => ['scriptPath' => dirname(self::LAUNCHER_PATH)],
+            'not-a-file'   => ['scriptPath' => dirname(static::LAUNCHER_PATH)],
             'not-readable' => ['scriptPath' => '/root'],
         ];
     }
@@ -474,14 +466,14 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
-        self::assertNoErrorsOutput(
-            self::LAUNCHER_PATH,
+        static::assertNoErrorsOutput(
+            static::LAUNCHER_PATH,
             sprintf(
                 "%s --output-filepath=%s --alias-prefix='%s' --search-directory-recursive=%s",
-                $this->subcommandName,
+                $this->scriptName,
                 self::COMPLETION_SCRIPT_PATH,
                 $aliasPrefix,
-                dirname(self::LAUNCHER_PATH),
+                dirname(static::LAUNCHER_PATH),
             ),
         );
 
@@ -551,11 +543,11 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
                 /* #2 */ dirname(self::COMPLETION_SCRIPT_PATH),
                 /* #3 */ self::COMPLETION_SCRIPT_PATH,
             ),
-            self::assertNoErrorsOutput(
-                self::LAUNCHER_PATH,
+            static::assertNoErrorsOutput(
+                static::LAUNCHER_PATH,
                 sprintf(
                     '%s --output-filepath=%s --search-directory-recursive=%s --verbose',
-                    $this->subcommandName,
+                    $this->scriptName,
                     self::COMPLETION_SCRIPT_PATH,
                     __DIR__ . '/ScriptFiles/Blue',
                 ),
@@ -566,11 +558,11 @@ final class GenerateAutocompletionScriptTest extends TestCaseAbstract {
         // And now let's ensure that without `--verbose` no output is generated:
         assertSame(
             '',
-            self::assertNoErrorsOutput(
-                self::LAUNCHER_PATH,
+            static::assertNoErrorsOutput(
+                static::LAUNCHER_PATH,
                 sprintf(
                     '%s --output-filepath=%s --search-directory-recursive=%s',
-                    $this->subcommandName,
+                    $this->scriptName,
                     self::COMPLETION_SCRIPT_PATH,
                     __DIR__ . '/ScriptFiles/Blue',
                 ),
