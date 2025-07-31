@@ -5,10 +5,11 @@ declare(strict_types=1);
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
+use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\ScriptFiles\Blue\Something;
 
 require_once __DIR__ . '/../../../../../init-console.php';
 
-$detector = new ScriptClassDetector();
+$detector = (new ScriptClassDetector())->scriptClassName(Something::class);
 $configBuilder = Parametizer::newConfig();
 (new ScriptLauncher($detector, $configBuilder))
     ->throwOnException()

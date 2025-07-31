@@ -9,11 +9,11 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 /**
  * Contains logic needed for tests only.
  */
-class ScriptFileDetectorMock extends ScriptFileDetector {
+final class ScriptFileDetectorMock extends ScriptFileDetector {
     /**
      * @return array<string, string> (string) alias => (string) absolute path
      */
-    public function getDetectedFilePathsByAliases(): array {
+    public function _getDetectedFilePathsByAliases(): array {
         return $this->detectedFilePathsByAliases;
     }
 }

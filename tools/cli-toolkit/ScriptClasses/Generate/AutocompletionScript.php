@@ -32,9 +32,9 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
             . ' with `' . $helpFormatter->command('realpath()') . '` by the validator.';
 
         $configBuilder
-            ->shortDescription('Generates a file with Bash completion scripts.')
+            ->shortDescription('Generates a Bash script with completion functions.')
             ->description('
-                Generates a file with Bash completion scripts, which you can include in your Bash profile.
+                Generates a Bash script with completion functions, which you can include in your Bash profile.
         
                 Each time you add or delete a Parametizer-powered plain script (not a class script), you should:
                     1. Launch this script - so the generated completion script is updated.
@@ -158,9 +158,11 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
 
         $scriptNameMaxLength = 0;
         foreach ($detectedScripts as $scriptName => $scriptPath) {
-            $scriptPathsByAliases[$aliasPrefix . $scriptName] = $scriptPath;
+            $scriptNameAlias = $aliasPrefix . $scriptName;
 
-            $scriptNameLength = mb_strlen($executionFormatter->success($scriptName));
+            $scriptPathsByAliases[$scriptNameAlias] = $scriptPath;
+
+            $scriptNameLength = mb_strlen($executionFormatter->success($scriptNameAlias));
             if ($scriptNameMaxLength < $scriptNameLength) {
                 $scriptNameMaxLength = $scriptNameLength;
             }
@@ -169,13 +171,22 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
         if ($isVerbose) {
             $numberLength = mb_strlen((string) count($detectedScripts));
             $pathNumber   = 0;
-            echo 'Scripts found:' . PHP_EOL;
-            foreach ($detectedScripts as $scriptName => $scriptPath) {
+            echo sprintf(
+                'Scripts found (%s => %s):%s',
+                $executionFormatter->success('alias'),
+                $executionFormatter->pathMentioned('path'),
+                PHP_EOL,
+            );
+            foreach ($scriptPathsByAliases as $scriptNameAlias => $scriptPath) {
                 $pathNumber++;
                 echo sprintf(
                     '    %s. %s => %s%s',
                     mb_str_pad((string) $pathNumber, $numberLength, pad_type: STR_PAD_LEFT),
-                    mb_str_pad($executionFormatter->success($scriptName), $scriptNameMaxLength, pad_type: STR_PAD_RIGHT),
+                    mb_str_pad(
+                        $executionFormatter->success($scriptNameAlias),
+                        $scriptNameMaxLength,
+                        pad_type: STR_PAD_RIGHT,
+                    ),
                     $executionFormatter->pathMentioned($scriptPath),
                     PHP_EOL,
                 );
@@ -195,11 +206,11 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
         }
 
         if ($isVerbose) {
-            echo $executionFormatter->section('=== GENERATING A FILE with aliases and auto-complete scripts ===')
+            echo $executionFormatter->section('=== GENERATING A SCRIPT with aliases and completion functions ===')
                 . PHP_EOL . PHP_EOL;
         }
         $outputDirectory = dirname($outputFilepath);
-        if (!file_exists($outputDirectory)) {
+        if (!is_dir($outputDirectory)) {
             if (!mkdir($outputDirectory, recursive: true)) {
                 throw new RuntimeException('Unable to create a directory: ' . var_export($outputDirectory, true));
             }
@@ -233,16 +244,19 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                 $outputFilepathReal = realpath($outputFilepath);
                 $bashIncludeCommand = $executionFormatter->command(
                     PHP_EOL
-                    . 'echo -e "if [ -f ' . $outputFilepathReal . ' ]; then" \\' . PHP_EOL
-                    . '"\n    source ' . $outputFilepathReal . '" \\' . PHP_EOL
-                    . '"\nfi\n" \\' . PHP_EOL
-                    . '>> ~/.bashrc' . PHP_EOL
-                    . PHP_EOL,
-                );
+                        . 'echo -e "if [ -f ' . $outputFilepathReal . ' ]; then" \\' . PHP_EOL
+                        . '"\n    source ' . $outputFilepathReal . '" \\' . PHP_EOL
+                        . '"\nfi\n" \\' . PHP_EOL
+                        . '>> $HOME/.bashrc' . PHP_EOL,
+                )
+                    . PHP_EOL;
 
-                echo PHP_EOL . 'Include the generated file into your bash profile (execute the command below):'
-                    . PHP_EOL
-                    . $bashIncludeCommand;
+                echo PHP_EOL . 'Include the generated script into your bash profile (execute the command below):'
+                    . PHP_EOL . $bashIncludeCommand;
+
+                echo 'You can also apply the generated script right away:'
+                    . PHP_EOL . $executionFormatter->command(PHP_EOL . 'source ' . $outputFilepathReal)
+                    . PHP_EOL. PHP_EOL;
             }
         } finally {
             fclose($fileHandler);

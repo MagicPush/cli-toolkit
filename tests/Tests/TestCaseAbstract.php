@@ -179,7 +179,7 @@ abstract class TestCaseAbstract extends TestCase {
     /**
      * Asserts an exact match of `$expectedErrorOutput` with STDERR.
      */
-    public static function assertFullErrorOutput(
+    protected static function assertFullErrorOutput(
         string $scriptPath,
         string $expectedErrorOutput,
         string $parametersString,
@@ -203,5 +203,34 @@ abstract class TestCaseAbstract extends TestCase {
         );
 
         assertSame($expectedErrorOutput, $stdErr, "{$assertOutputPrefix}Unexpected STDERR: {$stdErr}");
+    }
+
+    /**
+     * Sources a script with alias, then executes an alias-based command in a Bash shell and returns the output.
+     */
+    protected static function getBashAliasExecutionOutput(string $completionScriptPath, string $command): string {
+        /** @noinspection SpellCheckingInspection */
+        /**
+         * To make aliases actually work in a non-interactive shell these conditions must be made:
+         * 1. Do everything in a single execution.
+         *  Because each time ({@see exec()}` / {@see shell_exec()} / etc.) a new "environment" is created.
+         * 2. Enable aliases support explicitly by starting with `shopt -s expand_aliases`.
+         * 3. Launch a command via an alias (with its parameters if needed) strictly on a new line (\n)
+         *  within the shell execution.
+         *  Dividing an alias and other commands with ';' (like `alias something=date; something`) will not work.
+         *  From `man bash`:
+         *    > Aliases are expanded when a command is read, not when it is executed. Therefore, an alias definition
+         *    > appearing on the same line as another command does not take effect until the next line of input is read.
+         */
+        $output = shell_exec(
+            sprintf(
+                "bash -c 'shopt -s expand_aliases; source %s%s%s'",
+                $completionScriptPath,
+                PHP_EOL,
+                $command,
+            ),
+        );
+
+        return (string) $output;
     }
 }

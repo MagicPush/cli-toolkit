@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer;
 
 use Exception;
+use MagicPush\CliToolkit\ToolBelt;
 use RuntimeException;
 use TypeError;
 
@@ -102,10 +103,10 @@ class EnvironmentConfig {
      * {@see CONFIG_FILENAME} found along the way from `$bottommostDirectoryPath` to `$topmostDirectoryPath`.
      *
      * @param string      $bottommostDirectoryPath Should be filled with a readable path to a directory
-     *                                             where a script config is being created.
+     *                                             where a script config might be located.
      * @param string|null $topmostDirectoryPath    The method will not search config files above this directory.
      *                                             If `null`, will try to detect a path via
-     *                                             {@see static::detectTopmostDirectoryPath()}.
+     *                                             {@see ToolBelt::detectTopmostProjectRootDirectory()}.
      */
     public static function createFromConfigsBottomUpHierarchy(
         ?string $bottommostDirectoryPath = null,
@@ -132,7 +133,7 @@ class EnvironmentConfig {
         }
 
         if (null === $topmostDirectoryPath) {
-            $topmostDirectoryPath = static::detectTopmostDirectoryPath($bottommostDirectoryPathValidated);
+            $topmostDirectoryPath = ToolBelt::detectTopmostProjectRootDirectory();
         }
 
         $topmostDirectoryPathValidated = realpath($topmostDirectoryPath);
@@ -176,31 +177,5 @@ class EnvironmentConfig {
         $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
         return $debugBacktrace[array_key_last($debugBacktrace)]['file'] ?? null;
-    }
-
-    /**
-     * Performs bottom-up search for a path to a `vendor` directory located closest to `/`. If fails to find one,
-     * eventually returns a topmost directory path in a file system.
-     *
-     * For example: the function will return `/home/user/cool-project`, if starts searching from
-     * `/home/user/cool-project/vendor/sup-project/vendor/MagicPush/cli-tool/src/Parametizer/EnvironmentConfig`
-     */
-    protected static function detectTopmostDirectoryPath(string $bottommostDirectoryPath): string {
-        // Here $bottommostDirectoryPath should have been validated earlier and transformed into an absolute path.
-
-        $currentDirPath            = $bottommostDirectoryPath;
-        $highestDirPathAboveVendor = null;
-        while (true) {
-            if (file_exists($currentDirPath . '/vendor')) {
-                $highestDirPathAboveVendor = $currentDirPath;
-            }
-
-            $previousDirPath = $currentDirPath;
-            $currentDirPath  = dirname($previousDirPath);
-            // We can't go higher than a filesystem's top:
-            if ($currentDirPath === $previousDirPath) {
-                return $highestDirPathAboveVendor ?? $currentDirPath;
-            }
-        }
     }
 }

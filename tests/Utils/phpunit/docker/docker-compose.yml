@@ -1,7 +1,7 @@
 # Cheat sheet
 #
 # 1. Build:             ./build.sh
-# 2. Enter shell:       docker compose run --rm php-cli sh
+# 2. Enter shell:       docker compose run --rm php-cli bash
 # 3. Launch all tests:  ./vendor/cli-toolkit-phpunit/phpunit.phar --configuration tests/Utils/phpunit/phpunit.xml
 
 name: magic-push

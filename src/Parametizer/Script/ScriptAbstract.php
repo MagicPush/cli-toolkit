@@ -23,8 +23,8 @@ abstract class ScriptAbstract {
 
 
     /**
-     * The method is utilized by {@see ScriptClassDetector::processDetectedFileContents()} mainly to ignore
-     * built-in subcommands, because those are added explicitly by the library.
+     * The method is utilized by {@see ScriptClassDetector::processDetectedFileContents()} (only when searching by
+     * directories) mainly to ignore built-in subcommands, because those are added explicitly by the library.
      *
      * However, this method does NOT restrict script classes to be actually executed.
      *

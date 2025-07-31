@@ -142,9 +142,8 @@ The current policy:
       for [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts they can use the alternative,
       manual launcher - [execute-class.php](../tools/cli-toolkit/execute-class.php).
 3. Additionally, the launcher skeleton created by
-
-[//]: # (   TODO the skeleton generator )
-   will explicitly set the same corresponding default values both for a detector and environment configs.
+   [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php) will explicitly set
+   the same corresponding default values both for a detector and environment configs.
     * Even if the library users do not read the documentation, at the first time they read a generated launcher script,
-      they will know about a possibility to silence (or enable) exceptions. And then they decide if they prefer
+      they will know about a possibility to silence (or enable) exceptions. And then users decide if they prefer
       a zero-bug or production-safe setup.

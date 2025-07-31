@@ -11,14 +11,16 @@ use Override;
 /**
  * Contains logic needed for tests only.
  *
+ * Must NOT be final, so PHPUnit could mock it further.
+ *
  * @method \string[] getDetectedData() [(string) detected file path, ...]
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ScriptDetectorMock extends ScriptDetectorAbstract {
-    // IMPLEMENTATION OF ABSTRACT METHODS:
-
     /** @var string[] */
     protected array $detectedFilePaths = [];
+
+    // IMPLEMENTATION OF ABSTRACT METHODS:
 
     #[Override]
     protected function clearMemoryCache(): void {
@@ -69,14 +71,14 @@ class ScriptDetectorMock extends ScriptDetectorAbstract {
     /**
      * @return array<string, SearchDirectoryContext> {@see ScriptDetectorAbstract::$searchingDirectories}
      */
-    public function getSearchingDirectories(): array {
+    public function _getSearchingDirectories(): array {
         return $this->searchingDirectories;
     }
 
     /**
      * @return array<string, string> {@see ScriptDetectorAbstract::$excludedDirectoryPaths}
      */
-    public function getExcludedDirectoryPaths(): array {
+    public function _getExcludedDirectoryPaths(): array {
         return $this->excludedDirectoryPaths;
     }
 }

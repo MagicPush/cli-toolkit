@@ -15,7 +15,7 @@ use function PHPUnit\Framework\assertTrue;
 
 final class GenerateEnvConfigTest extends CliToolkitScriptTestAbstract {
     /** The path should contain 2+ directories to test that directories are created recursively. */
-    private const string CONFIG_PATH = self::GENERATED_DIRECTORY_PATH . '/env-config/parametizer.env.json';
+    private const string CONFIG_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateEnvConfigTest/env-config/parametizer.env.json';
 
 
     private string $scriptName;

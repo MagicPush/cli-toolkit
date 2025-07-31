@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
+final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
     #[DataProvider('provideSearchAndExclude')]
     /**
      * Tests {@see Parametizer} plain scripts detections.
@@ -436,7 +436,7 @@ class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                 'somewhat'         => realpath(__DIR__ . '/../ScriptFiles/Yellow/somewhat.php'),
                 'somewhat-another' => realpath(__DIR__ . '/../ScriptFiles/Green/somewhat-another.php'),
             ],
-            $detector->getDetectedFilePathsByAliases(),
+            $detector->_getDetectedFilePathsByAliases(),
         );
 
         // Alter the search setup. Launch the detection again and observe that the internal property was filled from
@@ -447,7 +447,7 @@ class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'somewhat' => realpath(__DIR__ . '/../ScriptFiles/Yellow/somewhat.php'),
             ],
-            $detector->getDetectedFilePathsByAliases(),
+            $detector->_getDetectedFilePathsByAliases(),
         );
     }
 }

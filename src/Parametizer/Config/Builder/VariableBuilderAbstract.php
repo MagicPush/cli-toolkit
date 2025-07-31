@@ -168,7 +168,7 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
         ) {
             throw new ConfigException(
                 "'" . HelpFormatter::createForStdErr()->paramTitle($this->param->getName())
-                . "' >>> Config error: a parameter can't be required and have a default simultaneously.",
+                . "' >>> Config error: a parameter can't be required and have a default value simultaneously.",
             );
         }
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasses;
 
+use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\HelpScript;
 use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorAbstract;
@@ -19,7 +20,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
+final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
     #[DataProvider('provideSearchAndExclude')]
     /**
      * Tests {@see ScriptAbstract} classes detections.
@@ -264,7 +265,7 @@ class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                 Something5::class    => Something5::class,
                 SomethingZero::class => SomethingZero::class,
             ],
-            $detector->getSearchedFQClassNames(),
+            $detector->_getSearchedFQClassNames(),
         );
 
         assertSame(
@@ -304,7 +305,7 @@ class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Subdirectory\Something6',
                 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Something5',
             ],
-            $detector->getDetectedFQClassNames(),
+            $detector->_getDetectedFQClassNames(),
         );
 
         // Alter the search setup. Launch the detection again and observe that the internal property was filled from
@@ -322,7 +323,7 @@ class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\SomethingX',
                 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft3\Something5',
             ],
-            $detector->getDetectedFQClassNames(),
+            $detector->_getDetectedFQClassNames(),
         );
     }
 
@@ -378,6 +379,16 @@ class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                  * Also some test classes are coded with errors intentionally for testing, what would constantly crash
                  * this test.
                  */
+                ->excludeDirectory(__DIR__ . '/../../../../../tests')
+                ->getDetectedData(),
+        );
+
+        // However, the exact script class search still works:
+        assertSame(
+            ['help-script' => HelpScript::class],
+            (new ScriptClassDetector(throwOnException: true))
+                ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true)
+                ->scriptClassName(HelpScript::class)
                 ->excludeDirectory(__DIR__ . '/../../../../../tests')
                 ->getDetectedData(),
         );

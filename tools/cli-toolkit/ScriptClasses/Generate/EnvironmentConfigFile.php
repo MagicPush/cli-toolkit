@@ -48,7 +48,7 @@ class EnvironmentConfigFile extends CliToolkitGenerateScriptAbstract {
         $directoryPath      = $this->request->getParamAsString('directory-path');
         $executionFormatter = ScriptFormatter::createForStdOut();
 
-        if (!file_exists($directoryPath)) {
+        if (!is_dir($directoryPath)) {
             if (!mkdir($directoryPath, recursive: true)) {
                 throw new RuntimeException('Unable to create a directory: ' . var_export($directoryPath, true));
             }

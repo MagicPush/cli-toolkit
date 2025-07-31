@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
 use function PHPUnit\Framework\assertSame;
 
-class TerminalFormatterTest extends TestCaseAbstract {
+final class TerminalFormatterTest extends TestCaseAbstract {
     private TerminalFormatter $formatter;
 
     protected function setUp(): void {
@@ -24,6 +24,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
      * @see TerminalFormatter::apply()
      */
     public function testSimpleStyling(): void {
+        /** @noinspection SpellCheckingInspection */
         assertSame(
             "\e[91msome string\e[0m",
             $this->formatter->apply('some string', [TerminalFormatter::FONT_LIGHT_RED]),
@@ -36,6 +37,7 @@ class TerminalFormatterTest extends TestCaseAbstract {
      * @see TerminalFormatter::apply()
      */
     public function testRestyleAlreadyStylizedSubstring(): void {
+        /** @noinspection SpellCheckingInspection */
         assertSame(
             "\e[91msome stylish string with \e[33mANOTHER STYLE\e[0m\e[91m substring\e[0m",
             $this->formatter->apply(

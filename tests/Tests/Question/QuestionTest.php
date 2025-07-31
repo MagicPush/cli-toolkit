@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace MagicPush\CliToolkit\Tests\Tests\Question;
+
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;

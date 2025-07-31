@@ -75,16 +75,6 @@ The list of plans and ideas for future development.
     <details>
     <summary>Points to consider</summary>
 
-    1. - [ ] "First steps" skeleton generator for script classes launching.
-        1. - [ ] Add the generator itself.
-
-             Something that will help users to start using the library quickly and easily. For instance, it should
-             create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
-             maybe generate a blank script class, etc.
-        1. - [ ] Test it.
-        1. - [ ] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
-        1. - [ ] Fill `TODO` placeholder in
-             [development-notes.md](development-notes.md#throwing-or-ignoring-exceptions-default-policy).
     1. - [ ] [features-manual.md](features-manual.md):
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
@@ -97,7 +87,12 @@ The list of plans and ideas for future development.
 
                  Also describe mass script generator as a useful tool to "play around" with the library.
         1. - [ ] `ConfigBuilder::shortDescription()`
+        1. - [ ] Update comments generated in
+             [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
+             with links to the manual.
     1. - [ ] BONUS TASKS:
+        1. - [ ] Composer post install message with the generator launch command.
+            * See https://getcomposer.org/doc/articles/scripts.md
         1. - [ ] Create a document about values and / or goals of the library.
         1. - [ ] Support positioned headered groups for subcommands (like `Built-in:`).
 
@@ -151,9 +146,14 @@ The list of plans and ideas for future development.
              >
              ```
     1. - [ ] FINISHING MOVES:
-        1. - [ ] Renaming section:
-            1. [Script](../src/Parametizer/Script) -> `ScriptClass`
-            1. (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
+        1. - [ ] Renaming, moving and other trivial refactoring:
+            1. - [ ] [Script](../src/Parametizer/Script) -> `ScriptClass`
+            1. - [ ] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
+            1. - [ ] `Autocompletion*` -> `Completion*`
+            1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
+            1. - [ ] [ToolBelt.php](../src/ToolBelt.php) -> `Utils`
+            1. - [ ] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.
+            1. - [ ] Make all test classes `final` (where possible).
         1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be
            simplified - if a config with 'env' might be created ASAP.
         1. - [x] Try easing `ScriptAbstract::getConfigBuilder()` declaration. Consider:
@@ -325,6 +325,16 @@ The list of plans and ideas for future development.
              Connected with the default state of `throwOnException()` and setter methods.
 
             1. - [x] Describe the choice of default values somewhere, so you will not forget the reasons.
+    1. - [x] "First steps" skeleton generator for script classes launching.
+        1. - [x] Add the generator itself.
+
+             Something that will help users to start using the library quickly and easily. For instance, it should
+             create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
+             maybe generate a blank script class, etc.
+        1. - [x] Test it.
+        1. - [x] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
+        1. - [x] Fill `TODO` placeholder in
+             [development-notes.md](development-notes.md#throwing-or-ignoring-exceptions-default-policy).
     </details>
 1. An interface for foreground / background scripts launch. Includes indications / notifications
    for finished (successfully or not) and halted (which require input from a user) scripts.
@@ -343,6 +353,9 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
     1. `Parametizer::newConfig()` -> `newConfigBuilder()`.
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
+    1. Replace `mb_strtoupper(mb_substr($pathComponent, 0, 1)) . mb_substr($pathComponent, 1)` in
+       [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
+       with `mb_ucfirst($pathComponent)`
 
 ## Just fun thoughts to (maybe) implement one day
 

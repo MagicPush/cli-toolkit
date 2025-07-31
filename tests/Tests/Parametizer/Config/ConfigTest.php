@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ConfigTest extends TestCaseAbstract {
+final class ConfigTest extends TestCaseAbstract {
     #[DataProvider('provideConfigLogicExceptions')]
     /**
      * Tests various {@see ConfigException}s when setting up a config.
@@ -69,11 +69,11 @@ class ConfigTest extends TestCaseAbstract {
 
             'required-argument-with-default-value' => [
                 'scriptPath'  => __DIR__ . '/' . 'scripts/error-required-argument-with-default-value.php',
-                'errorOutput' => "'name' >>> Config error: a parameter can't be required and have a default simultaneously.",
+                'errorOutput' => "'name' >>> Config error: a parameter can't be required and have a default value simultaneously.",
             ],
             'required-option-with-default-value' => [
                 'scriptPath'  => __DIR__ . '/' . 'scripts/error-required-option-with-default-value.php',
-                'errorOutput' => "'name' >>> Config error: a parameter can't be required and have a default simultaneously.",
+                'errorOutput' => "'name' >>> Config error: a parameter can't be required and have a default value simultaneously.",
             ],
         ];
     }

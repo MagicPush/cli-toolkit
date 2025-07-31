@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
+use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\AutocompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -15,7 +16,7 @@ use function PHPUnit\Framework\assertTrue;
 
 final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstract {
     /** The path should contain 2+ directories to test that directories are created recursively. */
-    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/completion/completion.sh';
+    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateAutocompletionScriptTest/completion/completion.sh';
 
 
     private string $scriptName;
@@ -126,6 +127,20 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
         foreach ($detectedPathsByNames as $scriptName => $scriptPath) {
             assertStringContainsString("alias 'a-{$scriptName}'=", $completionFileContents);
             assertStringContainsString("'{$scriptPath}'", $completionFileContents);
+
+            // Ensure aliases are callable as expected:
+            assertStringContainsString(
+                <<<TEXT
+
+                    USAGE
+
+                      {$scriptName}.php
+                    TEXT,
+                static::getBashAliasExecutionOutput(
+                    self::COMPLETION_SCRIPT_PATH,
+                    "a-{$scriptName} --" . Config::OPTION_NAME_HELP,
+                ),
+            );
         }
     }
 
@@ -513,29 +528,33 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
                 <<<TEXT
                 === SCANNING SEARCH PATHS for Parametizer-based scripts ===
 
-                Scripts found:
-                     1. somewhat-l         => %1\$s/ScriptFiles/Blue/somewhat-l.php
-                     2. somewhat-6         => %1\$s/ScriptFiles/Blue/somewhat-6.php
-                     3. somewhat-l-another => %1\$s/ScriptFiles/Blue/somewhat-l-another.php
-                     4. somewhat-3         => %1\$s/ScriptFiles/Blue/somewhat-3.php
-                     5. somewhat-2         => %1\$s/ScriptFiles/Blue/somewhat-2.php
-                     6. somewhat-another   => %1\$s/ScriptFiles/Blue/somewhat-another.php
-                     7. somewhat-5         => %1\$s/ScriptFiles/Blue/somewhat-5.php
-                     8. somewhat           => %1\$s/ScriptFiles/Blue/somewhat.php
-                     9. somewhat-4         => %1\$s/ScriptFiles/Blue/somewhat-4.php
-                    10. somewhat-class     => %1\$s/ScriptFiles/Blue/somewhat-class.php
+                Scripts found (alias => path):
+                     1. s-somewhat-l         => %1\$s/ScriptFiles/Blue/somewhat-l.php
+                     2. s-somewhat-6         => %1\$s/ScriptFiles/Blue/somewhat-6.php
+                     3. s-somewhat-l-another => %1\$s/ScriptFiles/Blue/somewhat-l-another.php
+                     4. s-somewhat-3         => %1\$s/ScriptFiles/Blue/somewhat-3.php
+                     5. s-somewhat-2         => %1\$s/ScriptFiles/Blue/somewhat-2.php
+                     6. s-somewhat-another   => %1\$s/ScriptFiles/Blue/somewhat-another.php
+                     7. s-somewhat-5         => %1\$s/ScriptFiles/Blue/somewhat-5.php
+                     8. s-somewhat           => %1\$s/ScriptFiles/Blue/somewhat.php
+                     9. s-somewhat-4         => %1\$s/ScriptFiles/Blue/somewhat-4.php
+                    10. s-somewhat-class     => %1\$s/ScriptFiles/Blue/somewhat-class.php
 
-                === GENERATING A FILE with aliases and auto-complete scripts ===
+                === GENERATING A SCRIPT with aliases and completion functions ===
 
                 A directory has been created: %2\$s
                 Writing stuff into %3\$s ...
 
-                Include the generated file into your bash profile (execute the command below):
+                Include the generated script into your bash profile (execute the command below):
 
                 echo -e "if [ -f %3\$s ]; then" \
                 "\\n    source %3\$s" \
                 "\\nfi\\n" \
-                >> ~/.bashrc
+                >> \$HOME/.bashrc
+                
+                You can also apply the generated script right away:
+
+                source %3\$s
 
 
                 TEXT,

@@ -24,7 +24,7 @@ class ConfigBuilder implements BuilderInterface {
     // === Config settings ===
 
     /**
-     * Description of the whole script (for help)
+     * Description of the whole script (for help).
      */
     public function description(string $description): static {
         $this->config->description($description);
@@ -37,7 +37,7 @@ class ConfigBuilder implements BuilderInterface {
      *
      * Useful when auto-generated short version of the text specified in {@see static::description()}
      * is not good enough, and you do not want (or can not) to tune auto-short-description settings,
-     * so all your scripts descriptions could fit in nicely.
+     * so all your scripts descriptions could fit your terminal screen nicely.
      */
     public function shortDescription(string $shortDescription): static {
         $this->config->shortDescription($shortDescription);

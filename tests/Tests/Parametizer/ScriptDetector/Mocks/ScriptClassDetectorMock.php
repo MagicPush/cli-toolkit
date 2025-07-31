@@ -10,18 +10,18 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 /**
  * Contains logic needed for tests only.
  */
-class ScriptClassDetectorMock extends ScriptClassDetector {
+final class ScriptClassDetectorMock extends ScriptClassDetector {
     /**
      * @return array<ScriptAbstract|string, ScriptAbstract|string> {@see static::$searchedFQClassNames}
      */
-    public function getSearchedFQClassNames(): array {
+    public function _getSearchedFQClassNames(): array {
         return $this->searchedFQClassNames;
     }
 
     /**
      * @return ScriptAbstract[]|string[] (string) Fully Qualified class name that extends {@see ScriptAbstract}
      */
-    public function getDetectedFQClassNames(): array {
+    public function _getDetectedFQClassNames(): array {
         return $this->detectedFQClassNames;
     }
 }

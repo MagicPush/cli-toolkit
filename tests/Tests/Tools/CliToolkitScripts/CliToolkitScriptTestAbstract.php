@@ -7,9 +7,9 @@ namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
 abstract class CliToolkitScriptTestAbstract extends TestCaseAbstract {
-    protected const string LAUNCHER_PATH = __DIR__ . '/' . '../../../../tools/cli-toolkit/launcher.php';
+    protected final const string LAUNCHER_PATH = __DIR__ . '/' . '../../../../tools/cli-toolkit/launcher.php';
 
-    protected const string GENERATED_DIRECTORY_PATH = __DIR__ . '/generated';
+    protected final const string GENERATED_DIRECTORY_PATH = __DIR__ . '/generated';
 
 
     protected function setUp(): void {

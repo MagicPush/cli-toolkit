@@ -17,7 +17,7 @@ use function PHPUnit\Framework\assertSame;
  * Tests {@see ScriptDetectorAbstract}, thus any child class would suffice here.
  * But prefer using a mock class {@see ScriptDetectorMock}.
  */
-class ScriptDetectorTest extends ScriptDetectorTestAbstract {
+final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
     #[DataProvider('provideMinimalSearchSettings')]
     /**
      * Tests minimal viable search settings validation.
@@ -527,7 +527,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 $isRecursive,
             ),
         ];
-        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
+        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->_getSearchingDirectories()));
 
         assertSame($expectedResult, $detector->getDetectedData());
     }
@@ -611,7 +611,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 $isFirstRecursive,
             ),
         ];
-        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
+        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->_getSearchingDirectories()));
 
         assertSame($expectedResult, $detector->getDetectedData());
     }
@@ -690,7 +690,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
 
         // Here we ensure (mainly, for "wider" recursive search) that only a "wider" directory is stored eventually
         // in a detector - we should not process same directories more than once.
-        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->getSearchingDirectories()));
+        assertSame(serialize($expectedFinalSearchingContexts), serialize($detector->_getSearchingDirectories()));
 
         assertSame($expectedResult, $detector->getDetectedData());
     }
@@ -961,7 +961,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft22') => realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft22'),
                 realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft')   => realpath(__DIR__ . '/../ScriptClasses/Red/RedLeft'),
             ],
-            $detector->getExcludedDirectoryPaths(),
+            $detector->_getExcludedDirectoryPaths(),
         );
 
         assertSame(
@@ -1001,7 +1001,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
 
         // Here we ensure (mainly, for "wider" exclusion) that only a "wider" directory is stored eventually
         // in a detector - we should not process affected directories more than once.
-        assertSame($expectedFinalExcludedDirectories, $detector->getExcludedDirectoryPaths());
+        assertSame($expectedFinalExcludedDirectories, $detector->_getExcludedDirectoryPaths());
 
         assertSame(
             [
@@ -1144,7 +1144,7 @@ class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             [
                 realpath(__DIR__ . '/../ScriptClasses/Red') => realpath(__DIR__ . '/../ScriptClasses/Red'),
             ],
-            $detector->getExcludedDirectoryPaths(),
+            $detector->_getExcludedDirectoryPaths(),
         );
 
         assertSame(

@@ -405,23 +405,23 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         $searchNamespacePSR4 .= '\\';
         $searchNamespacePSR4 = str_replace('\\', '\\\\', $searchNamespacePSR4);
 
-        $contents = <<<TEXT
-<?php
+        $contents = <<<PHP
+            <?php
 
-declare(strict_types=1);
+            declare(strict_types=1);
 
-require_once '{$this->pathDirectoryProject}/tools/cli-toolkit/init.php';
+            require_once '{$this->pathDirectoryProject}/tools/cli-toolkit/init.php';
 
-use Composer\Autoload\ClassLoader;
+            use Composer\Autoload\ClassLoader;
 
-\$composerLoader = new ClassLoader();
-\$composerLoader->addPsr4('{$searchNamespacePSR4}', [__DIR__]);
-\$composerLoader->register();
+            \$composerLoader = new ClassLoader();
+            \$composerLoader->addPsr4('{$searchNamespacePSR4}', [__DIR__]);
+            \$composerLoader->register();
 
-mb_internal_encoding('UTF-8');
-setlocale(LC_ALL, 'en_US.UTF-8');
+            mb_internal_encoding('UTF-8');
+            setlocale(LC_ALL, 'en_US.UTF-8');
 
-TEXT;
+            PHP;
 
         $pathFile = $this->pathDirectoryBase . '/init.php';
         if (false === file_put_contents($pathFile, $contents)) {
@@ -440,53 +440,52 @@ TEXT;
         /** @var callable $launcherCallable This hint is needed only for the class method to be IDE-detectable. */
         $launcherCallable       = [ScriptLauncher::class, 'execute'];
         $launcherClassShortName = ToolBelt::getClassShortName(ScriptLauncher::class);
-        $launcherExecMethodName = $launcherCallable[1];
 
         $contents = <<<PHP
-<?php
+            <?php
 
-declare(strict_types=1);
+            declare(strict_types=1);
 
-require_once __DIR__ . '/init.php';
+            require_once __DIR__ . '/init.php';
 
-use {$launcherCallable[0]};
-use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
+            use {$launcherCallable[0]};
+            use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
-\$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
-    ->searchDirectory(__DIR__ . '/Scripts');
+            \$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+                ->searchDirectory(__DIR__ . '/Scripts');
 
-// PERFORMANCE STATS ->
-memory_reset_peak_usage();
-\$memPeakStart = memory_get_peak_usage(false);
-\$tsStart      = hrtime(true);
+            // PERFORMANCE STATS ->
+            memory_reset_peak_usage();
+            \$memPeakStart = memory_get_peak_usage(false);
+            \$tsStart      = hrtime(true);
 
-register_shutdown_function(
-    function () use (\$memPeakStart, \$tsStart) {
-        \$tsEnd      = hrtime(true);
-        \$memPeakEnd = memory_get_peak_usage(false);
+            register_shutdown_function(
+                function () use (\$memPeakStart, \$tsStart) {
+                    \$tsEnd      = hrtime(true);
+                    \$memPeakEnd = memory_get_peak_usage(false);
+            
+                    \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
+                    \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
 
-        \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
-        \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
+                    fwrite(
+                        STDERR,
+                        <<<TEXT
 
-        fwrite(
-            STDERR,
-            <<<TEXT
+                        Stats:
+                            time elapsed, seconds: {\$timeElapsed}
+                            memory peak usage, MB: {\$memoryPeakUsage}
 
-            Stats:
-                time elapsed, seconds: {\$timeElapsed}
-                memory peak usage, MB: {\$memoryPeakUsage}
+                        TEXT,
+                    );
+                },
+            );
+            // <- PERFORMANCE STATS
 
-            TEXT,
-        );
-    },
-);
-// <- PERFORMANCE STATS
+            (new {$launcherClassShortName}(\$scriptClassDetector))
+                ->throwOnException()
+                ->{$launcherCallable[1]}();
 
-(new {$launcherClassShortName}(\$scriptClassDetector))
-    ->throwOnException()
-    ->{$launcherExecMethodName}();
-
-PHP;
+            PHP;
 
         $launcherFileName = static::LAUNCHER_NAME;
         $pathLauncher     = $this->pathDirectoryBase . "/{$launcherFileName}.php";
@@ -604,40 +603,40 @@ PHP;
                 }
             }
 
-            $scriptContents = <<<TEXT
-<?php
+            $scriptContents = <<<PHP
+                <?php
 
-declare(strict_types=1);
+                declare(strict_types=1);
 
-namespace {$namespace};
+                namespace {$namespace};
 
-use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+                use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
+                use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
 
-final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
-    protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
-        parent::setUpConfig(\$configBuilder);
+                final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
+                    protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
+                        parent::setUpConfig(\$configBuilder);
 
-        \$configBuilder
-            ->description('
-                %%SCRIPT_DESCRIPTION%%
-            ')
-        
-            ->newOption('--%%OPTION_NAME%%')
-            
-            ->newFlag('--%%FLAG_NAME%%')
-            
-            ->newArgument('%%ARGUMENT_NAME%%')
-            ->required(false);
-    }
+                        \$configBuilder
+                            ->description('
+                                %%SCRIPT_DESCRIPTION%%
+                            ')
+
+                            ->newOption('--%%OPTION_NAME%%')
+
+                            ->newFlag('--%%FLAG_NAME%%')
+
+                            ->newArgument('%%ARGUMENT_NAME%%')
+                            ->required(false);
+                    }
 
 
-    public function execute(): void {
-        %%EXECUTION%%
-    }
-}
+                    public function execute(): void {
+                        %%EXECUTION%%
+                    }
+                }
 
-TEXT;
+                PHP;
 
             // Do not force unique values across all scripts. We need unique values only within a single script.
             $this->generatedParameterNames = [];

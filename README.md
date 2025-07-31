@@ -7,25 +7,31 @@
 Key features (why you would want to use it):
 - configure named (options) and positioned (arguments) parameters with ease using a builder;
 - define required options, optional arguments, lists of possible values, flags, array-like parameters and subcommands;
+- enjoy Bash completion for options' names and parameters' possible values (when calling scripts via generated aliases);
 - call your scripts from any paths by generated aliases;
-- enjoy autocompleting options' names and parameters' possible values (when calling scripts via special aliases);
-- get a generated help page (using the built-in `--help` option) based on your parameters configuration.
+- get a generated help page (using the built-in `--help` option) based on your parameters configuration;
+- create console scripts as plain php-files or classes.
 
 ## Contents
 
 - [Installation](#installation)
 - [How to](#how-to)
-- [Examples](#examples)
+    - [Plain scripts](#plain-scripts)
+    - [Completion](#completion)
+    - [Script classes](#script-classes)
+    - [More configuration examples](#more-configuration-examples)
 - [Inspiration and authors](#inspiration-and-authors)
 - [More info](#more-info)
 
 ## Installation
 
-```shell
+```sh
 composer require magic-push/cli-toolkit
 ```
 
 ## How to
+
+### Plain scripts
 
 Just create a php-file and start configuring:
 ```php
@@ -46,7 +52,7 @@ if (!$request->getParamAsBool('dry-run')) {
 }
 ```
 
-If you want to read your script's documentation, then just call your script with the `--help` option:
+If you want to read your script's documentation, then just call your script with `--help` option:
 ```
 $ path/to/my-cool-script.php --help
 
@@ -80,37 +86,41 @@ $request = Parametizer::newConfig()
 
 ```
 $ my-cool-script.php
-'chunk-size' >>> Config error: a parameter can't be required and have a default simultaneously.
+'chunk-size' >>> Config error: a parameter can't be required and have a default value simultaneously.
 ```
 
-For more cool stuff to know see [Features Manual](docs/features-manual.md).
+### Script classes
 
-## Examples
+Generate a skeleton for your future class-based scripts:
 
-Here are [useful scripts](tools/cli-toolkit/ScriptClasses)
-that also utilize some Parametizer features (so may be studied as examples).
+```sh
+php tools/cli-toolkit/launcher.php cli-toolkit:generate:launcher-skeleton
+```
 
-- [AutocompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php):
-  you should start with this script, as it enables the autocompletion for all Parametizer-powered scripts.
-    - Launch the script and read the details:
-      ```sh
-      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --search-directory-recursive=tools/cli-toolkit --verbose
-      ```
-    - Read it's manual for further customization:
-      ```sh
-      php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --help
-      ```
-- [EnvironmentConfigFile.php](tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php):
-  helps to configure environment settings for your scripts.
-  See [Environment Config manual](docs/features-manual.md#environment-config) for details.
-- [TerminalFormatterShowcase.php](tools/cli-toolkit/ScriptClasses/TerminalFormatterShowcase.php):
-  this script shows examples and codes for a terminal coloring and formatting by utilizing
-  the [TerminalFormatter](src/TerminalFormatter.php) class included in the project. See usage:
+Read the output and comments in generated files.
+
+### Completion
+
+Use [AutocompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+to generate a completion Bash script with aliases to your php-scripts:
+
+- Launch the script and read the details:
+
   ```sh
-  php tools/cli-toolkit/launcher.php cli-toolkit:terminal-formatter-showcase --help
+  php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script \
+      --search-directory-recursive=tools/cli-toolkit \
+      --verbose
+  ```
+- Read the script's help page for further customization:
+
+  ```sh
+  php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --help
   ```
 
-You can also look through `/*/scripts/*` files in [Tests](tests/Tests) directory as artificial examples.
+### More configuration examples
+
+Check out the [stock class scripts](tools/cli-toolkit/ScriptClasses) (see `setUpConfig()`) as examples of class-based
+scripts, and `/*/scripts/*` files in [Tests](tests/Tests) subdirectories as artificial examples of plain scripts.
 
 ## Inspiration and authors
 
@@ -126,6 +136,6 @@ The rest is done by Kirill "Magic Push" Ulanovskii.
 
 ## More info
 
-- [Features Manual](docs/features-manual.md) - the "[How to](#how-to)" continuation.
-- [TODO](docs/todo.md) - the list of things I think would be cool to implement here.
-- [Changelog](docs/changelog.md)
+- [Features Manual](docs/features-manual.md) - more cool stuff to know about in details.
+- [TODO](docs/todo.md) - the list of things I think would be cool to implement in the library.
+- [Changelog](docs/changelog.md) - if you want to update the library safely.

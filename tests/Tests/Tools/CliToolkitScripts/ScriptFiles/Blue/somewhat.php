@@ -10,5 +10,5 @@ require_once __DIR__ . '/../../../../init-console.php';
 $config = Parametizer::newConfig(new EnvironmentConfig(), throwOnException: true);
 $config
     ->description('asd')
-    ->newFlag('asd');
+    ->newFlag('--asd');
 $config->run();
