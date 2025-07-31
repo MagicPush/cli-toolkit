@@ -23,7 +23,7 @@ This change log references the repository changes and releases, which respect [s
    which does not require specifying a chosen subcommand name - it detects that name automatically.
     * Added `CliRequest::SUBCOMMAND_PREFIX` for subcommand request key names.
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
-   [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts
+   [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts
    and a [launcher.php](../tools/cli-toolkit/launcher.php).
     1. [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php) now utilizes
        [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php),
@@ -60,15 +60,15 @@ This change log references the repository changes and releases, which respect [s
 ### New features
 
 1. Removed "minimum 2 subcommands" constraint from `Config::commitSubcommandSwitch()`.
-1. [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php) as a basement for
+1. [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php) as a basement for
    class-based Parametizer-powered scripts.
     1. `EnvironmentConfig::detectBottommostDirectoryPath()` now tries to detect the class' "child" location when
        possible. Otherwise backwards to a launched script location.
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
-   `help` ([HelpScript.php](../src/Parametizer/Script/BuiltIn/HelpScript.php))
-   and `list` ([ListScript.php](../src/Parametizer/Script/BuiltIn/ListScript.php)) built-in subcommands.
+   `help` ([HelpScript.php](../src/Parametizer/ScriptClass/BuiltIn/HelpScript.php))
+   and `list` ([ListScript.php](../src/Parametizer/ScriptClass/BuiltIn/ListScript.php)) built-in subcommands.
     1. Every subcommand switch goes with `list` as its default value.
     1. All built-in subcommands always utilize a parent
        [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) instance
@@ -77,13 +77,14 @@ This change log references the repository changes and releases, which respect [s
    scripts. The result is mainly used to compile a completion script by
    [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
 1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) detects
-   [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts. The result is mainly used
-   as subcommands for [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) (see below).
-1. [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean to load
-   and launch [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts.
+   [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts. The result is mainly used
+   as subcommands for [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php)
+   (see below).
+1. [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean
+   to load and launch [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts.
 
    The launcher class includes
-   [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
+   [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
    is automatically added to a launcher's config, if a launcher's script detector enables caching and a cache file
    exists. The subcommand lets you delete the created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by

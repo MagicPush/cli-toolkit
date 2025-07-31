@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use Override;
 
 /**

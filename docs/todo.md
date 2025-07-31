@@ -79,7 +79,7 @@ The list of plans and ideas for future development.
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
                  No other parameters are processed correctly unless `list` is specified explicitly.
-        1. - [ ] [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)
+        1. - [ ] [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
             1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
             1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
@@ -129,7 +129,8 @@ The list of plans and ideas for future development.
              ... Or try making a subcommand alias via an autocompletion script.
         1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
              (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
-             scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo` respectively.
+             scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
+             respectively.
             1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
                  `cli-toolkit:generate:autocompletion-scripts` you should specify `c:g:a`
                  (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
@@ -147,7 +148,7 @@ The list of plans and ideas for future development.
              ```
     1. - [ ] FINISHING MOVES:
         1. - [ ] Renaming, moving and other trivial refactoring:
-            1. - [ ] [Script](../src/Parametizer/Script) -> `ScriptClass`
+            1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
             1. - [ ] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
             1. - [ ] `Autocompletion*` -> `Completion*`
             1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
@@ -174,7 +175,8 @@ The list of plans and ideas for future development.
          or replace repeating code with script classes usages.
     1. - [x] Add a built-in subcommand `list` to list all detected scripts with their names and short descriptions.
          Also consider this:
-        1. - [x] Update [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
+        1. - [x] Update
+             [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
              by adding name sections.
         1. - [x] Add the command automatically for all configs with switches.
         1. - [x] Add filtering by a substring.
@@ -258,9 +260,9 @@ The list of plans and ideas for future development.
             1. - [x] Invalid / not readable paths.
             1. - [x] Names are naturally sorted (`script2` is placed above `script10`).
             1. - [x] Do not process duplicate paths (local vs real paths).
-        1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php)
+        1. - [x] [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php)
             1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
-        1. - [x] [ScriptAbstract.php](../src/Parametizer/Script/BuiltinSubcommand/ScriptAbstract.php)
+        1. - [x] [ScriptAbstract.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ScriptAbstract.php)
             1. - [x] Simple and composite names (with sections).
             1. - [x] `getScriptInnerName()` must not be empty.
             1. - [x] `getScriptInnerName()` auto name generation:
@@ -293,8 +295,8 @@ The list of plans and ideas for future development.
              with the created detector class.
     1. - [x] Add a simple script to execute any class script without using a detector.
     1. - [x] Always hide built-in and
-         [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommands
-         from [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) instances
+         [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+         subcommands from [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) instances
          with any setup. Otherwise the "whole project" detection setup causes an exception while trying to include
          the "detected" `ClearCache` subcommand without its context object.
         * Implement a method ~~or a constant~~ as a boolean answer like "is a hidden subcommand".
@@ -306,12 +308,12 @@ The list of plans and ideas for future development.
               For instance, check if `.git` directory exists in the library root directory.
             * [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) new option.
             * Existence of a particular file in the library `/local/` directory.
-    1. - [x] Place [ClearCache.php](../src/Parametizer/Script/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
-         command for [ListScript.php](../src/Parametizer/Script/BuiltinSubcommand/ListScript.php)
+    1. - [x] Place [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+         command for [ListScript.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ListScript.php)
          in its own uniquely headered section.
         1. [x] Test `ClearCache` is placed in a headered group.
         1. [x] Test `ClearCache` subcommand always utilizes its parent environment config.
-    1. - [x] [ScriptLauncher.php](../src/Parametizer/Script/ScriptLauncher/ScriptLauncher.php):
+    1. - [x] [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php):
         1. - [x] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
              default value does not work properly if a launcher is located in some distant directory.
              Consider any / some of these options:

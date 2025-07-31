@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 abstract class RedBase extends ScriptAbstract {
     public static function getNameSections(): array {

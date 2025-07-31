@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Blue;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 final class SomethingZeroShadow extends ScriptAbstract {
     public static function getScriptInnerName(): string {

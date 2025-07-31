@@ -6,7 +6,7 @@ declare(strict_types=1);
 // That will "naturally" prevent tests and tools classes autoloading.
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 $scriptClassDetector = (new ScriptClassDetector(throwOnException: true))

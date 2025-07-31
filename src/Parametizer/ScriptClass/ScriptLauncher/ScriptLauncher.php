@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCache;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 class ScriptLauncher {

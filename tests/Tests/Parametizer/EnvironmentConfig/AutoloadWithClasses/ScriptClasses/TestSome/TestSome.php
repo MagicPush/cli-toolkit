@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\AutoloadWithClasses\ScriptClasses\TestSome;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 class TestSome extends ScriptAbstract {
     public function execute(): void { }

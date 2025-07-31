@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\ExecuteClass\Classes;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 abstract class SomethingAbstract extends ScriptAbstract {
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {

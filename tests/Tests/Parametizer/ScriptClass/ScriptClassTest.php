@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 

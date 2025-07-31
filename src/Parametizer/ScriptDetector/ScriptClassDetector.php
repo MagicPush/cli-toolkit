@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\ScriptDetector;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 use Override;
 
 /**

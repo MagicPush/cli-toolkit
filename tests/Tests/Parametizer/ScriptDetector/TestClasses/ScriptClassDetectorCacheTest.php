@@ -131,7 +131,7 @@ class ScriptClassDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
                     sprintf(
                         "'%s' is not a subclass of %s",
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\AnotherThing::class,
-                        \MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract::class,
+                        \MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract::class,
                     ),
                 ),
             );

@@ -15,9 +15,9 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
-use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\HelpScript;
-use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
 
 class Config {
     public const string PARAMETER_NAME_LIST               = 'list';

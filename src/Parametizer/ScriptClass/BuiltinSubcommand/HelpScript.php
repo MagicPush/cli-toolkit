@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;

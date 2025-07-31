@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasses;
 
-use MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand\HelpScript;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorRuntimeException;

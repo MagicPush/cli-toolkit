@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand;
 
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
@@ -11,7 +11,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache\ClearCache;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCache;
 
 class ListScript extends BuiltinSubcommandAbstract {
     protected const string PADDING_BLOCK = '    ';

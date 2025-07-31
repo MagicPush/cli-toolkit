@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ClearCache;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache;
 
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\Subcommand\ScriptLauncherSubcommandAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ScriptLauncherSubcommandAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\ToolBelt;
 use RuntimeException;

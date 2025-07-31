@@ -300,7 +300,7 @@ The detection works this way:
 1. Detect the bottommost lookup directory: start looking for a config file in the same directory where
    the launched script file is located.
     * If a launched script's backtrace contains calls from
-       [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php), then such the backtrace entry closest
+       [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php), then such the backtrace entry closest
        to the launched script is chosen. Thus the detected subcommand class location is prioritized over
        the launched script location (see _Example 2_ below).
 1. If a config file is not found or contains only a part of settings, move 1 directory above the current and repeat.
@@ -360,7 +360,7 @@ somewhere/
     parametizer.env.json
 ```
 where `CoolScript.php` is a subclass (directly or through "relative" classes in between) of
-[ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php).
+[ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php).
 
 When launching `somewhere/launchers/launcher.php` with some other subcommand (or without a subcommand - `... --help`,
 for instance), the `EnvironmentConfig` autoloader will detect and load `somewhere/launchers/parametizer.env.json`.

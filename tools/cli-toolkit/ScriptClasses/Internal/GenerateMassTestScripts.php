@@ -10,7 +10,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\ToolBelt;
@@ -611,7 +611,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 namespace {$namespace};
 
                 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-                use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+                use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
                 final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
                     protected static function setUpConfig(ConfigBuilder \$configBuilder): void {

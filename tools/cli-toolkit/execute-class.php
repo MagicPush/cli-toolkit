@@ -24,7 +24,7 @@ declare(strict_types=1);
  */
 
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 require_once __DIR__ . '/init.php';
 

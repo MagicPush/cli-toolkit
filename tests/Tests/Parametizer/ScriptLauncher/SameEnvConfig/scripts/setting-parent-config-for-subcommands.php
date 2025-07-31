@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../../../init-console.php';
 
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 

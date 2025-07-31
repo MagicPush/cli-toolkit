@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
 final class SomeClassNoNamespace extends ScriptAbstract {
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {

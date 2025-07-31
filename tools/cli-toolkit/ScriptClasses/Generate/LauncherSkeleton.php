@@ -7,8 +7,8 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 use Composer\Autoload\ClassLoader;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\ToolBelt;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
@@ -333,7 +333,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
         namespace {$this->generatedExampleClassNamespace};
 
         use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-        use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+        use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 
         /** @noinspection PhpUnused */
         class %%CLASS_NAME%% extends ScriptAbstract {

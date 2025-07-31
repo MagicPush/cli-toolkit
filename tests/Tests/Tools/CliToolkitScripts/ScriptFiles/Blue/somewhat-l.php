@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\Script\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\ScriptFiles\Blue\Something;
 

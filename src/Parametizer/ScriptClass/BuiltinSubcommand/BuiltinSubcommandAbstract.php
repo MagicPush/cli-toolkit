@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Script\BuiltinSubcommand;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand;
 
-use MagicPush\CliToolkit\Parametizer\Script\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
 use Override;
 
 abstract class BuiltinSubcommandAbstract extends ScriptAbstract {

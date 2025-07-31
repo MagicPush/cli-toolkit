@@ -139,8 +139,8 @@ The current policy:
       (or even all) scripts are not available. So users should know about such exceptions in the first place.
 
       In case of emergency, if users do not have time to fix their detector setup on production,
-      for [ScriptAbstract.php](../src/Parametizer/Script/ScriptAbstract.php)-based scripts they can use the alternative,
-      manual launcher - [execute-class.php](../tools/cli-toolkit/execute-class.php).
+      for [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts they can use
+      the alternative, manual launcher - [execute-class.php](../tools/cli-toolkit/execute-class.php).
 3. Additionally, the launcher skeleton created by
    [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php) will explicitly set
    the same corresponding default values both for a detector and environment configs.
