@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
+namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateCompletionScript;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\CliToolkitScriptTestAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\CompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -223,7 +224,9 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
                 'detectedPathsByNames' => [
                     'somewhat-l'         => realpath(__DIR__ . '/' . 'ScriptFiles/Red/Subdirectory/somewhat-l.php'),
                     'somewhat'           => realpath(__DIR__ . '/' . 'ScriptFiles/Red/somewhat.php'),
-                    'somewhat-l-another' => realpath(__DIR__ . '/' . 'ScriptFiles/Green/Subdirectory/somewhat-l-another.php'),
+                    'somewhat-l-another' => realpath(
+                        __DIR__ . '/' . 'ScriptFiles/Green/Subdirectory/somewhat-l-another.php'
+                    ),
                     'somewhat-another'   => realpath(__DIR__ . '/' . 'ScriptFiles/Green/somewhat-another.php'),
                 ],
             ],

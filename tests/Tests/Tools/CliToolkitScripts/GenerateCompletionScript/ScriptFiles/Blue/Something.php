@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\ScriptFiles\Blue;
+namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateCompletionScript\ScriptFiles\Blue;
 
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 

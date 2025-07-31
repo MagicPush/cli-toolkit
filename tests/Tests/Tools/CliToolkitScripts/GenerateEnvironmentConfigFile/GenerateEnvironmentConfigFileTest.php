@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
+namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateEnvironmentConfigFile;
 
+use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\CliToolkitScriptTestAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\EnvironmentConfigFile;
 
 use function PHPUnit\Framework\assertFileExists;
@@ -13,9 +14,9 @@ use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 
-final class GenerateEnvConfigTest extends CliToolkitScriptTestAbstract {
+final class GenerateEnvironmentConfigFileTest extends CliToolkitScriptTestAbstract {
     /** The path should contain 2+ directories to test that directories are created recursively. */
-    private const string CONFIG_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateEnvConfigTest/env-config/parametizer.env.json';
+    private const string CONFIG_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateEnvironmentConfigFileTest/env-config/parametizer.env.json';
 
 
     private string $scriptName;
