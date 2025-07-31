@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\ScriptDetector;
 
+use Override;
+
 /**
  * @method array<\string, \string> getDetectedData() (string) alias => (string) absolute path
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
@@ -113,22 +115,22 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
         $this->detectedFilePathsByAliases[$alias] = $filePath;
     }
 
-    #[\Override]
+    #[Override]
     protected function clearMemoryCache(): void {
         $this->detectedFilePathsByAliases = [];
     }
 
-    #[\Override]
+    #[Override]
     protected function hasMinimalCustomSearchSettings(): bool {
         return (bool) $this->searchedScriptPaths;
     }
 
-    #[\Override]
+    #[Override]
     protected function processDetectedFileContents(string $filePath, string $fileContents): void {
         $this->processDetectedFileContentsInternal($filePath, $fileContents, isForExactFile: false);
     }
 
-    #[\Override]
+    #[Override]
     protected function processCustomDetections(): void {
         foreach ($this->searchedScriptPaths as $scriptPath) {
             try {
@@ -158,7 +160,7 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
         }
     }
 
-    #[\Override]
+    #[Override]
     /**
      * @param array<string, string> $dataFromCache (string) alias => (string) absolute path,
      *                                             same as {@see static::$detectedFilePathsByAliases}
@@ -177,12 +179,15 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
         }
     }
 
-    #[\Override]
+    #[Override]
     protected function getDataToStoreInCache(): array {
         return $this->detectedFilePathsByAliases;
     }
 
-    #[\Override]
+    #[Override]
+    /**
+     * @return array<string, string> getDetectedData() (string) alias => (string) absolute path
+     */
     protected function getDataProcessedAfterDetection(): array {
         return $this->detectedFilePathsByAliases;
     }

@@ -24,7 +24,7 @@ This change log references the repository changes and releases, which respect [s
     * Added `CliRequest::SUBCOMMAND_PREFIX` for subcommand request key names.
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
    [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts
-   and a [launcher.php](../tools/cli-toolkit/launcher.php).
+   and a launcher, [run.php](../tools/cli-toolkit/run.php).
     1. [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php) now utilizes
        [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php),
        thus the search-related parameters were changed accordingly. 

@@ -149,6 +149,10 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     }
 
     #[Override]
+    /**
+     * @return array<string, ScriptClassAbstract|string> (string) script name => (string) Fully Qualified class name
+     * that extends {@see ScriptClassAbstract}
+     */
     protected function getDataProcessedAfterDetection(): array {
         $detectedFQClassNamesByScriptNames = [];
         foreach ($this->detectedFQClassNames as $fullyQualifiedClassName) {

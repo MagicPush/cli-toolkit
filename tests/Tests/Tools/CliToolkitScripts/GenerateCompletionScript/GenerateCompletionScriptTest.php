@@ -506,15 +506,15 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         return [
             'space-characters-as-no-prefix' => [
                 'aliasPrefix'         => ' ' . PHP_EOL,
-                'expectedScriptAlias' => 'launcher',
+                'expectedScriptAlias' => 'run',
             ],
             'some-alias' => [
                 'aliasPrefix'         => '1',
-                'expectedScriptAlias' => '1launcher',
+                'expectedScriptAlias' => '1run',
             ],
             'some-alias-trimmed-spaces-and-tabs' => [
                 'aliasPrefix'         => ' 	mega-	 ' . PHP_EOL,
-                'expectedScriptAlias' => 'mega-launcher',
+                'expectedScriptAlias' => 'mega-run',
             ],
         ];
     }

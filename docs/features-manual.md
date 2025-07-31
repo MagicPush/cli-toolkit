@@ -281,7 +281,7 @@ However if you want to affect a large amount of scripts or even all of those, th
 1. Generate a config file via Parametizer-powered
    [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php),
    ```sh
-   php ../tools/cli-toolkit/launcher.php cli-toolkit:generate:env-config --help
+   php ../tools/cli-toolkit/run.php cli-toolkit:generate:env-config --help
    ```
 1. Edit the generated file as you please.
 1. Choose which scripts should be affected:

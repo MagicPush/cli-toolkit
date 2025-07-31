@@ -371,7 +371,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
         $generatedLauncherBasenameNoExtension = basename(static::LAUNCHER_BASENAME, '.php');
         $completionGeneratorPath              = $this->generatedDirectoryPath . '/generate-completion.sh';
 
-        $stockLauncherAbsolutePath = realpath(__DIR__ . '/../../launcher.php');
+        $stockLauncherAbsolutePath = realpath(__DIR__ . '/../../run.php');
         $stockLauncherRelativePath = static::getPathRelativeSuffix(
             $stockLauncherAbsolutePath,
             dirname($completionGeneratorPath),

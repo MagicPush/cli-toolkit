@@ -13,7 +13,7 @@ final class LibraryLauncherTest extends TestCaseAbstract {
     /**
      * Tests expected availability of the stock launcher commands.
      *
-     * @see ../../../tools/cli-toolkit/launcher.php
+     * @see ../../../tools/cli-toolkit/run.php
      */
     public function testLauncherAvailableCommands(): void {
         assertSame(
@@ -28,7 +28,7 @@ final class LibraryLauncherTest extends TestCaseAbstract {
 
                 TEXT,
             static::assertNoErrorsOutput(
-                __DIR__ . '/../../../tools/cli-toolkit/launcher.php',
+                __DIR__ . '/../../../tools/cli-toolkit/run.php',
                 Config::PARAMETER_NAME_LIST . ' --slim',
             )
                 ->getStdOut(),

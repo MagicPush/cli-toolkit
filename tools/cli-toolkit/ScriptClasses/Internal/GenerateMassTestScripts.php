@@ -21,7 +21,7 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use SplFileInfo;
 
-class GenerateMassTestScripts extends CliToolkitScriptAbstract {
+final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
     protected const string LAUNCHER_NAME         = 'mass-test';
     protected const string LAUNCHER_ALIAS_PREFIX = 'zz';
 

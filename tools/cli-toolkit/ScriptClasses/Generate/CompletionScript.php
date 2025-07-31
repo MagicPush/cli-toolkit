@@ -28,6 +28,8 @@ class CompletionScript extends CliToolkitGenerateScriptAbstract {
 
         $helpFormatter = HelpFormatter::createForStdOut();
 
+        $stockLauncherDirectoryPath = realpath(__DIR__ . '/../../');
+
         $pathValidationDescription = 'You may specify absolute or relative paths - each element will be processed'
             . ' with `' . $helpFormatter->command('realpath()') . '` by the validator.';
 
@@ -57,15 +59,24 @@ class CompletionScript extends CliToolkitGenerateScriptAbstract {
             ')
 
             ->usage(
-                '\
-                    --output-filepath=my-cool-project/generated/completion.sh \
-                    --search-directory-recursive=my-cool-project/console \
-                    --exclude-directory=my-cool-project/console/debug \
-                    --search-directory-recursive=' . realpath(__DIR__ . '/' . '../../') . ' \
-                    --verbose
-                ',
-                'Set your own paths for the generated file and source directories (also include this library scripts)'
-                    . ', observe all the process details',
+                <<<TEXT
+                    \
+                        --alias-prefix=1 \
+                        --search-directory-recursive='{$stockLauncherDirectoryPath}'
+
+                    TEXT,
+                'Create a shortcut to the library stock launcher'
+            )
+
+            ->usage(
+                <<<TEXT
+                    \
+                        --output-filepath='my-cool-project/generated/completion.sh' \
+                        --search-directory-recursive='my-cool-project/console' \
+                        --exclude-directory='my-cool-project/console/debug' \
+                        --verbose
+                    TEXT,
+                'Set your own paths for the generated file and source directories, observe the process details',
             )
 
             ->newOption('--alias-prefix', '-p')

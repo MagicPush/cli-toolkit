@@ -94,7 +94,7 @@ $ my-cool-script.php
 Generate a skeleton for your future class-based scripts:
 
 ```sh
-php tools/cli-toolkit/launcher.php cli-toolkit:generate:launcher-skeleton
+php tools/cli-toolkit/run.php cli-toolkit:generate:launcher-skeleton
 ```
 
 Read the output and comments in generated files.
@@ -107,14 +107,14 @@ to generate a completion Bash script with aliases to your php-scripts:
 - Launch the script and read the details:
 
   ```sh
-  php tools/cli-toolkit/launcher.php cli-toolkit:generate:completion-script \
+  php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script \
       --search-directory-recursive=tools/cli-toolkit \
       --verbose
   ```
 - Read the script's help page for further customization:
 
   ```sh
-  php tools/cli-toolkit/launcher.php cli-toolkit:generate:completion-script --help
+  php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script --help
   ```
 
 ### More configuration examples

@@ -80,7 +80,7 @@ The list of plans and ideas for future development.
             1. - [ ] `list` as a default value.
                  No other parameters are processed correctly unless `list` is specified explicitly.
         1. - [ ] [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)
-        1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
+        1. - [ ] [run.php](../tools/cli-toolkit/run.php)
             1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
             1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
             1. - [ ] Available subcommands.
@@ -152,7 +152,7 @@ The list of plans and ideas for future development.
             1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
             1. - [x] `Autocompletion*` -> `Completion*`, `auto[-]complet*` -> `complet*`
             1. - [x] `Autocompletion` directory -> `Completion`
-            1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
+            1. - [x] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
             1. - [x] `../src/ToolBelt` -> `.../Utils`
             1. - [x] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.
             1. - [ ] Make all test classes `final` (where possible).
@@ -303,7 +303,7 @@ The list of plans and ideas for future development.
         * Implement a method ~~or a constant~~ as a boolean answer like "is a hidden subcommand".
         * Cover with an autotest.
         * ~~Try hiding `cli-toolkit:internal:`, but "sometimes" making it available again~~ (see possible options):
-            * In [launcher.php](../tools/cli-toolkit/launcher.php) only.
+            * In [run.php](../tools/cli-toolkit/run.php) only.
             * Only if a launcher (any - considering the script class is detectable) is called within the library solely,
               not within some other project that includes this library.
               For instance, check if `.git` directory exists in the library root directory.
