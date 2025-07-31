@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasses;
 
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorRuntimeException;
@@ -23,7 +23,7 @@ use function PHPUnit\Framework\assertSame;
 final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
     #[DataProvider('provideSearchAndExclude')]
     /**
-     * Tests {@see ScriptAbstract} classes detections.
+     * Tests {@see ScriptClassAbstract} classes detections.
      *
      * @param array<string, string> $expectedClasses
      * @see ScriptClassDetector::detectBySettings()
@@ -50,7 +50,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                     'red:something4' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Something4',
 
                     /**
-                     * The script class extended from {@see ScriptAbstract}, but located in another namespace,
+                     * The script class extended from {@see ScriptClassAbstract}, but located in another namespace,
                      * near a related abstract subclass {@see RedBase}:
                      */
                     'something-x' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\SomethingX',
@@ -73,7 +73,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                     /**
                      * {@see RedBase} class itself is not detected, because it is abstract.
                      *
-                     * Classes not connected to {@see ScriptAbstract} are ignored,
+                     * Classes not connected to {@see ScriptClassAbstract} are ignored,
                      * specifically {@see AnotherThing} that has the same methods, but a completely different parent.
                      */
                 ],
@@ -212,7 +212,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                     sprintf(
                         "'%s' must be a subclass of '%s'",
                         AnotherThing::class,
-                        ScriptAbstract::class,
+                        ScriptClassAbstract::class,
                     ),
                 ),
             );
@@ -364,7 +364,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
      * Tests that specifically marked classes (mainly - built-in subcommands) are not detectable.
      *
      * @see ScriptClassDetector::processDetectedFileContents()
-     * @see ScriptAbstract::isAvailableByDetector()
+     * @see ScriptClassAbstract::isAvailableByDetector()
      */
     public function testIgnoreByScriptClassIsDetectable(): void {
         assertSame(

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../init-console.php';
@@ -18,23 +18,23 @@ TEXT;
 
 TestUtils::newConfig()
     // Let's add subcommands with names in a "random" order. The sorting logic should fix the order.
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['yellow', 'banana', 'ice-cream']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['test']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['red']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['red', 'flower', 'pot']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['yellow', 'banana']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['yellow', 'banana', 'ice-cream']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['test']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['red']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['red', 'flower', 'pot']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['yellow', 'banana']), TestUtils::newConfig()->description($description))
     ->newSubcommand(
-        implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['blue', 'flower', 'tea']),
+        implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['blue', 'flower', 'tea']),
         TestUtils::newConfig()
             ->description('Yes, such a flower does exists!')
 
             ->newFlag('--god-mode')
             ->description('I-D-D-Q-D'),
     )
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['red', 'lever']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['red', 'book']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['green', 'house']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['red', 'flower']), TestUtils::newConfig()->description($description))
-    ->newSubcommand(implode(ScriptAbstract::NAME_SECTION_SEPARATOR, ['avocado-is-one-of-popular-fruits-you-see-in-menu']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['red', 'lever']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['red', 'book']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['green', 'house']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['red', 'flower']), TestUtils::newConfig()->description($description))
+    ->newSubcommand(implode(ScriptClassAbstract::NAME_SECTION_SEPARATOR, ['avocado-is-one-of-popular-fruits-you-see-in-menu']), TestUtils::newConfig()->description($description))
 
     ->run();

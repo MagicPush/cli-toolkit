@@ -15,7 +15,7 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\ToolBelt;
 use ReflectionClass;
 
-abstract class ScriptAbstract {
+abstract class ScriptClassAbstract {
     /** @see Config::newSubcommand() - allowed characters validation */
     public const string NAME_SECTION_SEPARATOR = ':';
     /** @see Config::newSubcommand() - allowed characters validation */
@@ -136,7 +136,7 @@ abstract class ScriptAbstract {
          * debug_backtrace() does not contain script classes mentioning until this method is redefined explicitly.
          * That's why we here explicitly specify the bottommost directory path.
          */
-        if (null === $envConfig && is_subclass_of(static::class, ScriptAbstract::class)) {
+        if (null === $envConfig && is_subclass_of(static::class, ScriptClassAbstract::class)) {
             $staticClassReflection = new ReflectionClass(static::class);
             $staticClassFilePath   = $staticClassReflection->getFileName();
             if (false !== $staticClassFilePath && !$staticClassReflection->isAbstract()) {

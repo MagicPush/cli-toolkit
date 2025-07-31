@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -16,7 +16,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests that a script local name can not be empty.
      *
-     * @see ScriptAbstract::getScriptName()
+     * @see ScriptClassAbstract::getScriptName()
      */
     public function testEmptyLocalNames(string $className): void {
         self::assertConfigExceptionOutput(
@@ -40,7 +40,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests local names automatic generation based on class names.
      *
-     * @see ScriptAbstract::getScriptInnerName()
+     * @see ScriptClassAbstract::getScriptInnerName()
      * @noinspection SpellCheckingInspection
      */
     public function testAutoLocalName(): void {
@@ -68,7 +68,7 @@ class ScriptClassTest extends TestCaseAbstract {
     /**
      * Tests local names automatic generation based on class names.
      *
-     * @see ScriptAbstract::getScriptName()
+     * @see ScriptClassAbstract::getScriptName()
      */
     public function testNamesWithSections(): void {
         assertSame(

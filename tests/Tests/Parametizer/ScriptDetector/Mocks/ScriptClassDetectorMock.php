@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\Mocks;
 
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 /**
@@ -12,14 +12,15 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
  */
 final class ScriptClassDetectorMock extends ScriptClassDetector {
     /**
-     * @return array<ScriptAbstract|string, ScriptAbstract|string> {@see static::$searchedFQClassNames}
+     * @return array<ScriptClassAbstract|string, ScriptClassAbstract|string> {@see static::$searchedFQClassNames}
      */
     public function _getSearchedFQClassNames(): array {
         return $this->searchedFQClassNames;
     }
 
     /**
-     * @return ScriptAbstract[]|string[] (string) Fully Qualified class name that extends {@see ScriptAbstract}
+     * @return ScriptClassAbstract[]|string[] (string) Fully Qualified class name
+     * that extends {@see ScriptClassAbstract}
      */
     public function _getDetectedFQClassNames(): array {
         return $this->detectedFQClassNames;

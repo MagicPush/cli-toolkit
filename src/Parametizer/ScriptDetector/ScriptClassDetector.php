@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Parametizer\ScriptDetector;
 
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use Override;
 
 /**
- * @method array<\string, ScriptAbstract|\string> getDetectedData() (string) script name => (string) Fully Qualified class name that extends {@see ScriptAbstract}
+ * @method array<\string, ScriptClassAbstract|\string> getDetectedData() (string) script name => (string) Fully Qualified class name that extends {@see ScriptClassAbstract}
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ScriptClassDetector extends ScriptDetectorAbstract {
     /**
-     * @var array<ScriptAbstract|string, ScriptAbstract|string> [both keys and values] (string) Fully Qualified class
-     * name that extends {@see ScriptAbstract}.
+     * @var array<ScriptClassAbstract|string, ScriptClassAbstract|string> [both keys and values]
+     * (string) Fully Qualified class name that extends {@see ScriptClassAbstract}.
      */
     protected array $searchedFQClassNames = [];
 
-    /** @var ScriptAbstract[]|string[] (string) Fully Qualified class name that extends {@see ScriptAbstract} */
+    /**
+     * @var ScriptClassAbstract[]|string[] (string) Fully Qualified class name that extends {@see ScriptClassAbstract}
+     */
     protected array $detectedFQClassNames = [];
 
 
     /**
-     * @param string $fQClassName Fully qualified class name that extends {@see ScriptAbstract}
+     * @param string $fQClassName Fully qualified class name that extends {@see ScriptClassAbstract}
      */
     public function scriptClassName(string $fQClassName): static {
         if (array_key_exists($fQClassName, $this->searchedFQClassNames)) {
@@ -42,8 +44,8 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
     }
 
     /**
-     * @param ScriptAbstract|string[] $fQClassNames (string) Fully Qualified class name
-     *                                              that extends {@see ScriptAbstract}
+     * @param ScriptClassAbstract|string[] $fQClassNames (string) Fully Qualified class name
+     *                                              that extends {@see ScriptClassAbstract}
      */
     public function scriptClassNames(array $fQClassNames): static {
         foreach ($fQClassNames as $fQClassName) {
@@ -90,7 +92,7 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
         }
 
         if (
-            !is_subclass_of($fullyQualifiedClassName, ScriptAbstract::class)
+            !is_subclass_of($fullyQualifiedClassName, ScriptClassAbstract::class)
             || !$fullyQualifiedClassName::isAvailableByDetector()
         ) {
             return;
@@ -101,7 +103,7 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
 
     #[Override]
     protected function processCustomDetections(): void {
-        $baseFQClassName = ScriptAbstract::class;
+        $baseFQClassName = ScriptClassAbstract::class;
 
         foreach ($this->searchedFQClassNames as $fQClassName) {
             if (!is_subclass_of($fQClassName, $baseFQClassName)) {
@@ -118,18 +120,18 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
 
     #[Override]
     /**
-     * @param ScriptAbstract[]|string[] $dataFromCache (string) Fully Qualified class name
-     *                                                 that extends {@see ScriptAbstract}
+     * @param ScriptClassAbstract[]|string[] $dataFromCache (string) Fully Qualified class name
+     *                                                 that extends {@see ScriptClassAbstract}
      */
     protected function loadDataFromCache(array $dataFromCache): void {
         foreach ($dataFromCache as $fQClassName) {
-            if (!is_subclass_of($fQClassName, ScriptAbstract::class)) {
+            if (!is_subclass_of($fQClassName, ScriptClassAbstract::class)) {
                 if (!$this->throwOnException) {
                     continue;
                 }
 
                 throw new ScriptDetectorRuntimeException(
-                    "'{$fQClassName}' is not a subclass of " . ScriptAbstract::class,
+                    "'{$fQClassName}' is not a subclass of " . ScriptClassAbstract::class,
                 );
             }
 
@@ -139,7 +141,8 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
 
     #[Override]
     /**
-     * @return ScriptAbstract[]|string[] (string) Fully Qualified class name that extends {@see ScriptAbstract}
+     * @return ScriptClassAbstract[]|string[] (string) Fully Qualified class name
+     * that extends {@see ScriptClassAbstract}
      */
     protected function getDataToStoreInCache(): array {
         return $this->detectedFQClassNames;

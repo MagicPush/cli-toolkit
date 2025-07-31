@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCache;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
@@ -261,7 +261,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
      * @see ScriptLauncher::useParentEnvConfigForSubcommands() The flag is set here.
      * @see ScriptLauncher::execute() Here the parent config {@see EnvironmentConfig} instance is passed
      * (or not) to subcommand configs.
-     * @see ScriptAbstract::getConfigBuilder() Here the parent config may be passed to a subcommand.
+     * @see ScriptClassAbstract::getConfigBuilder() Here the parent config may be passed to a subcommand.
      */
     public function testLauncherSettingSameEnvConfigForSubcommands(
         bool $isSameEnvConfigForSubcommands,
@@ -362,7 +362,7 @@ class ScriptLauncherTest extends TestCaseAbstract {
      *
      * @see ScriptLauncher::execute()
      * @see ScriptClassDetector::processDetectedFileContents()
-     * @see ScriptAbstract::isAvailableByDetector()
+     * @see ScriptClassAbstract::isAvailableByDetector()
      */
     public function testBuiltInCommandsAreAlwaysIgnored(): void {
         assertSame(

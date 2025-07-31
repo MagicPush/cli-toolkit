@@ -15,7 +15,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
 
@@ -267,8 +267,8 @@ class Config {
     }
 
     /**
-     * @return array<string, ScriptAbstract|string> (string) subcommand name to be set in a config =>
-     *                                              (string) Fully qualified class name that extends {@see ScriptAbstract}
+     * @return array<string, ScriptClassAbstract|string> (string) subcommand name to be set in a config =>
+     *                                              (string) Fully qualified class name that extends {@see ScriptClassAbstract}
      */
     public static function getBuiltInSubcommandClassesBySubcommandNames(): array {
         return [
@@ -293,7 +293,7 @@ class Config {
     }
 
     /**
-     * @return ScriptAbstract|string|null Fully qualified class name that extends {@see ScriptAbstract}.
+     * @return ScriptClassAbstract|string|null Fully qualified class name that extends {@see ScriptClassAbstract}.
      */
     public function getBuiltInSubcommandClass(string $subcommandName): ?string {
         return static::getBuiltInSubcommandClassesBySubcommandNames()[$subcommandName] ?? null;

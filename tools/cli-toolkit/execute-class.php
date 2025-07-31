@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This is an alternative launcher for class scripts (based on {@see ScriptAbstract}) to call those directly.
+ * This is an alternative launcher for class scripts (based on {@see ScriptClassAbstract}) to call those directly.
  *
  * How to:
  *      `php execute-class.php 'Your\Class\Script\Fully\Qualified\Name' [class script parameters]`
@@ -24,7 +24,7 @@ declare(strict_types=1);
  */
 
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 
 require_once __DIR__ . '/init.php';
 
@@ -39,11 +39,11 @@ if (!class_exists($className)) {
         $errorFormatter->error("'" . $errorFormatter->paramValue($className) . "' is not defined or autoloaded"),
     );
 }
-if (!is_subclass_of($className, ScriptAbstract::class)) {
+if (!is_subclass_of($className, ScriptClassAbstract::class)) {
     throw new RuntimeException(
         $errorFormatter->error(
             "'" . $errorFormatter->paramValue($className) . "' is not a subclass of "
-                . $errorFormatter->helpNote(ScriptAbstract::class),
+                . $errorFormatter->helpNote(ScriptClassAbstract::class),
         ),
     );
 }

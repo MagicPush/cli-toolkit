@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate;
 use Composer\Autoload\ClassLoader;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\ToolBelt;
@@ -230,7 +230,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
 
 
         require_once $this->generatedExampleClassPath;
-        /** @var ScriptAbstract $generatedExampleClassFQName */
+        /** @var ScriptClassAbstract $generatedExampleClassFQName */
         $generatedExampleClassFQName       = $this->generatedExampleClassNamespace . '\\' . static::EXAMPLE_CLASS_NAME;
         $this->exampleClassScriptName      = $generatedExampleClassFQName::getScriptName();
         $generatedExampleClassRelativePath = str_replace(
@@ -333,10 +333,10 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
         namespace {$this->generatedExampleClassNamespace};
 
         use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-        use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+        use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 
         /** @noinspection PhpUnused */
-        class %%CLASS_NAME%% extends ScriptAbstract {
+        class %%CLASS_NAME%% extends ScriptClassAbstract {
             protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
                 parent::setUpConfig(\$configBuilder);
 

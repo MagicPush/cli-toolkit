@@ -79,7 +79,7 @@ The list of plans and ideas for future development.
         1. - [ ] Built-in subcommands.
             1. - [ ] `list` as a default value.
                  No other parameters are processed correctly unless `list` is specified explicitly.
-        1. - [ ] [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)
+        1. - [ ] [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)
         1. - [ ] [launcher.php](../tools/cli-toolkit/launcher.php)
             1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
             1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
@@ -149,7 +149,7 @@ The list of plans and ideas for future development.
     1. - [ ] FINISHING MOVES:
         1. - [ ] Renaming, moving and other trivial refactoring:
             1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
-            1. - [ ] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
+            1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
             1. - [ ] `Autocompletion*` -> `Completion*`
             1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
             1. - [ ] [ToolBelt.php](../src/ToolBelt.php) -> `Utils`
@@ -157,7 +157,7 @@ The list of plans and ideas for future development.
             1. - [ ] Make all test classes `final` (where possible).
         1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be
            simplified - if a config with 'env' might be created ASAP.
-        1. - [x] Try easing `ScriptAbstract::getConfigBuilder()` declaration. Consider:
+        1. - [x] Try easing `ScriptClassAbstract::getConfigBuilder()` declaration. Consider:
 
             - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
             - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
@@ -212,7 +212,7 @@ The list of plans and ideas for future development.
               as a default config (not a forced only-config) - a script class should be able to _update_ parameters.~~
         1. - [x] ~~Think about the load priorities: a) launcher env config instance,
              b) script class subtree config files.~~
-        1. - [x] ~~Try easing `ScriptAbstract::getConfigBuilder()` declaration, consider making an empty `ConfigBuilder`
+        1. - [x] ~~Try easing `ScriptClassAbstract::getConfigBuilder()` declaration, consider making an empty `ConfigBuilder`
              instance "automatically" by making `getConfigBuilder()` non-static or in a separate method.~~
     1. - [x] Make `newSubcommandSwitch()` optional.
 
@@ -262,7 +262,7 @@ The list of plans and ideas for future development.
             1. - [x] Do not process duplicate paths (local vs real paths).
         1. - [x] [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php)
             1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
-        1. - [x] [ScriptAbstract.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ScriptAbstract.php)
+        1. - [x] [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ScriptAbstract.php)
             1. - [x] Simple and composite names (with sections).
             1. - [x] `getScriptInnerName()` must not be empty.
             1. - [x] `getScriptInnerName()` auto name generation:

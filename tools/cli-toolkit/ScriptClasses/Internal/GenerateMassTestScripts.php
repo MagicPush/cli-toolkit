@@ -611,9 +611,9 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 namespace {$namespace};
 
                 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
-                use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptAbstract;
+                use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 
-                final class {$className} extends ScriptAbstract {%%NAME_SECTIONS%%
+                final class {$className} extends ScriptClassAbstract {%%NAME_SECTIONS%%
                     protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
                         parent::setUpConfig(\$configBuilder);
 

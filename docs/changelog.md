@@ -23,7 +23,7 @@ This change log references the repository changes and releases, which respect [s
    which does not require specifying a chosen subcommand name - it detects that name automatically.
     * Added `CliRequest::SUBCOMMAND_PREFIX` for subcommand request key names.
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
-   [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts
+   [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts
    and a [launcher.php](../tools/cli-toolkit/launcher.php).
     1. [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php) now utilizes
        [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php),
@@ -60,7 +60,7 @@ This change log references the repository changes and releases, which respect [s
 ### New features
 
 1. Removed "minimum 2 subcommands" constraint from `Config::commitSubcommandSwitch()`.
-1. [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php) as a basement for
+1. [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php) as a basement for
    class-based Parametizer-powered scripts.
     1. `EnvironmentConfig::detectBottommostDirectoryPath()` now tries to detect the class' "child" location when
        possible. Otherwise backwards to a launched script location.
@@ -77,11 +77,11 @@ This change log references the repository changes and releases, which respect [s
    scripts. The result is mainly used to compile a completion script by
    [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
 1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) detects
-   [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts. The result is mainly used
-   as subcommands for [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php)
-   (see below).
+   [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
+   The result is mainly used as subcommands for
+   [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php) (see below).
 1. [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean
-   to load and launch [ScriptAbstract.php](../src/Parametizer/ScriptClass/ScriptAbstract.php)-based scripts.
+   to load and launch [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
 
    The launcher class includes
    [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
