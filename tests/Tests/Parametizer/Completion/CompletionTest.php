@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Completion;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;

@@ -151,7 +151,7 @@ The list of plans and ideas for future development.
             1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
             1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
             1. - [x] `Autocompletion*` -> `Completion*`, `auto[-]complet*` -> `complet*`
-            1. - [ ] `Autocompletion` directory -> `Completion`
+            1. - [x] `Autocompletion` directory -> `Completion`
             1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
             1. - [ ] [ToolBelt.php](../src/ToolBelt.php) -> `Utils`
             1. - [ ] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.

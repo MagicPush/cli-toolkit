@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Completion\Config;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
