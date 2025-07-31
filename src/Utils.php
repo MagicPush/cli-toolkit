@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit;
 
-abstract class ToolBelt {
+abstract class Utils {
     /**
      * Extracts and returns a short name (a namespace is stripped) of a provided fully qualified class name.
      *
@@ -21,7 +21,7 @@ abstract class ToolBelt {
      * If fails to find one, eventually returns a topmost directory path in a file system (like `/`).
      *
      * For example: the function will return `/home/user/cool-project`, if starts searching from
-     * `/home/user/cool-project/vendor/sup-project/vendor/MagicPush/cli-tool/src/ToolBelt.php`
+     * `/home/user/cool-project/vendor/sup-project/vendor/MagicPush/cli-tool/src/Utils.php`
      */
     public static function detectTopmostProjectRootDirectory(): string {
         if (!isset(static::$topmostProjectRootDirectory)) {

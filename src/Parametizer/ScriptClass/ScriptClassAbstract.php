@@ -12,7 +12,7 @@ use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use ReflectionClass;
 
 abstract class ScriptClassAbstract {
@@ -43,7 +43,7 @@ abstract class ScriptClassAbstract {
      * of a full script name - without {@see static::getNameSections()}.
      */
     public static function getScriptInnerName(): string {
-        $classShortName      = ToolBelt::getClassShortName(static::class);
+        $classShortName      = Utils::getClassShortName(static::class);
         $scriptName          = '';
         $previousSymbolUpper = null;
         $pendingAbbreviation = '';

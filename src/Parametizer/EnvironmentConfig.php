@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer;
 
 use Exception;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use RuntimeException;
 use TypeError;
 
@@ -106,7 +106,7 @@ class EnvironmentConfig {
      *                                             where a script config might be located.
      * @param string|null $topmostDirectoryPath    The method will not search config files above this directory.
      *                                             If `null`, will try to detect a path via
-     *                                             {@see ToolBelt::detectTopmostProjectRootDirectory()}.
+     *                                             {@see Utils::detectTopmostProjectRootDirectory()}.
      */
     public static function createFromConfigsBottomUpHierarchy(
         ?string $bottommostDirectoryPath = null,
@@ -133,7 +133,7 @@ class EnvironmentConfig {
         }
 
         if (null === $topmostDirectoryPath) {
-            $topmostDirectoryPath = ToolBelt::detectTopmostProjectRootDirectory();
+            $topmostDirectoryPath = Utils::detectTopmostProjectRootDirectory();
         }
 
         $topmostDirectoryPathValidated = realpath($topmostDirectoryPath);

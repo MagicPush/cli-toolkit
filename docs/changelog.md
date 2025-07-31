@@ -49,7 +49,7 @@ This change log references the repository changes and releases, which respect [s
 
    `createForStdOut()` and `createForStdErr()` work as usual (`stream_isatty()` call is moved in those methods).
 1. Removed `EnvironmentConfig::detectTopmostDirectoryPath()` method - replaced its usage with
-   `ToolBelt::detectTopmostProjectRootDirectory()`
+   `Utils::detectTopmostProjectRootDirectory()`
 1. Renaming:
     1. `Config::newSubcommand()` first parameter `$subcommandValue` -> `$subcommandName`.
     1. `BuilderInterface::newSubcommand()` (so as `BuilderAbstract` and `ConfigBuilder`) first parameter
@@ -145,7 +145,7 @@ This change log references the repository changes and releases, which respect [s
        or any other setup.
     1. Added `$dieMessage` parameter to `Question::confirmOrDie()` method - outputs a message (if provided)
        before interrupting script's execution.
-1. [ToolBelt.php](../src/ToolBelt.php) for various stuff used in different places
+1. [Utils.php](../src/Utils.php) for various stuff used in different places
    and structurally not fitting into any other class.
 
 ### Patches

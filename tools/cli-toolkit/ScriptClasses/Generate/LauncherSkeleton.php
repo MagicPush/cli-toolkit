@@ -10,7 +10,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Question\Question;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RuntimeException;
 
@@ -144,7 +144,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
     }
 
     protected function setUpGenerator(): static {
-        $parentProjectRootDirectoryPath      = ToolBelt::detectTopmostProjectRootDirectory();
+        $parentProjectRootDirectoryPath      = Utils::detectTopmostProjectRootDirectory();
         $parentProjectClassesMainLibraryPath = $parentProjectRootDirectoryPath;
         $parentProjectNamespace              = 'UnknownVendor\\UnknownProject\\';
 
@@ -245,7 +245,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
          */
         /** @var callable $launcherClassCallable This hint is needed only for the class method to be IDE-detectable. */
         $launcherClassCallable  = [ScriptLauncher::class, 'execute'];
-        $launcherClassShortName = ToolBelt::getClassShortName(ScriptLauncher::class);
+        $launcherClassShortName = Utils::getClassShortName(ScriptLauncher::class);
 
         $launcherSubstitutes = [
             '%%DO%%'                            => 'TODO',

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache;
 
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use RuntimeException;
 
 class ClearCacheContext {
@@ -16,7 +16,7 @@ class ClearCacheContext {
     public function __construct(string $cacheFilePath) {
         if ('' === $cacheFilePath || !is_readable($cacheFilePath)) {
             throw new RuntimeException(
-                ToolBelt::getClassShortName(ScriptClassDetector::class) . ' cache file must exist and be readable: '
+                Utils::getClassShortName(ScriptClassDetector::class) . ' cache file must exist and be readable: '
                     . var_export($cacheFilePath, true),
             );
         }

@@ -13,7 +13,7 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Question\Question;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\CliToolkitScriptAbstract;
 use RecursiveDirectoryIterator;
@@ -439,7 +439,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
          */
         /** @var callable $launcherCallable This hint is needed only for the class method to be IDE-detectable. */
         $launcherCallable       = [ScriptLauncher::class, 'execute'];
-        $launcherClassShortName = ToolBelt::getClassShortName(ScriptLauncher::class);
+        $launcherClassShortName = Utils::getClassShortName(ScriptLauncher::class);
 
         $contents = <<<PHP
             <?php

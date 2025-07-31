@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\ToolBelt;
+namespace MagicPush\CliToolkit\Tests\Tests\Utils;
 
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertSame;
 
-final class ToolBeltTest extends TestCase {
+final class UtilsTest extends TestCase {
     #[DataProvider('provideShortClassName')]
     /**
      * Tests how different types of full class names are treated.
      *
-     * @see ToolBelt::getClassShortName()
+     * @see Utils::getClassShortName()
      */
     public function testShortClassName(string $fullyQualifiedName, string $expectedShortName): void {
-        assertSame($expectedShortName, ToolBelt::getClassShortName($fullyQualifiedName));
+        assertSame($expectedShortName, Utils::getClassShortName($fullyQualifiedName));
     }
 
     /**
@@ -29,7 +29,7 @@ final class ToolBeltTest extends TestCase {
     public static function provideShortClassName(): array {
         return [
             'fq-name' => [
-                'fullyQualifiedName' => \MagicPush\CliToolkit\Tests\Tests\ToolBelt\Classes\Something::class,
+                'fullyQualifiedName' => \MagicPush\CliToolkit\Tests\Tests\Utils\Classes\Something::class,
                 'expectedShortName'  => 'Something',
             ],
             'no-namespace' => [
@@ -44,19 +44,19 @@ final class ToolBeltTest extends TestCase {
      *
      * The test does (can) NOT validate the returning value, if the library is actually incorporated into some project.
      *
-     * @see ToolBelt::detectTopmostProjectRootDirectory()
+     * @see Utils::detectTopmostProjectRootDirectory()
      */
     public function testTopmostDirectoryDetection(): void {
         // Initially the cache property is not set:
-        assertNull(ToolBeltMock::_getCachedTopmostProjectRootDirectory());
+        assertNull(UtilsMock::_getCachedTopmostProjectRootDirectory());
         // Let's detect the path:
-        assertSame(realpath(__DIR__ . '/../../../src/..'), ToolBeltMock::detectTopmostProjectRootDirectory());
+        assertSame(realpath(__DIR__ . '/../../../src/..'), UtilsMock::detectTopmostProjectRootDirectory());
         // Now the cache property should be set with the same path:
-        assertSame(realpath(__DIR__ . '/../../../src/..'), ToolBeltMock::_getCachedTopmostProjectRootDirectory());
+        assertSame(realpath(__DIR__ . '/../../../src/..'), UtilsMock::_getCachedTopmostProjectRootDirectory());
 
         // Now, let's be sure, that subsequent method calls will not re-detect the path,
         // if the cache property is already filled...
-        ToolBeltMock::_setCachedTopmostProjectRootDirectory('/some/non-existing/path');
-        assertSame('/some/non-existing/path', ToolBeltMock::detectTopmostProjectRootDirectory());
+        UtilsMock::_setCachedTopmostProjectRootDirectory('/some/non-existing/path');
+        assertSame('/some/non-existing/path', UtilsMock::detectTopmostProjectRootDirectory());
     }
 }

@@ -153,7 +153,7 @@ The list of plans and ideas for future development.
             1. - [x] `Autocompletion*` -> `Completion*`, `auto[-]complet*` -> `complet*`
             1. - [x] `Autocompletion` directory -> `Completion`
             1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
-            1. - [ ] [ToolBelt.php](../src/ToolBelt.php) -> `Utils`
+            1. - [x] `../src/ToolBelt` -> `.../Utils`
             1. - [ ] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.
             1. - [ ] Make all test classes `final` (where possible).
         1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be

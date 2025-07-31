@@ -10,7 +10,7 @@ use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ScriptLauncherSubcommandAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use RuntimeException;
 
 class ClearCache extends ScriptLauncherSubcommandAbstract {
@@ -37,7 +37,7 @@ class ClearCache extends ScriptLauncherSubcommandAbstract {
         }
 
         $formatter                      = HelpFormatter::createForStdOut();
-        $detectorClassLastNameFormatted = $formatter->helpNote(ToolBelt::getClassShortName(ScriptClassDetector::class));
+        $detectorClassLastNameFormatted = $formatter->helpNote(Utils::getClassShortName(ScriptClassDetector::class));
 
         $configBuilder
             ->shortDescription("Removes {$detectorClassLastNameFormatted}'s cache file.")

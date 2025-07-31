@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
-use MagicPush\CliToolkit\ToolBelt;
+use MagicPush\CliToolkit\Utils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
@@ -124,7 +124,7 @@ STDERR_OUTPUT,
      *
      * @param mixed[] $expectedConfigValues
      * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
-     * @see ToolBelt::detectTopmostProjectRootDirectory()
+     * @see Utils::detectTopmostProjectRootDirectory()
      * @see EnvironmentConfig::fillFromJsonConfigFile()
      * @see Parametizer::newConfig()
      */
