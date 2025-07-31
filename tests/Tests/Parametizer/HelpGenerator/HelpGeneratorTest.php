@@ -13,7 +13,7 @@ use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringStartsWith;
 
-class HelpGeneratorTest extends TestCaseAbstract {
+final class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests the help generator for the majority of cases (except subcommands; see dedicated tests below).
      *

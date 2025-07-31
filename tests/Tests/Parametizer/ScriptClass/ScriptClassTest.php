@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ScriptClassTest extends TestCaseAbstract {
+final class ScriptClassTest extends TestCaseAbstract {
     #[DataProvider('provideEmptyLocalNames')]
     /**
      * Tests that a script local name can not be empty.

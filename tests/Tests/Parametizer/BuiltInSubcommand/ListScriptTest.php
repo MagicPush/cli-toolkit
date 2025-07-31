@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ListScriptTest extends TestCaseAbstract {
+final class ListScriptTest extends TestCaseAbstract {
     /**
      * Tests natural sorting for registered subcommand names.
      *

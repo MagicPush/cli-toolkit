@@ -16,10 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 
-/**
- * Tests for subcommands.
- */
-class SubcommandTest extends TestCaseAbstract {
+final class SubcommandTest extends TestCaseAbstract {
     #[DataProvider('provideConfigSubcommandOks')]
     /**
      * Successful execution scenarios for subcommands.

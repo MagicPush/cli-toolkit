@@ -24,7 +24,7 @@ use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringEndsWith;
 use function PHPUnit\Framework\assertTrue;
 
-class ScriptLauncherTest extends TestCaseAbstract {
+final class ScriptLauncherTest extends TestCaseAbstract {
     private const string CACHE_PATH = __DIR__ . '/scripts/l-with-cache.json';
 
     private const string ENV_TEST_CACHE_PATH =

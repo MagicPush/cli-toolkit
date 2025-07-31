@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertTrue;
 
-class SettingsTest extends TestCaseAbstract {
+final class SettingsTest extends TestCaseAbstract {
     /**
      * Ensures all settings have their corresponding paragraphs in the manual.
      *

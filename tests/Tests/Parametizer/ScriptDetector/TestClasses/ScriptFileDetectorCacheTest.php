@@ -15,7 +15,7 @@ use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 
-class ScriptFileDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
+final class ScriptFileDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
     #[DataProvider('provideCachedDetection')]
     /**
      * Tests scripts detection (via directories) caching.

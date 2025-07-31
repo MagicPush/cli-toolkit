@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class HelpScriptTest extends TestCaseAbstract {
+final class HelpScriptTest extends TestCaseAbstract {
     #[DataProvider('provideShowHelpForSubcommand')]
     /**
      * Tests help output for different parameters (subcommand names).

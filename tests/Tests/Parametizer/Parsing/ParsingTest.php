@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ParsingTest extends TestCaseAbstract {
+final class ParsingTest extends TestCaseAbstract {
     #[DataProvider('provideParsingSuccess')]
     /**
      * Test successful values parsing for different parameters.

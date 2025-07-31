@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertFileDoesNotExist;
 use function PHPUnit\Framework\assertSame;
 
-class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
+final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
     /**
      * Tests transforming a relative cache file path to an absolute.
      *

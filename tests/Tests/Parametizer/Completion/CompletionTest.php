@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class CompletionTest extends TestCaseAbstract {
+final class CompletionTest extends TestCaseAbstract {
     private function testTemplateCompletion(
         string $scriptPath,
         string $parametersString,

@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 
-class CliRequestTest extends TestCaseAbstract {
+final class CliRequestTest extends TestCaseAbstract {
     #[DataProvider('provideGettingParameterValue')]
     /**
      * Tests different reading of parameter values processed from a request.

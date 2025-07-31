@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-class ValidatorTest extends TestCaseAbstract {
+final class ValidatorTest extends TestCaseAbstract {
     /**
      * Tests invalid validator config exception.
      *
