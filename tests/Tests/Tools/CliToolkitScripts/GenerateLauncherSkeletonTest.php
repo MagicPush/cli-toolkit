@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateLaunc
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\CliToolkitScriptTestAbstract;
-use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\AutocompletionScript;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\CompletionScript;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\LauncherSkeleton;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -66,7 +66,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
                     source %%GENERATED_SKELETON_DIRECTORY_PATH%%/local/completion.sh
 
                     ... you will be able to call the launcher from any path by its alias 'ctlauncher',
-                    which supports autocompletion for available commands, their option names
+                    which supports completion for available commands, their option names
                     and parameter values (if configured for particular parameters).
 
                     If you want the completion script to be applied each time you open a terminal,
@@ -149,7 +149,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
             sprintf(
                 "# TODO Launch 'php %s %s --%s'",
                 realpath(static::LAUNCHER_PATH),
-                AutocompletionScript::getScriptName(),
+                CompletionScript::getScriptName(),
                 Config::OPTION_NAME_HELP,
             ),
             $completionScriptGeneratorContents,
@@ -181,7 +181,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
 
         $completionFileContents = file_get_contents(self::GENERATED_SKELETON_DIRECTORY_PATH . '/local/completion.sh');
         assertNotFalse($completionFileContents);
-        assertSame(1, mb_substr_count($completionFileContents, 'function _parametizer-autocomplete_'));
+        assertSame(1, mb_substr_count($completionFileContents, 'function _parametizer-complete_'));
         /** @noinspection SpellCheckingInspection */
         assertStringContainsString("alias 'ctlauncher'=", $completionFileContents);
         assertStringContainsString(

@@ -101,20 +101,20 @@ Read the output and comments in generated files.
 
 ### Completion
 
-Use [AutocompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+Use [CompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
 to generate a completion Bash script with aliases to your php-scripts:
 
 - Launch the script and read the details:
 
   ```sh
-  php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script \
+  php tools/cli-toolkit/launcher.php cli-toolkit:generate:completion-script \
       --search-directory-recursive=tools/cli-toolkit \
       --verbose
   ```
 - Read the script's help page for further customization:
 
   ```sh
-  php tools/cli-toolkit/launcher.php cli-toolkit:generate:autocompletion-script --help
+  php tools/cli-toolkit/launcher.php cli-toolkit:generate:completion-script --help
   ```
 
 ### More configuration examples

@@ -25,7 +25,7 @@ This change log references the repository changes and releases, which respect [s
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
    [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts
    and a [launcher.php](../tools/cli-toolkit/launcher.php).
-    1. [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php) now utilizes
+    1. [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php) now utilizes
        [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php),
        thus the search-related parameters were changed accordingly. 
 1. `HelpGenerator::getSubcommandsBlock()` is removed - replaced with `list` built-in subcommand.
@@ -54,6 +54,14 @@ This change log references the repository changes and releases, which respect [s
     1. `Config::newSubcommand()` first parameter `$subcommandValue` -> `$subcommandName`.
     1. `BuilderInterface::newSubcommand()` (so as `BuilderAbstract` and `ConfigBuilder`) first parameter
        `$subcommandValue` -> `$subcommandName`.
+    1. [Completion.php](../src/Parametizer/Config/Completion/Completion.php):
+        1. `executeAutocomplete()` -> `executeCompletion`
+        1. `generateAutocompleteScript()` -> `generateCompletionCode()`
+    1. [Config.php](../src/Parametizer/Config/Config.php):
+        1. `OPTION_NAME_AUTOCOMPLETE_GENERATE` => `OPTION_NAME_COMPLETION_GENERATE`
+        (its value `parametizer-internal-autocomplete-generate` -> `parametizer-internal-completion-generate`)
+        1. `OPTION_NAME_AUTOCOMPLETE_EXECUTE` => `OPTION_NAME_COMPLETION_EXECUTE`
+           (its value `parametizer-internal-autocomplete-execute` -> `parametizer-internal-completion-execute`)
 1. [composer.json](../composer.json): the `type` is changed from `project` to `library`.
    Not sure if it should be treated as incompatibility, but let's note it here just in case.
 
@@ -75,7 +83,7 @@ This change log references the repository changes and releases, which respect [s
        (from a parent [Config.php](../src/Parametizer/Config/Config.php)).
 1. [ScriptFileDetector.php](../src/Parametizer/ScriptDetector/ScriptFileDetector.php) detects plain `Parametizer`-based
    scripts. The result is mainly used to compile a completion script by
-   [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+   [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
 1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) detects
    [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
    The result is mainly used as subcommands for
@@ -222,15 +230,15 @@ when outputting a help page for a script with a list of available subcommands.
 1. Added a paragraph about subcommands into [Features Manual: Subcommands](features-manual.md#subcommands).
 1. Formatted subcommand name in `HelpGenerator::getUsageTemplate()`, so subcommands would be more visible in the
 'COMMANDS' section of a help page with a list of available subcommands.
-1. Fixed autocompletion for option short names in subcommands.
-1. Made autocompletion smarter: duplicate option and value mentioning is not completed.
+1. Fixed completion for option short names in subcommands.
+1. Made completion smarter: duplicate option and value mentioning is not completed.
 
 ## v1.0.0
 
 The first official release. Mainly focused on Cliff improvements and some additions like:
 - more transparent and convenient config builder;
 - [generate-autocompletion-scripts.php](../tools/cli-toolkit/generate-autocompletion-scripts.php)
-  (eases autocompletion init);
+  (eases completion init);
 - [TerminalFormatter](../src/TerminalFormatter.php) (helps format the improved generated help pages);
 - [Question](../src/Question/Question.php) (helps implement interactive scripts);
 - PHPUnit for autotests plus more autotests.

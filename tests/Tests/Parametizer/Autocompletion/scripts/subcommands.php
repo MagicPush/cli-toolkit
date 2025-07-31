@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config\DifferentParams;
-use MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config\SmartAutocomplete;
+use MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config\SmartCompletion;
 
 require_once __DIR__ . '/../../../init-console.php';
 
@@ -19,6 +19,6 @@ TestUtils::newConfig()
     ->newOption('--not-used-option', '-f')
 
     ->newSubcommand('different-params', DifferentParams::getConfigBuilder())
-    ->newSubcommand('smart-autocomplete', SmartAutocomplete::getConfigBuilder())
+    ->newSubcommand('smart-completion', SmartCompletion::getConfigBuilder())
 
     ->run();

@@ -34,7 +34,7 @@ final class ParseErrorException extends RuntimeException {
         /*
          * Add base formatting here for all such exceptions.
          * Do not add such formatting at the place the exception message is printed -
-         * some formatting is lost if called by autocomplete.
+         * some formatting is lost if called by completion.
          */
         parent::__construct(HelpFormatter::createForStdErr()->error($message), $code, $previous);
 

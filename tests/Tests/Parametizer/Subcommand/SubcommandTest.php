@@ -281,8 +281,8 @@ STDERR_OUTPUT,
                 0 => 'print-option-names',
 
                 // Top level default settings, should be added automatically.
-                1 => Config::OPTION_NAME_AUTOCOMPLETE_GENERATE,
-                2 => Config::OPTION_NAME_AUTOCOMPLETE_EXECUTE,
+                1 => Config::OPTION_NAME_COMPLETION_GENERATE,
+                2 => Config::OPTION_NAME_COMPLETION_EXECUTE,
                 3 => Config::OPTION_NAME_HELP,
 
                 'BRANCHES' => [

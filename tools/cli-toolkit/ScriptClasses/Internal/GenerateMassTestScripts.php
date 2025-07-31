@@ -448,6 +448,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
             require_once __DIR__ . '/init.php';
 
+            use MagicPush\CliToolkit\Parametizer\Config\Config;
             use {$launcherCallable[0]};
             use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
@@ -459,26 +460,28 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             \$memPeakStart = memory_get_peak_usage(false);
             \$tsStart      = hrtime(true);
 
-            register_shutdown_function(
-                function () use (\$memPeakStart, \$tsStart) {
-                    \$tsEnd      = hrtime(true);
-                    \$memPeakEnd = memory_get_peak_usage(false);
-            
-                    \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
-                    \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
+            if (!in_array('--' . Config::OPTION_NAME_COMPLETION_EXECUTE, \$_SERVER['argv'])) {
+                register_shutdown_function(
+                    function () use (\$memPeakStart, \$tsStart) {
+                        \$tsEnd      = hrtime(true);
+                        \$memPeakEnd = memory_get_peak_usage(false);
 
-                    fwrite(
-                        STDERR,
-                        <<<TEXT
+                        \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
+                        \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
 
-                        Stats:
-                            time elapsed, seconds: {\$timeElapsed}
-                            memory peak usage, MB: {\$memoryPeakUsage}
+                        fwrite(
+                            STDERR,
+                            <<<TEXT
 
-                        TEXT,
-                    );
-                },
-            );
+                            Stats:
+                                time elapsed, seconds: {\$timeElapsed}
+                                memory peak usage, MB: {\$memoryPeakUsage}
+
+                            TEXT,
+                        );
+                    },
+                );
+            }
             // <- PERFORMANCE STATS
 
             (new {$launcherClassShortName}(\$scriptClassDetector))
@@ -499,7 +502,7 @@ class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         if (
             false === file_put_contents(
                 $pathCompletion,
-                Completion::generateAutocompleteScript($scriptAlias, $pathLauncher),
+                Completion::generateCompletionCode($scriptAlias, $pathLauncher),
             )
         ) {
             throw new RuntimeException('Unable to store a completion script: ' . var_export($pathCompletion, true));

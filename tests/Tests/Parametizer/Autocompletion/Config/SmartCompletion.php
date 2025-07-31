@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Autocompletion\Config;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
-class SmartAutocomplete {
+class SmartCompletion {
     public static function getConfigBuilder(): BuilderInterface {
         return TestUtils::newConfig()
             ->newOption('--opt', '-o')

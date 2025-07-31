@@ -64,7 +64,7 @@ The list of plans and ideas for future development.
     1. Show explicitly such an option type on a generated help page.
 
    Subtasks:
-    1. `--help=more` shows hidden parameters (any visibility mask) like internal autocomplete-related
+    1. `--help=more` shows hidden parameters (any visibility mask) like internal completion-related
    parameters.
 
    </details>
@@ -123,16 +123,16 @@ The list of plans and ideas for future development.
                 1. [ ] In `slim` mode all subcommands are sorted within groups only,
                    where "auto" is considered as a single group.
 
-        1. - [ ] Support single-named aliases: `cli-toolkit:generate:autocompletion-scripts` is the "main" name for
+        1. - [ ] Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
              a script, that may be also called via `gas` or `generate-completion` aliases.
 
-             ... Or try making a subcommand alias via an autocompletion script.
+             ... Or try making a subcommand alias within a completion script.
         1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
-             (autocomplete-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
+             (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
              scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
              respectively.
             1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
-                 `cli-toolkit:generate:autocompletion-scripts` you should specify `c:g:a`
+                 `cli-toolkit:generate:completion-script` you should specify `c:g:a`
                  (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
             1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
                  (switched on/off by a flag option).
@@ -150,7 +150,8 @@ The list of plans and ideas for future development.
         1. - [ ] Renaming, moving and other trivial refactoring:
             1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
             1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
-            1. - [ ] `Autocompletion*` -> `Completion*`
+            1. - [x] `Autocompletion*` -> `Completion*`, `auto[-]complet*` -> `complet*`
+            1. - [ ] `Autocompletion` directory -> `Completion`
             1. - [ ] `tools/cli-toolkit/launcher.php` -> `cli-toolkit.php` / `toolbox.php` / etc.
             1. - [ ] [ToolBelt.php](../src/ToolBelt.php) -> `Utils`
             1. - [ ] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.
@@ -232,7 +233,7 @@ The list of plans and ideas for future development.
         1. - [x] ~~Remove
              [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php)
              from the launcher, make it not detectable by
-             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php).~~
+             [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php).~~
         1. - [x] Try removing script name parts and subcommand name regexp validations. Think if caching is needed.
         1. - [x] Consider adding optional caching in
              [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php).
@@ -268,7 +269,7 @@ The list of plans and ideas for future development.
             1. - [x] `getScriptInnerName()` auto name generation:
                  `name`, `Name`, `SomeName`, `PDF`, `SomeNamePDF`, `PDFSomeName`, `SomePDFName`
         1. - [x] [cli-toolkit](../tools/cli-toolkit)
-            1. - [x] [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+            1. - [x] [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
 
                  Functional tests that look for substrings in generated files.
             1. - [x] [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php)
@@ -282,7 +283,7 @@ The list of plans and ideas for future development.
         1. Tests are launched under `root`, so file permission-related tests fail.
         1. `posix_isatty()` / `stream_isatty()` always return false in a container launched from PhpStorm.
     1. - [x] Add an alternate script detector.
-        1. - [x] Detects plain Parametizer-based scripts (just move there `AutocompletionScript` current logic).
+        1. - [x] Detects plain Parametizer-based scripts (just move there `CompletionScript` current logic).
         1. - [ ] ~~Regular plain scripts.~~
         1. - [x] Forbid duplicate script names - throw an exception or silently skip duplicates.
             1. - [ ] ~~Invent a mean to generate unique alternative names for duplicates.~~
@@ -291,7 +292,7 @@ The list of plans and ideas for future development.
             1. Include some directories recursively plus the current one (the skeleton launcher location)
                non-recursively.
         1. - [x] Replace internal detection in
-             [AutocompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/AutocompletionScript.php)
+             [CompletionScript.php](../tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
              with the created detector class.
     1. - [x] Add a simple script to execute any class script without using a detector.
     1. - [x] Always hide built-in and
@@ -331,7 +332,7 @@ The list of plans and ideas for future development.
         1. - [x] Add the generator itself.
 
              Something that will help users to start using the library quickly and easily. For instance, it should
-             create a launcher with some default detection (no cache), maybe add an autocompletion script right away,
+             create a launcher with some default detection (no cache), maybe add a completion script right away,
              maybe generate a blank script class, etc.
         1. - [x] Test it.
         1. - [x] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
@@ -391,7 +392,7 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
     * Use this feature to improve current built-in formatting - to simplify and shorten the code.
    </details>
 1. Symfony-like (or not like) progress bar.
-1. Fix the autocompletion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
+1. Fix the completion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
    but get `100` (`-o` is vanished).
     * Reason: `$COMP_WORDBREAKS` shell variable is considered (not `Completion::COMP_WORDBREAKS`), bash-completion
       sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.

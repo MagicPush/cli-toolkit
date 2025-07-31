@@ -60,7 +60,7 @@ final class Completion {
              * In case '-o val' we have 2 tokens: the last one contains a value (or a part of it) - 'val',
              * the previous one contains a short option name - '-o'.
              * In other cases the previous value is absent (there is just one token in total)
-             * or just irrelevant for the autocompletion context (only the last token is being completed).
+             * or just irrelevant for the completion context (only the last token is being completed).
              */
             $prevWord = array_pop($words);
             /*
@@ -87,7 +87,7 @@ final class Completion {
 
         // If the last two tokens may be treated as options...
         if ($this->parser->areOptionsAllowed()) { // Same as ensuring no '--' is found in $words.
-            // At the moment we can not treat short option names and thus autocomplete values properly for such cases.
+            // At the moment we can not treat short option names and thus complete values properly for such cases.
             // So let's try detecting a short option name and, if successful, convert it into a full name.
 
             $this->innermostOptionsByAllNames = $this->cliRequestProcessor
@@ -143,7 +143,7 @@ final class Completion {
             return $this->getCompletionsLimitedByToken($allPossibleCompletions, $lastToken, $compWordBreaks);
         } catch (Exception $e) {
             /*
-             * Printing an error explaining why autocomplete does not work.
+             * Printing an error explaining why completion does not work.
              * Printing to STDERR. If you print to STDOUT here, output will be broken:
              * - if there is a newline in the message, bash prints second line first;
              * - Tab symbol is printed as "^I";
@@ -311,7 +311,7 @@ final class Completion {
     /**
      * @param mixed[]|null $args
      */
-    public static function executeAutocomplete(Config $config, ?array $args = null): void {
+    public static function executeCompletion(Config $config, ?array $args = null): void {
         if (null === $args) {
             $args = $_SERVER['argv'];
         }
@@ -326,7 +326,7 @@ final class Completion {
         }
     }
 
-    public static function generateAutocompleteScript(string $shellAlias, ?string $scriptPath = null): string {
+    public static function generateCompletionCode(string $shellAlias, ?string $scriptPath = null): string {
         if (null === $scriptPath) {
             $scriptPath = static::getScriptFilename();
         } else {
@@ -338,21 +338,21 @@ final class Completion {
 
         // If the file has a shebang, we assume it can execute itself.
         if (is_readable($scriptPath) && file_get_contents(filename: $scriptPath, length: 2) == '#!') {
-            $shellAliasCommand   = $scriptPath;
-            $autocompleteCommand = escapeshellarg($scriptPath);
+            $shellAliasCommand = $scriptPath;
+            $completionCommand = escapeshellarg($scriptPath);
         } else {
-            $shellAliasCommand   = static::getPhpCommand(true) . ' ' . escapeshellarg($scriptPath);
-            $autocompleteCommand = $shellAliasCommand;
+            $shellAliasCommand = static::getPhpCommand(true) . ' ' . escapeshellarg($scriptPath);
+            $completionCommand = $shellAliasCommand;
         }
 
         $shellAliasEscaped = escapeshellarg($shellAlias);
-        $shellFunctionName = '_parametizer-autocomplete_' . $shellAlias;
+        $shellFunctionName = '_parametizer-complete_' . $shellAlias;
 
         return "alias {$shellAliasEscaped}=" . escapeshellarg($shellAliasCommand) . PHP_EOL
             . "function {$shellFunctionName}() {" . PHP_EOL
             . '    saveIFS=$IFS' . PHP_EOL
             . '    IFS=$\'\n\'' . PHP_EOL
-            . '    COMPREPLY=($(' . $autocompleteCommand . ' --' . Config::OPTION_NAME_AUTOCOMPLETE_EXECUTE
+            . '    COMPREPLY=($(' . $completionCommand . ' --' . Config::OPTION_NAME_COMPLETION_EXECUTE
             . ' "$COMP_LINE" "$COMP_POINT" "$COMP_WORDBREAKS"))' . PHP_EOL
             . '    IFS=$saveIFS' . PHP_EOL
             . '}' . PHP_EOL

@@ -379,7 +379,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
 
         $completionGeneratorSubstitutes = [
             '%%DO%%'                              => 'TODO',
-            '%%COMPLETION_GENERATOR_SUBCOMMAND%%' => AutocompletionScript::getScriptName(),
+            '%%COMPLETION_GENERATOR_SUBCOMMAND%%' => CompletionScript::getScriptName(),
             '%%ALIAS_PREFIX%%'                    => static::LAUNCHER_ALIAS_PREFIX,
             '%%LAUNCHER_BASENAME%%'               => static::LAUNCHER_BASENAME,
             '%%PARAMETER_HELP%%'                  => Config::OPTION_NAME_HELP,
@@ -472,14 +472,14 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
         echo $this->formatter->command(PHP_EOL . "source {$this->completionScriptPath}" . PHP_EOL);
         echo <<<TEXT
 
-            ... you will be able to call the launcher from any path by its alias '{$launcherAliasFormatted}',
-            which supports autocompletion for available commands, their option names
-            and parameter values (if configured for particular parameters).
+                ... you will be able to call the launcher from any path by its alias '{$launcherAliasFormatted}',
+                which supports completion for available commands, their option names
+                and parameter values (if configured for particular parameters).
 
-            If you want the completion script to be applied each time you open a terminal,
-            append its sourcing to your '.bashrc' file:
+                If you want the completion script to be applied each time you open a terminal,
+                append its sourcing to your '.bashrc' file:
 
-            TEXT;
+                TEXT;
         echo $this->formatter->command(
             PHP_EOL
                 . 'echo -e "if [ -f ' . $this->completionScriptPath . ' ]; then" \\' . PHP_EOL

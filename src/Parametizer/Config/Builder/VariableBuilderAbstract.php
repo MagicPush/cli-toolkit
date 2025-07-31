@@ -53,7 +53,7 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
      *      the error message will contain the original value before its modification.
      *  * If your callback declares `$value` argument without reference, `$value` will be passed by a reference anyway!
      *
-     * Validator also runs during autocomplete. Make sure the callback is not throwing errors or exits the process,
+     * Validator also runs during completion. Make sure the callback is not throwing errors or exits the process,
      * otherwise use {@see BuilderAbstract::callback()} instead.
      */
     public function validatorCallback(?callable $callback, ?string $validatorCustomMessage = null): static {
@@ -70,7 +70,7 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
     }
 
     /**
-     * Autocomplete values list
+     * Complete values list.
      *
      * @param string[] $values
      */
@@ -79,7 +79,7 @@ abstract class VariableBuilderAbstract extends BuilderAbstract {
     }
 
     /**
-     * Callback to provide values for autocomplete (null = no values to complete).
+     * Callback to provide values for completion (null = no values to complete).
      *
      * Callback should have this signature: `($enteredValue): string[]`.
      */

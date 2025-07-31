@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\AutocompletionScript;
+use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\CompletionScript;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertFileDoesNotExist;
@@ -14,9 +14,9 @@ use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertTrue;
 
-final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstract {
+final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
     /** The path should contain 2+ directories to test that directories are created recursively. */
-    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateAutocompletionScriptTest/completion/completion.sh';
+    private const string COMPLETION_SCRIPT_PATH = self::GENERATED_DIRECTORY_PATH . '/GenerateCompletionScriptTest/completion/completion.sh';
 
 
     private string $scriptName;
@@ -25,14 +25,14 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     protected function setUp(): void {
         parent::setUp();
 
-        $this->scriptName = AutocompletionScript::getScriptName();
+        $this->scriptName = CompletionScript::getScriptName();
     }
 
 
     /**
      * Tests the output file path is trimmed of space characters.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testOutputPathWithSpaceChars(): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -54,7 +54,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests cases when `--output-filepath` contains an invalid path.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
         static::assertExecutionErrorOutput(
@@ -95,11 +95,11 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
 
     #[DataProvider('provideScriptsDetection')]
     /**
-     * Tests detection parameters available in {@see AutocompletionScript::getConfigBuilder()}.
+     * Tests detection parameters available in {@see CompletionScript::getConfigBuilder()}.
      *
      * @param array<string, string> $detectedPathsByNames (string) script name => (string) script absolute path
-     * @see AutocompletionScript::execute()
-     * @see AutocompletionScript::getConfigBuilder()
+     * @see CompletionScript::execute()
+     * @see CompletionScript::getConfigBuilder()
      */
     public function testScriptsDetection(
         string $parametersString,
@@ -122,7 +122,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
 
         assertSame(
             count($detectedPathsByNames),
-            mb_substr_count($completionFileContents, 'function _parametizer-autocomplete_'),
+            mb_substr_count($completionFileContents, 'function _parametizer-complete_'),
         );
         foreach ($detectedPathsByNames as $scriptName => $scriptPath) {
             assertStringContainsString("alias 'a-{$scriptName}'=", $completionFileContents);
@@ -263,7 +263,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests an error appearance if no search setting was provided.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testErrorIfNoSearchSettings(string $parametersSubstring, ?string $errorMessage): void {
         $parametersString = sprintf(
@@ -327,7 +327,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests zero detection for an empty string and an error message.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testErrorIfNothingDetected(): void {
         // Ensure an empty directory exists.
@@ -361,7 +361,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests invalid '--search-directory' paths.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testInvalidSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -384,7 +384,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests invalid '--search-directory-recursive' paths.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testInvalidRecursiveSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -407,7 +407,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests invalid '--exclude-directory' paths.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testInvalidExcludePaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -441,7 +441,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests invalid '--include-script' paths.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testInvalidIncludeScriptPaths(string $scriptPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -475,8 +475,8 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests different prefixes for script aliases.
      *
-     * @see AutocompletionScript::getConfigBuilder()
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::getConfigBuilder()
+     * @see CompletionScript::execute()
      */
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
@@ -519,7 +519,7 @@ final class GenerateAutocompletionScriptTest extends CliToolkitScriptTestAbstrac
     /**
      * Tests output contents with `--verbose` flag being passed.
      *
-     * @see AutocompletionScript::execute()
+     * @see CompletionScript::execute()
      */
     public function testVerbosity(): void {
         /** @noinspection PhpFormatFunctionParametersMismatchInspection */

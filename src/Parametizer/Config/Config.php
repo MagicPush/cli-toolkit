@@ -20,10 +20,10 @@ use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
 
 class Config {
-    public const string PARAMETER_NAME_LIST               = 'list';
-    public const string OPTION_NAME_HELP                  = 'help';
-    public const string OPTION_NAME_AUTOCOMPLETE_GENERATE = 'parametizer-internal-autocomplete-generate';
-    public const string OPTION_NAME_AUTOCOMPLETE_EXECUTE  = 'parametizer-internal-autocomplete-execute';
+    public const string PARAMETER_NAME_LIST             = 'list';
+    public const string OPTION_NAME_HELP                = 'help';
+    public const string OPTION_NAME_COMPLETION_GENERATE = 'parametizer-internal-completion-generate';
+    public const string OPTION_NAME_COMPLETION_EXECUTE  = 'parametizer-internal-completion-execute';
 
     // Visibility bits:
 
@@ -33,7 +33,7 @@ class Config {
     /** The param is displayed in the help with its description. */
     final public const int VISIBLE_HELP = 2;
 
-    /** Autocomplete will suggest the parameter value (and names for options). */
+    /** Completion will suggest the parameter value (and names for options). */
     final public const int VISIBLE_COMPLETION = 4;
 
     /** Parameter value is available in {@see CliRequest} inside of the script. */
@@ -374,22 +374,22 @@ class Config {
     public function addDefaultOptions(bool $isTopConfig = false): void {
         if ($isTopConfig) {
             $this->registerOption(
-                (new Option(static::OPTION_NAME_AUTOCOMPLETE_GENERATE))
+                (new Option(static::OPTION_NAME_COMPLETION_GENERATE))
                     ->visibilityBitmask(static::VISIBILITY_BITMASK_NONE)
                     ->callback(function ($shellAlias) {
-                        echo Completion::generateAutocompleteScript($shellAlias);
+                        echo Completion::generateCompletionCode($shellAlias);
 
                         exit;
                     }),
             );
 
             $this->registerOption(
-                (new Option(static::OPTION_NAME_AUTOCOMPLETE_EXECUTE))
+                (new Option(static::OPTION_NAME_COMPLETION_EXECUTE))
                     ->flagValue(true)
                     ->default(false)
                     ->visibilityBitmask(static::VISIBILITY_BITMASK_NONE)
                     ->callback(function () {
-                        Completion::executeAutocomplete($this);
+                        Completion::executeCompletion($this);
 
                         exit;
                     }),
@@ -519,7 +519,7 @@ class Config {
             $branchConfig->commitSubcommandSwitch();
         }
 
-        // Setting up possible values for autocomplete and validation.
+        // Setting up possible values for completion and validation.
         $subcommandSwitch->allowedValues(array_fill_keys(array_keys($subcommandConfigsByValues), null));
 
         // Restricting further attempts to commit again.

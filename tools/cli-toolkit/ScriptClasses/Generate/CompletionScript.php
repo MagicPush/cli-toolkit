@@ -13,7 +13,7 @@ use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use RuntimeException;
 use Throwable;
 
-class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
+class CompletionScript extends CliToolkitGenerateScriptAbstract {
     protected static function validateReadableDirectory(mixed &$path): bool {
         $path = realpath(trim((string) $path));
         if (false === $path || !is_readable($path) || !is_dir($path)) {
@@ -52,13 +52,13 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
                     . $helpFormatter->paramTitle('--verbose') . ' for the example inclusion command to be shown)
                 and apply it (`source /path/to/your_bash_profile` or restart your Bash), you are able to:
                     * call any of previously detected scripts by its alias from any path you are located on;
-                    * auto-complete all option names and all parameter values
+                    * automatically complete all option names and all parameter values
                     (if a list of allowed values is specified for a particular parameter).
             ')
 
             ->usage(
                 '\
-                    --output-filepath=my-cool-project/generated/autocompletion.sh \
+                    --output-filepath=my-cool-project/generated/completion.sh \
                     --search-directory-recursive=my-cool-project/console \
                     --exclude-directory=my-cool-project/console/debug \
                     --search-directory-recursive=' . realpath(__DIR__ . '/' . '../../') . ' \
@@ -86,7 +86,7 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
 
             ->newOption('--output-filepath', '-o')
             ->description('Location of the generated file.')
-            ->default(realpath(__DIR__ . '/' . '../../../..') . '/local/cli-toolkit-autocompletion.sh')
+            ->default(realpath(__DIR__ . '/' . '../../../..') . '/local/cli-toolkit-completion.sh')
 
             ->newArrayOption('--search-directory-recursive', '-r')
             ->description("
@@ -233,7 +233,7 @@ class AutocompletionScript extends CliToolkitGenerateScriptAbstract {
             }
 
             foreach ($scriptPathsByAliases as $scriptAlias => $scriptPath) {
-                if (false === fwrite($fileHandler, Completion::generateAutocompleteScript($scriptAlias, $scriptPath))) {
+                if (false === fwrite($fileHandler, Completion::generateCompletionCode($scriptAlias, $scriptPath))) {
                     throw new RuntimeException(
                         "Unable to write data for alias '{$scriptAlias}' into {$outputFilepath}",
                     );
