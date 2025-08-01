@@ -8,7 +8,7 @@ use Composer\Autoload\ClassLoader;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Utils;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
@@ -244,8 +244,8 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
          * to not consider this class as a plain script (because af specific substrings presented here).
          */
         /** @var callable $launcherClassCallable This hint is needed only for the class method to be IDE-detectable. */
-        $launcherClassCallable  = [ScriptLauncher::class, 'execute'];
-        $launcherClassShortName = Utils::getClassShortName(ScriptLauncher::class);
+        $launcherClassCallable  = [ScriptClassLauncher::class, 'execute'];
+        $launcherClassShortName = Utils::getClassShortName(ScriptClassLauncher::class);
 
         $launcherSubstitutes = [
             '%%DO%%'                            => 'TODO',

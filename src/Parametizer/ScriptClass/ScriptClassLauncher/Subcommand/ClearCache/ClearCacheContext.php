@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache;
 
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Utils;

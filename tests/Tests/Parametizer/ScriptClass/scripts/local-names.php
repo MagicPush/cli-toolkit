@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../init-console.php';
 
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
@@ -19,6 +19,6 @@ $scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass\ScriptClasses\LocalNames\SomeABBRWord::class,
     ]);
 
-(new ScriptLauncher($scriptClassDetector))
+(new ScriptClassLauncher($scriptClassDetector))
     ->throwOnException()
     ->execute();

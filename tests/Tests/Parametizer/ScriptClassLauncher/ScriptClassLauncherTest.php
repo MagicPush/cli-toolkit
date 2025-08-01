@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptLauncher;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClassLauncher;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
@@ -10,8 +10,8 @@ use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCache;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCache;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\EnvironmentConfigTest;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
@@ -24,7 +24,7 @@ use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringEndsWith;
 use function PHPUnit\Framework\assertTrue;
 
-final class ScriptLauncherTest extends TestCaseAbstract {
+final class ScriptClassLauncherTest extends TestCaseAbstract {
     private const string CACHE_PATH = __DIR__ . '/scripts/l-with-cache.json';
 
     private const string ENV_TEST_CACHE_PATH =
@@ -57,7 +57,7 @@ final class ScriptLauncherTest extends TestCaseAbstract {
     /**
      * Tests {@see ClearCache} subcommand availability and execution if a specified cache file exists.
      *
-     * @see ScriptLauncher::execute()
+     * @see ScriptClassLauncher::execute()
      * @see ListScript::execute() Adds {@see ClearCache} script name to a unique header.
      * @see ListScript::outputNode() Outputs {@see ClearCache} under a unique header in a specific headers order.
      * @see ClearCache::getConfigBuilder()
@@ -184,8 +184,8 @@ final class ScriptLauncherTest extends TestCaseAbstract {
      * Here id does not matter what exact exceptions occur.
      * The point is to assert exceptions happening if a setting is enabled.
      *
-     * @see ScriptLauncher::throwOnException() The flag is set here.
-     * @see ScriptLauncher::execute() Here the instances with the flag passed are created.
+     * @see ScriptClassLauncher::throwOnException() The flag is set here.
+     * @see ScriptClassLauncher::execute() Here the instances with the flag passed are created.
      * @see Parametizer::newConfig() Here the flag is set for the instance.
      * @see EnvironmentConfig::fillFromJsonConfigFile() Here the flag affects if an exception is thrown.
      */
@@ -258,8 +258,8 @@ final class ScriptLauncherTest extends TestCaseAbstract {
      * Here id does not matter what exact {@see EnvironmentConfig} setting is analyzed.
      * The point is to assert that the expected {@see EnvironmentConfig} instance is used.
      *
-     * @see ScriptLauncher::useParentEnvConfigForSubcommands() The flag is set here.
-     * @see ScriptLauncher::execute() Here the parent config {@see EnvironmentConfig} instance is passed
+     * @see ScriptClassLauncher::useParentEnvConfigForSubcommands() The flag is set here.
+     * @see ScriptClassLauncher::execute() Here the parent config {@see EnvironmentConfig} instance is passed
      * (or not) to subcommand configs.
      * @see ScriptClassAbstract::getConfigBuilder() Here the parent config may be passed to a subcommand.
      */
@@ -360,7 +360,7 @@ final class ScriptLauncherTest extends TestCaseAbstract {
      * Tests the case with global scope detection that no stock subcommands must be detected:
      * no built-in subcommands, no stock "cli-toolkit" subcommands, no test script classes.
      *
-     * @see ScriptLauncher::execute()
+     * @see ScriptClassLauncher::execute()
      * @see ScriptClassDetector::processDetectedFileContents()
      * @see ScriptClassAbstract::isAvailableByDetector()
      */

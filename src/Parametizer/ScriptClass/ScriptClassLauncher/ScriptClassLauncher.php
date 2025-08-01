@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCache;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand\ClearCache\ClearCacheContext;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCache;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCacheContext;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
-class ScriptLauncher {
+class ScriptClassLauncher {
     protected readonly ConfigBuilder $configBuilder;
 
     protected bool $useParentEnvConfigForSubcommands = false;

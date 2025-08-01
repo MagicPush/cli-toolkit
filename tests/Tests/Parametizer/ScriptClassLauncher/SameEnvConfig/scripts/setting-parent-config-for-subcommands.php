@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../../../init-console.php';
 
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
@@ -28,6 +28,6 @@ if ($isEnvConfigManual) {
     $configBuilder = null;
 }
 
-(new ScriptLauncher($scriptClassDetector, $configBuilder))
+(new ScriptClassLauncher($scriptClassDetector, $configBuilder))
     ->useParentEnvConfigForSubcommands($isSameEnvConfigForSubcommands)
     ->execute();

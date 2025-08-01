@@ -5,6 +5,6 @@
 
 # Files generated for tests:
 /tests/Tests/**/generated/
-/tests/Tests/Parametizer/ScriptLauncher/SameEnvConfig/scripts/setting-parent-config-for-subcommands.json
-/tests/Tests/Parametizer/ScriptLauncher/ThrowOnException/parametizer.env.json
-/tests/Tests/Parametizer/ScriptLauncher/ThrowOnException/ScriptClasses/parametizer.env.json
+/tests/Tests/Parametizer/ScriptClassLauncher/SameEnvConfig/scripts/setting-parent-config-for-subcommands.json
+/tests/Tests/Parametizer/ScriptClassLauncher/ThrowOnException/parametizer.env.json
+/tests/Tests/Parametizer/ScriptClassLauncher/ThrowOnException/ScriptClasses/parametizer.env.json

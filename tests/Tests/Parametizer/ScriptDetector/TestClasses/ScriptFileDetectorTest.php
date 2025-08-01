@@ -316,7 +316,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                 new ScriptDetectorRuntimeException(
                     sprintf(
                         "Script file '%s' should contain one of these pairs of substrings:"
-                            . " 'Parametizer::newConfig(' + '->run()' OR 'ScriptLauncher(' + '->execute()'",
+                            . " 'Parametizer::newConfig(' + '->run()' OR 'ScriptClassLauncher(' + '->execute()'",
                         realpath(__DIR__ . '/../ScriptFiles/Red/no-run-no-execute.php'),
                     ),
                 ),

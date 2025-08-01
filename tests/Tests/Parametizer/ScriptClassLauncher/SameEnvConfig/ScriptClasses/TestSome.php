@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptLauncher\SameEnvConfig\ScriptClasses;
+namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClassLauncher\SameEnvConfig\ScriptClasses;
 
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 

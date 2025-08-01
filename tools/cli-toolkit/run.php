@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/init.php';
 
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 $scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
@@ -13,6 +13,6 @@ $scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
 $configBuilder = Parametizer::newConfig(throwOnException: true);
 $configBuilder->description('A launcher for cli-toolkit stock scripts.');
 
-(new ScriptLauncher($scriptClassDetector, $configBuilder))
+(new ScriptClassLauncher($scriptClassDetector, $configBuilder))
     ->throwOnException()
     ->execute();

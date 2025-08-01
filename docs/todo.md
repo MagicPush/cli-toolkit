@@ -199,7 +199,7 @@ The list of plans and ideas for future development.
      `list` subcommand branch request.
 1. - [x] Add manual short description support - in case automatic short description is not so good.
     1. - [x] Add a short description to built-in subcommands where needed.
-1. - [x] Add `ScriptLauncher` to keep all launchers common code.
+1. - [x] Add `ScriptClassLauncher` to keep all launchers common code.
     * [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) may be created
       by default with a single search path `__DIR__` and its own path as an exception.
 1. - [x] Support `EnvironmentConfig` setup:
@@ -258,7 +258,7 @@ The list of plans and ideas for future development.
         1. - [x] Invalid / not readable paths.
         1. - [x] Names are naturally sorted (`script2` is placed above `script10`).
         1. - [x] Do not process duplicate paths (local vs real paths).
-    1. - [x] [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php)
+    1. - [x] [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php)
         1. - [x] Defaults in the constructor: a detector (with caching DISabled) and a config.
     1. - [x] [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ScriptAbstract.php)
         1. - [x] Simple and composite names (with sections).
@@ -293,7 +293,7 @@ The list of plans and ideas for future development.
          with the created detector class.
 1. - [x] Add a simple script to execute any class script without using a detector.
 1. - [x] Always hide built-in and
-     [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+     [ClearCache.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/Subcommand/ClearCache/ClearCache.php)
      subcommands from [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) instances
      with any setup. Otherwise the "whole project" detection setup causes an exception while trying to include
      the "detected" `ClearCache` subcommand without its context object.
@@ -306,12 +306,12 @@ The list of plans and ideas for future development.
           For instance, check if `.git` directory exists in the library root directory.
         * [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) new option.
         * Existence of a particular file in the library `/local/` directory.
-1. - [x] Place [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php)
+1. - [x] Place [ClearCache.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/Subcommand/ClearCache/ClearCache.php)
      command for [ListScript.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ListScript.php)
      in its own uniquely headered section.
     1. [x] Test `ClearCache` is placed in a headered group.
     1. [x] Test `ClearCache` subcommand always utilizes its parent environment config.
-1. - [x] [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php):
+1. - [x] [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php):
     1. - [x] Replace `->searchDirectory(dirname($_SERVER['SCRIPT_FILENAME']));` with something else: the current
          default value does not work properly if a launcher is located in some distant directory.
          Consider any / some of these options:

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\Subcommand;
+namespace MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand;
 
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use Override;
 
 /**
- * Built-in subcommands utilized by {@see ScriptLauncher}.
+ * Built-in subcommands utilized by {@see ScriptClassLauncher}.
  */
 abstract class ScriptLauncherSubcommandAbstract extends ScriptClassAbstract {
     #[Override]

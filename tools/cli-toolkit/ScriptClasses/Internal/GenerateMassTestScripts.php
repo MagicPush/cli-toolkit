@@ -10,7 +10,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptLauncher\ScriptLauncher;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Utils;
@@ -438,8 +438,8 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
          * to not consider this class as a plain script (because af specific substrings presented here).
          */
         /** @var callable $launcherCallable This hint is needed only for the class method to be IDE-detectable. */
-        $launcherCallable       = [ScriptLauncher::class, 'execute'];
-        $launcherClassShortName = Utils::getClassShortName(ScriptLauncher::class);
+        $launcherCallable       = [ScriptClassLauncher::class, 'execute'];
+        $launcherClassShortName = Utils::getClassShortName(ScriptClassLauncher::class);
 
         $contents = <<<PHP
             <?php

@@ -87,13 +87,14 @@ This change log references the repository changes and releases, which respect [s
 1. [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) detects
    [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
    The result is mainly used as subcommands for
-   [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php) (see below).
-1. [ScriptLauncher.php](../src/Parametizer/ScriptClass/ScriptLauncher/ScriptLauncher.php) enables a ready-to-go mean
-   to load and launch [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
+   [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php) (see below).
+1. [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php) enables
+   a ready-to-go mean to load and launch
+   [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts.
 
    The launcher class includes
-   [ClearCache.php](../src/Parametizer/ScriptClass/ScriptLauncher/Subcommand/ClearCache/ClearCache.php) subcommand that
-   is automatically added to a launcher's config, if a launcher's script detector enables caching and a cache file
+   [ClearCache.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/Subcommand/ClearCache/ClearCache.php) subcommand
+   that is automatically added to a launcher's config, if a launcher's script detector enables caching and a cache file
    exists. The subcommand lets you delete the created cache file.
 1. Added `ConfigBuilder::shortDescription()` - such manually set descriptions are not affected by
    the description shortener. Useful when environment settings are not optimal for all descriptions.
