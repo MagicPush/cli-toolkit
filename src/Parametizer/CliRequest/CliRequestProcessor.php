@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Parametizer\CliRequest;
 use Exception;
 use LogicException;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Argument;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;

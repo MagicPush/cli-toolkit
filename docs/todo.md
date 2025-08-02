@@ -143,7 +143,7 @@ The list of plans and ideas for future development.
          Do you want to run "list" instead?  (yes/no) [no]:
          >
          ```
-1. - [ ] FINISHING MOVES:
+1. - [x] FINISHING MOVES:
     1. - [x] Renaming, moving and other trivial refactoring:
         1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
         1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
@@ -153,16 +153,24 @@ The list of plans and ideas for future development.
         1. - [x] `../src/ToolBelt` -> `.../Utils`
         1. - [x] Move [CliToolkitScripts](../tests/Tests/Tools/CliToolkitScripts) tests in separate subdirectories.
         1. - [x] Make all test classes `final` (where possible).
-    1. - [ ] See if `Parametizer::newConfig()` internal call chain may (and should) be
-       simplified - if a config with 'env' might be created ASAP.
+    1. - [ ] ~~See if `Parametizer::newConfig()` internal call chain may (and should) be
+       simplified - if a config with 'env' might be created ASAP.~~
+
+       Env config may be created automatically earlier, and `Config` may require an env config instance only (no extra
+       flag). However, "no exception" flag could be useful along the way in the future, otherwise one more backward
+       incompatibility could appear in the future.
+
+       On a development level, it changes almost nothing - almost no calls become easier in 90% of cases, if
+       the methods' signatures are changed.
     1. - [x] Try easing `ScriptClassAbstract::getConfigBuilder()` declaration. Consider:
 
         - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
-    1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) or delaying
-       the next major release, see [already implemented backward incompatibilities](changelog.md#v300).
+    1. - [x] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
+       the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.
 
 </details>
+
 <details>
 <summary>Stuff implemented</summary>
 
@@ -342,10 +350,6 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
-1. Renaming:
-    1. All `Config::OPTION_NAME_*` (or, at least, `OPTION_NAME_HELP`) -> `PARAMETER_NAME_*`.
-    1. `Config::getParams()` -> `getParameters()`. And related methods and properties too.
-    1. `Parametizer::newConfig()` -> `newConfigBuilder()`.
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
     1. Replace `mb_strtoupper(mb_substr($pathComponent, 0, 1)) . mb_substr($pathComponent, 1)` in

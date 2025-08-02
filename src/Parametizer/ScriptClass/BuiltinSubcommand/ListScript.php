@@ -8,7 +8,7 @@ use LogicException;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCache;

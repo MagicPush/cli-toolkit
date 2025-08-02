@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\Settings;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -56,11 +57,11 @@ final class SettingsTest extends TestCaseAbstract {
         return [
             'short-name-set' => [
                 'parametersString'        => '-h h',
-                'expectedOutputSubstring' => PHP_EOL . '  -h, --' . Config::OPTION_NAME_HELP . '   Show full help page.',
+                'expectedOutputSubstring' => PHP_EOL . '  -h, --' . Config::PARAMETER_NAME_HELP . '   Show full help page.',
             ],
             'short-name-null' => [
-                'parametersString'        => '--' . Config::OPTION_NAME_HELP,
-                'expectedOutputSubstring' => PHP_EOL . '  --' . Config::OPTION_NAME_HELP . '   Show full help page.',
+                'parametersString'        => '--' . Config::PARAMETER_NAME_HELP,
+                'expectedOutputSubstring' => PHP_EOL . '  --' . Config::PARAMETER_NAME_HELP . '   Show full help page.',
             ],
         ];
     }

@@ -460,7 +460,7 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             \$memPeakStart = memory_get_peak_usage(false);
             \$tsStart      = hrtime(true);
 
-            if (!in_array('--' . Config::OPTION_NAME_COMPLETION_EXECUTE, \$_SERVER['argv'])) {
+            if (!in_array('--' . Config::PARAMETER_NAME_COMPLETION_EXECUTE, \$_SERVER['argv'])) {
                 register_shutdown_function(
                     function () use (\$memPeakStart, \$tsStart) {
                         \$tsEnd      = hrtime(true);

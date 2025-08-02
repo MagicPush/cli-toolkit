@@ -113,7 +113,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
                 $detectorCacheFilePath,
                 static::assertNoErrorsOutput(
                     $launcherScriptPath,
-                    "{$parametersBaseString} {$clearCacheSubcommandName} --" . Config::OPTION_NAME_HELP,
+                    "{$parametersBaseString} {$clearCacheSubcommandName} --" . Config::PARAMETER_NAME_HELP,
                 )
                     ->getStdOut(),
             );
@@ -280,7 +280,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
                     $isSameEnvConfigForSubcommands,
                     $isEnvConfigManual,
                     self::ENV_TEST_CACHE_PATH,
-                    Config::OPTION_NAME_HELP,
+                    Config::PARAMETER_NAME_HELP,
                 ),
             )
                 ->getStdOut(),
@@ -297,7 +297,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
                     $isEnvConfigManual,
                     self::ENV_TEST_CACHE_PATH,
                     ClearCache::getScriptName(),
-                    Config::OPTION_NAME_HELP,
+                    Config::PARAMETER_NAME_HELP,
                 ),
             )
                 ->getStdOut(),
@@ -313,7 +313,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
                     $isSameEnvConfigForSubcommands,
                     $isEnvConfigManual,
                     self::ENV_TEST_CACHE_PATH,
-                    Config::OPTION_NAME_HELP,
+                    Config::PARAMETER_NAME_HELP,
                 ),
             )
                 ->getStdOut(),
@@ -328,30 +328,30 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
             'different-configs-with-autoload' => [
                 'isSameEnvConfigForSubcommands' => false,
                 'isEnvConfigManual'             => false,
-                'expectedSubstringParent'       => '-A, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringClearCache'   => '-A, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringSubcommand'   => '-L, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringParent'       => '-A, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringClearCache'   => '-A, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringSubcommand'   => '-L, --' . Config::PARAMETER_NAME_HELP,
             ],
             'same-configs-parent-autoload' => [
                 'isSameEnvConfigForSubcommands' => true,
                 'isEnvConfigManual'             => false,
-                'expectedSubstringParent'       => '-A, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringClearCache'   => '-A, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringSubcommand'   => '-A, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringParent'       => '-A, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringClearCache'   => '-A, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringSubcommand'   => '-A, --' . Config::PARAMETER_NAME_HELP,
             ],
             'different-configs-parent-manual' => [
                 'isSameEnvConfigForSubcommands' => false,
                 'isEnvConfigManual'             => true,
-                'expectedSubstringParent'       => '-M, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringClearCache'   => '-M, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringSubcommand'   => '-L, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringParent'       => '-M, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringClearCache'   => '-M, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringSubcommand'   => '-L, --' . Config::PARAMETER_NAME_HELP,
             ],
             'same-configs-parent-manual' => [
                 'isSameEnvConfigForSubcommands' => true,
                 'isEnvConfigManual'             => true,
-                'expectedSubstringParent'       => '-M, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringClearCache'   => '-M, --' . Config::OPTION_NAME_HELP,
-                'expectedSubstringSubcommand'   => '-M, --' . Config::OPTION_NAME_HELP,
+                'expectedSubstringParent'       => '-M, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringClearCache'   => '-M, --' . Config::PARAMETER_NAME_HELP,
+                'expectedSubstringSubcommand'   => '-M, --' . Config::PARAMETER_NAME_HELP,
             ],
         ];
     }

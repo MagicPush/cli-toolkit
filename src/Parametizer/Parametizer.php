@@ -9,7 +9,7 @@ use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Exception\ParseErrorException;
 use MagicPush\CliToolkit\Parametizer\Parser\Parser;
 use Throwable;

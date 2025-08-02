@@ -40,42 +40,42 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
             'main' => [
                 'parametersString'    => 'invalid',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Incorrect value 'invalid' for argument <subcommand-name-l1>
+                    Incorrect value 'invalid' for argument <subcommand-name-l1>
 
 
-  -X, --help             Show full help page.
+                      -X, --help                 Show full help page.
 
-  <subcommand-name-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-                         Subcommand help: <subcommand-name-l1> --help
-                                  ... or: help <subcommand-name-l1>
-                         Default: list
+                          <subcommand-name-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                                 Subcommand help: <subcommand-name-l1> --help
+                                                          ... or: help <subcommand-name-l1>
+                                                 Default: list
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'level-2' => [
                 'parametersString'    => 'conf-l2-s2 invalid',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Incorrect value 'invalid' for argument <subcommand-name-l2-s2>
+                    Incorrect value 'invalid' for argument <subcommand-name-l2-s2>
 
 
-  -y, --help                Show full help page.
+                      -y, --help                    Show full help page.
 
-  <subcommand-name-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-                            Subcommand help: <subcommand-name-l2-s2> --help
-                                     ... or: help <subcommand-name-l2-s2>
-                            Default: list
+                          <subcommand-name-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                                    Subcommand help: <subcommand-name-l2-s2> --help
+                                                             ... or: help <subcommand-name-l2-s2>
+                                                    Default: list
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'level-3' => [
                 'parametersString'    => 'conf-l2-s2 conf-l3-s1 invalid',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Too many arguments, starting with 'invalid'
+                    Too many arguments, starting with 'invalid'
 
 
-  -z, --help   Show full help page.
+                      -z, --help   Show full help page.
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
         ];
     }
@@ -88,10 +88,10 @@ STDERR_OUTPUT,
     public function testBuiltInSubcommandsUtilizeParentEnvConfig(): void {
         // The parent config uses the specified EnvironmentConfig instance:
         assertStringContainsString(
-            '-X, --' . Config::OPTION_NAME_HELP,
+            '-X, --' . Config::PARAMETER_NAME_HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/builtin-and-custom.php',
-                '--' . Config::OPTION_NAME_HELP,
+                '--' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -99,19 +99,19 @@ STDERR_OUTPUT,
         // The custom subcommand config has its own EnvironmentConfig instance with another (tests default) settings:
         $customCallOutput = static::assertNoErrorsOutput(
             __DIR__ . '/scripts/builtin-and-custom.php',
-            'something --' . Config::OPTION_NAME_HELP,
+            'something --' . Config::PARAMETER_NAME_HELP,
         )
             ->getStdOut();
-        assertStringContainsString('--' . Config::OPTION_NAME_HELP, $customCallOutput);
-        assertStringNotContainsString('-X, --' . Config::OPTION_NAME_HELP, $customCallOutput);
+        assertStringContainsString('--' . Config::PARAMETER_NAME_HELP, $customCallOutput);
+        assertStringNotContainsString('-X, --' . Config::PARAMETER_NAME_HELP, $customCallOutput);
 
         // ... But all built-in subcommands utilize the parent EnvironmentConfig instance.
         foreach (array_keys(Config::getBuiltInSubcommandClassesBySubcommandNames()) as $builtInSubcommandName) {
             assertStringContainsString(
-                '-X, --' . Config::OPTION_NAME_HELP,
+                '-X, --' . Config::PARAMETER_NAME_HELP,
                 static::assertNoErrorsOutput(
                     __DIR__ . '/scripts/builtin-and-custom.php',
-                    "{$builtInSubcommandName} --" . Config::OPTION_NAME_HELP,
+                    "{$builtInSubcommandName} --" . Config::PARAMETER_NAME_HELP,
                 )
                     ->getStdOut(),
             );

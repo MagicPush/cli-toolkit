@@ -25,7 +25,7 @@ final class HelpScriptTest extends TestCaseAbstract {
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-with-name-sections.php',
-                Config::OPTION_NAME_HELP . ' ' . $parametersString,
+                Config::PARAMETER_NAME_HELP . ' ' . $parametersString,
             )
                 ->getStdOut(),
         );
@@ -147,7 +147,7 @@ final class HelpScriptTest extends TestCaseAbstract {
                                   Default: help
 
             TEXT,
-            Config::OPTION_NAME_HELP . ' black:flower:tea',
+            Config::PARAMETER_NAME_HELP . ' black:flower:tea',
         );
     }
 }

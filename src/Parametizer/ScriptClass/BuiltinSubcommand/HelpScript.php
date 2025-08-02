@@ -7,7 +7,7 @@ namespace MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 
 class HelpScript extends BuiltinSubcommandAbstract {
@@ -30,7 +30,7 @@ class HelpScript extends BuiltinSubcommandAbstract {
                 Name of any registered subcommand.
                 See '{$formatter->paramValue($listSubcommandName)}' subcommand for the list of possible values.
             ")
-            ->default(Config::OPTION_NAME_HELP);
+            ->default(Config::PARAMETER_NAME_HELP);
     }
 
 

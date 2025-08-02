@@ -150,7 +150,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
                 "# TODO Launch 'php %s %s --%s'",
                 realpath(static::LAUNCHER_PATH),
                 CompletionScript::getScriptName(),
-                Config::OPTION_NAME_HELP,
+                Config::PARAMETER_NAME_HELP,
             ),
             $completionScriptGeneratorContents,
         );

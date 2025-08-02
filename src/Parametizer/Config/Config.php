@@ -9,21 +9,22 @@ use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\BuilderInterface;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Argument;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 
 class Config {
-    public const string PARAMETER_NAME_LIST             = 'list';
-    public const string OPTION_NAME_HELP                = 'help';
-    public const string OPTION_NAME_COMPLETION_GENERATE = 'parametizer-internal-completion-generate';
-    public const string OPTION_NAME_COMPLETION_EXECUTE  = 'parametizer-internal-completion-execute';
+    public const string PARAMETER_NAME_LIST                = 'list';
+    public const string PARAMETER_NAME_HELP                = 'help';
+    public const string PARAMETER_NAME_COMPLETION_GENERATE = 'parametizer-internal-completion-generate';
+    public const string PARAMETER_NAME_COMPLETION_EXECUTE  = 'parametizer-internal-completion-execute';
 
     // Visibility bits:
 
@@ -273,7 +274,7 @@ class Config {
     public static function getBuiltInSubcommandClassesBySubcommandNames(): array {
         return [
             static::PARAMETER_NAME_LIST => ListScript::class,
-            static::OPTION_NAME_HELP    => HelpScript::class,
+            static::PARAMETER_NAME_HELP => HelpScript::class,
         ];
     }
 
@@ -374,7 +375,7 @@ class Config {
     public function addDefaultOptions(bool $isTopConfig = false): void {
         if ($isTopConfig) {
             $this->registerOption(
-                (new Option(static::OPTION_NAME_COMPLETION_GENERATE))
+                (new Option(static::PARAMETER_NAME_COMPLETION_GENERATE))
                     ->visibilityBitmask(static::VISIBILITY_BITMASK_NONE)
                     ->callback(function ($shellAlias) {
                         echo Completion::generateCompletionCode($shellAlias);
@@ -384,7 +385,7 @@ class Config {
             );
 
             $this->registerOption(
-                (new Option(static::OPTION_NAME_COMPLETION_EXECUTE))
+                (new Option(static::PARAMETER_NAME_COMPLETION_EXECUTE))
                     ->flagValue(true)
                     ->default(false)
                     ->visibilityBitmask(static::VISIBILITY_BITMASK_NONE)
@@ -397,7 +398,7 @@ class Config {
         }
 
         $this->registerOption(
-            (new Option(static::OPTION_NAME_HELP))
+            (new Option(static::PARAMETER_NAME_HELP))
                 ->shortName($this->getEnvConfig()->optionHelpShortName)
                 ->flagValue(true)
                 ->default(false)
@@ -499,9 +500,11 @@ class Config {
         // ==== PROCESSING ====
 
         // Setting up the list of allowed values for 'help' built-in subcommand argument.
-        $helpSubcommandConfig = $this->getBranch(static::OPTION_NAME_HELP);
+        $helpSubcommandConfig = $this->getBranch(static::PARAMETER_NAME_HELP);
         if (null === $helpSubcommandConfig) {
-            throw new LogicException(sprintf('"%s" built-in subcommand was not registered', static::OPTION_NAME_HELP));
+            throw new LogicException(
+                sprintf('"%s" built-in subcommand was not registered', static::PARAMETER_NAME_HELP),
+            );
         }
         $helpSubcommandArgument = $helpSubcommandConfig->getParams()[HelpScript::ARGUMENT_SUBCOMMAND_NAME] ?? null;
         if (null === $helpSubcommandArgument) {
@@ -509,7 +512,7 @@ class Config {
                 sprintf(
                     '"%s" parameter was not registered in "%s" built-in subcommand',
                     HelpScript::ARGUMENT_SUBCOMMAND_NAME,
-                    static::OPTION_NAME_HELP,
+                    static::PARAMETER_NAME_HELP,
                 ),
             );
         }

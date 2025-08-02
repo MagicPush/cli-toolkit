@@ -8,7 +8,7 @@ use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequest;
 use MagicPush\CliToolkit\Parametizer\CliRequest\CliRequestProcessor;
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -55,7 +55,7 @@ final class SubcommandTest extends TestCaseAbstract {
     public function testSubcommandSwitches(string $scriptPath, string $expectedHelpSubstring): void {
         assertStringContainsString(
             $expectedHelpSubstring,
-            self::assertNoErrorsOutput($scriptPath, '--' . Config::OPTION_NAME_HELP)
+            self::assertNoErrorsOutput($scriptPath, '--' . Config::PARAMETER_NAME_HELP)
                 ->getStdOut(),
         );
     }
@@ -278,9 +278,9 @@ STDERR_OUTPUT,
                 0 => 'print-option-names',
 
                 // Top level default settings, should be added automatically.
-                1 => Config::OPTION_NAME_COMPLETION_GENERATE,
-                2 => Config::OPTION_NAME_COMPLETION_EXECUTE,
-                3 => Config::OPTION_NAME_HELP,
+                1 => Config::PARAMETER_NAME_COMPLETION_GENERATE,
+                2 => Config::PARAMETER_NAME_COMPLETION_EXECUTE,
+                3 => Config::PARAMETER_NAME_HELP,
 
                 'BRANCHES' => [
                     'list' => [
@@ -293,7 +293,7 @@ STDERR_OUTPUT,
                     'test11' => [
                         0 => 'name-l2',
 
-                        1 => Config::OPTION_NAME_HELP,
+                        1 => Config::PARAMETER_NAME_HELP,
 
                         'BRANCHES' => [
                             'list' => [
@@ -305,17 +305,17 @@ STDERR_OUTPUT,
                             ],
                             'test21' => [
                                 // Should be added automatically.
-                                0 => Config::OPTION_NAME_HELP,
+                                0 => Config::PARAMETER_NAME_HELP,
                             ],
                             'test22' => [
                                 // Should be added automatically.
-                                0 => Config::OPTION_NAME_HELP,
+                                0 => Config::PARAMETER_NAME_HELP,
                             ],
                             'test23' => [
                                 0 => 'name-l3',
 
                                 // Should be added automatically.
-                                1 => Config::OPTION_NAME_HELP,
+                                1 => Config::PARAMETER_NAME_HELP,
 
                                 'BRANCHES' => [
                                     'list' => [
@@ -327,11 +327,11 @@ STDERR_OUTPUT,
                                     ],
                                     'test31' => [
                                         // Should be added automatically.
-                                        0 => Config::OPTION_NAME_HELP,
+                                        0 => Config::PARAMETER_NAME_HELP,
                                     ],
                                     'test32' => [
                                         // Should be added automatically.
-                                        0 => Config::OPTION_NAME_HELP,
+                                        0 => Config::PARAMETER_NAME_HELP,
                                     ],
                                 ],
                             ],
@@ -339,7 +339,7 @@ STDERR_OUTPUT,
                     ],
                     'test12' => [
                         // Should be added automatically.
-                        0 => Config::OPTION_NAME_HELP,
+                        0 => Config::PARAMETER_NAME_HELP,
                     ],
                 ],
             ],

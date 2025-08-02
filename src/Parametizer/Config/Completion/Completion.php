@@ -348,11 +348,12 @@ final class Completion {
         $shellAliasEscaped = escapeshellarg($shellAlias);
         $shellFunctionName = '_parametizer-complete_' . $shellAlias;
 
+        /** @noinspection SpellCheckingInspection */
         return "alias {$shellAliasEscaped}=" . escapeshellarg($shellAliasCommand) . PHP_EOL
             . "function {$shellFunctionName}() {" . PHP_EOL
             . '    saveIFS=$IFS' . PHP_EOL
             . '    IFS=$\'\n\'' . PHP_EOL
-            . '    COMPREPLY=($(' . $completionCommand . ' --' . Config::OPTION_NAME_COMPLETION_EXECUTE
+            . '    COMPREPLY=($(' . $completionCommand . ' --' . Config::PARAMETER_NAME_COMPLETION_EXECUTE
             . ' "$COMP_LINE" "$COMP_POINT" "$COMP_WORDBREAKS"))' . PHP_EOL
             . '    IFS=$saveIFS' . PHP_EOL
             . '}' . PHP_EOL

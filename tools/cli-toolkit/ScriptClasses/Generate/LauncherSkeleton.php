@@ -382,7 +382,7 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
             '%%COMPLETION_GENERATOR_SUBCOMMAND%%' => CompletionScript::getScriptName(),
             '%%ALIAS_PREFIX%%'                    => static::LAUNCHER_ALIAS_PREFIX,
             '%%LAUNCHER_BASENAME%%'               => static::LAUNCHER_BASENAME,
-            '%%PARAMETER_HELP%%'                  => Config::OPTION_NAME_HELP,
+            '%%PARAMETER_HELP%%'                  => Config::PARAMETER_NAME_HELP,
         ];
         $completionGeneratorTemplate = <<<SHELL
         #!/bin/bash
@@ -499,10 +499,10 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
             TEXT;
 
         $descriptionsByCommands = [
-            Config::PARAMETER_NAME_LIST                                     => 'List available commands',
-            Config::OPTION_NAME_HELP . " {$this->exampleClassScriptName}"   => 'Show a command\'s help page',
-            "{$this->exampleClassScriptName} --" . Config::OPTION_NAME_HELP => 'Same as above, works even with the launcher itself',
-            "{$this->exampleClassScriptName} a -ob"                         => 'Example script call with parameters',
+            Config::PARAMETER_NAME_LIST                                        => 'List available commands',
+            Config::PARAMETER_NAME_HELP . " {$this->exampleClassScriptName}"   => 'Show a command\'s help page',
+            "{$this->exampleClassScriptName} --" . Config::PARAMETER_NAME_HELP => 'Same as above, works even with the launcher itself',
+            "{$this->exampleClassScriptName} a -ob"                            => 'Example script call with parameters',
         ];
         $longestCommandLength = 0;
         foreach ($descriptionsByCommands as $command => $description) {

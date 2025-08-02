@@ -139,7 +139,7 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
                     TEXT,
                 static::getBashAliasExecutionOutput(
                     self::COMPLETION_SCRIPT_PATH,
-                    "a-{$scriptName} --" . Config::OPTION_NAME_HELP,
+                    "a-{$scriptName} --" . Config::PARAMETER_NAME_HELP,
                 ),
             );
         }

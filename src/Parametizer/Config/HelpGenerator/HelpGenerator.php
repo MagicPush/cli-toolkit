@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Parametizer\Config;
+namespace MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
 
+use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Argument;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\Option;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
@@ -219,38 +220,47 @@ class HelpGenerator {
         }
 
         if (count($options) > 1) {
-            // Place 'help' option at the top, required options under 'help' and then the rest of options:
             usort(
                 $options,
                 function (Option $a, Option $b) {
-                    return (Config::OPTION_NAME_HELP === $b->getName()) <=> (Config::OPTION_NAME_HELP === $a->getName())
-                        ?: $b->isRequired() <=> $a->isRequired();
+                    // Place 'help' option at the top:
+                    $comparisonIsHelp =
+                        (Config::PARAMETER_NAME_HELP === $b->getName())
+                        <=>
+                        (Config::PARAMETER_NAME_HELP === $a->getName());
+                    if (0 !== $comparisonIsHelp) {
+                        return $comparisonIsHelp;
+                    }
+
+                    // Required options are more important:
+                    $comparisonIsRequired = $b->isRequired() <=> $a->isRequired();
+                    if (0 !== $comparisonIsRequired) {
+                        return $comparisonIsRequired;
+                    }
+
+                    // Otherwise sort alphabetically:
+                    return $a->getName() <=> $b->getName();
                 },
             );
         }
 
         /** @var Option[]|Argument[] $paramsSorted */
-        $paramsSorted = array_merge($options, $arguments);
-
-        $lines = [];
+        $paramsSorted         = array_merge($options, $arguments);
+        $parameterDefinitions = [];
         foreach ($paramsSorted as $param) {
-            if ($param instanceof Option) {
-                $paramTitle = implode(', ', array_reverse(static::getOptionTemplates($param)));
-            } else {
-                $paramTitle = $param->getTitleForHelp();
-            }
-            $paramTitle = $formatter->paramTitle($paramTitle);
+            $paramNames = $param instanceof Option
+                ? static::getOptionTemplates($param)
+                : [$param->getTitleForHelp()];
 
-            if ($param->isRequired()) {
-                $paramTitle .= PHP_EOL . $formatter->paramRequired('(required)');
-            }
-
-            $description = static::makeParamDescription($formatter, $param);
-
-            $lines[] = [$paramTitle, $description];
+            $parameterDefinitions[] = new HelpParameterDefinition(
+                name: $formatter->paramTitle($paramNames[0]),
+                shortName: isset($paramNames[1]) ? $formatter->paramTitle($paramNames[1]) : '',
+                description: static::makeParamDescription($formatter, $param),
+                required: $param->isRequired() ? $formatter->paramRequired('(required)') : '',
+            );
         }
 
-        return static::makeDefinitionList($formatter, $lines, $sectionTitle);
+        return static::makeDefinitionList($formatter, $sectionTitle, $parameterDefinitions);
     }
 
     /**
@@ -261,7 +271,7 @@ class HelpGenerator {
         Config $config,
     ): string {
         $invalidParams = [];
-        $helpOption    = $config->getOptions()[Config::OPTION_NAME_HELP] ?? null;
+        $helpOption    = $config->getOptions()[Config::PARAMETER_NAME_HELP] ?? null;
         if (null !== $helpOption) {
             $invalidParams[] = $helpOption;
         }
@@ -292,9 +302,9 @@ class HelpGenerator {
                 mb_str_pad('... or:', mb_strlen($subcommandDescriptionHeader), ' ', STR_PAD_LEFT);
 
             $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeader)
-                . " <{$param->getName()}> " . $formatter->paramValue('--' . Config::OPTION_NAME_HELP);
+                . " <{$param->getName()}> " . $formatter->paramValue('--' . Config::PARAMETER_NAME_HELP);
             $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeaderAlt)
-                . ' ' . $formatter->paramValue(Config::OPTION_NAME_HELP) . " <{$param->getName()}>";
+                . ' ' . $formatter->paramValue(Config::PARAMETER_NAME_HELP) . " <{$param->getName()}>";
         } elseif (!$param->areAllowedValuesHiddenFromHelp()) {
             // Print allowed values list.
             // Print in long format if there is a description for at least one value. Otherwise, print values in one line.
@@ -378,70 +388,112 @@ class HelpGenerator {
     }
 
     /**
-     * @param array[] $titleAndDescriptionLines Each element is an array:
-     *                                          [0 => (string) title, 1 => (string) description]
+     * @param HelpParameterDefinition[] $parameterDefinitions
      */
     protected static function makeDefinitionList(
         HelpFormatter $formatter,
-        array $titleAndDescriptionLines,
-        string $title,
+        string $sectionTitle,
+        array $parameterDefinitions,
     ): string {
-        if (empty($titleAndDescriptionLines)) {
+        if (empty($parameterDefinitions)) {
             return '';
         }
 
-        $text = PHP_EOL;
-        if ('' !== $title) {
-            $text .= $formatter->section($title) . PHP_EOL;
-        }
+        // Firstly, determine max padding in a specific section:
+        $nameMaxLength      = 0;
+        $shortNameMaxLength = 0;
+        $definitionsTable   = [];
+        foreach ($parameterDefinitions as $paramIndex => $definition) {
+            $definitionsTable[$paramIndex][0] = [];
 
-        // Firstly determine max padding in a specific section:
-        $paramTitleMaxLength          = 0;
-        $titleLinesByParamLines       = [];
-        $descriptionLinesByParamLines = [];
-        foreach ($titleAndDescriptionLines as $i => $row) {
-            $paramTitle = static::padTextBlock($row[0], static::PAD_LEFT_MAIN, true);
-            foreach (explode(PHP_EOL, $paramTitle) as $titleLine) {
-                $titleLinesByParamLines[$i][] = $titleLine;
-                $titleLength                  = $formatter::mbStrlenNoFormat($titleLine);
-
-                if ($titleLength > $paramTitleMaxLength) {
-                    $paramTitleMaxLength = $titleLength;
+            $shortName = $definition->shortName;
+            if ('' !== $definition->shortName) {
+                $shortName       .= ', ';
+                $shortNameLength = $formatter::mbStrlenNoFormat($shortName);
+                if ($shortNameMaxLength < $shortNameLength) {
+                    $shortNameMaxLength = $shortNameLength;
                 }
+                // |X|.|.|
+                // |.|.|.|
+                $definitionsTable[$paramIndex][0][0] = [
+                    'value'  => $shortName,
+                    'length' => $shortNameLength,
+                ];
             }
 
-            if ($row[1]) {
-                $descriptionLinesByParamLines[$i] = explode(PHP_EOL, $row[1], count($titleLinesByParamLines[$i]));
+            $nameLength = $formatter::mbStrlenNoFormat($definition->name);
+            if ($nameMaxLength < $nameLength) {
+                $nameMaxLength = $nameLength;
+            }
+            // 0: |.|X|.|
+            // 1: |.|.|.|
+            $definitionsTable[$paramIndex][0][1] = [
+                'value'  => $definition->name,
+                'length' => $nameLength,
+            ];
+
+            if ('' !== $definition->required) {
+                $nameLength = $formatter::mbStrlenNoFormat($definition->required);
+                if ($nameMaxLength < $nameLength) {
+                    $nameMaxLength = $nameLength;
+                }
+                // 0: |.|.|.|
+                // 1: |.|X|.|
+                $definitionsTable[$paramIndex][1][1] = [
+                    'value'  => $definition->required,
+                    'length' => $nameLength,
+                ];
+            }
+
+            if ('' !== $definition->description) {
+                foreach (explode(PHP_EOL, $definition->description) as $lineIndex => $descriptionLine) {
+                    // $lineIndex: |.|.|X|
+                    $definitionsTable[$paramIndex][$lineIndex][2] = ['value' => $descriptionLine];
+                }
             }
         }
 
         // ... And now we can print the section itself properly padded.
-        $textLinesByParamLines = [];
-        foreach ($titleLinesByParamLines as $i => $titleLines) {
-            foreach ($titleLines as $j => $titleLine) {
-                if (empty($descriptionLinesByParamLines[$i][$j])) {
-                    $descriptionLine = '';
-                } else {
-                    /**
-                     * Do not use {@see str_pad()} / {@see mb_str_pad()} here:
-                     * font escape sequences are visually invisible in text but affect text length.
-                     */
-                    $descriptionLine = str_repeat(
-                        ' ',
-                        $paramTitleMaxLength + static::PAD_LEFT_PARAM_DESCRIPTION - $formatter::mbStrlenNoFormat(
-                            $titleLine,
-                        ),
-                    );
-                    $descriptionLine .= static::padTextBlock(
-                        $descriptionLinesByParamLines[$i][$j],
-                        $paramTitleMaxLength + static::PAD_LEFT_PARAM_DESCRIPTION,
-                    );
+        $text = PHP_EOL;
+        if ('' !== $sectionTitle) {
+            $text .= $formatter->section($sectionTitle) . PHP_EOL;
+        }
+
+        foreach ($definitionsTable as $paramTable) {
+            // Extra empty line between parameter definitions:
+            $text .= PHP_EOL;
+
+            foreach ($paramTable as $row) {
+                /**
+                 * Do not use {@see str_pad()} / {@see mb_str_pad()} in this block:
+                 * font escape sequences are visually invisible in text, but affect text length.
+                 */
+
+                // 1. Main padding:
+                $text .= str_repeat(' ', static::PAD_LEFT_MAIN);
+                // 2. Short name (|X|.|.|), left padding:
+                if ($shortNameMaxLength > 0) {
+                    $text .= ($row[0]['value'] ?? '')
+                        . str_repeat(' ', $shortNameMaxLength - ($row[0]['length'] ?? 0));
+                }
+                // 3. Long name (|.|X|.|):
+                if (isset($row[1])) {
+                    $text .= $row[1]['value'];
+                }
+                // 4. Description (|.|.|X), left padding:
+                if (isset($row[2])) {
+                    $text .= str_repeat(
+                            ' ',
+                            0                                           // |X|.|.|, 1st column is already padded.
+                            + $nameMaxLength - ($row[1]['length'] ?? 0) // |.|X|.|
+                            + static::PAD_LEFT_PARAM_DESCRIPTION,       // |.|.|X|
+                        )
+                        . $row[2]['value'];
                 }
 
-                $textLinesByParamLines[$i][] = $titleLine . $descriptionLine;
+                // End of a row:
+                $text .= PHP_EOL;
             }
-
-            $text .= PHP_EOL . implode(PHP_EOL, $textLinesByParamLines[$i]) . PHP_EOL;
         }
 
         return $text;

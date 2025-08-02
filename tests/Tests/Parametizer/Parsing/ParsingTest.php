@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\Parsing;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -329,250 +330,250 @@ final class ParsingTest extends TestCaseAbstract {
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+                    Need more parameters
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-  <arg-required>     Required argument
-  (required)
+                      <arg-required>     Required argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'required-option-missed' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => 'arg',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need a value for --opt-required
+                    Need a value for --opt-required
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'required-argument-missed' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=5',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+                    Need more parameters
 
 
-  --help           Show full help page.
+                      --help           Show full help page.
 
-  <arg-required>   Required argument
-  (required)
+                      <arg-required>   Required argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'required-several-options-missed' => [
                 'scriptPath'          => __DIR__ . '/scripts/several-required-options.php',
                 'parametersString'    => '',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need values for --option1 (-f), --option2, --option3 (-t)
+                    Need values for --option1 (-f), --option2, --option3 (-t)
 
 
-  --help              Show full help page.
+                            --help        Show full help page.
 
-  -f …, --option1=…   First option
-  (required)
+                      -f …, --option1=…   First option
+                            (required)
 
-  --option2=…         Second option
-  (required)
+                            --option2=…   Second option
+                            (required)
 
-  -t …, --option3=…   Third option
-  (required)
+                      -t …, --option3=…   Third option
+                            (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'argument-invalid-value' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=5 arg D',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Incorrect value 'D' for argument <arg-optional>
+                    Incorrect value 'D' for argument <arg-optional>
 
 
-  --help           Show full help page.
+                      --help           Show full help page.
 
-  <arg-optional>   Optional argument: pick one from the list
-                   Allowed values: A, B, C
-                   Default: B
+                      <arg-optional>   Optional argument: pick one from the list
+                                       Allowed values: A, B, C
+                                       Default: B
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'option-without-value-1' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required arg',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-No value for option --opt-required
+                    No value for option --opt-required
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'option-without-value-2' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required= arg',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-No value for option --opt-required
+                    No value for option --opt-required
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'option-duplicate-value' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=white arg --opt-required=pink',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Duplicate option --opt-required (with value 'pink'); already registered value: 'white'
+                    Duplicate option --opt-required (with value 'pink'); already registered value: 'white'
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'array-option-duplicate-value' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=5 arg -l100 -l800 -l100',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Duplicate value '100' for option --opt-list (-l); already registered values: '100', '800'
+                    Duplicate value '100' for option --opt-list (-l); already registered values: '100', '800'
 
 
-  --help               Show full help page.
+                            --help         Show full help page.
 
-  -l …, --opt-list=…   List of values
-                       (multiple values allowed)
+                      -l …, --opt-list=…   List of values
+                                           (multiple values allowed)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'option-invalid-value' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=blue arg',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Incorrect value 'blue' for option --opt-required
+                    Incorrect value 'blue' for option --opt-required
 
 
-  --help             Show full help page.
+                      --help             Show full help page.
 
-  --opt-required=…   Required option: pick one from the list
-  (required)         Allowed values:
-                      - black A pile of books
-                      - pink  A heap of ponies
-                      - white
-                      - 5     Give me "five"!
+                      --opt-required=…   Required option: pick one from the list
+                      (required)         Allowed values:
+                                          - black A pile of books
+                                          - pink  A heap of ponies
+                                          - white
+                                          - 5     Give me "five"!
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'flag-with-value' => [
                 'scriptPath'          => __DIR__ . '/scripts/lots-of-params.php',
                 'parametersString'    => '--opt-required=5 arg --flag1=test',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-The flag --flag1 (-f) can not have a value
+                    The flag --flag1 (-f) can not have a value
 
 
-  --help        Show full help page.
+                          --help    Show full help page.
 
-  -f, --flag1   Some flag
+                      -f, --flag1   Some flag
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'non-configured-extra-argument' => [
                 'scriptPath'          => __DIR__ . '/scripts/two-arguments.php',
                 'parametersString'    => 'asd fgh unknown1 unknown2',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Too many arguments, starting with 'unknown1'
+                    Too many arguments, starting with 'unknown1'
 
 
-  --help           Show full help page.
+                      --help           Show full help page.
 
-  <argument-one>   First argument
-  (required)
+                      <argument-one>   First argument
+                      (required)
 
-  <argument-two>   Second argument
-  (required)
+                      <argument-two>   Second argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'non-configured-extra-argument-after-double-dash' => [
                 'scriptPath'          => __DIR__ . '/scripts/two-arguments.php',
                 'parametersString'    => 'asd -- fgh unknown1 unknown2',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Too many arguments, starting with 'unknown1'
+                    Too many arguments, starting with 'unknown1'
 
 
-  --help           Show full help page.
+                      --help           Show full help page.
 
-  <argument-one>   First argument
-  (required)
+                      <argument-one>   First argument
+                      (required)
 
-  <argument-two>   Second argument
-  (required)
+                      <argument-two>   Second argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'non-configured-option-name' => [
                 'scriptPath'          => __DIR__ . '/scripts/two-arguments.php',
                 'parametersString'    => 'asd fgh --unknown=value',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Unknown option '--unknown'
+                    Unknown option '--unknown'
 
 
-  --help   Show full help page.
+                      --help   Show full help page.
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
             'non-configured-option-short-name' => [
                 'scriptPath'          => __DIR__ . '/scripts/two-arguments.php',
                 'parametersString'    => 'asd fgh -u value',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Unknown option '-u'
+                    Unknown option '-u'
 
 
-  --help   Show full help page.
+                      --help   Show full help page.
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
         ];
     }

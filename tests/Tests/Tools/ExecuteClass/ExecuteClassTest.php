@@ -39,7 +39,7 @@ final class ExecuteClassTest extends TestCaseAbstract {
     public static function provideSuccessfulClassLaunches(): array {
         return [
             'some-class'         => [
-                'parametersString' => sprintf("'%s' --%s", Something::class, Config::OPTION_NAME_HELP),
+                'parametersString' => sprintf("'%s' --%s", Something::class, Config::PARAMETER_NAME_HELP),
                 'expectedOutput'   => <<<TEXT
 
                       Does something in all child classes.
@@ -52,9 +52,9 @@ final class ExecuteClassTest extends TestCaseAbstract {
 
                     OPTIONS
 
-                      --help             Show full help page.
+                            --help       Show full help page.
 
-                      -f, --flag
+                      -f,   --flag
 
                       -o …, --option=…
 
@@ -67,7 +67,7 @@ final class ExecuteClassTest extends TestCaseAbstract {
                     TEXT,
             ],
             'no-namespace'       => [
-                'parametersString' => sprintf("'%s' --%s", SomeClassNoNamespace::class, Config::OPTION_NAME_HELP),
+                'parametersString' => sprintf("'%s' --%s", SomeClassNoNamespace::class, Config::PARAMETER_NAME_HELP),
                 'expectedOutput'   => <<<TEXT
 
                       This class has no namespace
@@ -132,15 +132,15 @@ final class ExecuteClassTest extends TestCaseAbstract {
                 'expectedErrorSubstring' => 'Class name is not specified',
             ],
             'undefined' => [
-                'parametersString'       => sprintf("Asd --%s", Config::OPTION_NAME_HELP),
+                'parametersString'       => sprintf("Asd --%s", Config::PARAMETER_NAME_HELP),
                 'expectedErrorSubstring' => "'Asd' is not defined or autoloaded",
             ],
             'not-a-subclass' => [
-                'parametersString'       => sprintf("'%s' --%s", AnotherThing::class, Config::OPTION_NAME_HELP),
+                'parametersString'       => sprintf("'%s' --%s", AnotherThing::class, Config::PARAMETER_NAME_HELP),
                 'expectedErrorSubstring' => "'" . AnotherThing::class . "' is not a subclass of ",
             ],
             'abstract' => [
-                'parametersString'       => sprintf("'%s' --%s", SomethingAbstract::class, Config::OPTION_NAME_HELP),
+                'parametersString'       => sprintf("'%s' --%s", SomethingAbstract::class, Config::PARAMETER_NAME_HELP),
                 'expectedErrorSubstring' => 'Cannot instantiate abstract class ' . SomethingAbstract::class,
             ],
         ];

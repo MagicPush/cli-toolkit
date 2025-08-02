@@ -28,7 +28,7 @@ final class CompletionTest extends TestCaseAbstract {
         $result = static::assertNoErrorsOutput(
             $scriptPath,
             sprintf(
-                '--' . Config::OPTION_NAME_COMPLETION_EXECUTE . ' %s %s %s',
+                '--' . Config::PARAMETER_NAME_COMPLETION_EXECUTE . ' %s %s %s',
                 escapeshellarg($completionLine),
                 escapeshellarg((string) mb_strlen($completionLine)),
                 escapeshellarg(Completion::COMP_WORDBREAKS),
@@ -118,7 +118,7 @@ final class CompletionTest extends TestCaseAbstract {
                     '--any-value=',
                     '--flag ',
                     '--second-flag ',
-                    '--' . Config::OPTION_NAME_HELP . ' ',
+                    '--' . Config::PARAMETER_NAME_HELP . ' ',
                 ],
             ],
 
@@ -296,7 +296,7 @@ final class CompletionTest extends TestCaseAbstract {
                 'expectedOutputLines' => [
                     '--opt=',
                     '--opt-arr=',
-                    '--' . Config::OPTION_NAME_HELP . ' ',
+                    '--' . Config::PARAMETER_NAME_HELP . ' ',
                 ],
             ],
             // No completion even if a flag is specified by a short name:
@@ -365,7 +365,7 @@ final class CompletionTest extends TestCaseAbstract {
                 'parametersString'    => '',
                 'expectedOutputLines' => [
                     Config::PARAMETER_NAME_LIST . ' ',
-                    Config::OPTION_NAME_HELP . ' ',
+                    Config::PARAMETER_NAME_HELP . ' ',
                     'different-params ',
                     'smart-completion ',
                 ],

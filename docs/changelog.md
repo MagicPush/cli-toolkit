@@ -41,9 +41,14 @@ This change log references the repository changes and releases, which respect [s
        will contain one of original possible answers: if `YES` is expected as one of answers and you provide `yes`,
        `ask()` will return `YES` as your answer (not `yes`, as was done in a previous version).
 1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
+    1. Moved to its own subdirectory, updated the namespace.
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
     1. Removed `getBaseScriptName()` obsolete method.
+    1. `makeDefinitionList()`:
+        1. The third parameter is changed into an array of `HelpParameterDefinition`.
+        2. Padding improvement: option full names are padded to start at the same column,
+           if there is at least one short name present.
 1. `TerminalFormatter::__construct()` expects `bool $isDisabled` instead of `int|resource $resource`: now it is
    possible to instantiate a formatter object that applies (or not) formatting with guarantee.
 
@@ -58,9 +63,10 @@ This change log references the repository changes and releases, which respect [s
         1. `executeAutocomplete()` -> `executeCompletion`
         1. `generateAutocompleteScript()` -> `generateCompletionCode()`
     1. [Config.php](../src/Parametizer/Config/Config.php):
-        1. `OPTION_NAME_AUTOCOMPLETE_GENERATE` => `OPTION_NAME_COMPLETION_GENERATE`
+        1. `OPTION_NAME_HELP` => `PARAMETER_NAME_HELP`
+        1. `OPTION_NAME_AUTOCOMPLETE_GENERATE` => `PARAMETER_NAME_COMPLETION_GENERATE`
         (its value `parametizer-internal-autocomplete-generate` -> `parametizer-internal-completion-generate`)
-        1. `OPTION_NAME_AUTOCOMPLETE_EXECUTE` => `OPTION_NAME_COMPLETION_EXECUTE`
+        1. `OPTION_NAME_AUTOCOMPLETE_EXECUTE` => `PARAMETER_NAME_COMPLETION_EXECUTE`
            (its value `parametizer-internal-autocomplete-execute` -> `parametizer-internal-completion-execute`)
 1. [composer.json](../composer.json): the `type` is changed from `project` to `library`.
    Not sure if it should be treated as incompatibility, but let's note it here just in case.
@@ -161,6 +167,8 @@ This change log references the repository changes and releases, which respect [s
        (added a dot symbol) - because of the change mentioned above.
     1. Improved a bit exception messages when both a list of possible answers and a validation pattern are set.
 1. `VariableBuilderAbstract::ensureNotRequiredAndHasDefaultSimultaneously()`: fixed a bit the exception message.
+1. `HelpGenerator::getParamsBlock()`, options block sort improvement: as previously, options are grouped by
+   `isRequired()` state (required options go first), but from now on each group is additionally sorted by names.
 
 ## v2.1.0
 

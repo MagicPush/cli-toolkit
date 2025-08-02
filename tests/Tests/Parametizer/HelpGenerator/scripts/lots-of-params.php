@@ -30,16 +30,16 @@ TestUtils::newConfig()
                                             
     ') // There are some blank lines including the one with spaces. All should be properly trimmed.
 
-    ->usage('--opt-required=5 arg')
-    ->usage('--opt-required=5 arg -fg C asd zxc')
-    ->usage('--opt-required=5 arg -fg C asd zxc', 'Same usage, but with description')
+    ->usage('--opt-required-2=test --opt-required=5 arg')
+    ->usage('--opt-required=5 arg -fg --opt-required-2=test C asd zxc')
+    ->usage('--opt-required=5 arg -fg --opt-required-2=test C asd zxc', 'Same usage, but with description')
 
     ->usage(
-        'argument --opt-required=pink --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3',
+        'argument --opt-required=pink --opt-required-2=dots --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3',
         'Usage long example with description',
     )
 
-    ->newOption('--opt-default', '-o')
+    ->newOption('--opt-default')
     ->description('Non-required option with a default value')
     ->default('opt_default_value')
 
@@ -52,11 +52,18 @@ TestUtils::newConfig()
 
     ->newFlag('--flag2', '-g')
 
+    ->newOption('--opt-required-2')
+    ->required()
+    ->description('
+        Must be above non-required options,
+        but below "--opt-required" (alphabetical order)
+    ')
+
     ->newFlag('--flag3')
     ->description('Flag without short name')
 
     // Let's place it here intentionally - to ensure the options correct order from `HelpGenerator::getParamsBlock()`
-    ->newOption('--opt-required')
+    ->newOption('--opt-required', '-o')
     ->description('Required option: pick one from the list')
     ->required()
     ->allowedValuesDescribed([

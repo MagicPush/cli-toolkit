@@ -6,7 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\HelpGenerator;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator;
+use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
@@ -17,7 +17,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests the help generator for the majority of cases (except subcommands; see dedicated tests below).
      *
-     * Also tests the correct options order in {@see HelpGenerator::getParamsBlock()}.
+     * Also tests options sorting in {@see HelpGenerator::getParamsBlock()}.
      *
      * Output is redirected, so no text styles here.
      *
@@ -44,38 +44,41 @@ final class HelpGeneratorTest extends TestCaseAbstract {
 
         USAGE
 
-          lots-of-params.php [-fg] [--opt-default=… | -o …] [--opt-list=… | -l …] [--flag1] [--flag2] [--flag3] --opt-required=… <arg-required> [<arg-optional>] [<arg-list>]
-          lots-of-params.php --opt-required=5 arg
-          lots-of-params.php --opt-required=5 arg -fg C asd zxc
+          lots-of-params.php [-fg] [--opt-default=…] [--opt-list=… | -l …] [--flag1] [--flag2] [--flag3] --opt-required-2=… --opt-required=… | -o … <arg-required> [<arg-optional>] [<arg-list>]
+          lots-of-params.php --opt-required-2=test --opt-required=5 arg
+          lots-of-params.php --opt-required=5 arg -fg --opt-required-2=test C asd zxc
 
           Same usage, but with description:
-          lots-of-params.php --opt-required=5 arg -fg C asd zxc
+          lots-of-params.php --opt-required=5 arg -fg --opt-required-2=test C asd zxc
 
           Usage long example with description:
-          lots-of-params.php argument --opt-required=pink --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3
+          lots-of-params.php argument --opt-required=pink --opt-required-2=dots --opt-default=cool --flag2 A --opt-list=250 --opt-list=500 -- arg_elem_1 arg_elem_2 --opt=not_option_but_arg_elem3
 
         OPTIONS
 
-          --help                  Show full help page.
+                --help               Show full help page.
 
-          --opt-required=…        Required option: pick one from the list
-          (required)              Allowed values:
-                                   - black A pile of books
-                                   - pink  A heap of ponies
-                                   - white
-                                   - 5     Give me "five"!
+          -o …, --opt-required=…     Required option: pick one from the list
+                (required)           Allowed values:
+                                      - black A pile of books
+                                      - pink  A heap of ponies
+                                      - white
+                                      - 5     Give me "five"!
 
-          -o …, --opt-default=…   Non-required option with a default value
-                                  Default: opt_default_value
+                --opt-required-2=…   Must be above non-required options,
+                (required)           but below "--opt-required" (alphabetical order)
 
-          -l …, --opt-list=…      List of values
-                                  (multiple values allowed)
+          -f,   --flag1              Some flag
 
-          -f, --flag1             Some flag
+          -g,   --flag2
 
-          -g, --flag2
+                --flag3              Flag without short name
 
-          --flag3                 Flag without short name
+                --opt-default=…      Non-required option with a default value
+                                     Default: opt_default_value
+
+          -l …, --opt-list=…         List of values
+                                     (multiple values allowed)
 
         ARGUMENTS
 
@@ -177,7 +180,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
              Built-in:
                 help                          Outputs a help page for a specified subcommand.
                 list                          Shows available subcommands.
-            
+
              --
                 long-string                   Here is a sort of... short description.
                 long-string-short-sentence    Too short to stop here. So the description continues for some more
@@ -202,7 +205,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'multiline --' . Config::OPTION_NAME_HELP,
+                'multiline --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -215,7 +218,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'long-string --' . Config::OPTION_NAME_HELP,
+                'long-string --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -227,7 +230,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'long-string-short-sentence --' . Config::OPTION_NAME_HELP,
+                'long-string-short-sentence --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -239,7 +242,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                'unbreakable-long-line --' . Config::OPTION_NAME_HELP,
+                'unbreakable-long-line --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -253,7 +256,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                Config::PARAMETER_NAME_LIST . ' --' . Config::OPTION_NAME_HELP,
+                Config::PARAMETER_NAME_LIST . ' --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
@@ -270,30 +273,29 @@ final class HelpGeneratorTest extends TestCaseAbstract {
     public function testShortDescriptionReplacesFullInHelp(): void {
         assertSame(
             <<<HELP
-             Built-in:
-                help         Outputs a help page for a specified subcommand.
-                list         Shows available subcommands.
+                 Built-in:
+                    help         Outputs a help page for a specified subcommand.
+                    list         Shows available subcommands.
 
-             --
-                multiline    It is a multi-line description. It could be considered long enough to be shorten...
-                            But due to the fact that this description is set as the "short description",
-                            no shortage mechanism is applied.
+                 --
+                    multiline    It is a multi-line description. It could be considered long enough to be shorten...
+                                But due to the fact that this description is set as the "short description",
+                                no shortage mechanism is applied.
 
-            HELP,
+                HELP,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/short-only-description.php', '')->getStdOut(),
         );
 
         assertStringStartsWith(
             <<<HELP
 
-              It is a multi-line description. It could be considered long enough to be shorten...
-              But due to the fact that this description is set as the "short description",
-              no shortage mechanism is applied.
-            HELP
-            ,
+                  It is a multi-line description. It could be considered long enough to be shorten...
+                  But due to the fact that this description is set as the "short description",
+                  no shortage mechanism is applied.
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/short-only-description.php',
-                'multiline --' . Config::OPTION_NAME_HELP,
+                'multiline --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );
