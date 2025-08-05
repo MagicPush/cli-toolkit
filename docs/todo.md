@@ -19,8 +19,8 @@ The list of plans and ideas for future development.
     1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Move all [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants
-     to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
+1. Move most [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants (where relevant)
+   to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
        files or any other kinds of streams.
@@ -73,24 +73,51 @@ The list of plans and ideas for future development.
 <summary>Points to consider</summary>
 
 1. - [ ] [features-manual.md](features-manual.md):
+    1. - [x] A comparison table between "plain scripts" and "classes".
+        1. - [x] Start with a "summary" paragraph.
+    1. - [ ] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
+        1. - [ ] Make a link to this from the comparison table.
     1. - [ ] Built-in subcommands.
         1. - [ ] `list` as a default value.
              No other parameters are processed correctly unless `list` is specified explicitly.
-    1. - [ ] [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)
+    1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] [run.php](../tools/cli-toolkit/run.php)
         1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
         1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
         1. - [ ] Available subcommands.
+    1. - [ ] [Question.php](../src/Question/Question.php)
 
-             Also describe mass script generator as a useful tool to "play around" with the library.
-    1. - [ ] `ConfigBuilder::shortDescription()`
+         Also describe mass script generator as a useful tool to "play around" with the library.
     1. - [ ] Update comments generated in
          [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
          with links to the manual.
 1. - [ ] BONUS TASKS:
+    1. - [ ] Create a document about values and / or goals of the library.
+        1. - [ ] Ease scripts development and maintenance. Even if the library code deep inside is or will become
+             notably complex.
+        1. - [ ] Zero or minimal set of dependencies - to simplify the process of updating the library, to improve
+             the library components' performance (less universal approach -> faster processing).
+             Even if I have to implement solutions that have been already developed in some other open-source libraries.
+    1. - [ ] Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
+         a script, that may be also called via `gas` or `generate-completion` aliases.
+
+         ... Or try making a subcommand alias within a completion script.
+       
+         Some ideas:
+       
+        * The most difficult part: make `Parser` detect an alias in some "odd" substring, then find a corresponding
+          "main name" via a "lookup" array in a `Config`.
+        * Keep aliases in a `Config` separated (not as additional "branches"), then add along with "branch" keys into
+          `allowedValues()`. Then both validation and completion will consider aliases too.
+        * Uniqueness: aliases should be kept like `(string) alias => (string) main subcommand name`, but there also
+          should be a simple (quick) enough way to convert such an array into
+          `(string) main subcommand name => (array|string[]) list of aliases`
+        * Think how to set those aliases in a comfort (for users) way.
+          
+          As for now, I see it only as the third parameter for `newSubcommandSwitch()` as an array of aliases. Then you
+          may specify the "main name" and aliases next to each other by calling the method with named parameters.
     1. - [ ] Composer post install message with the generator launch command.
         * See https://getcomposer.org/doc/articles/scripts.md
-    1. - [ ] Create a document about values and / or goals of the library.
     1. - [ ] Support positioned headered groups for subcommands (like `Built-in:`).
 
          A possible implementation:
@@ -119,30 +146,6 @@ The list of plans and ideas for future development.
             1. [ ] Headered group names are NOT sorted. But auto-group names (based on name sections) ARE sorted.
             1. [ ] In `slim` mode all subcommands are sorted within groups only,
                where "auto" is considered as a single group.
-
-    1. - [ ] Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
-         a script, that may be also called via `gas` or `generate-completion` aliases.
-
-         ... Or try making a subcommand alias within a completion script.
-    1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
-         (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
-         scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
-         respectively.
-        1. - [ ] (like in Symfony) In case of composite names each name substring should be mentioned - for
-             `cli-toolkit:generate:completion-script` you should specify `c:g:a`
-             (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
-        1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
-             (switched on/off by a flag option).
-    1. - [ ] Implement a "typo guesser" like in `composer`:
-
-         ```
-         $ composer lizstz
-
-         Command "lizstz" is not defined.
-
-         Do you want to run "list" instead?  (yes/no) [no]:
-         >
-         ```
 1. - [x] FINISHING MOVES:
     1. - [x] Renaming, moving and other trivial refactoring:
         1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
@@ -387,10 +390,29 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
     * Create a mean to escape a tag - to output it as is (for instance, as a formatting example).
     * Use this feature to improve current built-in formatting - to simplify and shorten the code.
    </details>
-1. Symfony-like (or not like) progress bar.
 1. Fix the completion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
    but get `100` (`-o` is vanished).
     * Reason: `$COMP_WORDBREAKS` shell variable is considered (not `Completion::COMP_WORDBREAKS`), bash-completion
       sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.
     * Possible, but odd solution: alter `$COMP_WORDBREAKS` shell variable during runtime (append an option short name),
       then restore the variable's original value right before a script is terminated.
+1. Progress bar.
+1. - [ ] Implement a "typo guesser" like in `composer`:
+
+     ```
+     $ composer lizstz
+
+     Command "lizstz" is not defined.
+
+     Do you want to run "list" instead?  (yes/no) [no]:
+     >
+     ```
+1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
+     (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
+     scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
+     respectively.
+    1. - [ ] In case of composite names each name substring should be mentioned - for
+         `cli-toolkit:generate:completion-script` you should specify `c:g:a`
+         (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
+    1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
+         (switched on/off by a flag option).

@@ -4,6 +4,7 @@ Here are more detailed descriptions for different features you may find in the p
 
 ## Contents
 
+- [Classes or plain scripts](#classes-or-plain-scripts)
 - [Parameter types](#parameter-types)
 - [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
@@ -12,6 +13,77 @@ Here are more detailed descriptions for different features you may find in the p
     - [How to: Manually via an instance](#how-to-manually-via-an-instance)
     - [How to: Automatically via config files](#how-to-automatically-via-config-files)
     - [Available settings](#available-settings)
+
+## Classes or plain scripts
+
+Within this library:
+* **Plain script** means a script written within a single, self-sufficient file that may be launched as is:
+`php script-file.php [parameters...]`.
+* **Class-based script** means a file with a class (extended from
+  [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)) that contains a script logic
+  and must be executed by a separate launcher
+  ([ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php)):
+  `php launcher.php script-name [parameters...]`
+  
+Generally, class-based scripts are recommended over plain scripts because are easier to organize and thus maintain,
+test, debug, reuse, etc. Although you may create a single-file script that contain both a class and its execution code,
+class-based scripts written with this library contain some built-in stuff to decrease your time and efforts needed for
+creating ready-to-launch scripts (that's the main idea of the class-based scripts).
+
+Plain scripts might be a better solution, only if you do not want (or are not able) for some reason to enable
+[completion](../README.md#completion) - calling a plain script file might be shorter than calling a launcher with
+a class script name.
+
+Here is a more detailed comparison between "class" and "plain" scripts. It covers most
+(if not all; apart from obvious and "natural" ability to split a script's logic by class methods)
+aspects of developing a console script with this library:
+
+<details>
+<summary>(click to unfold)</summary>
+
+* **Executing a script**
+    * _Class-based_: A separate launcher is required: `php launcher.php script-name [parameters...]`
+      The launcher must be based on
+      [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php)
+      and include [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) setup.
+
+      * [Skeleton generator](../README.md#script-classes) provides you with the fast and simple way to generate
+      a good set of files to make it work, including a launcher itself, a completion script (with its generator),
+      and an class-based script example.
+    * _Plain_: Just launch a script file: `php script-file.php [parameters...]`
+* **Completion alias** (if you enable [completion](../README.md#completion)):
+    * _Class-based_: You need only a single alias for your launcher.
+      Or a few aliases, if you want to group your scripts by separate launchers.
+    * _Plain_: Each detected script is linked with its own alias. If you have 500 scripts, then 500 aliases have to be
+      loaded into your shell environment.
+* **Listing available scripts**:
+    * _Class-based_: Execute the built-in `list` subcommand with your launcher: `php your-launcher.php list`.
+
+      Also, see `php your-launcher.php help list` for listing options.
+    * _Plain_: List available aliases (if you enable completion) or read your project directories for your script file
+      names.
+* **Adding a new script to a list of available scripts**:
+    * _Class-based_: Create a class-based script. Generally, your launcher's detector will detect the new class
+      automatically.
+
+      Otherwise update the detection rules in the launcher.
+    * _Plain_: Create a script file in a directory you will not forget about. :) If you enable completion, re-generate
+      a completion script, so it includes an alias for the just created script.
+* **Naming and grouping scripts**:
+    * _Class-based_: Script names are compiled from class short names (generated automatically by built-in
+      `getScriptInnerName()` method or manually by redefining it) and manually set groups (sections) by (re)defining
+      `getNameSections()`.
+      * Adding several sections to a script works as adding subgroups: `my:some:cool-script` is `CoolScript` class from
+      `some` subgroup within `my` group.
+      * `list` subcommand in its default mode reflects groups as leveled headers for easier reading.
+
+      Also, you may group your scripts by _launcher scripts_: each launcher may have its own unique detection rules
+      to access a selected subset of scripts.
+    * _Plain_: Placing scripts in different directories is your main option.
+
+      If you enable completion, then you may group your scripts by alias prefixes: generate completion scripts for
+      different groups of scripts (defined by generator detection settings) with different alias prefixes.
+</details>
 
 ## Parameter types
 

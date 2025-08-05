@@ -102,16 +102,16 @@ Read the output and comments in generated files.
 ### Completion
 
 Use [CompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
-to generate a completion Bash script with aliases to your php-scripts:
+to generate a completion Bash script with aliases to your `Parametizer`-based scripts:
 
-- Launch the script and read the details:
+- (as an example) Enable completion for the library stock launcher. Execute the command below and read the output:
 
   ```sh
   php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script \
       --search-directory-recursive=tools/cli-toolkit \
       --verbose
   ```
-- Read the script's help page for further customization:
+- Read the script's help page for parameter details and customize the command to detect your scripts:
 
   ```sh
   php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script --help
