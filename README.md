@@ -101,8 +101,7 @@ Read the output and comments in generated files.
 
 ### Completion
 
-Use [CompletionScript.php](tools/cli-toolkit/ScriptClasses/Generate/CompletionScript.php)
-to generate a completion Bash script with aliases to your `Parametizer`-based scripts:
+Generate a completion Bash script with aliases to your `Parametizer`-based scripts:
 
 - (as an example) Enable completion for the library stock launcher. Execute the command below and read the output:
 
@@ -130,7 +129,7 @@ scripts, and `/*/scripts/*` files in [Tests](tests/Tests) subdirectories as arti
 A part of ideas and code for [CliToolkit v1.0.0](docs/changelog.md#v100) was brought by
 [Anton Kotik](https://github.com/anton-kotik).
 
-The [Question](src/Question/Question.php) class was developed by [Vasiliy Borodin](https://github.com/borodin-vasiliy).
+`Question` class was developed by [Vasiliy Borodin](https://github.com/borodin-vasiliy).
 
 The rest is done by Kirill "Magic Push" Ulanovskii.
 

@@ -5,6 +5,7 @@ Here are more detailed descriptions for different features you may find in the p
 ## Contents
 
 - [Classes or plain scripts](#classes-or-plain-scripts)
+    - [Class detection performance](#class-detection-performance)
 - [Parameter types](#parameter-types)
 - [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
@@ -19,71 +20,112 @@ Here are more detailed descriptions for different features you may find in the p
 Within this library:
 * **Plain script** means a script written within a single, self-sufficient file that may be launched as is:
 `php script-file.php [parameters...]`.
-* **Class-based script** means a file with a class (extended from
-  [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)) that contains a script logic
-  and must be executed by a separate launcher
-  ([ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php)):
-  `php launcher.php script-name [parameters...]`
-  
-Generally, class-based scripts are recommended over plain scripts because are easier to organize and thus maintain,
-test, debug, reuse, etc. Although you may create a single-file script that contain both a class and its execution code,
-class-based scripts written with this library contain some built-in stuff to decrease your time and efforts needed for
-creating ready-to-launch scripts (that's the main idea of the class-based scripts).
 
-Plain scripts might be a better solution, only if you do not want (or are not able) for some reason to enable
-[completion](../README.md#completion) - calling a plain script file might be shorter than calling a launcher with
-a class script name.
+    * Developing _plain scripts_ might be a better solution for you, only if you do not want (or are not able) to enable
+      [completion](../README.md#completion) for some reason - calling a plain script file might be shorter than calling
+      a launcher with a class script name.
+* **Class-based script** means a file with a class (extended from `ScriptClassAbstract`) that contains a script logic
+  and must be executed by a separate launcher (`ScriptClassLauncher`):
+  `php your-launcher.php script-name [parameters...]`
 
-Here is a more detailed comparison between "class" and "plain" scripts. It covers most
-(if not all; apart from obvious and "natural" ability to split a script's logic by class methods)
+    * Generally, _class-based scripts_ are recommended over _plain scripts_ because are more flexible and easier to
+      organize and thus maintain, test, debug, reuse, etc.
+
+      Although you may create a single-file script that contain both a class and its execution code,
+      _class-based scripts_ written with this library (extended from `ScriptClassAbstract`) contain some built-in stuff
+      to decrease your time and efforts needed for creating ready-to-launch scripts
+      (that's the main idea lying under the _class-based scripts_).
+    * Under the hood `ScriptClassLauncher` instance eventually creates a parent `Config` instance (unless you pass it
+      to a launcher constructor explicitly) and fills it with _class-based scripts_' configs as
+      **[subcommands](#subcommands)**.
+
+Here is a more detailed comparison between _class-based_ and _plain_ scripts. It covers most
+(if not all; apart from obvious and "natural" ability to split a script's logic into class methods)
 aspects of developing a console script with this library:
 
 <details>
 <summary>(click to unfold)</summary>
 
 * **Executing a script**
-    * _Class-based_: A separate launcher is required: `php launcher.php script-name [parameters...]`
-      The launcher must be based on
-      [ScriptClassLauncher.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/ScriptClassLauncher.php)
-      and include [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php) setup.
+    * _Plain_: Just launch a script file: `php script-file.php [parameters...]`
+    * _Class-based_: A separate launcher is required: `php your-launcher.php script-name [parameters...]`.
+      The launcher must be based on `ScriptClassLauncher` and include `ScriptClassDetector` setup.
 
       * [Skeleton generator](../README.md#script-classes) provides you with the fast and simple way to generate
-      a good set of files to make it work, including a launcher itself, a completion script (with its generator),
-      and an class-based script example.
-    * _Plain_: Just launch a script file: `php script-file.php [parameters...]`
+        a good set of files to make it work, including a launcher itself, a completion script (with its generator),
+        and an class-based script example.
 * **Completion alias** (if you enable [completion](../README.md#completion)):
-    * _Class-based_: You need only a single alias for your launcher.
-      Or a few aliases, if you want to group your scripts by separate launchers.
     * _Plain_: Each detected script is linked with its own alias. If you have 500 scripts, then 500 aliases have to be
       loaded into your shell environment.
+    * _Class-based_: You need only a single alias for your launcher.
+      Or a few aliases, if you want to group your scripts by separate launchers.
 * **Listing available scripts**:
-    * _Class-based_: Execute the built-in `list` subcommand with your launcher: `php your-launcher.php list`.
-
-      Also, see `php your-launcher.php help list` for listing options.
     * _Plain_: List available aliases (if you enable completion) or read your project directories for your script file
       names.
-* **Adding a new script to a list of available scripts**:
-    * _Class-based_: Create a class-based script. Generally, your launcher's detector will detect the new class
-      automatically.
+    * _Class-based_: Execute the built-in `list` subcommand with your launcher: `php your-launcher.php list`. You may
+      even omit `list` (because it is the default subcommand name) and just run the launcher: `php your-launcher.php`
+        * See `php your-launcher.php help list` for listing options.
+* **Adding a new script to / Removing an obsolete script from the list of available scripts**:
+    * _Plain_: Create a script file in a directory and remember the path to the script. Or delete the obsolete script.
+        * If you enable completion, then you should re-generate the completion script added to your environment load
+          sequence, so it includes an alias for the just created script (or lacks the alias of the just removed script).
 
-      Otherwise update the detection rules in the launcher.
-    * _Plain_: Create a script file in a directory you will not forget about. :) If you enable completion, re-generate
-      a completion script, so it includes an alias for the just created script.
+          Also, in case a new script is created, you should `source` the updated completion script to load a new
+          alias into your environment right away.
+    * _Class-based_: Just create a class-based script.
+        * Generally, your launcher's detector will detect the new class automatically.
+          Otherwise, update the detection rules in the launcher.
+        * In case of [caching detected class names](#class-detection-performance), you should re-create the cache file:
+          `php your-launcher.php script-launcher:clear-cache`
 * **Naming and grouping scripts**:
+    * _Plain_: Placing scripts in different directories is your main option.
+        * If you enable completion, then you may group your scripts by alias prefixes: generate completion scripts for
+          different groups of scripts (defined by generator detection settings) with different alias prefixes.
     * _Class-based_: Script names are compiled from class short names (generated automatically by built-in
       `getScriptInnerName()` method or manually by redefining it) and manually set groups (sections) by (re)defining
       `getNameSections()`.
-      * Adding several sections to a script works as adding subgroups: `my:some:cool-script` is `CoolScript` class from
-      `some` subgroup within `my` group.
-      * `list` subcommand in its default mode reflects groups as leveled headers for easier reading.
-
-      Also, you may group your scripts by _launcher scripts_: each launcher may have its own unique detection rules
-      to access a selected subset of scripts.
-    * _Plain_: Placing scripts in different directories is your main option.
-
-      If you enable completion, then you may group your scripts by alias prefixes: generate completion scripts for
-      different groups of scripts (defined by generator detection settings) with different alias prefixes.
+        * Adding several sections to a script works as adding subgroups: `my:some:cool-script` is `CoolScript` class
+          from `some` subgroup within `my` group.
+        * `list` subcommand in its default mode reflects groups as leveled headers for easier reading.
+        * You may additionally group your scripts by _launcher scripts_: each launcher may have its own unique
+          detection rules to access a selected subset of scripts.
 </details>
+
+### Class detection performance
+
+Consider you have a large project (gigabytes of files). The main bottle neck here might be your `ScriptClassDetector`
+setup, its detection rules.
+
+A common and handy way is to place all your console scripts under some cli-related directory. Then you just set
+a single directory path for the detector and do not bother about the detector's setup in the future. Whether such
+a directory may or may not contain lots of subdirectories and console scripts inside, its highly unlikable that there
+will be around 10K of files to parse. Thus, in the majority of cases looking through a single directory recursively
+would happen "momentarily" for a user.
+
+However, if your console scripts are scattered throughout your whole project for some reason - for instance, each
+console script is placed close to a "feature unit" - you may want to set your project _root_ path as a single directory
+for your class detector. Although, `ScriptClassDetector` provides you with methods to specify a list of directories or
+even a list of class names (the latter removes the necessity to parse and analyze files and thus works instantly),
+it's still easier to specify a single directory once, so you do not need to add "one more path" to your launcher's
+detector setup each time you create a new script. In such a case your launcher will detect your scripts by scanning
+recursively all directories and files in your project, which could last for dozens of seconds (depending on your
+project size).
+
+To counter such a long parsing session you might want to cache detection result. Luckily, the detector provides you
+with such a mean:
+
+1. Set `cacheFilePath()` in your launcher's detector.
+2. Then the next single launcher execution (detector's parsing process) will write all detected class names into the
+   specified file.
+3. All the subsequent runs of the launcher will be executed instantly by loading classes with their fully qualified
+   names stored in the cache file.
+4. Later, if you add a new (or delete a non-relevant) script, just launch the special command in your launcher:
+   `php your-launcher.php script-launcher:clear-cache`.
+   
+    * This subcommand becomes available (and visible in your launcher's list of available commands) as soon as
+      `cacheFilePath()` is set and the specified cache file exists. The command simply deletes the cache file.
+5. Run you launcher again (with any command, including no command at all) to parse your project for class scripts
+   and create a new cache file.
 
 ## Parameter types
 
@@ -311,8 +353,7 @@ With such a script:
 
 ## Environment Config
 
-You may want to alter some general behavior for all or a part of your scripts.
-Here comes [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
+You may want to alter some general behavior for all or a part of your scripts. Here comes `EnvironmentConfig`.
 
 ### How to: Manually via an instance
 
@@ -350,10 +391,9 @@ However if you want to affect a large amount of scripts or even all of those, th
 
 ### How to: Automatically via config files
 
-1. Generate a config file via Parametizer-powered
-   [EnvironmentConfigFile.php](../tools/cli-toolkit/ScriptClasses/Generate/EnvironmentConfigFile.php),
+1. Generate a config file with the command:
    ```sh
-   php ../tools/cli-toolkit/run.php cli-toolkit:generate:env-config --help
+   php ../tools/cli-toolkit/run.php cli-toolkit:generate:environment-config-file --help
    ```
 1. Edit the generated file as you please.
 1. Choose which scripts should be affected:
@@ -371,8 +411,7 @@ from config files it detects.
 The detection works this way:
 1. Detect the bottommost lookup directory: start looking for a config file in the same directory where
    the launched script file is located.
-    * If a launched script's backtrace contains calls from
-       [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php), then such the backtrace entry
+    * If a launched script's backtrace contains calls from `ScriptClassAbstract`, then such the backtrace entry
        closest to the launched script is chosen. Thus the detected subcommand class location is prioritized over
        the launched script location (see _Example 2_ below).
 1. If a config file is not found or contains only a part of settings, move 1 directory above the current and repeat.
@@ -431,8 +470,7 @@ somewhere/
         parametizer.env.json
     parametizer.env.json
 ```
-where `CoolScript.php` is a subclass (directly or through "relative" classes in between) of
-[ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php).
+where `CoolScript.php` is a subclass (directly or through "relative" classes in between) of `ScriptClassAbstract`.
 
 When launching `somewhere/launchers/launcher.php` with some other subcommand (or without a subcommand - `... --help`,
 for instance), the `EnvironmentConfig` autoloader will detect and load `somewhere/launchers/parametizer.env.json`.

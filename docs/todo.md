@@ -73,10 +73,11 @@ The list of plans and ideas for future development.
 <summary>Points to consider</summary>
 
 1. - [ ] [features-manual.md](features-manual.md):
-    1. - [x] A comparison table between "plain scripts" and "classes".
+    1. - [x] A comparison between "plain scripts" and "classes".
         1. - [x] Start with a "summary" paragraph.
-    1. - [ ] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
-        1. - [ ] Make a link to this from the comparison table.
+    1. - [x] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
+        1. - [x] Make a link to this from the comparison.
+    1. - [ ] Class script: MVP and customization.
     1. - [ ] Built-in subcommands.
         1. - [ ] `list` as a default value.
              No other parameters are processed correctly unless `list` is specified explicitly.
