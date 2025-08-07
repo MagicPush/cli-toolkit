@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Tools;
 
-use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
 use function PHPUnit\Framework\assertSame;
@@ -29,7 +29,7 @@ final class LibraryLauncherTest extends TestCaseAbstract {
                 TEXT,
             static::assertNoErrorsOutput(
                 __DIR__ . '/../../../tools/cli-toolkit/run.php',
-                Config::PARAMETER_NAME_LIST . ' --slim',
+                ListSubcommands::getScriptName() . ' --slim',
             )
                 ->getStdOut(),
         );

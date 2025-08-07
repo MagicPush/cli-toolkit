@@ -10,6 +10,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -283,12 +285,14 @@ STDERR_OUTPUT,
                 3 => Config::PARAMETER_NAME_HELP,
 
                 'BRANCHES' => [
-                    'list' => [
+                    ListSubcommands::getScriptName() => [
                         0 => 'slim',
-                        1 => 'help',
+                        // Should be added automatically.
+                        1 => Config::PARAMETER_NAME_HELP,
                     ],
-                    'help' => [
-                        0 => 'help',
+                    ShowHelpPage::getScriptName() => [
+                        // Should be added automatically.
+                        0 => Config::PARAMETER_NAME_HELP,
                     ],
                     'test11' => [
                         0 => 'name-l2',
@@ -296,12 +300,14 @@ STDERR_OUTPUT,
                         1 => Config::PARAMETER_NAME_HELP,
 
                         'BRANCHES' => [
-                            'list' => [
+                            ListSubcommands::getScriptName() => [
                                 0 => 'slim',
-                                1 => 'help',
+                                // Should be added automatically.
+                                1 => Config::PARAMETER_NAME_HELP,
                             ],
-                            'help' => [
-                                0 => 'help',
+                            ShowHelpPage::getScriptName() => [
+                                // Should be added automatically.
+                                0 => Config::PARAMETER_NAME_HELP,
                             ],
                             'test21' => [
                                 // Should be added automatically.
@@ -318,12 +324,14 @@ STDERR_OUTPUT,
                                 1 => Config::PARAMETER_NAME_HELP,
 
                                 'BRANCHES' => [
-                                    'list' => [
+                                    ListSubcommands::getScriptName() => [
                                         0 => 'slim',
-                                        1 => 'help',
+                                        // Should be added automatically.
+                                        1 => Config::PARAMETER_NAME_HELP,
                                     ],
-                                    'help' => [
-                                        0 => 'help',
+                                    ShowHelpPage::getScriptName() => [
+                                        // Should be added automatically.
+                                        0 => Config::PARAMETER_NAME_HELP,
                                     ],
                                     'test31' => [
                                         // Should be added automatically.
@@ -407,7 +415,7 @@ STDERR_OUTPUT,
     public static function provideBuiltInSubcommandExecutionReplacesScriptExecution(): array {
         return [
             'built-in' => [
-                'subcommandName'      => Config::PARAMETER_NAME_LIST,
+                'subcommandName'      => ListSubcommands::getScriptName(),
                 'isExceptionExpected' => false,
             ],
             'regular' => [
@@ -417,7 +425,7 @@ STDERR_OUTPUT,
 
             // Built-in subcommands work the same way for any level in a "configs tree":
             'deeper-level-built-in' => [
-                'subcommandName'      => 'level-2 ' . Config::PARAMETER_NAME_LIST,
+                'subcommandName'      => 'level-2 ' . ListSubcommands::getScriptName(),
                 'isExceptionExpected' => false,
             ],
             'deeper-level-regular' => [

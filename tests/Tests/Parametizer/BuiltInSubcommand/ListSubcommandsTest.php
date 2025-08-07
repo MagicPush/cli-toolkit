@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
-use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-final class ListScriptTest extends TestCaseAbstract {
+final class ListSubcommandsTest extends TestCaseAbstract {
     /**
      * Tests natural sorting for registered subcommand names.
      *
-     * @see ListScript::outputNode()
+     * @see ListSubcommands::outputNode()
      */
     public function testNamesNaturalSorting(): void {
         assertSame(
@@ -33,7 +32,7 @@ final class ListScriptTest extends TestCaseAbstract {
                 scripts
 
             TEXT,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-natural-sorting.php', Config::PARAMETER_NAME_LIST)
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-natural-sorting.php', ListSubcommands::getScriptName())
                 ->getStdOut(),
         );
     }
@@ -45,8 +44,8 @@ final class ListScriptTest extends TestCaseAbstract {
      *  * Subcommands under custom headers (like built-in subcommands) must be sorted separately and appear at the top.
      *  * Short descriptions must be aligned based on the longest subcommand name and it's "level".
      *
-     * @see ListScript::execute()
-     * @see ListScript::outputNode()
+     * @see ListSubcommands::execute()
+     * @see ListSubcommands::outputNode()
      */
     public function testNameSectionsSorting(): void {
         assertSame(
@@ -82,7 +81,7 @@ final class ListScriptTest extends TestCaseAbstract {
                     yellow:banana:ice-cream                         Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', Config::PARAMETER_NAME_LIST)
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', ListSubcommands::getScriptName())
                 ->getStdOut(),
         );
     }
@@ -96,14 +95,14 @@ final class ListScriptTest extends TestCaseAbstract {
      *  * Short description padding should adapt according to the widest name column.
      *  * Built-in subcommands must always appear.
      *
-     * @see ListScript::execute()
+     * @see ListSubcommands::execute()
      */
     public function testSearchBySubcommandNamePart(string $subcommandNamePart, string $expectedOutput): void {
         assertSame(
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-with-name-sections.php',
-                Config::PARAMETER_NAME_LIST . " {$subcommandNamePart}",
+                ListSubcommands::getScriptName() . " {$subcommandNamePart}",
             )
                 ->getStdOut(),
         );
@@ -197,7 +196,7 @@ final class ListScriptTest extends TestCaseAbstract {
      *          however, subcommands under custom headers are still sorted separately (within each custom header)
      *          and put above the rest of subcommands in a custom predefined order.
      *
-     * @see ListScript::outputNode()
+     * @see ListSubcommands::outputNode()
      */
     public function testSlim(): void {
         assertSame(
@@ -217,16 +216,16 @@ final class ListScriptTest extends TestCaseAbstract {
             yellow:banana:ice-cream                             Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
-            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', Config::PARAMETER_NAME_LIST . ' --slim')
+            static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', ListSubcommands::getScriptName() . ' --slim')
                 ->getStdOut(),
         );
     }
 
     #[DataProvider('provideShortDescriptionSettingsFromParentEnvConfig')]
     /**
-     * Tests that {@see ListScript} considers parent env config for generating short descriptions.
+     * Tests that {@see ListSubcommands} considers parent env config for generating short descriptions.
      *
-     * @see ListScript::outputNode()
+     * @see ListSubcommands::outputNode()
      * @see HelpGenerator::getScriptShortDescription()
      */
     public function testShortDescriptionSettingsFromParentEnvConfig(
@@ -237,7 +236,7 @@ final class ListScriptTest extends TestCaseAbstract {
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/short-description-parent-env.php',
-                Config::PARAMETER_NAME_LIST . " {$parametersString}",
+                ListSubcommands::getScriptName() . " {$parametersString}",
             )
                 ->getStdOut(),
         );

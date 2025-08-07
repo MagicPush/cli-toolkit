@@ -9,18 +9,24 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
+use Override;
 
-class HelpScript extends BuiltinSubcommandAbstract {
+class ShowHelpPage extends BuiltinSubcommandAbstract {
     public const string ARGUMENT_SUBCOMMAND_NAME = 'subcommand-name';
 
 
     protected readonly string $subcommandName;
 
+    #[Override]
+    public static function getScriptInnerName(): string {
+        return Config::PARAMETER_NAME_HELP;
+    }
 
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 
-        $listSubcommandName = Config::PARAMETER_NAME_LIST;
+        $listSubcommandName = ListSubcommands::getScriptName();
         $formatter          = HelpFormatter::createForStdOut();
 
         $configBuilder->description('Outputs a help page for a specified subcommand.')
@@ -30,7 +36,7 @@ class HelpScript extends BuiltinSubcommandAbstract {
                 Name of any registered subcommand.
                 See '{$formatter->paramValue($listSubcommandName)}' subcommand for the list of possible values.
             ")
-            ->default(Config::PARAMETER_NAME_HELP);
+            ->default(static::getScriptName());
     }
 
 

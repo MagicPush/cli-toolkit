@@ -43,6 +43,8 @@ abstract class BuilderAbstract implements BuilderInterface {
     /**
      * Changes param visibility (see `VISIB*` constants in {@see Config}).
      * Default is full visibility {@see Config::VISIBILITY_BITMASK_ALL}.
+     *
+     * @noinspection SpellCheckingInspection
      */
     public function visibilityBitmask(int $visibilityBitmask): static {
         $this->param->visibilityBitmask($visibilityBitmask);

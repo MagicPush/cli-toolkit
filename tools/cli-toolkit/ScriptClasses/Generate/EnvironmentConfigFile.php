@@ -8,10 +8,12 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
+use Override;
 use RuntimeException;
 use Throwable;
 
 class EnvironmentConfigFile extends CliToolkitGenerateScriptAbstract {
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 

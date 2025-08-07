@@ -8,6 +8,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 
 use function PHPUnit\Framework\assertSame;
@@ -190,7 +191,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                Config::PARAMETER_NAME_LIST,
+                ListSubcommands::getScriptName(),
             )->getStdOut(),
         );
 
@@ -256,7 +257,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
             ,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
-                Config::PARAMETER_NAME_LIST . ' --' . Config::PARAMETER_NAME_HELP,
+                ListSubcommands::getScriptName() . ' --' . Config::PARAMETER_NAME_HELP,
             )
                 ->getStdOut(),
         );

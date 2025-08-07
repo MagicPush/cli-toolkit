@@ -26,12 +26,16 @@ interface BuilderInterface {
      * `my-script some-argument-value --some-option=optionvalue -- definitely-argument-value`
      * This is useful if you want to pass argument value that starts with a dash,
      * like 'rm -- -r' will remove a file named '-r'.
+     *
+     * @noinspection SpellCheckingInspection
      */
     public function newOption(string $name, ?string $shortName = null): OptionBuilder;
 
     /**
      * New option that allows several values with identical settings ({@see newOption()}):
      * `--option=value1 --option=value2 -ovalue3 -o value4 ...`
+     *
+     * @noinspection SpellCheckingInspection
      */
     public function newArrayOption(string $name, ?string $shortName = null): ArrayOptionBuilder;
 

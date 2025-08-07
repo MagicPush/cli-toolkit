@@ -12,8 +12,9 @@ use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCache;
+use Override;
 
-class ListScript extends BuiltinSubcommandAbstract {
+class ListSubcommands extends BuiltinSubcommandAbstract {
     protected const string PADDING_BLOCK = '    ';
 
     protected const string HEADER_DEFAULT = '--';
@@ -26,7 +27,12 @@ class ListScript extends BuiltinSubcommandAbstract {
     protected readonly bool   $isSlim;
     protected readonly string $subcommandNamePart;
 
+    #[Override]
+    public static function getScriptInnerName(): string {
+        return 'list';
+    }
 
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 

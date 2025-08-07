@@ -6,6 +6,7 @@ namespace MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses;
 
 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\TerminalFormatter;
+use Override;
 
 class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
     private const string EXAMPLE_SUBSTRING = '1iI 0oO';
@@ -14,6 +15,7 @@ class TerminalFormatterShowcase extends CliToolkitScriptAbstract {
     private const int    NON_EXISTENT_CODE = -1;
 
 
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 

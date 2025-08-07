@@ -7,6 +7,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig\Setting
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\HelpGenerator\HelpGenerator;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -82,7 +83,7 @@ final class SettingsTest extends TestCaseAbstract {
             $expectedOutputSubstring,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/template-short-descriptions.php',
-                Config::PARAMETER_NAME_LIST . ' ' . $parametersString,
+                ListSubcommands::getScriptName() . ' ' . $parametersString,
             )
                 ->getStdOut(),
         );

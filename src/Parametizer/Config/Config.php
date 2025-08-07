@@ -16,12 +16,11 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ConfigException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 
 class Config {
-    public const string PARAMETER_NAME_LIST                = 'list';
     public const string PARAMETER_NAME_HELP                = 'help';
     public const string PARAMETER_NAME_COMPLETION_GENERATE = 'parametizer-internal-completion-generate';
     public const string PARAMETER_NAME_COMPLETION_EXECUTE  = 'parametizer-internal-completion-execute';
@@ -273,8 +272,8 @@ class Config {
      */
     public static function getBuiltInSubcommandClassesBySubcommandNames(): array {
         return [
-            static::PARAMETER_NAME_LIST => ListScript::class,
-            static::PARAMETER_NAME_HELP => HelpScript::class,
+            ListSubcommands::getScriptName() => ListSubcommands::class,
+            ShowHelpPage::getScriptName()    => ShowHelpPage::class,
         ];
     }
 
@@ -288,7 +287,7 @@ class Config {
 
         $this->arguments[$this->subcommandSwitchName]
             ->require(false)
-            ->default(static::PARAMETER_NAME_LIST);
+            ->default(ListSubcommands::getScriptName());
 
         return $this;
     }
@@ -500,19 +499,20 @@ class Config {
         // ==== PROCESSING ====
 
         // Setting up the list of allowed values for 'help' built-in subcommand argument.
-        $helpSubcommandConfig = $this->getBranch(static::PARAMETER_NAME_HELP);
+        $helpSubcommandName   = ShowHelpPage::getScriptName();
+        $helpSubcommandConfig = $this->getBranch($helpSubcommandName);
         if (null === $helpSubcommandConfig) {
             throw new LogicException(
-                sprintf('"%s" built-in subcommand was not registered', static::PARAMETER_NAME_HELP),
+                sprintf('"%s" built-in subcommand was not registered', $helpSubcommandName),
             );
         }
-        $helpSubcommandArgument = $helpSubcommandConfig->getParams()[HelpScript::ARGUMENT_SUBCOMMAND_NAME] ?? null;
+        $helpSubcommandArgument = $helpSubcommandConfig->getParams()[ShowHelpPage::ARGUMENT_SUBCOMMAND_NAME] ?? null;
         if (null === $helpSubcommandArgument) {
             throw new LogicException(
                 sprintf(
                     '"%s" parameter was not registered in "%s" built-in subcommand',
-                    HelpScript::ARGUMENT_SUBCOMMAND_NAME,
-                    static::PARAMETER_NAME_HELP,
+                    ShowHelpPage::ARGUMENT_SUBCOMMAND_NAME,
+                    $helpSubcommandName,
                 ),
             );
         }

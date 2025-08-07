@@ -8,6 +8,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\VariableBuilderAbstract;
 use MagicPush\CliToolkit\Parametizer\Config\Completion\Completion;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -364,8 +366,8 @@ final class CompletionTest extends TestCaseAbstract {
             'empty' => [
                 'parametersString'    => '',
                 'expectedOutputLines' => [
-                    Config::PARAMETER_NAME_LIST . ' ',
-                    Config::PARAMETER_NAME_HELP . ' ',
+                    ListSubcommands::getScriptName() . ' ',
+                    ShowHelpPage::getScriptName() . ' ',
                     'different-params ',
                     'smart-completion ',
                 ],
@@ -389,7 +391,7 @@ final class CompletionTest extends TestCaseAbstract {
     /**
      * Tests completion affected by default subcommand switch value deeply in configs tree.
      *
-     * For now the only possible default subcommand is {@see Config::PARAMETER_NAME_LIST}, it is hardcoded.
+     * For now the only possible default subcommand is {@see ListSubcommands::getScriptName()}, it is hardcoded.
      * However if different default values are possible, we may test here any default value.
      *
      * @param string[] $expectedOutputLines
@@ -415,8 +417,8 @@ final class CompletionTest extends TestCaseAbstract {
             'default' => [
                 'parametersString'    => '',
                 'expectedOutputLines' => [
-                    'list ',
-                    'help ',
+                    ListSubcommands::getScriptName() . ' ',
+                    ShowHelpPage::getScriptName() . ' ',
                     'level-3 ',
                 ],
             ],
@@ -425,7 +427,7 @@ final class CompletionTest extends TestCaseAbstract {
             // for the next subcommand argument (if present).
             // The same should happen if the specified subcommand is identical to the default one.
             'explicit-default' => [
-                'parametersString'    => Config::PARAMETER_NAME_LIST . ' ',
+                'parametersString'    => ListSubcommands::getScriptName() . ' ',
                 'expectedOutputLines' => [],
             ],
             // Here the subcommand supports an argument with a list of allowed values.

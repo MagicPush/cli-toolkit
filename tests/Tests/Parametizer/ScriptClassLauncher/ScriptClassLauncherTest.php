@@ -8,7 +8,7 @@ use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\ClearCache\ClearCache;
@@ -58,8 +58,8 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
      * Tests {@see ClearCache} subcommand availability and execution if a specified cache file exists.
      *
      * @see ScriptClassLauncher::execute()
-     * @see ListScript::execute() Adds {@see ClearCache} script name to a unique header.
-     * @see ListScript::outputNode() Outputs {@see ClearCache} under a unique header in a specific headers order.
+     * @see ListSubcommands::execute() Adds {@see ClearCache} script name to a unique header.
+     * @see ListSubcommands::outputNode() Outputs {@see ClearCache} under a unique header in a specific headers order.
      * @see ClearCache::getConfigBuilder()
      * @see ClearCache::execute()
      */
@@ -81,13 +81,13 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
             ? static::assertAnyErrorOutput(
                 $launcherScriptPath,
                 'mkdir(): File exists in',
-                "{$parametersBaseString} " . Config::PARAMETER_NAME_LIST,
+                "{$parametersBaseString} " . ListSubcommands::getScriptName(),
                 shouldAssertExitCode: false,
                 shouldAssertStdErr: false,
             )
             : static::assertNoErrorsOutput(
                 $launcherScriptPath,
-                "{$parametersBaseString} " . Config::PARAMETER_NAME_LIST,
+                "{$parametersBaseString} " . ListSubcommands::getScriptName(),
             );
 
         if (null !== $detectorCacheFilePath && $isClearCacheSubcommandAvailable) {
@@ -373,7 +373,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
             TEXT,
             self::assertNoErrorsOutput(
                 __DIR__ . '/scripts/l-global.php',
-                Config::PARAMETER_NAME_LIST . ' --slim',
+                ListSubcommands::getScriptName() . ' --slim',
             )
                 ->getStdOut(),
         );

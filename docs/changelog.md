@@ -81,8 +81,9 @@ This change log references the repository changes and releases, which respect [s
 1. Subcommand names (`Config::newSubcommand()`) now support the colon (`:`) symbol.
    Main purpose - a separator for script classes sections.
 1. Built-in subcommands: each script with a subcommand switch automatically provides you with
-   `help` ([HelpScript.php](../src/Parametizer/ScriptClass/BuiltIn/HelpScript.php))
-   and `list` ([ListScript.php](../src/Parametizer/ScriptClass/BuiltIn/ListScript.php)) built-in subcommands.
+   `help` ([ShowHelpPage.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ShowHelpPage.php))
+   and `list` ([ListSubcommands.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ListSubcommands.php))
+   built-in subcommands.
     1. Every subcommand switch goes with `list` as its default value.
     1. All built-in subcommands always utilize a parent
        [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) instance
@@ -131,7 +132,6 @@ This change log references the repository changes and releases, which respect [s
 1. Added `CliRequestProcessor::$isForCompletion` readonly flag (settable in `__construct()`). The flag is used
    to stabilize completion output due to the default subcommand switch value.
 1. [Config.php](../src/Parametizer/Config/Config.php):
-    1. Added `PARAMETER_NAME_LIST` public constant to keep the listing built-in subcommand name.
     1. Added public `getBuiltInSubcommandClassesBySubcommandNames()` method and the related methods:
         * public `getSubcommandSwitchName()` - to get a subcommand switch parameter name if present in a config;
         * public `getBuiltInSubcommandClass()` - to get a subcommand fully qualified class name by a subcommand name;

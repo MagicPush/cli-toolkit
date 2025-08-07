@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass;
 
-use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -59,7 +59,7 @@ final class ScriptClassTest extends TestCaseAbstract {
             TEXT,
             self::assertNoErrorsOutput(
                 __DIR__ . '/scripts/local-names.php',
-                Config::PARAMETER_NAME_LIST . ' --slim',
+                ListSubcommands::getScriptName() . ' --slim',
             )
                 ->getStdOut(),
         );
@@ -83,7 +83,7 @@ final class ScriptClassTest extends TestCaseAbstract {
             TEXT,
             self::assertNoErrorsOutput(
                 __DIR__ . '/scripts/sections.php',
-                Config::PARAMETER_NAME_LIST . ' --slim',
+                ListSubcommands::getScriptName() . ' --slim',
             )
                 ->getStdOut(),
         );

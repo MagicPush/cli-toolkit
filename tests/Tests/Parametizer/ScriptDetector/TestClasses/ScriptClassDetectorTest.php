@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\TestClasses;
 
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptDetectorAbstract;
@@ -385,10 +385,10 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
 
         // However, the exact script class search still works:
         assertSame(
-            ['help-script' => HelpScript::class],
+            [ShowHelpPage::getScriptName() => ShowHelpPage::class],
             (new ScriptClassDetector(throwOnException: true))
                 ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true)
-                ->scriptClassName(HelpScript::class)
+                ->scriptClassName(ShowHelpPage::class)
                 ->excludeDirectory(__DIR__ . '/../../../../../tests')
                 ->getDetectedData(),
         );

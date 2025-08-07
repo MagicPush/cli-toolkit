@@ -6,6 +6,7 @@ namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateLaunc
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
 use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\CliToolkitScriptTestAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\CompletionScript;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\LauncherSkeleton;
@@ -85,10 +86,10 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
                     php %%GENERATED_SKELETON_DIRECTORY_PATH%%/launcher.php
 
                     Below are a few call examples (based on the launcher alias):
-                      ctlauncher list                   # List available commands.
-                      ctlauncher help my-first-script   # Show a command's help page.
-                      ctlauncher my-first-script --help # Same as above, works even with the launcher itself.
-                      ctlauncher my-first-script a -ob  # Example script call with parameters.
+                      ctlauncher list                                   # List available commands.
+                      ctlauncher help example-scripts:my-first-script   # Show a command's help page.
+                      ctlauncher example-scripts:my-first-script --help # Same as above, works even with the launcher itself.
+                      ctlauncher example-scripts:my-first-script a -ob  # Example script call with parameters.
 
                     If you want to know more, read the manual pages:
                         - {$libraryRootDirectoryPath}/README.md
@@ -165,11 +166,11 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
             sprintf(
                 "*  'php %s %s'",
                 self::GENERATED_SKELETON_DIRECTORY_PATH . '/launcher.php',
-                Config::PARAMETER_NAME_LIST,
+                ListSubcommands::getScriptName(),
             ),
             $launcherContents,
         );
-        assertStringContainsString("*  will show 'my-first-script' entry", $launcherContents);
+        assertStringContainsString("*  will show 'example-scripts:my-first-script' entry", $launcherContents);
         // The path below must be relative for `@see` phpdoc to become IDE-friendly,
         // so the file can be opened by clicking on it:
         assertStringContainsString(
@@ -194,16 +195,16 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
         assertSame(
             <<<TEXT
                  Built-in:
-                    help               Outputs a help page for a specified subcommand.
-                    list               Shows available subcommands.
+                    help                               Outputs a help page for a specified subcommand.
+                    list                               Shows available subcommands.
 
-                 --
-                    my-first-script
+                 example-scripts:
+                    example-scripts:my-first-script
 
                 TEXT,
             static::assertNoErrorsOutput(
                 self::GENERATED_SKELETON_DIRECTORY_PATH . '/launcher.php',
-                Config::PARAMETER_NAME_LIST,
+                ListSubcommands::getScriptName(),
             )
                 ->getStdOut(),
         );
@@ -218,7 +219,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
                 TEXT,
             static::assertNoErrorsOutput(
                 self::GENERATED_SKELETON_DIRECTORY_PATH . '/launcher.php',
-                'my-first-script argument-value -o option-value',
+                'example-scripts:my-first-script argument-value -o option-value',
             )
                 ->getStdOut(),
         );
@@ -235,7 +236,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
                 TEXT,
             static::getBashAliasExecutionOutput(
                 self::GENERATED_SKELETON_DIRECTORY_PATH . '/local/completion.sh',
-                'ctlauncher my-first-script argument-value -o option-value',
+                'ctlauncher example-scripts:my-first-script argument-value -o option-value',
             ),
         );
     }

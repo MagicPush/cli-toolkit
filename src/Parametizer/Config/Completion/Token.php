@@ -14,8 +14,8 @@ final class Token {
     /**
      * Retrieves a part of the arg according to given word breaks.
      *
-     * Completion engine (at least in bash) uses different word breaks than the shell.
-     * In shell 'a:b' is (usually) one word, while compwords are 'a' and 'b' here.
+     * Completion engine (at least in Bash) uses different word breaks than the shell.
+     * In shell 'a:b' is (usually) one word, while COMP_WORDS are 'a' and 'b' here.
      * To make correct prefix for completion results (e.g. '//domain' instead of 'http://domain'),
      * we need to split the arg the way completion wants it.
      *

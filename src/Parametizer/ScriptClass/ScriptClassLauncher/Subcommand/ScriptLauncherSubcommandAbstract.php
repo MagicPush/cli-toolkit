@@ -17,6 +17,7 @@ abstract class ScriptLauncherSubcommandAbstract extends ScriptClassAbstract {
         return false;
     }
 
+    #[Override]
     public static function getNameSections(): array {
         return array_merge(parent::getNameSections(), ['script-launcher']);
     }

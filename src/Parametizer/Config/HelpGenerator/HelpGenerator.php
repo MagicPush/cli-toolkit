@@ -11,6 +11,8 @@ use MagicPush\CliToolkit\Parametizer\Config\Parameter\ParameterAbstract;
 use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Exception\ParseErrorException;
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 
 class HelpGenerator {
     protected const int PAD_LEFT_MAIN              = 2;
@@ -291,7 +293,7 @@ class HelpGenerator {
         if ($param->isSubcommandSwitch()) {
             $description .= ('' !== $description) ? PHP_EOL : '';
 
-            $subcommandListFormatted = $formatter->paramValue(Config::PARAMETER_NAME_LIST);
+            $subcommandListFormatted = $formatter->paramValue(ListSubcommands::getScriptName());
 
             $description .= $allowedValuesHeaderFormatted
                 . ' ' . $formatter->paramRequired((string) count($param->getAllowedValues())) . ' subcommands available'
@@ -304,7 +306,7 @@ class HelpGenerator {
             $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeader)
                 . " <{$param->getName()}> " . $formatter->paramValue('--' . Config::PARAMETER_NAME_HELP);
             $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeaderAlt)
-                . ' ' . $formatter->paramValue(Config::PARAMETER_NAME_HELP) . " <{$param->getName()}>";
+                . ' ' . $formatter->paramValue(ShowHelpPage::getScriptName()) . " <{$param->getName()}>";
         } elseif (!$param->areAllowedValuesHiddenFromHelp()) {
             // Print allowed values list.
             // Print in long format if there is a description for at least one value. Otherwise, print values in one line.
@@ -484,7 +486,7 @@ class HelpGenerator {
                 if (isset($row[2])) {
                     $text .= str_repeat(
                             ' ',
-                            0                                           // |X|.|.|, 1st column is already padded.
+                                                                        // |X|.|.|, 1st column is already padded.
                             + $nameMaxLength - ($row[1]['length'] ?? 0) // |.|X|.|
                             + static::PAD_LEFT_PARAM_DESCRIPTION,       // |.|.|X|
                         )

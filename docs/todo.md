@@ -319,7 +319,7 @@ The list of plans and ideas for future development.
         * [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) new option.
         * Existence of a particular file in the library `/local/` directory.
 1. - [x] Place [ClearCache.php](../src/Parametizer/ScriptClass/ScriptClassLauncher/Subcommand/ClearCache/ClearCache.php)
-     command for [ListScript.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ListScript.php)
+     command for [ListSubcommands.php](../src/Parametizer/ScriptClass/BuiltinSubcommand/ListSubcommands.php)
      in its own uniquely headered section.
     1. [x] Test `ClearCache` is placed in a headered group.
     1. [x] Test `ClearCache` subcommand always utilizes its parent environment config.

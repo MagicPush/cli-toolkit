@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\BuiltInSubcommand;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
-use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\HelpScript;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function PHPUnit\Framework\assertSame;
 
-final class HelpScriptTest extends TestCaseAbstract {
+final class ShowHelpPageTest extends TestCaseAbstract {
     #[DataProvider('provideShowHelpForSubcommand')]
     /**
      * Tests help output for different parameters (subcommand names).
      *
-     * @see HelpScript::getConfigBuilder()
-     * @see HelpScript::execute()
+     * @see ShowHelpPage::getConfigBuilder()
+     * @see ShowHelpPage::execute()
      * @see Config::commitSubcommandSwitch()
      */
     public function testShowHelpForSubcommand(string $parametersString, string $expectedOutput): void {
@@ -25,7 +25,7 @@ final class HelpScriptTest extends TestCaseAbstract {
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-with-name-sections.php',
-                Config::PARAMETER_NAME_HELP . ' ' . $parametersString,
+                ShowHelpPage::getScriptName() . ' ' . $parametersString,
             )
                 ->getStdOut(),
         );
@@ -129,8 +129,8 @@ final class HelpScriptTest extends TestCaseAbstract {
     /**
      * Tests error output if an invalid subcommand name is specified.
      *
-     * @see HelpScript::getConfigBuilder()
-     * @see HelpScript::execute()
+     * @see ShowHelpPage::getConfigBuilder()
+     * @see ShowHelpPage::execute()
      * @see Config::commitSubcommandSwitch()
      */
     public function testHelpInvalidSubcommand(): void {
@@ -147,7 +147,7 @@ final class HelpScriptTest extends TestCaseAbstract {
                                   Default: help
 
             TEXT,
-            Config::PARAMETER_NAME_HELP . ' black:flower:tea',
+            ShowHelpPage::getScriptName() . ' black:flower:tea',
         );
     }
 }

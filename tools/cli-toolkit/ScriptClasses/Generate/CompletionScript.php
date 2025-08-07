@@ -10,6 +10,7 @@ use MagicPush\CliToolkit\Parametizer\HelpFormatter;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptFileDetector;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
+use Override;
 use RuntimeException;
 use Throwable;
 
@@ -23,6 +24,7 @@ class CompletionScript extends CliToolkitGenerateScriptAbstract {
         return true;
     }
 
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 

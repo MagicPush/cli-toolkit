@@ -16,6 +16,7 @@ use MagicPush\CliToolkit\Question\Question;
 use MagicPush\CliToolkit\Utils;
 use MagicPush\CliToolkit\Tools\CliToolkit\Classes\ScriptFormatter;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\CliToolkitScriptAbstract;
+use Override;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -57,10 +58,12 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
     protected readonly bool $areNameSectionsDisabled;
 
 
+    #[Override]
     public static function getNameSections(): array {
         return array_merge(parent::getNameSections(), ['internal']);
     }
 
+    #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
 
@@ -615,8 +618,10 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
                 use MagicPush\CliToolkit\Parametizer\Config\Builder\ConfigBuilder;
                 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassAbstract;
+                use Override;
 
                 final class {$className} extends ScriptClassAbstract {%%NAME_SECTIONS%%
+                    #[Override]
                     protected static function setUpConfig(ConfigBuilder \$configBuilder): void {
                         parent::setUpConfig(\$configBuilder);
 
@@ -646,6 +651,7 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             $scriptContentsReplacements = [
                 '%%NAME_SECTIONS%%' => $nameSectionsString ? <<<TEXT
 
+                        #[Override]
                         public static function getNameSections(): array {
                             return array_merge(parent::getNameSections(), [{$nameSectionsString}]);
                         }
