@@ -93,39 +93,51 @@ aspects of developing a console script with this library:
 
 ### Class detection performance
 
-Consider you have a large project (gigabytes of files). The main bottle neck here might be your `ScriptClassDetector`
-setup, its detection rules.
+`ScriptClassDetector` provides you with these ways (non-exclusive) to set detection rules:
 
-A common and handy way is to place all your console scripts under some cli-related directory. Then you just set
-a single directory path for the detector and do not bother about the detector's setup in the future. Whether such
-a directory may or may not contain lots of subdirectories and console scripts inside, its highly unlikable that there
-will be around 10K of files to parse. Thus, in the majority of cases looking through a single directory recursively
-would happen "momentarily" for a user.
+1. `searchDirectory()` allows you to recursively search and parse files inside a specified directory. Optionally,
+   performs non-recursive search  (see `isRecursive` parameter).
+    * Performance: depends on a directory size and depth - varies from a few milliseconds (up to a few hundred of
+      files) to whatever time it takes to analyze tens of thousands files (or more).
+    * User-friendly: pretty much - in trivial cases (all scripts are within a single directory or its subdirectories)
+      it is enough to specify just a single directory.
+    * Use case: in most cases this method covers your needs.
+1. `excludeDirectory()` allows you to filter out a directory that definitely should not be parsed. Obviously,
+   this method works well only when paired with `searchDirectory()` method in the recursive mode.
+    * Use case: the directory specified in `searchDirectory()` contains subdirectories that definitely do not contain
+      console scripts. So you can improve the detection performance by filtering out non-relevant subpaths.
+3. `scriptClassName()` allows you to point at exact class by specifying its fully qualified name.
+    * Performance: "instant" - no files searching and parsing is needed.
+    * User-friendly: not much - with detection rules based on this method only you have to explicitly specify each class
+      you want to make available for your scripts launcher. Makes your work a bit more tedious.
+    * Use cases:
+        * Cherry-picking particular scripts.
+        * Improving detection performance (instead of pointing at a directory with thousands of files).
 
-However, if your console scripts are scattered throughout your whole project for some reason - for instance, each
-console script is placed close to a "feature unit" - you may want to set your project _root_ path as a single directory
-for your class detector. Although, `ScriptClassDetector` provides you with methods to specify a list of directories or
-even a list of class names (the latter removes the necessity to parse and analyze files and thus works instantly),
-it's still easier to specify a single directory once, so you do not need to add "one more path" to your launcher's
-detector setup each time you create a new script. In such a case your launcher will detect your scripts by scanning
-recursively all directories and files in your project, which could last for dozens of seconds (depending on your
-project size).
+Now consider an odd case. You have a large project (gigabytes / tens of thousands of files), but your console scripts
+are scattered throughout your whole project for some reason - for instance, each console script is placed close to
+a "feature unit". And you do not like the idea to set detection rules by specifying each feature directory with
+`searchDirectory()` or each console script class with `scriptClassName()`. In this case you do have one more option:
 
-To counter such a long parsing session you might want to cache detection result. Luckily, the detector provides you
-with such a mean:
+1. Add a single detection rule with `searchDirectory()` - specify your project root directory or any other path that
+   is "high enough" to contain all the scripts you want to detect.
 
-1. Set `cacheFilePath()` in your launcher's detector.
-2. Then the next single launcher execution (detector's parsing process) will write all detected class names into the
-   specified file.
-3. All the subsequent runs of the launcher will be executed instantly by loading classes with their fully qualified
-   names stored in the cache file.
-4. Later, if you add a new (or delete a non-relevant) script, just launch the special command in your launcher:
+    * Optionally, filter out directories like `vendor`, which should not contain relevant (for you) class-based console
+      scripts. This way you will improve the detection performance.
+    * From this point your launcher execution may take possibly _dozens of seconds_ - because the detector will need
+      time to parse lots of files.
+2. Set `cacheFilePath()` for your detector.
+3. Run your launcher once (with any command, including no command at all). When the detector finishes its job,
+   it will write all detected class names into the file specified on the previous step.
+
+    * Then all subsequent runs of your launcher will be executed instantly - by loading classes with their fully
+      qualified names stored in the specified cache file.
+4. Later, if you add (or delete) a script, just launch the special command in your launcher:
    `php your-launcher.php script-launcher:clear-cache`.
-   
+
     * This subcommand becomes available (and visible in your launcher's list of available commands) as soon as
       `cacheFilePath()` is set and the specified cache file exists. The command simply deletes the cache file.
-5. Run you launcher again (with any command, including no command at all) to parse your project for class scripts
-   and create a new cache file.
+5. Then run you launcher again (and be patient again) to re-create the cache file.
 
 ## Parameter types
 
