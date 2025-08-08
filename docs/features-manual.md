@@ -6,6 +6,7 @@ Here are more detailed descriptions for different features you may find in the p
 
 - [Classes or plain scripts](#classes-or-plain-scripts)
     - [Class detection performance](#class-detection-performance)
+    - [Class scripts alternative launcher](#class-scripts-alternative-launcher)
 - [Parameter types](#parameter-types)
 - [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
@@ -138,6 +139,13 @@ a "feature unit". And you do not like the idea to set detection rules by specify
     * This subcommand becomes available (and visible in your launcher's list of available commands) as soon as
       `cacheFilePath()` is set and the specified cache file exists. The command simply deletes the cache file.
 5. Then run you launcher again (and be patient again) to re-create the cache file.
+
+### Class scripts alternative launcher
+
+Every class script (based on `ScriptClassAbstract`) can be also executed with
+[execute-class.php](../tools/cli-toolkit/execute-class.php) script. Just specify a class name as its first parameter.
+
+See the script description located at the top of that file.
 
 ## Parameter types
 

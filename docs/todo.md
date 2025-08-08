@@ -77,15 +77,11 @@ The list of plans and ideas for future development.
         1. - [x] Start with a "summary" paragraph.
     1. - [x] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
         1. - [x] Make a link to this from the comparison.
-    1. - [ ] Class script: MVP and customization.
+    1. - [x] [execute-class.php](../tools/cli-toolkit/execute-class.php)
     1. - [ ] Built-in subcommands.
         1. - [ ] `list` as a default value.
              No other parameters are processed correctly unless `list` is specified explicitly.
-    1. - [ ] `ConfigBuilder::shortDescription()`
-    1. - [ ] [run.php](../tools/cli-toolkit/run.php)
-        1. - [ ] [ScriptClassDetector.php](../src/Parametizer/ScriptDetector/ScriptClassDetector.php)
-        1. - [ ] [execute-class.php](../tools/cli-toolkit/execute-class.php)
-        1. - [ ] Available subcommands.
+        1. - [ ] `ConfigBuilder::shortDescription()`
     1. - [ ] [Question.php](../src/Question/Question.php)
 
          Also describe mass script generator as a useful tool to "play around" with the library.

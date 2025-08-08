@@ -13,14 +13,12 @@ declare(strict_types=1);
  * Note that in this case the class name must be the first parameter. The rest of parameters may be in any order,
  * according to the library parameters placement rules (see "Parameter types" in {@link ../../docs/features-manual.md}).
  *
- * When you would want to use this "class script caller":
- *  1. You've just created a new class script located outside of the standard launcher detector's scope. At first, you
- *      want to test your new script. And only then you will decide if you should include it into a specific launcher
- *      (or move to a directory that is parsed by your target launcher).
- *  2. You have a few "plumber" scripts that you do not want to appear in the standard launcher's list of available
+ * Some of use cases:
+ *  1. You have a few "plumber" scripts that you do not want to appear in the standard launcher's list of available
  *      subcommands. And you do not want to create a separate launcher solely for those "plumber" scripts.
- *  3. Something nasty is happening on your production server right now, but a script that could stop or fix it
- *      actually does not appear in standard launcher within available subcommands for some odd reason.
+ *  2. Something nasty is happening on your production server right now, but a script that could stop or fix it
+ *      actually does not appear in your launcher within available subcommands for some odd reason. Or your launcher
+ *      itself is not operable.
  */
 
 use MagicPush\CliToolkit\Parametizer\HelpFormatter;
