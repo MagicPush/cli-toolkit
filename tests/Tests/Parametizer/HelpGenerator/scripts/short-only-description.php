@@ -11,9 +11,9 @@ TestUtils::newConfig()
         'multiline',
         TestUtils::newConfig()
             ->shortDescription('
-                It is a multi-line description. It could be considered long enough to be shorten...
-                But due to the fact that this description is set as the "short description",
-                no shortage mechanism is applied.
+                        It is a multi-line description. It could be considered long enough to be shortened...
+                        But due to the fact that this description is set as the "short description",
+                        no shortage mechanism is applied.
             ')
     )
 

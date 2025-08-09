@@ -266,7 +266,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
     /**
      * Tests that a short description is shown in the full help page, if no full description is set.
      *
-     * Also tests that the short description is not processed by a shortener function and always outputted as is.
+     * Also, tests that the short description is not processed by a shortener function and always outputted as is.
      *
      * @see HelpGenerator::getDescriptionBlock()
      * @see HelpGenerator::getScriptShortDescription()
@@ -279,9 +279,9 @@ final class HelpGeneratorTest extends TestCaseAbstract {
                     list         Shows available subcommands.
 
                  --
-                    multiline    It is a multi-line description. It could be considered long enough to be shorten...
-                                But due to the fact that this description is set as the "short description",
-                                no shortage mechanism is applied.
+                    multiline    It is a multi-line description. It could be considered long enough to be shortened...
+                                        But due to the fact that this description is set as the "short description",
+                                        no shortage mechanism is applied.
 
                 HELP,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/short-only-description.php', '')->getStdOut(),
@@ -290,7 +290,7 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-                  It is a multi-line description. It could be considered long enough to be shorten...
+                  It is a multi-line description. It could be considered long enough to be shortened...
                   But due to the fact that this description is set as the "short description",
                   no shortage mechanism is applied.
                 HELP,

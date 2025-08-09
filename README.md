@@ -25,7 +25,7 @@ Key features (why you would want to use it):
 
 ## Installation
 
-```sh
+```shell
 composer require magic-push/cli-toolkit
 ```
 
@@ -93,7 +93,7 @@ $ my-cool-script.php
 
 Generate a skeleton for your future class-based scripts:
 
-```sh
+```shell
 php tools/cli-toolkit/run.php cli-toolkit:generate:launcher-skeleton
 ```
 
@@ -105,14 +105,14 @@ Generate a completion Bash script with aliases to your `Parametizer`-based scrip
 
 - (as an example) Enable completion for the library stock launcher. Execute the command below and read the output:
 
-  ```sh
+  ```shell
   php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script \
       --search-directory-recursive=tools/cli-toolkit \
       --verbose
   ```
 - Read the script's help page for parameter details and customize the command to detect your scripts:
 
-  ```sh
+  ```shell
   php tools/cli-toolkit/run.php cli-toolkit:generate:completion-script --help
   ```
 

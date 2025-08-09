@@ -40,7 +40,7 @@ This change log references the repository changes and releases, which respect [s
     1. If `possibleAnswers()` are set without `isCaseSensitive` mode enabled, the answer returned by `ask()` method
        will contain one of original possible answers: if `YES` is expected as one of answers and you provide `yes`,
        `ask()` will return `YES` as your answer (not `yes`, as was done in a previous version).
-1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
+1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php):
     1. Moved to its own subdirectory, updated the namespace.
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
@@ -112,7 +112,7 @@ This change log references the repository changes and releases, which respect [s
    added a protected property `$areAllowedValuesHiddenFromHelp`,
    a related getter method `areAllowedValuesHiddenFromHelp()`,
    and a related optional parameter `$areHiddenFromHelp` for `allowedValues()` method.
-1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
+1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php):
     1. Modified `makeParamDescription()`:
         * Utilizes `$areAllowedValuesHiddenFromHelp` parameter property and does not show the list of values
           if the flag is set to `true`.
@@ -190,7 +190,7 @@ This change log references the repository changes and releases, which respect [s
    in your production classes under 'dev' environment (when you call `composer install` without `--no-dev` option),
    you will get "Class 'XXX' not found in ..." error.
    Previously there was no error, until you install composer packages with `--no-dev` flag.
-1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php):
+1. [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php):
     1. Fixed scripts main description block - stopped counting symbols in space-only lines.
        Previously it caused too much padding for descriptions with too short space-only lines.
     1. Improved subcommand help usage block - when `--help` is called for a subcommand, all manual usage lines

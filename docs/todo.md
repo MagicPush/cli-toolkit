@@ -14,13 +14,29 @@ The list of plans and ideas for future development.
 1. Add tests:
     1. `VariableBuilderAbstract::completionCallback()`
     1. `BuilderAbstract::visibilityBitmask()`
-1. Docs:
+1. Document:
     1. Array parameters (especially for `newArrayArgument()`).
     1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
-1. Move most [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator.php) constants (where relevant)
-   to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
+1. Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
+   a script, that may be also called via `gas` or `generate-completion` aliases.
+
+   ... Or try making a subcommand alias within a completion script.
+
+   Some ideas:
+
+    * The most difficult part: make `Parser` detect an alias in some "odd" substring, then find a corresponding
+      "main name" via a "lookup" array in a `Config`.
+    * Keep aliases in a `Config` separated (not as additional "branches"), then add along with "branch" keys into
+      `allowedValues()`. Then both validation and completion will consider aliases too.
+    * Uniqueness: aliases should be kept like `(string) alias => (string) main subcommand name`, but there also
+      should be a simple (quick) enough way to convert such an array into
+      `(string) main subcommand name => (array|string[]) list of aliases`
+    * Think how to set those aliases in a comfort (for users) way.
+
+      As for now, I see it only as the third parameter for `newSubcommandSwitch()` as an array of aliases. Then you
+      may specify the "main name" and aliases next to each other by calling the method with named parameters.
 1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
        files or any other kinds of streams.
@@ -78,14 +94,14 @@ The list of plans and ideas for future development.
     1. - [x] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
         1. - [x] Make a link to this from the comparison.
     1. - [x] [execute-class.php](../tools/cli-toolkit/execute-class.php)
-    1. - [ ] Built-in subcommands.
-        1. - [ ] `list` as a default value.
+    1. - [x] Built-in subcommands.
+        1. - [x] `list` as a default value.
              No other parameters are processed correctly unless `list` is specified explicitly.
-        1. - [ ] `ConfigBuilder::shortDescription()`
+        1. - [x] `ConfigBuilder::shortDescription()`
     1. - [ ] [Question.php](../src/Question/Question.php)
 
          Also describe mass script generator as a useful tool to "play around" with the library.
-    1. - [ ] Update comments generated in
+    1. - [ ] (if relevant) Update comments generated in
          [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
          with links to the manual.
 1. - [ ] BONUS TASKS:
@@ -95,55 +111,10 @@ The list of plans and ideas for future development.
         1. - [ ] Zero or minimal set of dependencies - to simplify the process of updating the library, to improve
              the library components' performance (less universal approach -> faster processing).
              Even if I have to implement solutions that have been already developed in some other open-source libraries.
-    1. - [ ] Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
-         a script, that may be also called via `gas` or `generate-completion` aliases.
+    1. - [ ] ~~Composer post install message with the generator launch command.~~
 
-         ... Or try making a subcommand alias within a completion script.
-       
-         Some ideas:
-       
-        * The most difficult part: make `Parser` detect an alias in some "odd" substring, then find a corresponding
-          "main name" via a "lookup" array in a `Config`.
-        * Keep aliases in a `Config` separated (not as additional "branches"), then add along with "branch" keys into
-          `allowedValues()`. Then both validation and completion will consider aliases too.
-        * Uniqueness: aliases should be kept like `(string) alias => (string) main subcommand name`, but there also
-          should be a simple (quick) enough way to convert such an array into
-          `(string) main subcommand name => (array|string[]) list of aliases`
-        * Think how to set those aliases in a comfort (for users) way.
-          
-          As for now, I see it only as the third parameter for `newSubcommandSwitch()` as an array of aliases. Then you
-          may specify the "main name" and aliases next to each other by calling the method with named parameters.
-    1. - [ ] Composer post install message with the generator launch command.
-        * See https://getcomposer.org/doc/articles/scripts.md
-    1. - [ ] Support positioned headered groups for subcommands (like `Built-in:`).
-
-         A possible implementation:
-
-         ```php
-         // ConfigBuilder...
-             // empty group
-             ->newSubcommand('something', Parametizer::newConfig() ...)
-             ->newSubcommand('other-thing', Parametizer::newConfig() ...)
-             ...
-
-             ->newSubcommandGroup('Database tools')
-             ->newSubcommand('restart', Parametizer::newConfig() ...)
-             ->newSubcommand('update-schema', Parametizer::newConfig() ...)
-             ...
-
-             ->newSubcommandGroup('Special tools')
-             ->newSubcommand('order-tea', Parametizer::newConfig() ...)
-             ->newSubcommand('buy-cookies', Parametizer::newConfig() ...)
-             ...
-         ```
-
-        1. [ ] Test:
-            1. [ ] `--` is not shown if there is no zero-section scripts.
-            1. [ ] No subgroups by name sections are created in headered groups.
-            1. [ ] Headered group names are NOT sorted. But auto-group names (based on name sections) ARE sorted.
-            1. [ ] In `slim` mode all subcommands are sorted within groups only,
-               where "auto" is considered as a single group.
-1. - [x] FINISHING MOVES:
+         ~~See https://getcomposer.org/doc/articles/scripts.md~~
+1. - [ ] FINISHING MOVES:
     1. - [x] Renaming, moving and other trivial refactoring:
         1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
         1. - [x] (optionally) `ScriptAbstract` -> `ScriptClassAbstract`
@@ -166,7 +137,7 @@ The list of plans and ideas for future development.
 
         - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
-    1. - [x] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
+    1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.
 
 </details>
@@ -350,6 +321,8 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
+1. Move most [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php) constants (where relevant)
+   to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
     1. Replace `mb_strtoupper(mb_substr($pathComponent, 0, 1)) . mb_substr($pathComponent, 1)` in
@@ -385,6 +358,8 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
     * If formatting is disabled, the tags should be stripped from strings before outputting.
     * Ignore (for formatting or stripping) not supported tags.
     * Create a mean to escape a tag - to output it as is (for instance, as a formatting example).
+    * Nested formatting should work as intended: inner opening tag should _add_ (not replace) formatting, inner
+      closing tag should disable exact inner formatting (keeping / restoring outer formatting).
     * Use this feature to improve current built-in formatting - to simplify and shorten the code.
    </details>
 1. Fix the completion "bug" case: with `-o1<tab>` we expect the modified line `-o100`,
@@ -393,23 +368,52 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
       sets the cursor after the last word break (` ` before `-o`), so the rest (`-o`) is trimmed.
     * Possible, but odd solution: alter `$COMP_WORDBREAKS` shell variable during runtime (append an option short name),
       then restore the variable's original value right before a script is terminated.
-1. Progress bar.
-1. - [ ] Implement a "typo guesser" like in `composer`:
+1. Implement a progress bar. :)
+1. Implement a "typo guesser" like in `composer`:
 
-     ```
-     $ composer lizstz
+   ```shell
+   $ composer lizstz
 
-     Command "lizstz" is not defined.
+   Command "lizstz" is not defined.
 
-     Do you want to run "list" instead?  (yes/no) [no]:
-     >
-     ```
-1. - [ ] Detected script names may be accessed as subcommand names by specifying their full names
-     (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
-     scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
-     respectively.
-    1. - [ ] In case of composite names each name substring should be mentioned - for
-         `cli-toolkit:generate:completion-script` you should specify `c:g:a`
-         (if it is unambiguous enough - there are no other scripts named `c*:g*:a*`).
-    1. - [ ] Support showing minimum unambiguous shortcuts via the runner list command
-         (switched on/off by a flag option).
+   Do you want to run "list" instead?  (yes/no) [no]:
+   >
+   ```
+
+1. Support positioned headered groups for subcommands (like `Built-in:`).
+
+   A possible implementation:
+
+   ```php
+   // ConfigBuilder...
+       // empty group
+       ->newSubcommand('something', Parametizer::newConfig() ...)
+       ->newSubcommand('other-thing', Parametizer::newConfig() ...)
+       ...
+
+       ->newSubcommandGroup('Database tools')
+       ->newSubcommand('restart', Parametizer::newConfig() ...)
+       ->newSubcommand('update-schema', Parametizer::newConfig() ...)
+       ...
+
+       ->newSubcommandGroup('Special tools')
+       ->newSubcommand('order-tea', Parametizer::newConfig() ...)
+       ->newSubcommand('buy-cookies', Parametizer::newConfig() ...)
+       ...
+   ```
+
+    1. Test:
+        1. `--` is not shown if there is no zero-section scripts.
+        1. No subgroups by name sections are created in headered groups.
+        1. Headered group names are NOT sorted. But auto-group names (based on name sections) ARE sorted.
+        1. In `slim` mode all subcommands are sorted within groups only,
+           where "auto" is considered as a single group.
+1. Detected script names may be accessed as subcommand names by specifying their full names
+   (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
+   scripts `clear-cache` and `clone-config`, the unambiguous enough substrings are `cle` and `clo`
+   respectively.
+    1. In case of composite names each name substring should be mentioned - for
+       `cli-toolkit:generate:completion-script` you should specify `c:g:c`
+       (if it is unambiguous enough - there are no other scripts named `c*:g*:c*`).
+    1. Support showing minimum unambiguous shortcuts via the runner list command
+       (switched on/off by a flag option).

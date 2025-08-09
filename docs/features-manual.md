@@ -11,6 +11,7 @@ Here are more detailed descriptions for different features you may find in the p
 - [Type casting from requests](#type-casting-from-requests)
 - [Validators](#validators)
 - [Subcommands](#subcommands)
+    - [Built-in subcommands](#built-in-subcommands)
 - [Environment Config](#environment-config)
     - [How to: Manually via an instance](#how-to-manually-via-an-instance)
     - [How to: Automatically via config files](#how-to-automatically-via-config-files)
@@ -128,17 +129,15 @@ a "feature unit". And you do not like the idea to set detection rules by specify
     * From this point your launcher execution may take possibly _dozens of seconds_ - because the detector will need
       time to parse lots of files.
 2. Set `cacheFilePath()` for your detector.
-3. Run your launcher once (with any command, including no command at all). When the detector finishes its job,
-   it will write all detected class names into the file specified on the previous step.
-
-    * Then all subsequent runs of your launcher will be executed instantly - by loading classes with their fully
+    * During the first run of your launcher (with any command, including no command at all) the detector will put all
+      detected class names into the file specified on the previous step.
+    * All subsequent runs of your launcher will be executed instantly - by loading classes with their fully
       qualified names stored in the specified cache file.
-4. Later, if you add (or delete) a script, just launch the special command in your launcher:
-   `php your-launcher.php script-launcher:clear-cache`.
+3. Later, if you add (or delete) a script, just launch the special command in your launcher to delete the cache file:
+   `php your-launcher.php script-launcher:clear-cache`. Then run you launcher again to re-create the cache file.
 
     * This subcommand becomes available (and visible in your launcher's list of available commands) as soon as
-      `cacheFilePath()` is set and the specified cache file exists. The command simply deletes the cache file.
-5. Then run you launcher again (and be patient again) to re-create the cache file.
+      `cacheFilePath()` is set and the specified cache file exists.
 
 ### Class scripts alternative launcher
 
@@ -301,8 +300,8 @@ $request = Parametizer::newConfig()
     ->newSubcommandSwitch('operation')
     /*
      * Here you define as many subcommands (nested configs or 'branches') as you wish.
-     * The first parameter here is the substring a script user should specify as a subcommand switch value,
-     * so the corresponding branch takes effect.
+     * The first parameter here is a subcommand (or branch) name.
+     * When you specify this string as a subcommand switch value, this branch config takes effect.
      */
     ->newSubcommand(
         'read',
@@ -322,7 +321,7 @@ $request = Parametizer::newConfig()
             
             /*
              * If you dare, you may create an even more complex tree of subcommands,
-             * as it is possible to add a subcommand switch to each and every config: 
+             * as it is possible to add a subcommand switch to every config: 
              */
             //->newSubcommandSwitch('sub-operation')
             //->newSubcommand(
@@ -361,8 +360,9 @@ switch ($operation) {
 With such a script:
 1. You may request a help page for the common part (`script.php --help`)
    or for one of subcommands (`script.php write --help`).
-1. You have to specify options and arguments for a specific 'level' (subcommand, config) before you specify
-   a subcommand name.
+1. You have to specify options and arguments for a particular 'level' (config) before or after a subcommand name
+   depending on what config you want to affect with parameters: parent config parameters must be specified before
+   a subcommand name, subcommand config parameters - after a subcommand name.
 
    For instance, you can not specify `--truncate` flag before specifying `write` (the subcommand
    that supports `--truncate` flag): `script.php --truncate write` will render an error about an unknown option,
@@ -370,6 +370,38 @@ With such a script:
 
    Or you can not request the main command help when specifying `--help` after `read`,
    because this way you invoke a help page generation for the `read` subcommand.
+   
+### Built-in subcommands
+
+Each config with at least one subcommand (or a subcommand switch registered explicitly) will automatically register
+the _built-in subcommands_:
+
+1. `help` subcommand works just as alternative for `--help` flag: the command `php script.php help cool-stuff` is
+   identical to the command `php script.php cool-stuff --help`: a help page for `cool-stuff` subcommand will be shown.
+   You can use whatever form you find more convenient.
+2. `list` subcommand outputs a list of available subcommands.
+    * Read more about `list` parameters by accessing its help page as any other config help:
+      `php script.php help list` or `php script.php list --help`
+    * It is the default value for every subcommand switch: the command `php script.php` will run identically to
+      the command `php script.php list` (assuming that `script.php` config contains a subcommand switch).
+
+      It should be noted however, that passing parameters to `list` subcommand will work only if `list` subcommand is
+      specified explicitly: `php script.php list --slim`. Otherwise parameters will be treated as a parent config's
+      parameters: `php script.php --slim` may render `Unknown option '--slim'` error message (unless your parent
+      config's definition contains its own `--slim` option).
+    * A common issue with commands listing is description not fitting the terminal screen width and appearing on
+      subsequent lines, which eventually makes the output reading less convenient. To counter this issue, there is
+      a mechanism that tries to automatically trim a subcommand's description gracefully (see
+      [helpGeneratorShortDescription*](#helpgeneratorshortdescriptioncharsminbeforefullstop)
+      `EnvironmentConfig` options).
+
+      Additionally, you may manually set an exact short description in a subcommand config builder with
+      `shortDescription()`. If a value is present, then that exact value will be always shown as is (without trimming)
+      in `list` output.
+
+      As a bonus, if your subcommand full description is short enough, you may set it with
+      `shortDescription()` and omit `description()` completely - the short description will be shown correctly both
+      on subcommand listing and subcommand help page.
 
 ## Environment Config
 
@@ -412,7 +444,7 @@ However if you want to affect a large amount of scripts or even all of those, th
 ### How to: Automatically via config files
 
 1. Generate a config file with the command:
-   ```sh
+   ```shell
    php ../tools/cli-toolkit/run.php cli-toolkit:generate:environment-config-file --help
    ```
 1. Edit the generated file as you please.
@@ -521,7 +553,7 @@ With this setting you may choose which scripts get a short name for `--help` (an
 
 #### helpGeneratorShortDescriptionCharsMinBeforeFullStop
 
-* Affects scripts descriptions' short versions (usually seen on scripts' help pages for available subcommands).
+* Affects scripts descriptions' graceful trimming (usually seen while listing available subcommands).
 * Controls a min length of a description substring cut around a full sentence (a substring ending with `. `).
 * Possible values: any (reasonable) `int`
     * Values bigger than [helpGeneratorShortDescriptionCharsMax](#helpgeneratorshortdescriptioncharsmax) are
@@ -543,7 +575,7 @@ the next.
 
 #### helpGeneratorShortDescriptionCharsMax
 
-* Affects scripts descriptions' short versions (usually seen on scripts' help pages for available subcommands).
+* Affects scripts descriptions' graceful trimming (usually seen while listing available subcommands).
 * Controls a max length of a description substring.
   But firstly tries cutting a description gracefully (by a space character).
 * Possible values: any (reasonable) `int`
@@ -557,4 +589,4 @@ If the setting value is `60`
 and [helpGeneratorShortDescriptionCharsMinBeforeFullStop](#helpgeneratorshortdescriptioncharsminbeforefullstop) is too
 big (`35` or bigger), the short description could be `Too short string. Another shorty. The rest adds much more ch`
 (exactly 60 chars), but if a space character is found before the max length cursor, the last part (` ch`, a piece of
-an incomplete word) is cut: `Too short string. Another shorty. The rest adds much more`.
+an incomplete word) is cut: `Too short string. Another shorty. The rest adds much more`
