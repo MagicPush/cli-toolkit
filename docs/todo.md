@@ -16,7 +16,6 @@ The list of plans and ideas for future development.
     1. `BuilderAbstract::visibilityBitmask()`
 1. Document:
     1. Array parameters (especially for `newArrayArgument()`).
-    1. Validators custom exception messages.
     1. Details about Parametizer builder methods
        (smart indent in `description`, "allowed values" types (or completion only), required options, etc.).
 1. Support single-named aliases: `cli-toolkit:generate:completion-script` is the "main" name for
@@ -98,9 +97,7 @@ The list of plans and ideas for future development.
         1. - [x] `list` as a default value.
              No other parameters are processed correctly unless `list` is specified explicitly.
         1. - [x] `ConfigBuilder::shortDescription()`
-    1. - [ ] [Question.php](../src/Question/Question.php)
-
-         Also describe mass script generator as a useful tool to "play around" with the library.
+    1. - [x] [Question.php](../src/Question/Question.php)
     1. - [ ] (if relevant) Update comments generated in
          [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
          with links to the manual.
@@ -137,6 +134,7 @@ The list of plans and ideas for future development.
 
         - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
+    1. - [ ] Make creating buildable instances (like detectors) with `create` static methods. 
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.
 

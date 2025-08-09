@@ -16,6 +16,8 @@ Here are more detailed descriptions for different features you may find in the p
     - [How to: Manually via an instance](#how-to-manually-via-an-instance)
     - [How to: Automatically via config files](#how-to-automatically-via-config-files)
     - [Available settings](#available-settings)
+- [Interactive scripts](#interactive-scripts)
+- [Colorful scripts](#colorful-scripts)
 
 ## Classes or plain scripts
 
@@ -590,3 +592,110 @@ and [helpGeneratorShortDescriptionCharsMinBeforeFullStop](#helpgeneratorshortdes
 big (`35` or bigger), the short description could be `Too short string. Another shorty. The rest adds much more ch`
 (exactly 60 chars), but if a space character is found before the max length cursor, the last part (` ch`, a piece of
 an incomplete word) is cut: `Too short string. Another shorty. The rest adds much more`
+
+## Interactive scripts
+
+`Question` class provides you with a few ways of interactivity for your scripts (not necessarily `Parametizer`-powered).
+
+Consider `bet.php` script as an example:
+
+```php
+<?php
+
+// ... some init
+
+// Execution is stopped if 'N' (default) or 'n' answer is given:
+Question::confirmOrDie('Confirm to proceed', 'ABORTED' . PHP_EOL);
+
+// Just stores a boolean representation of 'Y'/'y'/'N'/'n' answer.
+$isVerbose = Question::confirm('Do you want it to be verbose?');
+
+// Requests an input line with no validation.
+$name = Question::askAway('Your name');
+
+// You can setup "questions" that require one of particular possible answers (case sensitive or not):
+$horse = Question::create('Pick your lucky horse')
+    ->possibleAnswers(['Agape', 'Athena', 'Cora', 'Daphne', 'Iris', 'Theo'], isCaseSensitive: false)
+    ->substringAfterQuestion(<<<TEXT
+
+                    .''
+          ._.-.___.' (`\
+         //(        ( `'
+        '/ )\ ).__. ) 
+        ' <' `\ ._/'\
+           `   \     \
+        > 
+        TEXT)
+    ->ask();
+
+// Or you can validate answers with a regexp pattern:
+$bet = Question::create('Place your bet')
+    ->defaultAnswer('100')
+    ->answerValidatorPattern('/^[0-9]+$/')
+    ->ask();
+
+echo 'Your participation is recorded';
+if ($isVerbose) {
+    echo <<<TEXT
+        :
+        {$name} bet {$bet} bitcoins on {$horse}.
+
+        TEXT;
+} else {
+    echo '.' . PHP_EOL;
+}
+
+```
+
+Possible input and output:
+
+```
+$ php bet.php
+Confirm to proceed Y / N (N): 
+ABORTED
+
+$ php bet.php
+Confirm to proceed Y / N (N): Y
+Do you want it to be verbose? Y / N (N): y
+Your name: Mario
+Pick your lucky horse Agape / Athena / Cora / Daphne / Iris / Theo
+            .''
+  ._.-.___.' (`\
+ //(        ( `'
+'/ )\ ).__. ) 
+' <' `\ ._/'\
+   `   \     \
+> dafne
+Invalid answer. Possible answers: Agape, Athena, Cora, Daphne, Iris, Theo
+
+Pick your lucky horse Agape / Athena / Cora / Daphne / Iris / Theo
+            .''
+  ._.-.___.' (`\
+ //(        ( `'
+'/ )\ ).__. ) 
+' <' `\ ._/'\
+   `   \     \
+> daphne
+Place your bet (100): -1
+Invalid answer.
+
+Place your bet (100): 10
+Your participation is recorded:
+Mario bet 10 bitcoins on Daphne.
+```
+
+## Colorful scripts
+
+`TerminalFormatter` class adds escape sequences to strings, which may affect font color, font style, and
+background color. The key method here is `apply()` - it surrounds an input string with escape sequences, where
+the first enables formatting and the second disables it. See class constants and comments around those for details. 
+
+* Nested formatting is supported: `$formatter->error('Exception "' . $formatter->note('Weee!') . '" message')`
+  will result in a string with sequences starting and ending in correct places, so inner substring `Weee!` is formatted
+  as expected, and the latter outer part keeps its original "error" formatting. 
+* Create instances of a formatter with `createForStdOut()` or `createForStdErr()`, so escape sequences are automatically
+  skipped (not added), if actual output happens in a non-expected stream. For instance, with `createForStdOut()`
+  the output will be formatted while shown in a terminal, unless the output is redirected to a file.
+* It is recommended to extend your formatter class from `TerminalFormatter` and add human readable shortcuts, so you
+  can format your error messages with `$yourFormatter->error($message)` instead of
+  `$terminalFormatter->apply($message, [TerminalFormatter::STYLE_BOLD, TerminalFormatter::FONT_RED])`.
