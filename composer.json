@@ -1,6 +1,6 @@
 {
     "name": "magic-push/cli-toolkit",
-    "description": "CLI framework for PHP",
+    "description": "CLI-oriented library for PHP scripts",
     "type": "library",
     "license": "MIT",
     "require": {

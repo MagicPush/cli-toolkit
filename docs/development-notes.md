@@ -37,7 +37,7 @@ Test scripts could be launched within the same PHPUnit process (for instance, by
 but it would require:
 
 1. Rewriting several `$_SERVER` elements before each script launch, because `Parametizer` naturally relies on those
-   (as a CLI scripts framework).
+   (as a CLI scripts library).
 1. Rewriting the library code in places with `exit` calls (_if it is a test environment, then do this..._),
    so a PHPUnit process would continue its job.
 1. Catching / expecting `STDOUT` and `STDERR` or rewriting the library to support setting up interfaces

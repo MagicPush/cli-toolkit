@@ -9,18 +9,20 @@ This change log references the repository changes and releases, which respect [s
 1. Fixed a possible bug when a parent config parameter value is replaced with a subcommand parameters' values
    in a request multi-dimensional array. Example: when adding `list` parameter to a main config,
    it's value was then replaced with `list` _subcommand_ sub-request values.
-   
+
    The fix became possible with adding a special prefix to a request array key connected to
    a subcommand request values sub-array. Such a prefix can not be added to a parameter or subcommand name without
    a configuration error, which makes such request key naming safe.
-   
+
    If previously you could access `magic` subcommand request parameters from the main request
-   by `$sub-request = $request->getParams()['magic']`, from now on you have to do it this way:
-   `$sub-request = $request->getParams()[CliRequest::SUBCOMMAND_PREFIX . 'magic']`.
-   
-   ... However in the majority of cases you should be OK with the built-in handy method
-   `$request->getSubcommandRequest()`,
-   which does not require specifying a chosen subcommand name - it detects that name automatically.
+   by `$request->getParams()['magic']`, from now on you should be OK with the built-in handy method
+   `$request->getSubcommandRequest()`, which does not require specifying a chosen subcommand name - it detects that
+   name automatically.
+
+   However, if you want to check for existence of a particular request (subcommand call) manually, from now on you
+   should do it this way:
+   `$request->getParams()[CliRequest::SUBCOMMAND_PREFIX . 'magic']` (where `magic` is a subcommand name).
+
     * Added `CliRequest::SUBCOMMAND_PREFIX` for subcommand request key names.
 1. [cli-toolkit](../tools/cli-toolkit) plain scripts are removed to be replaced with
    [ScriptClassAbstract.php](../src/Parametizer/ScriptClass/ScriptClassAbstract.php)-based scripts

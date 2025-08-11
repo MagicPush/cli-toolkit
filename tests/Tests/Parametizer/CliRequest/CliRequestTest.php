@@ -313,7 +313,7 @@ final class CliRequestTest extends TestCaseAbstract {
      * Tests that it is not possible to add the request subcommand prefix ({@see CliRequest::SUBCOMMAND_PREFIX})
      * to parameter and subcommand regular names.
      *
-     * This check adds insurance that when a request multi-dimensional array is created,
+     * This test adds the insurance that when a request multi-dimensional array is created,
      * subcommand sub-request name can not replace a parent parameter name in a request array.
      *
      * @see ParameterAbstract::__construct()

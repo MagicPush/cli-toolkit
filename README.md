@@ -2,15 +2,17 @@
 
 [![Latest stable version](https://img.shields.io/packagist/v/magic-push/cli-toolkit?label=version)](https://packagist.org/packages/magic-push/cli-toolkit)
 
-**CliToolkit** is a CLI framework for PHP scripts.
+**CliToolkit** is a CLI-oriented library for PHP scripts.
 
 Key features (why you would want to use it):
-- configure named (options) and positioned (arguments) parameters with ease using a builder;
+- create console scripts as [plain php-files](#plain-scripts)
+  or classes (a classes' [launcher generator is provided](#script-classes));
+- configure named (options) and positioned (arguments) parameters with ease using a config builder;
 - define required options, optional arguments, lists of possible values, flags, array-like parameters and subcommands;
-- enjoy Bash completion for options' names and parameters' possible values (when calling scripts via generated aliases);
-- call your scripts from any paths by generated aliases;
-- get a generated help page (using the built-in `--help` option) based on your parameters configuration;
-- create console scripts as plain php-files or classes.
+- enjoy [Bash completion](#completion) for options' names and parameters' possible values, when calling scripts via
+  generated aliases; additionally, call your scripts from any path by those generated aliases;
+- see generated help pages (using the built-in `--help` option) for your scripts based on your parameters configuration;
+- zero dependencies (apart from PHP itself).
 
 ## Contents
 
@@ -20,6 +22,7 @@ Key features (why you would want to use it):
     - [Completion](#completion)
     - [Script classes](#script-classes)
     - [More configuration examples](#more-configuration-examples)
+- [CliToolkit values](#clitoolkit-values)
 - [Inspiration and authors](#inspiration-and-authors)
 - [More info](#more-info)
 
@@ -119,7 +122,18 @@ Generate a completion Bash script with aliases to your `Parametizer`-based scrip
 ### More configuration examples
 
 Check out the [stock class scripts](tools/cli-toolkit/ScriptClasses) (see `setUpConfig()`) as examples of class-based
-scripts, and `/*/scripts/*` files in [Tests](tests/Tests) subdirectories as artificial examples of plain scripts.
+scripts, and `/**/scripts/*` files in [Tests](tests/Tests) subdirectories as artificial examples of plain scripts.
+
+## CliToolkit values
+
+This library is being developed while keeping in mind these values:
+
+- Scripts' development and maintenance should be quick and simple. The library users may focus on their scripts' unique
+  logic instead of parameters or infrastructure management. The library builders and generators cover the latter.
+- No dependencies apart from PHP and its standard modules. Updating the library should be a simple task:
+  no dependencies - no extra libraries to worry about.
+
+  The only tough part here is moving to the next major version.
 
 ## Inspiration and authors
 

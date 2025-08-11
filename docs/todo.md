@@ -101,16 +101,6 @@ The list of plans and ideas for future development.
     1. - [ ] (if relevant) Update comments generated in
          [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
          with links to the manual.
-1. - [ ] BONUS TASKS:
-    1. - [ ] Create a document about values and / or goals of the library.
-        1. - [ ] Ease scripts development and maintenance. Even if the library code deep inside is or will become
-             notably complex.
-        1. - [ ] Zero or minimal set of dependencies - to simplify the process of updating the library, to improve
-             the library components' performance (less universal approach -> faster processing).
-             Even if I have to implement solutions that have been already developed in some other open-source libraries.
-    1. - [ ] ~~Composer post install message with the generator launch command.~~
-
-         ~~See https://getcomposer.org/doc/articles/scripts.md~~
 1. - [ ] FINISHING MOVES:
     1. - [x] Renaming, moving and other trivial refactoring:
         1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
@@ -312,6 +302,15 @@ The list of plans and ideas for future development.
     1. - [x] [README.md](../README.md), describe how to generate a skeleton (in a form of a "quick start").
     1. - [x] Fill `TODO` placeholder in
          [development-notes.md](development-notes.md#throwing-or-ignoring-exceptions-default-policy).
+    1. - [x] Create a document about values and / or goals of the library.
+        1. - [x] Ease scripts development and maintenance. Even if the library code deep inside is or will become
+             notably complex.
+        1. - [x] Zero or minimal set of dependencies - to simplify the process of updating the library, to improve
+             the library components' performance (less universal approach -> faster processing).
+             Even if I have to implement solutions that have been already developed in some other open-source libraries.
+    1. - [ ] ~~Composer post install message with the generator launch command.~~
+
+         ~~See https://getcomposer.org/doc/articles/scripts.md~~
 </details>
 
 ## Next major release
@@ -370,9 +369,9 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
 1. Implement a "typo guesser" like in `composer`:
 
    ```shell
-   $ composer lizstz
+   $ composer lists
 
-   Command "lizstz" is not defined.
+   Command "lists" is not defined.
 
    Do you want to run "list" instead?  (yes/no) [no]:
    >

@@ -198,7 +198,7 @@ final class CompletionTest extends TestCaseAbstract {
 
             // Completion should work without errors even for options without particular allowed values,
             // thus also allowing the OS shell to complete stuff like path.
-            // In this case the framework completion will render nothing (and it is OK), but in a real console you would
+            // In this case the completion will render nothing (and it is OK), but in a real console you would
             // see your OS shell completion lines like './', '../' and hidden directory names (if found on your path).
             'option-short-name-part-path' => [
                 'parametersString'    => '-a .',
