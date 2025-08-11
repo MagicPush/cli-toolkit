@@ -162,7 +162,7 @@ class CompletionScript extends CliToolkitGenerateScriptAbstract {
         }
 
         $scriptPathsByAliases = [];
-        $detectedScripts      = (new ScriptFileDetector(throwOnException: true))
+        $detectedScripts      = ScriptFileDetector::create(throwOnException: true)
             ->searchDirectories($this->request->getParamAsStringList('search-directory'), isRecursive: false)
             ->searchDirectories($this->request->getParamAsStringList('search-directory-recursive'), isRecursive: true)
             ->excludeDirectories($this->request->getParamAsStringList('exclude-directory'))

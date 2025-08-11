@@ -61,13 +61,13 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                      *  * 'no-run-no-execute':         no exact 'exec' substrings detected,
                      *                                     {@see ScriptFileDetector::SUBSTR_*_EXEC};
                      *  * 'Something':                 lacks at least proper 'exec' substring
-                     *                                 (for now we assume that this is good enough to distinguish
+                     *                                 (for now, we assume that this is good enough to distinguish
                      *                                 plain scripts and script classes);
                      *  * 'somewhat-wrong-ext':        wrong extension file
                      *                                     (not {@see ScriptDetectorAbstract::FILE_EXTENSION}).
                      */
                 ],
-                'detector' => (new ScriptFileDetector(throwOnException: true))
+                'detector' => ScriptFileDetector::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptFiles/Blue'),
             ],
 
@@ -76,7 +76,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                     'somewhat'   => realpath(__DIR__ . '/../ScriptFiles/Red/somewhat.php'),
                     'somewhat-l' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat-l.php'),
                 ],
-                'detector' => (new ScriptFileDetector(throwOnException: true))
+                'detector' => ScriptFileDetector::create(throwOnException: true)
                     ->scriptPath(__DIR__ . '/../ScriptFiles/Red/somewhat.php')
                     ->scriptPath(realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat-l.php'))
             ],
@@ -85,7 +85,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                     'somewhat'   => realpath(__DIR__ . '/../ScriptFiles/Red/somewhat.php'),
                     'somewhat-l' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat-l.php'),
                 ],
-                'detector' => (new ScriptFileDetector(throwOnException: true))
+                'detector' => ScriptFileDetector::create(throwOnException: true)
                     ->scriptPaths([
                         __DIR__ . '/../ScriptFiles/Red/somewhat.php',
                         realpath(__DIR__) . '/../ScriptFiles/Blue/somewhat-l.php',
@@ -112,7 +112,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
             $this->expectExceptionObject(new ScriptDetectorRuntimeException('There are no search settings specified.'));
         }
 
-        $detector = new ScriptFileDetector($throwOnException);
+        $detector = ScriptFileDetector::create($throwOnException);
         if ($isSearchDirectorySet) {
             $detector->searchDirectory(__DIR__ . '/../ScriptFiles/Red', isRecursive: true);
         }
@@ -196,7 +196,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'somewhat' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat.php'),
             ],
-            (new ScriptFileDetector($throwOnException))
+            ScriptFileDetector::create($throwOnException)
                 ->scriptPaths([
                     '../asd',
                     __DIR__ . '/../ScriptFiles/Blue/somewhat.php',
@@ -229,7 +229,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                 'somewhat'   => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat.php'),
                 'somewhat-l' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat-l.php'),
             ],
-            (new ScriptFileDetector($throwOnException))
+            ScriptFileDetector::create($throwOnException)
                 ->scriptPaths([
                     realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat.php'), // Original by an absolute path
                     __DIR__ . '/../ScriptFiles/Blue/somewhat-l.php',
@@ -262,7 +262,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'somewhat' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat.php'),
             ],
-            (new ScriptFileDetector($throwOnException))
+            ScriptFileDetector::create($throwOnException)
                 ->scriptPaths([
                     __DIR__ . '/../ScriptFiles/Blue/somewhat-wrong-ext.txt',
                     __DIR__ . '/../ScriptFiles/Blue/somewhat.php',
@@ -289,7 +289,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'somewhat' => realpath(__DIR__ . '/../ScriptFiles/Blue/somewhat.php'),
             ],
-            (new ScriptFileDetector($throwOnException))
+            ScriptFileDetector::create($throwOnException)
                 ->scriptPaths([
                     '/etc/shadow',
                     __DIR__ . '/../ScriptFiles/Blue/somewhat.php',
@@ -316,14 +316,14 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                 new ScriptDetectorRuntimeException(
                     sprintf(
                         "Script file '%s' should contain one of these pairs of substrings:"
-                            . " 'Parametizer::newConfig(' + '->run()' OR 'ScriptClassLauncher(' + '->execute()'",
+                            . " 'Parametizer::newConfig(' + '->run()' OR 'ScriptClassLauncher::create(' + '->execute()'",
                         realpath(__DIR__ . '/../ScriptFiles/Red/no-run-no-execute.php'),
                     ),
                 ),
             );
         }
 
-        $detector = new ScriptFileDetector($throwOnException);
+        $detector = ScriptFileDetector::create($throwOnException);
         if ($isExactFileSearch) {
             $detector->scriptPaths([
                 __DIR__ . '/../ScriptFiles/Red/no-run-no-execute.php',
@@ -402,7 +402,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
                 'somewhat'         => realpath(__DIR__ . '/../ScriptFiles/Red/somewhat.php'),
                 'somewhat-another' => realpath(__DIR__ . '/../ScriptFiles/Green/somewhat-another.php'),
             ],
-            (new ScriptFileDetector($throwOnException))
+            ScriptFileDetector::create($throwOnException)
                 ->searchDirectories(
                     [
                         __DIR__ . '/../ScriptFiles/Red',
@@ -422,7 +422,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptDetectorAbstract::detect()
      */
     public function testDuplicateCallUniqueDetectedEntries(): void {
-        $detector = (new ScriptFileDetectorMock(throwOnException: true))
+        $detector = ScriptFileDetectorMock::create(throwOnException: true)
             ->searchDirectory(__DIR__ . '/../ScriptFiles', isRecursive: true)
             ->excludeDirectories([
                 __DIR__ . '/../ScriptFiles/Red',

@@ -110,7 +110,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             [], // Nothing should be found in any case.
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory($path)
                 ->getDetectedData(),
         );
@@ -136,7 +136,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                 realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedRight/Subdirectory/Something8.php'),
                 realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedRight/Something7.php'),
             ],
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedRight', isRecursive: true)
                 ->excludeDirectory($path)
                 ->getDetectedData(),
@@ -188,7 +188,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedRight/Something7.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedRight', isRecursive: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', isRecursive: false),
             ],
@@ -198,7 +198,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Subdirectory/Something6.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedRight', isRecursive: false)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', isRecursive: true),
             ],
@@ -209,7 +209,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Subdirectory/Something6.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectories(
                         [
                             __DIR__ . '/../ScriptClasses/Red/RedRight',
@@ -223,7 +223,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedRight/Something7.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectories(
                         [
                             __DIR__ . '/../ScriptClasses/Red/RedRight',
@@ -243,7 +243,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Subdirectory/Something6.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red', isRecursive: true)
                     ->excludeDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft')
                     ->excludeDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft2')
@@ -259,7 +259,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Subdirectory/Something6.php'),
                     realpath(__DIR__ . '/' . '../ScriptClasses/Red/RedLeft3/Something5.php'),
                 ],
-                'detector' => (new ScriptDetectorMock(throwOnException: true))
+                'detector' => ScriptDetectorMock::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses/Red', isRecursive: true)
                     ->excludeDirectories([
                         __DIR__ . '/../ScriptClasses/Red/RedLeft',
@@ -300,7 +300,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             [], // Nothing should be found in any case.
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', $isSearchRecursive)
                 ->excludeDirectory($excludedPath)
                 ->getDetectedData(),
@@ -384,7 +384,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         // This assertion should happen only if no exception is thrown during the detector object's setup:
         assertSame(
             $expectedDetectionResult,
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory($searchContext->normalizedPath, $searchContext->isRecursive)
                 ->excludeDirectory($excludeDirectory)
                 ->getDetectedData(),
@@ -503,7 +503,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectories(
                 [
                     realpath(__DIR__ . '/../ScriptClasses/Red/RedRight'),
@@ -598,7 +598,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedRight', $isFirstRecursive)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedRight', !$isFirstRecursive);
 
@@ -673,7 +673,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         array $expectedFinalSearchingContexts,
         array $expectedResult,
     ): void {
-        $detector = new ScriptDetectorMock($throwOnException);
+        $detector = ScriptDetectorMock::create($throwOnException);
 
         if ($expectedException) {
             $this->expectExceptionObject($expectedException);
@@ -940,7 +940,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red', isRecursive: true)
             ->excludeDirectories([
                 realpath(__DIR__ . '/../ScriptClasses/Red/RedRight'),
@@ -993,7 +993,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             $this->expectExceptionObject($expectedException);
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red', isRecursive: true)
             ->excludeDirectories($inputExcludeDirectories);
 
@@ -1125,7 +1125,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptDetectorAbstract::excludeDirectory()
      */
     public function testDuplicateEvenWiderExclusionInMiddle(): void {
-        $detector = (new ScriptDetectorMock(throwOnException: false))
+        $detector = ScriptDetectorMock::create(throwOnException: false)
             ->searchDirectory(__DIR__ . '/../ScriptClasses', isRecursive: true)
             ->excludeDirectories([
                 __DIR__ . '/../ScriptClasses/Red/RedRight',              // A "wider/higher" directory.

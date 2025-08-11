@@ -9,8 +9,8 @@ require_once __DIR__ . '/../../../../../vendor/autoload.php';
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
-$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+$scriptClassDetector = ScriptClassDetector::create(throwOnException: true)
     ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true);
-(new ScriptClassLauncher($scriptClassDetector))
+ScriptClassLauncher::create($scriptClassDetector)
     ->throwOnException(isEnabled: true)
     ->execute();

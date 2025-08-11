@@ -24,10 +24,14 @@ abstract class ScriptDetectorAbstract {
     protected array $excludedDirectoryPaths = [];
 
 
+    protected function __construct(protected readonly bool $throwOnException) { }
+
     /**
      * @param bool $throwOnException Useful to debug issues with paths (read / write).
      */
-    public function __construct(protected readonly bool $throwOnException = true) { }
+    public static function create(bool $throwOnException = true): static {
+        return new static($throwOnException);
+    }
 
     public function cacheFilePath(?string $cacheFilePath): static {
         $cacheFilePathReal = null !== $cacheFilePath ? realpath($cacheFilePath) : false;

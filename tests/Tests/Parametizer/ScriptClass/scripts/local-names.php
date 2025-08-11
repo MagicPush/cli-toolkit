@@ -8,7 +8,7 @@ use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClass
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
-$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+$scriptClassDetector = ScriptClassDetector::create(throwOnException: true)
     ->scriptClassNames([
         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass\ScriptClasses\LocalNames\lowercasename::class,
         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass\ScriptClasses\LocalNames\Uppercasename::class,
@@ -19,6 +19,6 @@ $scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptClass\ScriptClasses\LocalNames\SomeABBRWord::class,
     ]);
 
-(new ScriptClassLauncher($scriptClassDetector))
+ScriptClassLauncher::create($scriptClassDetector)
     ->throwOnException()
     ->execute();

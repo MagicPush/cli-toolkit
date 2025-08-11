@@ -12,6 +12,6 @@ unset($_SERVER['argv'][1]);
 
 // No ConfigBuilder instance must be specified to ensure `throwOnException` flag
 // is passed to the automatically created instance.
-(new ScriptClassLauncher((new ScriptClassDetector())->searchDirectory(__DIR__), configBuilder: null))
+ScriptClassLauncher::create(ScriptClassDetector::create()->searchDirectory(__DIR__), configBuilder: null)
     ->throwOnException($launcherThrowOnException)
     ->execute();

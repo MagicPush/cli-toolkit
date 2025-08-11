@@ -17,13 +17,19 @@ class ScriptClassLauncher {
     protected bool $throwOnException                 = false;
 
 
-    public function __construct(
-        protected readonly ScriptClassDetector $scriptClassDetector,
+    protected function __construct(protected readonly ScriptClassDetector $scriptClassDetector) { }
+
+    public static function create(
+        ScriptClassDetector $scriptClassDetector,
         ?ConfigBuilder $configBuilder = null,
-    ) {
+    ): static {
+        $launcher = new static($scriptClassDetector);
+
         if (null !== $configBuilder) {
-            $this->configBuilder = $configBuilder;
+            $launcher->configBuilder = $configBuilder;
         }
+
+        return $launcher;
     }
 
     /**
@@ -37,7 +43,7 @@ class ScriptClassLauncher {
 
     /**
      * Always affects subcommands. Also, affects main {@see ConfigBuilder} instance only if the latter is created
-     * automatically - if `null` (default value) is passed to {@see static::__construct()} as the relevant parameter.
+     * automatically - if `null` (default value) is passed to {@see static::__construct()}'s connected parameter.
      *
      * By default (without this method call), the corresponding internal property value is `false`.
      *

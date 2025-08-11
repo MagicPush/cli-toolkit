@@ -34,7 +34,7 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
     protected readonly ScriptFormatter $formatter;
 
-    protected readonly string $pathDirectoryProject;
+    protected readonly string $pathDirectoryLibrary;
     protected readonly string $pathDirectoryBase;
     protected readonly string $pathDirectoryScripts;
 
@@ -63,6 +63,22 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         return array_merge(parent::getNameSections(), ['internal']);
     }
 
+    protected static function getLibraryDirectoryPath(bool $throwOnException): string {
+        $libraryDirectoryPath         = __DIR__ . '/../../../..';
+        $libraryDirectoryPathAbsolute = realpath($libraryDirectoryPath);
+        if (false === $libraryDirectoryPathAbsolute) {
+            if (!$throwOnException) {
+                return '';
+            }
+
+            throw new RuntimeException(
+                'Unable to get realpath() for the library path: ' . var_export($libraryDirectoryPath, true),
+            );
+        }
+
+        return $libraryDirectoryPathAbsolute;
+    }
+
     #[Override]
     protected static function setUpConfig(ConfigBuilder $configBuilder): void {
         parent::setUpConfig($configBuilder);
@@ -81,6 +97,10 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                 Script classes may be dispersed over generated subdirectories, see '
                     . $formatter->paramTitle('--dir-max-level') . ' and ' . $formatter->paramTitle('--dir-count') . '.
             ')
+
+            ->newOption('--generated-path')
+            ->description('Path to generated directory')
+            ->default(static::getLibraryDirectoryPath(throwOnException: false) . '/local/MassTest')
 
             ->newOption('--dir-count')
             ->description('How many subdirectories should be created inside a base directory for script classes.')
@@ -177,16 +197,9 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
     }
 
     protected function startUp(): static {
-        $pathDirectoryProject = __DIR__ . '/../../../..';
-        $pathDirectoryProjectAbsolute = realpath($pathDirectoryProject);
-        if (false === $pathDirectoryProjectAbsolute) {
-            throw new RuntimeException(
-                'Unable to get realpath() for the project path: ' . var_export($pathDirectoryProject, true),
-            );
-        }
-        $this->pathDirectoryProject = $pathDirectoryProjectAbsolute;
+        $this->pathDirectoryLibrary = static::getLibraryDirectoryPath(throwOnException: true);
 
-        $this->pathDirectoryBase = $this->pathDirectoryProject . '/local/MassTest';
+        $this->pathDirectoryBase = $this->request->getParamAsString('generated-path');
         $this->createDirectory($this->pathDirectoryBase);
         $this->pathDirectoryScripts = $this->pathDirectoryBase . '/Scripts';
         $this->createDirectory($this->pathDirectoryScripts);
@@ -340,14 +353,14 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
         if (!is_readable($directoryPath)) {
             throw new RuntimeException("Path for a namespace is not readable: {$directoryPath}");
         }
-        if (!str_starts_with($directoryPath, $this->pathDirectoryProject)) {
+        if (!str_starts_with($directoryPath, $this->pathDirectoryLibrary)) {
             throw new RuntimeException(
-                "Path '{$directoryPath}' is not within the project directory '{$this->pathDirectoryProject}'",
+                "Path '{$directoryPath}' is not within the library directory '{$this->pathDirectoryLibrary}'",
             );
         }
 
         $pathToProcess = ltrim(
-            substr_replace($directoryPath, '', 0, mb_strlen($this->pathDirectoryProject)),
+            substr_replace($directoryPath, '', 0, mb_strlen($this->pathDirectoryLibrary)),
             '/',
         );
         $namespaceParts = explode('/', $pathToProcess);
@@ -413,7 +426,7 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
 
             declare(strict_types=1);
 
-            require_once '{$this->pathDirectoryProject}/tools/cli-toolkit/init.php';
+            require_once '{$this->pathDirectoryLibrary}/tools/cli-toolkit/init.php';
 
             use Composer\Autoload\ClassLoader;
 
@@ -455,7 +468,7 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
             use {$launcherCallable[0]};
             use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
-            \$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+            \$scriptClassDetector = ScriptClassDetector::create(throwOnException: true)
                 ->searchDirectory(__DIR__ . '/Scripts');
 
             // PERFORMANCE STATS ->
@@ -472,22 +485,19 @@ final class GenerateMassTestScripts extends CliToolkitScriptAbstract {
                         \$timeElapsed     = round((\$tsEnd - \$tsStart) / 1e+9, 3);
                         \$memoryPeakUsage = round((\$memPeakEnd - \$memPeakStart) / 1e+6, 3);
 
-                        fwrite(
-                            STDERR,
-                            <<<TEXT
+                        echo <<<TEXT
 
                             Stats:
                                 time elapsed, seconds: {\$timeElapsed}
                                 memory peak usage, MB: {\$memoryPeakUsage}
 
-                            TEXT,
-                        );
+                            TEXT;
                     },
                 );
             }
             // <- PERFORMANCE STATS
 
-            (new {$launcherClassShortName}(\$scriptClassDetector))
+            {$launcherClassShortName}::create(\$scriptClassDetector)
                 ->throwOnException()
                 ->{$launcherCallable[1]}();
 

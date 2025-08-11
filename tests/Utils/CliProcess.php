@@ -84,7 +84,7 @@ class CliProcess {
                  * Here we assume that the timeout was caused by lack of STDIN.
                  * `max_execution_time` overtime will be handled later in `finally` section.
                  *
-                 * For now even if an external process hanged for too much time, `stream_select()` will stop its work
+                 * For now, even if an external process hanged for too much time, `stream_select()` will stop its work
                  * after its own timeout (before `max_execution_time`). Thus we will know for sure about external
                  * process execution overtime only after `proc_close()` takes place.
                  */

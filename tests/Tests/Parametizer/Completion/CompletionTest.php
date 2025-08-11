@@ -391,7 +391,7 @@ final class CompletionTest extends TestCaseAbstract {
     /**
      * Tests completion affected by default subcommand switch value deeply in configs tree.
      *
-     * For now the only possible default subcommand is {@see ListSubcommands::getScriptName()}, it is hardcoded.
+     * For now, the only possible default subcommand is {@see ListSubcommands::getScriptName()}, it is hardcoded.
      * However if different default values are possible, we may test here any default value.
      *
      * @param string[] $expectedOutputLines

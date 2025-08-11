@@ -10,8 +10,8 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 $scriptClassName = $_SERVER['argv'][1];
 unset($_SERVER['argv'][1]);
 
-$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+$scriptClassDetector = ScriptClassDetector::create(throwOnException: true)
     ->scriptClassName($scriptClassName);
-(new ScriptClassLauncher($scriptClassDetector))
+ScriptClassLauncher::create($scriptClassDetector)
     ->throwOnException()
     ->execute();

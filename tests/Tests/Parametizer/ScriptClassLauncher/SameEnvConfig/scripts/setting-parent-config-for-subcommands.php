@@ -14,7 +14,7 @@ $isEnvConfigManual             = (bool) $_SERVER['argv'][2];
 $cacheFilePath                 = $_SERVER['argv'][3];
 unset($_SERVER['argv'][1], $_SERVER['argv'][2], $_SERVER['argv'][3]);
 
-$scriptClassDetector = (new ScriptClassDetector(true))
+$scriptClassDetector = ScriptClassDetector::create(true)
     ->cacheFilePath($cacheFilePath)
     ->searchDirectory(__DIR__ . '/../ScriptClasses');
 
@@ -28,6 +28,6 @@ if ($isEnvConfigManual) {
     $configBuilder = null;
 }
 
-(new ScriptClassLauncher($scriptClassDetector, $configBuilder))
+ScriptClassLauncher::create($scriptClassDetector, $configBuilder)
     ->useParentEnvConfigForSubcommands($isSameEnvConfigForSubcommands)
     ->execute();

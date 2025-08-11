@@ -19,7 +19,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      * @see ScriptDetectorAbstract::getCacheFilePath()
      */
     public function testCachePathRelativeToAbsolute(): void {
-        $detector = new ScriptDetectorMock(throwOnException: true);
+        $detector = ScriptDetectorMock::create(throwOnException: true);
 
         $detector->cacheFilePath(static::CACHE_FILE_RELATIVE_PATH);
         // If a cache file does not exist, the relative (unchanged) path is stored:
@@ -49,7 +49,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
 
         assertSame(
             [], // This assertion should happen only if exceptions are disabled.
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory(__DIR__ . '/../ScriptClasses', isRecursive: true)
                 ->cacheFilePath('/etc/shadow')
                 ->getDetectedData(),
@@ -81,7 +81,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
 
         assertSame(
             [], // This assertion should happen only if exceptions are disabled.
-            (new ScriptDetectorMock($throwOnException))
+            ScriptDetectorMock::create($throwOnException)
                 ->searchDirectory(__DIR__ . '/../ScriptClasses', isRecursive: true)
                 ->cacheFilePath(static::CACHE_FILE_RELATIVE_PATH)
                 ->getDetectedData(),
@@ -105,7 +105,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft')
             ->cacheFilePath('/asd/zxc');
 
@@ -189,7 +189,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
             );
         }
 
-        $detector = (new ScriptDetectorMock($throwOnException))
+        $detector = ScriptDetectorMock::create($throwOnException)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft')
             ->cacheFilePath('/root/asd');
 

@@ -39,7 +39,7 @@ final class ScriptClassDetectorCacheTest extends ScriptDetectorCacheTestAbstract
         assertFileDoesNotExist(static::CACHE_FILE_RELATIVE_PATH);
 
         // Let's set up the detector:
-        $detector = (new ScriptClassDetector(throwOnException: true))
+        $detector = ScriptClassDetector::create(throwOnException: true)
             ->cacheFilePath($isCachePathSet ? static::CACHE_FILE_RELATIVE_PATH : null)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', isRecursive: true);
 
@@ -149,7 +149,7 @@ final class ScriptClassDetectorCacheTest extends ScriptDetectorCacheTestAbstract
         );
 
         // Now let's set up a detector with caching...
-        $detector = (new ScriptClassDetector($throwOnException))
+        $detector = ScriptClassDetector::create($throwOnException)
             ->cacheFilePath(static::CACHE_FILE_RELATIVE_PATH)
             // Search settings are not important because a cache file should be used instead.
             ->searchDirectory(__DIR__);

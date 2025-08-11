@@ -8,9 +8,9 @@ use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
 require_once __DIR__ . '/../../../../init-console.php';
 
-$detector = new ScriptClassDetector();
+$detector      = ScriptClassDetector::create();
 $configBuilder = Parametizer::newConfig();
-(new ScriptClassLauncher($detector, $configBuilder))
+ScriptClassLauncher::create($detector, $configBuilder)
     ->throwOnException()
     ->useParentEnvConfigForSubcommands()
     ->execute();

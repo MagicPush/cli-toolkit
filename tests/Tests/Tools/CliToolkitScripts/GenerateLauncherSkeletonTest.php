@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\GenerateLauncherSkeleton;
+namespace MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts;
 
 use FilesystemIterator;
 use MagicPush\CliToolkit\Parametizer\Config\Config;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
-use MagicPush\CliToolkit\Tests\Tests\Tools\CliToolkitScripts\CliToolkitScriptTestAbstract;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\CompletionScript;
 use MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\Generate\LauncherSkeleton;
 use RecursiveDirectoryIterator;

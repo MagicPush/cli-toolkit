@@ -77,7 +77,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                      * specifically {@see AnotherThing} that has the same methods, but a completely different parent.
                      */
                 ],
-                'detector' => (new ScriptClassDetector(throwOnException: true))
+                'detector' => ScriptClassDetector::create(throwOnException: true)
                     ->searchDirectory(__DIR__ . '/../ScriptClasses', isRecursive: true)
                     ->excludeDirectory(__DIR__ . '/../ScriptClasses/Blue'),
             ],
@@ -88,7 +88,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                     'red:something4' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Something4',
                     'something-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\SomethingX',
                 ],
-                'detector' => (new ScriptClassDetector(throwOnException: true))
+                'detector' => ScriptClassDetector::create(throwOnException: true)
                     ->scriptClassName(
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Something1::class,
                     )
@@ -105,7 +105,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
                     'red:something4' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Something4',
                     'something-x'    => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\SomethingX',
                 ],
-                'detector' => (new ScriptClassDetector(throwOnException: true))
+                'detector' => ScriptClassDetector::create(throwOnException: true)
                     ->scriptClassNames([
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\Something1::class,
                         \MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\RedLeft22\Something4::class,
@@ -133,7 +133,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
             $this->expectExceptionObject(new ScriptDetectorRuntimeException('There are no search settings specified.'));
         }
 
-        $detector = new ScriptClassDetector($throwOnException);
+        $detector = ScriptClassDetector::create($throwOnException);
         if ($isSearchDirectorySet) {
             $detector->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', isRecursive: true);
         }
@@ -223,7 +223,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'something-x' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\Red\SomethingX',
             ],
-            (new ScriptClassDetector($throwOnException))
+            ScriptClassDetector::create($throwOnException)
                 ->scriptClassNames([
                     SomethingX::class,
                     AnotherThing::class,
@@ -247,7 +247,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
             );
         }
 
-        $detector = (new ScriptClassDetectorMock($throwOnException))
+        $detector = ScriptClassDetectorMock::create($throwOnException)
             ->scriptClassNames([
                 SomethingX::class,
                 Something5::class,
@@ -285,7 +285,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptDetectorAbstract::detect()
      */
     public function testDuplicateCallUniqueDetectedEntries(): void {
-        $detector = (new ScriptClassDetectorMock(throwOnException: true))
+        $detector = ScriptClassDetectorMock::create(throwOnException: true)
             ->scriptClassName(SomethingX::class)
             ->searchDirectory(__DIR__ . '/../ScriptClasses/Red/RedLeft3', isRecursive: true);
 
@@ -351,7 +351,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
             [
                 'something' => 'MagicPush\CliToolkit\Tests\Tests\Parametizer\ScriptDetector\ScriptClasses\SomethingZero',
             ],
-            (new ScriptClassDetector($throwOnException))
+            ScriptClassDetector::create($throwOnException)
                 ->scriptClassNames([
                     SomethingZero::class,
                     SomethingZeroShadow::class,
@@ -369,7 +369,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
     public function testIgnoreByScriptClassIsDetectable(): void {
         assertSame(
             [],
-            (new ScriptClassDetector(throwOnException: true))
+            ScriptClassDetector::create(throwOnException: true)
                 // Imagine that a launcher includes everything in the project that is available by an autoloader...
                 ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true)
                 /*
@@ -386,7 +386,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
         // However, the exact script class search still works:
         assertSame(
             [ShowHelpPage::getScriptName() => ShowHelpPage::class],
-            (new ScriptClassDetector(throwOnException: true))
+            ScriptClassDetector::create(throwOnException: true)
                 ->searchDirectory(__DIR__ . '/../../../../../../cli-toolkit', isRecursive: true)
                 ->scriptClassName(ShowHelpPage::class)
                 ->excludeDirectory(__DIR__ . '/../../../../../tests')

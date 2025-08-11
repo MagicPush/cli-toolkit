@@ -10,4 +10,4 @@ require_once __DIR__ . '/../../../../../init-console.php';
 
 // Neither of corresponding launching substrings are present.
 $config   = Parametizer::newConfig();
-$launcher = new ScriptClassLauncher(new ScriptClassDetector());
+$launcher = ScriptClassLauncher::create(ScriptClassDetector::create());

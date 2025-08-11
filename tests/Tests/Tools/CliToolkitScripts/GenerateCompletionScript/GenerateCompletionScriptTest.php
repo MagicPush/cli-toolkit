@@ -178,7 +178,7 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
                      *  * 'no-run-no-execute':         no exact 'exec' substrings detected,
                      *                                     {@see ScriptFileDetector::SUBSTR_*_EXEC};
                      *  * 'Something':                 lacks at least proper 'exec' substring
-                     *                                 (for now we assume that this is good enough to distinguish
+                     *                                 (for now, we assume that this is good enough to distinguish
                      *                                 plain scripts and script classes);
                      *  * 'somewhat-wrong-ext':        wrong extension file
                      *                                     (not {@see ScriptDetectorAbstract::FILE_EXTENSION}).

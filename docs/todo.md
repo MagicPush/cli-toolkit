@@ -87,20 +87,6 @@ The list of plans and ideas for future development.
 <details>
 <summary>Points to consider</summary>
 
-1. - [ ] [features-manual.md](features-manual.md):
-    1. - [x] A comparison between "plain scripts" and "classes".
-        1. - [x] Start with a "summary" paragraph.
-    1. - [x] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
-        1. - [x] Make a link to this from the comparison.
-    1. - [x] [execute-class.php](../tools/cli-toolkit/execute-class.php)
-    1. - [x] Built-in subcommands.
-        1. - [x] `list` as a default value.
-             No other parameters are processed correctly unless `list` is specified explicitly.
-        1. - [x] `ConfigBuilder::shortDescription()`
-    1. - [x] [Question.php](../src/Question/Question.php)
-    1. - [ ] (if relevant) Update comments generated in
-         [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
-         with links to the manual.
 1. - [ ] FINISHING MOVES:
     1. - [x] Renaming, moving and other trivial refactoring:
         1. - [x] `../src/Parametizer/Script` -> `.../ScriptClass`
@@ -124,7 +110,8 @@ The list of plans and ideas for future development.
 
         - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
-    1. - [ ] Make creating buildable instances (like detectors) with `create` static methods. 
+    1. - [x] Make creating buildable instances that are expected to be called by users (like detectors)
+         with `create` static methods. 
     1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.
 
@@ -311,6 +298,20 @@ The list of plans and ideas for future development.
     1. - [ ] ~~Composer post install message with the generator launch command.~~
 
          ~~See https://getcomposer.org/doc/articles/scripts.md~~
+1. - [x] [features-manual.md](features-manual.md):
+    1. - [x] A comparison between "plain scripts" and "classes".
+        1. - [x] Start with a "summary" paragraph.
+    1. - [x] Launcher performance. Describe possible approaches (including the built-in caching mechanism).
+        1. - [x] Make a link to this from the comparison.
+    1. - [x] [execute-class.php](../tools/cli-toolkit/execute-class.php)
+    1. - [x] Built-in subcommands.
+        1. - [x] `list` as a default value.
+             No other parameters are processed correctly unless `list` is specified explicitly.
+        1. - [x] `ConfigBuilder::shortDescription()`
+    1. - [x] [Question.php](../src/Question/Question.php)
+    1. - [ ] ~~(if relevant) Update comments generated in
+         [LauncherSkeleton.php](../tools/cli-toolkit/ScriptClasses/Generate/LauncherSkeleton.php)
+         with links to the manual.~~
 </details>
 
 ## Next major release

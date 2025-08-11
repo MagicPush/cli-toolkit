@@ -15,8 +15,8 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
     protected const string SUBSTR_PARAMETIZER_CONSTRUCT = 'Parametizer::newConfig(';
     /** @see Parametizer::run() */
     protected const string SUBSTR_PARAMETIZER_EXEC = '->run()';
-    /** @see ScriptClassLauncher::__construct() */
-    protected const string SUBSTR_LAUNCHER_CONSTRUCT = 'ScriptClassLauncher(';
+    /** @see ScriptClassLauncher::create() */
+    protected const string SUBSTR_LAUNCHER_CONSTRUCT = 'ScriptClassLauncher::create(';
     /** @see ScriptClassLauncher::execute() */
     protected const string SUBSTR_LAUNCHER_EXEC = '->execute()';
 

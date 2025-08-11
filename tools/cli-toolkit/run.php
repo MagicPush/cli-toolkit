@@ -8,11 +8,11 @@ use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\ScriptClassLauncher;
 use MagicPush\CliToolkit\Parametizer\ScriptDetector\ScriptClassDetector;
 
-$scriptClassDetector = (new ScriptClassDetector(throwOnException: true))
+$scriptClassDetector = ScriptClassDetector::create(throwOnException: true)
     ->searchDirectory(__DIR__ . '/ScriptClasses');
-$configBuilder = Parametizer::newConfig(throwOnException: true);
-$configBuilder->description('A launcher for cli-toolkit stock scripts.');
+$configBuilder = Parametizer::newConfig(throwOnException: true)
+    ->description('A launcher for cli-toolkit stock scripts.');
 
-(new ScriptClassLauncher($scriptClassDetector, $configBuilder))
+ScriptClassLauncher::create($scriptClassDetector, $configBuilder)
     ->throwOnException()
     ->execute();

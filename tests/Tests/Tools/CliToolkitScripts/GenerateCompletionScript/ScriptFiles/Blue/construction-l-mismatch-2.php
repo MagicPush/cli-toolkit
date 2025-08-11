@@ -8,6 +8,6 @@ use MagicPush\CliToolkit\Tests\Utils\TestUtils;
 
 require_once __DIR__ . '/../../../../../init-console.php';
 
-$launcher = new ScriptClassLauncher(new ScriptClassDetector());
+$launcher = ScriptClassLauncher::create(ScriptClassDetector::create());
 TestUtils::newConfig()
     ->run();
