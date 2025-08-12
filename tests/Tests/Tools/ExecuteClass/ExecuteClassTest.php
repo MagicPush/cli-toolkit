@@ -19,12 +19,12 @@ final class ExecuteClassTest extends TestCaseAbstract {
     private const string EXECUTOR_SCRIPT_PATH = __DIR__ . '/scripts/run-with-loaded-test-classes.php';
 
 
-    #[DataProvider('provideSuccessfulClassLaunches')]
     /**
      * Tests that valid classes are executed as expected.
      *
      * @see ../../../../tools/cli-toolkit/execute-class.php
      */
+    #[DataProvider('provideSuccessfulClassLaunches')]
     public function testSuccessfulClassLaunches(string $parametersString, string $expectedOutput): void {
         assertSame(
             $expectedOutput,
@@ -52,7 +52,7 @@ final class ExecuteClassTest extends TestCaseAbstract {
 
                     OPTIONS
 
-                            --help       Show full help page.
+                            --help        Show full help page.
 
                       -f,   --flag
 
@@ -60,7 +60,7 @@ final class ExecuteClassTest extends TestCaseAbstract {
 
                     ARGUMENTS
 
-                      <array-argument>   (multiple values allowed)
+                      <array-argument>    (multiple values allowed)
                       (required)
 
 
@@ -78,7 +78,7 @@ final class ExecuteClassTest extends TestCaseAbstract {
 
                     OPTIONS
 
-                      --help   Show full help page.
+                      --help    Show full help page.
 
 
                     TEXT,
@@ -106,12 +106,12 @@ final class ExecuteClassTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideInvalidClasses')]
     /**
      * Tests invalid class entries.
      *
      * @see ../../../../tools/cli-toolkit/execute-class.php
      */
+    #[DataProvider('provideInvalidClasses')]
     public function testInvalidClasses(string $parametersString, string $expectedErrorSubstring): void {
         static::assertAnyErrorOutput(
             self::EXECUTOR_SCRIPT_PATH,

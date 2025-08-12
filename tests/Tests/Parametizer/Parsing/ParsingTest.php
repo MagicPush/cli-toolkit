@@ -13,7 +13,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ParsingTest extends TestCaseAbstract {
-    #[DataProvider('provideParsingSuccess')]
     /**
      * Test successful values parsing for different parameters.
      *
@@ -27,6 +26,7 @@ final class ParsingTest extends TestCaseAbstract {
      * @see ParameterAbstract::allowedValues()
      * @see VariableBuilderAbstract::allowedValues()
      */
+    #[DataProvider('provideParsingSuccess')]
     public function testParsingSuccess(string $parametersString, array $expectedValues): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/lots-of-params.php', $parametersString);
 
@@ -238,7 +238,6 @@ final class ParsingTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideParsingManyFlagsSuccess')]
     /**
      * Successful execution of specific test scripts.
      *
@@ -246,6 +245,7 @@ final class ParsingTest extends TestCaseAbstract {
      * @see Parametizer::run()
      * @see Parser::read()
      */
+    #[DataProvider('provideParsingManyFlagsSuccess')]
     public function testParsingManyFlagsSuccess(
         string $scriptPath,
         string $parametersString,
@@ -295,7 +295,6 @@ final class ParsingTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideParseErrorsWithHelp')]
     /**
      * Tests parameters parse errors.
      *
@@ -313,6 +312,7 @@ final class ParsingTest extends TestCaseAbstract {
      * @see ParameterAbstract::areAllowedValuesHiddenFromHelp()
      * @see VariableBuilderAbstract::allowedValues()
      */
+    #[DataProvider('provideParseErrorsWithHelp')]
     public function testParseErrorsWithHelp(
         string $scriptPath,
         string $parametersString,
@@ -333,16 +333,16 @@ final class ParsingTest extends TestCaseAbstract {
                     Need more parameters
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
-                      <arg-required>     Required argument
+                      <arg-required>      Required argument
                       (required)
 
                     STDERR_OUTPUT,
@@ -354,14 +354,14 @@ final class ParsingTest extends TestCaseAbstract {
                     Need a value for --opt-required
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
                     STDERR_OUTPUT,
             ],
@@ -372,9 +372,9 @@ final class ParsingTest extends TestCaseAbstract {
                     Need more parameters
 
 
-                      --help           Show full help page.
+                      --help            Show full help page.
 
-                      <arg-required>   Required argument
+                      <arg-required>    Required argument
                       (required)
 
                     STDERR_OUTPUT,
@@ -386,15 +386,15 @@ final class ParsingTest extends TestCaseAbstract {
                     Need values for --option1 (-f), --option2, --option3 (-t)
 
 
-                            --help        Show full help page.
+                            --help         Show full help page.
 
-                      -f …, --option1=…   First option
+                      -f …, --option1=…    First option
                             (required)
 
-                            --option2=…   Second option
+                            --option2=…    Second option
                             (required)
 
-                      -t …, --option3=…   Third option
+                      -t …, --option3=…    Third option
                             (required)
 
                     STDERR_OUTPUT,
@@ -407,11 +407,11 @@ final class ParsingTest extends TestCaseAbstract {
                     Incorrect value 'D' for argument <arg-optional>
 
 
-                      --help           Show full help page.
+                      --help            Show full help page.
 
-                      <arg-optional>   Optional argument: pick one from the list
-                                       Allowed values: A, B, C
-                                       Default: B
+                      <arg-optional>    Optional argument: pick one from the list
+                                        Allowed values: A, B, C
+                                        Default: B
 
                     STDERR_OUTPUT,
             ],
@@ -423,14 +423,14 @@ final class ParsingTest extends TestCaseAbstract {
                     No value for option --opt-required
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
                     STDERR_OUTPUT,
             ],
@@ -441,14 +441,14 @@ final class ParsingTest extends TestCaseAbstract {
                     No value for option --opt-required
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
                     STDERR_OUTPUT,
             ],
@@ -460,14 +460,14 @@ final class ParsingTest extends TestCaseAbstract {
                     Duplicate option --opt-required (with value 'pink'); already registered value: 'white'
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
                     STDERR_OUTPUT,
             ],
@@ -478,10 +478,10 @@ final class ParsingTest extends TestCaseAbstract {
                     Duplicate value '100' for option --opt-list (-l); already registered values: '100', '800'
 
 
-                            --help         Show full help page.
+                            --help          Show full help page.
 
-                      -l …, --opt-list=…   List of values
-                                           (multiple values allowed)
+                      -l …, --opt-list=…    List of values
+                                            (multiple values allowed)
 
                     STDERR_OUTPUT,
             ],
@@ -493,14 +493,14 @@ final class ParsingTest extends TestCaseAbstract {
                     Incorrect value 'blue' for option --opt-required
 
 
-                      --help             Show full help page.
+                      --help              Show full help page.
 
-                      --opt-required=…   Required option: pick one from the list
-                      (required)         Allowed values:
-                                          - black A pile of books
-                                          - pink  A heap of ponies
-                                          - white
-                                          - 5     Give me "five"!
+                      --opt-required=…    Required option: pick one from the list
+                      (required)          Allowed values:
+                                           - black A pile of books
+                                           - pink  A heap of ponies
+                                           - white
+                                           - 5     Give me "five"!
 
                     STDERR_OUTPUT,
             ],
@@ -512,9 +512,9 @@ final class ParsingTest extends TestCaseAbstract {
                     The flag --flag1 (-f) can not have a value
 
 
-                          --help    Show full help page.
+                          --help     Show full help page.
 
-                      -f, --flag1   Some flag
+                      -f, --flag1    Some flag
 
                     STDERR_OUTPUT,
             ],
@@ -526,12 +526,12 @@ final class ParsingTest extends TestCaseAbstract {
                     Too many arguments, starting with 'unknown1'
 
 
-                      --help           Show full help page.
+                      --help            Show full help page.
 
-                      <argument-one>   First argument
+                      <argument-one>    First argument
                       (required)
 
-                      <argument-two>   Second argument
+                      <argument-two>    Second argument
                       (required)
 
                     STDERR_OUTPUT,
@@ -543,12 +543,12 @@ final class ParsingTest extends TestCaseAbstract {
                     Too many arguments, starting with 'unknown1'
 
 
-                      --help           Show full help page.
+                      --help            Show full help page.
 
-                      <argument-one>   First argument
+                      <argument-one>    First argument
                       (required)
 
-                      <argument-two>   Second argument
+                      <argument-two>    Second argument
                       (required)
 
                     STDERR_OUTPUT,
@@ -560,7 +560,7 @@ final class ParsingTest extends TestCaseAbstract {
                     Unknown option '--unknown'
 
 
-                      --help   Show full help page.
+                      --help    Show full help page.
 
                     STDERR_OUTPUT,
             ],
@@ -571,7 +571,7 @@ final class ParsingTest extends TestCaseAbstract {
                     Unknown option '-u'
 
 
-                      --help   Show full help page.
+                      --help    Show full help page.
 
                     STDERR_OUTPUT,
             ],

@@ -19,13 +19,13 @@ use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 
 final class SubcommandTest extends TestCaseAbstract {
-    #[DataProvider('provideConfigSubcommandOks')]
     /**
      * Successful execution scenarios for subcommands.
      *
      * @see Config::commitSubcommandSwitch()
      * @see Config::registerArgument()
      */
+    #[DataProvider('provideConfigSubcommandOks')]
     public function testConfigSubcommandOks(string $script, string $parametersString): void {
         static::assertNoErrorsOutput($script, $parametersString);
     }
@@ -46,7 +46,6 @@ final class SubcommandTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideSubcommandSwitches')]
     /**
      * Tests that subcommand switches may be manually added and customized.
      *
@@ -54,6 +53,7 @@ final class SubcommandTest extends TestCaseAbstract {
      * @see Config::registerArgument()
      * @see Config::newSubcommand()
      */
+    #[DataProvider('provideSubcommandSwitches')]
     public function testSubcommandSwitches(string $scriptPath, string $expectedHelpSubstring): void {
         assertStringContainsString(
             $expectedHelpSubstring,
@@ -69,13 +69,13 @@ final class SubcommandTest extends TestCaseAbstract {
         return [
             'auto' => [
                 'scriptPath'            => __DIR__ . '/scripts/simple.php',
-                'expectedHelpSubstring' => '<subcommand-name>   Allowed values:',
+                'expectedHelpSubstring' => '<subcommand-name>    Allowed values:',
             ],
             'custom' => [
                 'scriptPath'            => __DIR__ . '/scripts/custom-switch.php',
                 'expectedHelpSubstring' => <<<TEXT
-                  <super-switch>   Pick a cool subcommand here!
-                                   Allowed values:
+                  <super-switch>    Pick a cool subcommand here!
+                                    Allowed values:
                 TEXT,
             ],
         ];
@@ -109,13 +109,13 @@ final class SubcommandTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideConfigSubcommandErrors')]
     /**
      * Error execution scenarios for subcommands.
      *
      * @see Config::commitSubcommandSwitch()
      * @see Config::registerArgument()
      */
+    #[DataProvider('provideConfigSubcommandErrors')]
     public function testConfigSubcommandErrors(string $script, string $errorOutput): void {
         static::assertConfigExceptionOutput($script, $errorOutput);
     }
@@ -149,7 +149,6 @@ final class SubcommandTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideParseErrorsInSubcommandsWithHelp')]
     /**
      * Tests if a script help parts are printed for all missing required options (current subcommand level and higher)
      * and all missing required arguments (current subcommand level only).
@@ -161,6 +160,7 @@ final class SubcommandTest extends TestCaseAbstract {
      * @see CliRequestProcessor::setRequestParam()
      * @see CliRequestProcessor::validate()
      */
+    #[DataProvider('provideParseErrorsInSubcommandsWithHelp')]
     public function testParseErrorsInSubcommandsWithHelp(
         string $scriptPath,
         string $parametersString,
@@ -178,87 +178,87 @@ final class SubcommandTest extends TestCaseAbstract {
                 'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
                 'parametersString'    => 'test11',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+                    Need more parameters
 
 
-  --help              Show full help page.
+                      --help               Show full help page.
 
-  --required=…        Required option
-  (required)
+                      --required=…         Required option
+                      (required)
 
-  --required-l2=…     Subcommand required option
-  (required)
+                      --required-l2=…      Subcommand required option
+                      (required)
 
-  <required-arg-l2>   Subcommand required argument
-  (required)
+                      <required-arg-l2>    Subcommand required argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'required-subcommand-and-main-levels-options' => [
                 'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
                 'parametersString'    => 'test11 argValue',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need values for --required, --required-l2
+                    Need values for --required, --required-l2
 
 
-  --help            Show full help page.
+                      --help             Show full help page.
 
-  --required=…      Required option
-  (required)
+                      --required=…       Required option
+                      (required)
 
-  --required-l2=…   Subcommand required option
-  (required)
+                      --required-l2=…    Subcommand required option
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'required-subcommand-level-argument-and-main-level-option' => [
                 'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
                 'parametersString'    => 'test11 --required-l2=value',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need more parameters
+                    Need more parameters
 
 
-  --help              Show full help page.
+                      --help               Show full help page.
 
-  --required=…        Required option
-  (required)
+                      --required=…         Required option
+                      (required)
 
-  <required-arg-l2>   Subcommand required argument
-  (required)
+                      <required-arg-l2>    Subcommand required argument
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'required-main-level-option' => [
                 'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
                 'parametersString'    => 'test11 --required-l2=value argValue',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need a value for --required
+                    Need a value for --required
 
 
-  --help         Show full help page.
+                      --help          Show full help page.
 
-  --required=…   Required option
-  (required)
+                      --required=…    Required option
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
 
             'required-subcommand-level-option' => [
                 'scriptPath'          => __DIR__ . '/' . 'scripts/required-options-different-levels.php',
                 'parametersString'    => '--required=value test11 argValue',
                 'expectedErrorOutput' => <<<STDERR_OUTPUT
-Need a value for --required-l2
+                    Need a value for --required-l2
 
 
-  --help            Show full help page.
+                      --help             Show full help page.
 
-  --required-l2=…   Subcommand required option
-  (required)
+                      --required-l2=…    Subcommand required option
+                      (required)
 
-STDERR_OUTPUT,
+                    STDERR_OUTPUT,
             ],
         ];
     }
@@ -355,12 +355,12 @@ STDERR_OUTPUT,
         );
     }
 
-    #[DataProvider('provideReadingSubcommandParameters')]
     /**
      * Tests reading parameters in different subcommands (branches).
      *
      * @see CliRequest::getSubcommandRequest()
      */
+    #[DataProvider('provideReadingSubcommandParameters')]
     public function testReadingSubcommandParameters(string $subcommandName, string $expectedOutput): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/same-name-different-branches.php', $subcommandName);
         assertSame($expectedOutput, $result->getStdOut());
@@ -382,7 +382,6 @@ STDERR_OUTPUT,
         ];
     }
 
-    #[DataProvider('provideBuiltInSubcommandExecutionReplacesScriptExecution')]
     /**
      * Tests that a built-in subcommand, if called, executes right after parameters parsing, but after that
      * the whole process is terminated - no main script execution happens.
@@ -392,6 +391,7 @@ STDERR_OUTPUT,
      * @see Config::addBuiltInSubcommands()
      * @see Parametizer::run()
      */
+    #[DataProvider('provideBuiltInSubcommandExecutionReplacesScriptExecution')]
     public function testBuiltInSubcommandExecutionReplacesScriptExecution(
         string $subcommandName,
         bool $isExceptionExpected,

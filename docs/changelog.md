@@ -47,10 +47,25 @@ This change log references the repository changes and releases, which respect [s
     1. Removed `getSubcommandsBlock()` (so as "COMMANDS" block output from `getFullHelp()`)
        to replace it with `list` built-in subcommand functionality.
     1. Removed `getBaseScriptName()` obsolete method.
+    1. Changed visibility from `public` to `protected` for methods `getDescriptionBlock()` and `getUsagesBlock()`.
+    1. Added the third, mandatory `HelpFormatter` parameter to `getUsageForParseErrorException()`.
+    1. `getParamsBlock()`:
+        1. Made non-static.
+        1. Removed `$formatter` parameter.
+        1. Changed visibility from `public` to `protected`.
     1. `makeDefinitionList()`:
-        1. The third parameter is changed into an array of `HelpParameterDefinition`.
-        2. Padding improvement: option full names are padded to start at the same column,
+        1. Made non-static.
+        1. Removed `$formatter`, the first parameter.
+        1. The last parameter, `string $title` is changed into an array of `HelpParameterDefinition`.
+        1. Padding improvement: option full names are padded to start at the same column,
            if there is at least one short name present.
+    1. Made `makeParamDescription` non-static, removed `$formatter` parameter.
+    1. Moved constants to `EnvironmentConfig` as its properties to ease changing of the corresponding settings:
+        * `PAD_LEFT_MAIN` -> `helpGeneratorPaddingLeftMain`
+        * `PAD_LEFT_PARAM_DESCRIPTION` -> `helpGeneratorPaddingLeftParameterDescription`
+
+          The value is changed from `3` to `4`.
+        * `USAGE_MAX_OPTIONS` -> `helpGeneratorUsageNonRequiredOptionsMax`
 1. `TerminalFormatter::__construct()` expects `bool $isDisabled` instead of `int|resource $resource`: now it is
    possible to instantiate a formatter object that applies (or not) formatting with guarantee.
 
@@ -65,10 +80,10 @@ This change log references the repository changes and releases, which respect [s
         1. `executeAutocomplete()` -> `executeCompletion`
         1. `generateAutocompleteScript()` -> `generateCompletionCode()`
     1. [Config.php](../src/Parametizer/Config/Config.php):
-        1. `OPTION_NAME_HELP` => `PARAMETER_NAME_HELP`
-        1. `OPTION_NAME_AUTOCOMPLETE_GENERATE` => `PARAMETER_NAME_COMPLETION_GENERATE`
+        1. `OPTION_NAME_HELP` -> `PARAMETER_NAME_HELP`
+        1. `OPTION_NAME_AUTOCOMPLETE_GENERATE` -> `PARAMETER_NAME_COMPLETION_GENERATE`
         (its value `parametizer-internal-autocomplete-generate` -> `parametizer-internal-completion-generate`)
-        1. `OPTION_NAME_AUTOCOMPLETE_EXECUTE` => `PARAMETER_NAME_COMPLETION_EXECUTE`
+        1. `OPTION_NAME_AUTOCOMPLETE_EXECUTE` -> `PARAMETER_NAME_COMPLETION_EXECUTE`
            (its value `parametizer-internal-autocomplete-execute` -> `parametizer-internal-completion-execute`)
 1. [composer.json](../composer.json): the `type` is changed from `project` to `library`.
    Not sure if it should be treated as incompatibility, but let's note it here just in case.
@@ -122,6 +137,11 @@ This change log references the repository changes and releases, which respect [s
           and a subcommand name to show all available subcommands.
     1. Added `getScriptShortDescription()` that returns a manual short description set in a config
        or a shortened full description (based on specified `EnvironmentConfig` object).
+    1. Added the second, `HelpFormatter` parameter to `__construct()`.
+1. Added new setting for [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php):
+    * [helpGeneratorPaddingLeftMain](features-manual.md#helpgeneratorpaddingleftmain)
+    * [helpGeneratorPaddingLeftParameterDescription](features-manual.md#helpgeneratorpaddingleftparameterdescription)
+    * [helpGeneratorUsageNonRequiredOptionsMax](features-manual.md#helpgeneratorusagenonrequiredoptionsmax)
 1. [CliRequest.php](../src/Parametizer/CliRequest/CliRequest.php):
     1. `__construct()` changes:
         1. `$config` parameter is made _public_ (from _protected_).
@@ -144,8 +164,6 @@ This change log references the repository changes and releases, which respect [s
     1. Added `$shortDescription` protected property, the setter `shortDescription` and the getter `getShortDescription`.
 1. [CliToolkitScriptAbstract.php](../tools/cli-toolkit/ScriptClasses/CliToolkitScriptAbstract.php) as a basement for
    all [tools/cli-toolkit](../tools/cli-toolkit) scripts.
-1. [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) as a tool
-   to test the performance and other "law of large numbers" cases, when a launcher includes lots of class scripts.
 1. Formatters:
     1. Added `HelpFormatter::invert()`.
     1. Added `ScriptFormatter::note()`.
@@ -156,6 +174,8 @@ This change log references the repository changes and releases, which respect [s
        before interrupting script's execution.
 1. [Utils.php](../src/Utils.php) for various stuff used in different places
    and structurally not fitting into any other class.
+1. [GenerateMassTestScripts.php](../tools/cli-toolkit/ScriptClasses/Internal/GenerateMassTestScripts.php) as a tool
+   to test the performance and other "law of large numbers" cases, when a launcher includes lots of class scripts.
 
 ### Patches
 

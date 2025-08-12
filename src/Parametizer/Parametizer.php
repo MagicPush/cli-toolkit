@@ -65,6 +65,7 @@ class Parametizer {
                         HelpGenerator::getUsageForParseErrorException(
                             $e,
                             $cliRequestProcessor->getInnermostBranchConfig(),
+                            HelpFormatter::createForStdErr(),
                         ),
                     );
                 }

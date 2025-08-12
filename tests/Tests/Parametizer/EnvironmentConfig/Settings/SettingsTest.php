@@ -11,7 +11,9 @@ use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcomman
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
+use function PHPUnit\Framework\assertStringEndsWith;
 use function PHPUnit\Framework\assertTrue;
 
 final class SettingsTest extends TestCaseAbstract {
@@ -36,13 +38,13 @@ final class SettingsTest extends TestCaseAbstract {
         }
     }
 
-    #[DataProvider('provideOptionHelpShortName')]
     /**
      * Tests setting up the 'help' option short name - some character and no character (disabling a short name).
      *
      * @see EnvironmentConfig::$optionHelpShortName
      * @see Config::addDefaultOptions()
      */
+    #[DataProvider('provideOptionHelpShortName')]
     public function testOptionHelpShortName(string $parametersString, string $expectedOutputSubstring): void {
         assertStringContainsString(
             $expectedOutputSubstring,
@@ -58,16 +60,15 @@ final class SettingsTest extends TestCaseAbstract {
         return [
             'short-name-set' => [
                 'parametersString'        => '-h h',
-                'expectedOutputSubstring' => PHP_EOL . '  -h, --' . Config::PARAMETER_NAME_HELP . '   Show full help page.',
+                'expectedOutputSubstring' => PHP_EOL . '  -h, --' . Config::PARAMETER_NAME_HELP . '    Show full help page.',
             ],
             'short-name-null' => [
                 'parametersString'        => '--' . Config::PARAMETER_NAME_HELP,
-                'expectedOutputSubstring' => PHP_EOL . '  --' . Config::PARAMETER_NAME_HELP . '   Show full help page.',
+                'expectedOutputSubstring' => PHP_EOL . '  --' . Config::PARAMETER_NAME_HELP . '    Show full help page.',
             ],
         ];
     }
 
-    #[DataProvider('provideHelpGeneratorShortDescriptionLength')]
     /**
      * Tests short description output with different limits.
      *
@@ -75,6 +76,7 @@ final class SettingsTest extends TestCaseAbstract {
      * @see EnvironmentConfig::$helpGeneratorShortDescriptionCharsMax
      * @see HelpGenerator::getShortDescription()
      */
+    #[DataProvider('provideHelpGeneratorShortDescriptionLength')]
     public function testHelpGeneratorShortDescriptionLength(
         string $parametersString,
         string $expectedOutputSubstring,
@@ -82,7 +84,7 @@ final class SettingsTest extends TestCaseAbstract {
         assertStringContainsString(
             $expectedOutputSubstring,
             static::assertNoErrorsOutput(
-                __DIR__ . '/scripts/template-short-descriptions.php',
+                __DIR__ . '/scripts/template-help-short-descriptions.php',
                 ListSubcommands::getScriptName() . ' ' . $parametersString,
             )
                 ->getStdOut(),
@@ -131,6 +133,268 @@ final class SettingsTest extends TestCaseAbstract {
             'min-edge' => [
                 'parametersString'        => '34 50',
                 'expectedOutputSubstring' => 'conf-s2    Too short string. Another shorty.' . PHP_EOL,
+            ],
+        ];
+    }
+
+    /**
+     * Tests main left padding for generated help pages.
+     *
+     * @see EnvironmentConfig::$helpGeneratorPaddingLeftMain
+     * @see HelpGenerator::getDescriptionBlock()
+     * @see HelpGenerator::getUsagesBlock()
+     * @see HelpGenerator::makeDefinitionList()
+     */
+    #[DataProvider('provideHelpGeneratorPaddingLeftMain')]
+    public function testHelpGeneratorPaddingLeftMain(
+        int $paddingSize,
+        string $expectedOutput,
+    ): void {
+        assertSame(
+            $expectedOutput,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/template-help-padding-left-main.php',
+                "{$paddingSize} --" . Config::PARAMETER_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideHelpGeneratorPaddingLeftMain(): array {
+        return [
+            'optimal' => [
+                'paddingSize'    => 2,
+                'expectedOutput' => <<<TEXT
+
+                      Script description.
+                      Some more description.
+
+                    USAGE
+
+                      template-help-padding-left-main.php <some-argument>
+
+                    OPTIONS
+
+                      --help    Show full help page.
+
+                    ARGUMENTS
+
+                      <some-argument>
+                      (required)
+
+
+                    TEXT,
+            ],
+            'large' => [
+                'paddingSize'    => 20,
+                'expectedOutput' => <<<TEXT
+
+                                        Script description.
+                                        Some more description.
+
+                    USAGE
+
+                                        template-help-padding-left-main.php <some-argument>
+
+                    OPTIONS
+
+                                        --help    Show full help page.
+
+                    ARGUMENTS
+
+                                        <some-argument>
+                                        (required)
+
+
+                    TEXT,
+            ],
+            'zero' => [
+                'paddingSize'    => 0,
+                'expectedOutput' => <<<TEXT
+
+                    Script description.
+                    Some more description.
+
+                    USAGE
+
+                    template-help-padding-left-main.php <some-argument>
+
+                    OPTIONS
+
+                    --help    Show full help page.
+
+                    ARGUMENTS
+
+                    <some-argument>
+                    (required)
+
+
+                    TEXT,
+            ],
+            'error-negative' => [
+                'paddingSize'    => -1,
+                'expectedOutput' => <<<TEXT
+
+                    Script description.
+                    Some more description.
+
+                    USAGE
+
+                    template-help-padding-left-main.php <some-argument>
+
+                    OPTIONS
+
+                    --help    Show full help page.
+
+                    ARGUMENTS
+
+                    <some-argument>
+                    (required)
+
+
+                    TEXT,
+            ],
+        ];
+    }
+
+    /**
+     * Tests parameters' descriptions (options and arguments) left padding for generated help pages.
+     *
+     * @see EnvironmentConfig::$helpGeneratorPaddingLeftParameterDescription
+     * @see HelpGenerator::makeDefinitionList()
+     */
+    #[DataProvider('provideHelpGeneratorPaddingLeftParameterDescription')]
+    public function testHelpGeneratorPaddingLeftParameterDescription(
+        int $paddingSize,
+        string $expectedOutputEnding,
+    ): void {
+        assertStringEndsWith(
+            $expectedOutputEnding,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/' . 'scripts/template-help-padding-left-param-description.php',
+                "{$paddingSize} --" . Config::PARAMETER_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideHelpGeneratorPaddingLeftParameterDescription(): array {
+        return [
+            'optimal' => [
+                'paddingSize'          => 2,
+                'expectedOutputEnding' => <<<TEXT
+
+                      --help           Show full help page.
+
+                      --some-option=…  Option description.
+
+                    ARGUMENTS
+
+                      <some-argument>  Argument description.
+                      (required)
+
+
+                    TEXT,
+            ],
+            'large' => [
+                'paddingSize'          => 20,
+                'expectedOutputEnding' => <<<TEXT
+
+                      --help                             Show full help page.
+
+                      --some-option=…                    Option description.
+
+                    ARGUMENTS
+
+                      <some-argument>                    Argument description.
+                      (required)
+
+
+                    TEXT,
+            ],
+            'zero' => [
+                'paddingSize'          => 0,
+                'expectedOutputEnding' => <<<TEXT
+
+                      --help         Show full help page.
+
+                      --some-option=…Option description.
+
+                    ARGUMENTS
+
+                      <some-argument>Argument description.
+                      (required)
+
+
+                    TEXT,
+            ],
+            'error-negative' => [
+                'paddingSize'          => -1,
+                'expectedOutputEnding' => <<<TEXT
+
+                      --help         Show full help page.
+
+                      --some-option=…Option description.
+
+                    ARGUMENTS
+
+                      <some-argument>Argument description.
+                      (required)
+
+
+                    TEXT,
+            ],
+        ];
+    }
+
+    /**
+     * Tests how non-required options are noted in a help page usage template depending on the 'max' setting.
+     *
+     * @see EnvironmentConfig::$helpGeneratorUsageNonRequiredOptionsMax
+     * @see HelpGenerator::getUsageTemplate()
+     */
+    #[DataProvider('provideHelpGeneratorUsageNonRequiredOptionsMax')]
+    public function testHelpGeneratorUsageNonRequiredOptionsMax(int $value, string $expectedUsageSubstring): void {
+        assertStringContainsString(
+            $expectedUsageSubstring,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/template-help-usage-opt-optional-max.php',
+                "{$value} --" . Config::PARAMETER_NAME_HELP,
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideHelpGeneratorUsageNonRequiredOptionsMax(): array {
+        return [
+            'too-much' => [
+                'value'                  => 100,
+                'expectedUsageSubstring' => '[-fs] [--opt-1=…] [--opt-2=…] [--flag-1] [--flag-2] --required-1=… --required-2=… --required-3=… --required-4=…',
+            ],
+            'exact' => [
+                'value'                  => 4,
+                'expectedUsageSubstring' => '[-fs] [--opt-1=…] [--opt-2=…] [--flag-1] [--flag-2] --required-1=… --required-2=… --required-3=… --required-4=…',
+            ],
+            'too-low' => [
+                'value'                  => 3,
+                'expectedUsageSubstring' => '[-fs] [options] --required-1=… --required-2=… --required-3=… --required-4=…',
+            ],
+            'zero' => [
+                'value'                  => 0,
+                'expectedUsageSubstring' => '[-fs] [options] --required-1=… --required-2=… --required-3=… --required-4=…',
+            ],
+            'negative' => [
+                'value'                  => -100,
+                'expectedUsageSubstring' => '[-fs] [options] --required-1=… --required-2=… --required-3=… --required-4=…',
             ],
         ];
     }

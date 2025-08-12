@@ -57,40 +57,40 @@ final class HelpGeneratorTest extends TestCaseAbstract {
 
         OPTIONS
 
-                --help               Show full help page.
+                --help                Show full help page.
 
-          -o …, --opt-required=…     Required option: pick one from the list
-                (required)           Allowed values:
-                                      - black A pile of books
-                                      - pink  A heap of ponies
-                                      - white
-                                      - 5     Give me "five"!
+          -o …, --opt-required=…      Required option: pick one from the list
+                (required)            Allowed values:
+                                       - black A pile of books
+                                       - pink  A heap of ponies
+                                       - white
+                                       - 5     Give me "five"!
 
-                --opt-required-2=…   Must be above non-required options,
-                (required)           but below "--opt-required" (alphabetical order)
+                --opt-required-2=…    Must be above non-required options,
+                (required)            but below "--opt-required" (alphabetical order)
 
-          -f,   --flag1              Some flag
+          -f,   --flag1               Some flag
 
           -g,   --flag2
 
-                --flag3              Flag without short name
+                --flag3               Flag without short name
 
-                --opt-default=…      Non-required option with a default value
-                                     Default: opt_default_value
+                --opt-default=…       Non-required option with a default value
+                                      Default: opt_default_value
 
-          -l …, --opt-list=…         List of values
-                                     (multiple values allowed)
+          -l …, --opt-list=…          List of values
+                                      (multiple values allowed)
 
         ARGUMENTS
 
-          <arg-required>   Required argument
+          <arg-required>    Required argument
           (required)
 
-          <arg-optional>   Optional argument: pick one from the list
-                           Allowed values: A, B, C
-                           Default: B
+          <arg-optional>    Optional argument: pick one from the list
+                            Allowed values: A, B, C
+                            Default: B
 
-          <arg-list>       (multiple values allowed)
+          <arg-list>        (multiple values allowed)
 
 
         HELP,
@@ -116,15 +116,15 @@ final class HelpGeneratorTest extends TestCaseAbstract {
 
         OPTIONS
 
-          --help   Show full help page.
+          --help    Show full help page.
 
         ARGUMENTS
 
-          <subcommand-name-l1>   LEVEL 1
-                                 Allowed values: 4 subcommands available (see 'list' subcommand output)
-                                 Subcommand help: <subcommand-name-l1> --help
-                                          ... or: help <subcommand-name-l1>
-                                 Default: list
+          <subcommand-name-l1>    LEVEL 1
+                                  Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                  Subcommand help: <subcommand-name-l1> --help
+                                           ... or: help <subcommand-name-l1>
+                                  Default: list
 
 
         HELP,
@@ -152,17 +152,17 @@ final class HelpGeneratorTest extends TestCaseAbstract {
 
         OPTIONS
 
-          --help        Show full help page.
+          --help         Show full help page.
 
           --name-l3=…
 
         ARGUMENTS
 
-          <subcommand-name-l3>   LEVEL 3
-                                 Allowed values: 4 subcommands available (see 'list' subcommand output)
-                                 Subcommand help: <subcommand-name-l3> --help
-                                          ... or: help <subcommand-name-l3>
-                                 Default: list
+          <subcommand-name-l3>    LEVEL 3
+                                  Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                  Subcommand help: <subcommand-name-l3> --help
+                                           ... or: help <subcommand-name-l3>
+                                  Default: list
 
 
         HELP,
@@ -200,10 +200,9 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-              Short description on the first line.
-              The rest of long description is omitted while shown beside subcommand possible values.
-            HELP
-            ,
+                  Short description on the first line.
+                  The rest of long description is omitted while shown beside subcommand possible values.
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 'multiline --' . Config::PARAMETER_NAME_HELP,
@@ -213,10 +212,9 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-              Here is a sort of... short description. The long description continues on the same line and this line is too long, but it is still not enough so...
-              Here is another line :)
-            HELP
-            ,
+                  Here is a sort of... short description. The long description continues on the same line and this line is too long, but it is still not enough so...
+                  Here is another line :)
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 'long-string --' . Config::PARAMETER_NAME_HELP,
@@ -226,9 +224,8 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-              Too short to stop here. So the description continues for some more words before the limit is reached.
-            HELP
-            ,
+                  Too short to stop here. So the description continues for some more words before the limit is reached.
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 'long-string-short-sentence --' . Config::PARAMETER_NAME_HELP,
@@ -238,9 +235,8 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-              Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbecutbrutallyafterthecharacterslimitisreached.
-            HELP
-            ,
+                  Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbecutbrutallyafterthecharacterslimitisreached.
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 'unbreakable-long-line --' . Config::PARAMETER_NAME_HELP,
@@ -252,9 +248,8 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertStringStartsWith(
             <<<HELP
 
-              Shows the sorted list of available subcommands with their short descriptions.
-            HELP
-            ,
+                  Shows the sorted list of available subcommands with their short descriptions.
+                HELP,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/subcommands-long-description.php',
                 ListSubcommands::getScriptName() . ' --' . Config::PARAMETER_NAME_HELP,

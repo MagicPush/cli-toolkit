@@ -15,23 +15,23 @@ use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcomman
 use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 
 class HelpGenerator {
-    protected const int PAD_LEFT_MAIN              = 2;
-    protected const int PAD_LEFT_PARAM_DESCRIPTION = 3;
-
-    protected const int USAGE_MAX_OPTIONS = 5;
-
     protected readonly HelpFormatter $formatter;
 
 
-    public function __construct(protected readonly Config $config) {
-        $this->formatter = HelpFormatter::createForStdOut();
+    /**
+     * By default (`$formatter = null`), the formatter instance is created via {@see HelpFormatter::createForStdOut()}.
+     *
+     * @param static|null $formatter
+     */
+    public function __construct(protected readonly Config $config, ?HelpFormatter $formatter = null) {
+        $this->formatter = $formatter ?? HelpFormatter::createForStdOut();
     }
 
     public function getFullHelp(): string {
         return $this->getDescriptionBlock()
             . $this->getUsagesBlock()
-            . static::getParamsBlock($this->formatter, $this->config->getOptions(), 'OPTIONS')
-            . static::getParamsBlock($this->formatter, $this->config->getArguments(), 'ARGUMENTS')
+            . $this->getParamsBlock($this->config->getOptions(), 'OPTIONS')
+            . $this->getParamsBlock($this->config->getArguments(), 'ARGUMENTS')
             . PHP_EOL;
     }
 
@@ -76,9 +76,11 @@ class HelpGenerator {
             $usageTemplate .= " [-{$flagShortNames}]";
         }
         if ($optionTemplateStrings) {
-            $usageTemplate .= count($optionTemplateStrings) > static::USAGE_MAX_OPTIONS
-                ? ' [options]'
-                : ' [' . implode('] [', $optionTemplateStrings) . ']';
+            if (count($optionTemplateStrings) > $config->getEnvConfig()->helpGeneratorUsageNonRequiredOptionsMax) {
+                $usageTemplate .= ' [options]';
+            } else {
+                $usageTemplate .= ' [' . implode('] [', $optionTemplateStrings) . ']';
+            }
         }
         if ($requiredOptionTemplateStrings) {
             $usageTemplate .= ' ' . implode(' ', $requiredOptionTemplateStrings);
@@ -102,7 +104,7 @@ class HelpGenerator {
         return $usageTemplate;
     }
 
-    public function getDescriptionBlock(): string {
+    protected function getDescriptionBlock(): string {
         $description = $this->config->getDescription();
         if ('' === $description) {
             $description = $this->config->getShortDescription();
@@ -158,24 +160,24 @@ class HelpGenerator {
         }
 
         return PHP_EOL
-            . static::padTextBlock($description, static::PAD_LEFT_MAIN, true)
+            . static::padTextBlock($description, $this->config->getEnvConfig()->helpGeneratorPaddingLeftMain, true)
             . PHP_EOL;
     }
 
     /**
      * Returns the whole USAGE text block containing usage template and examples.
      */
-    public function getUsagesBlock(): string {
+    protected function getUsagesBlock(): string {
         $output = $this->formatter->section('USAGE') . PHP_EOL . PHP_EOL;
 
         // Print general usage template:
         $output .= $this->getUsageTemplate($this->config);
 
-        $branchConfig    = $this->config;
+        $currentConfig   = $this->config;
         $scriptNameParts = [];
         do {
-            $scriptNameParts[] = $branchConfig->getScriptName();
-        } while ($branchConfig = $branchConfig->getParent());
+            $scriptNameParts[] = $currentConfig->getScriptName();
+        } while ($currentConfig = $currentConfig->getParent());
         $baseScriptName = implode(' ', array_reverse($scriptNameParts));
 
         $usageExamples = $this->config->getUsageExamples();
@@ -199,14 +201,14 @@ class HelpGenerator {
         }
 
         return PHP_EOL
-            . static::padTextBlock($output, static::PAD_LEFT_MAIN)
+            . static::padTextBlock($output, $this->config->getEnvConfig()->helpGeneratorPaddingLeftMain)
             . PHP_EOL;
     }
 
     /**
      * @param ParameterAbstract[] $params
      */
-    public static function getParamsBlock(HelpFormatter $formatter, array $params, string $sectionTitle = ''): string {
+    protected function getParamsBlock(array $params, string $sectionTitle = ''): string {
         $arguments = [];
         $options   = [];
         foreach ($params as $param) {
@@ -255,14 +257,14 @@ class HelpGenerator {
                 : [$param->getTitleForHelp()];
 
             $parameterDefinitions[] = new HelpParameterDefinition(
-                name: $formatter->paramTitle($paramNames[0]),
-                shortName: isset($paramNames[1]) ? $formatter->paramTitle($paramNames[1]) : '',
-                description: static::makeParamDescription($formatter, $param),
-                required: $param->isRequired() ? $formatter->paramRequired('(required)') : '',
+                name: $this->formatter->paramTitle($paramNames[0]),
+                shortName: isset($paramNames[1]) ? $this->formatter->paramTitle($paramNames[1]) : '',
+                description: $this->makeParamDescription($param),
+                required: $param->isRequired() ? $this->formatter->paramRequired('(required)') : '',
             );
         }
 
-        return static::makeDefinitionList($formatter, $sectionTitle, $parameterDefinitions);
+        return $this->makeDefinitionList($sectionTitle, $parameterDefinitions);
     }
 
     /**
@@ -271,42 +273,43 @@ class HelpGenerator {
     public static function getUsageForParseErrorException(
         ParseErrorException $exception,
         Config $config,
+        HelpFormatter $formatter,
     ): string {
         $invalidParams = [];
         $helpOption    = $config->getOptions()[Config::PARAMETER_NAME_HELP] ?? null;
         if (null !== $helpOption) {
             $invalidParams[] = $helpOption;
         }
-        $invalidParams = [...$invalidParams, ...$exception->getInvalidParams()];
 
-        return static::getParamsBlock(HelpFormatter::createForStdErr(), $invalidParams);
+        return (new static($config, $formatter))
+            ->getParamsBlock([...$invalidParams, ...$exception->getInvalidParams()]);
     }
 
-    protected static function makeParamDescription(HelpFormatter $formatter, ParameterAbstract $param): string {
+    protected function makeParamDescription(ParameterAbstract $param): string {
         $description = $param->getDescription();
         if ($description) {
             $description = static::unindent($description);
         }
 
-        $allowedValuesHeaderFormatted = $formatter->helpNote('Allowed values:');
+        $allowedValuesHeaderFormatted = $this->formatter->helpNote('Allowed values:');
 
         if ($param->isSubcommandSwitch()) {
             $description .= ('' !== $description) ? PHP_EOL : '';
 
-            $subcommandListFormatted = $formatter->paramValue(ListSubcommands::getScriptName());
+            $subcommandListFormatted = $this->formatter->paramValue(ListSubcommands::getScriptName());
 
             $description .= $allowedValuesHeaderFormatted
-                . ' ' . $formatter->paramRequired((string) count($param->getAllowedValues())) . ' subcommands available'
+                . ' ' . $this->formatter->paramRequired((string) count($param->getAllowedValues())) . ' subcommands available'
                 . " (see '{$subcommandListFormatted}' subcommand output)";
 
             $subcommandDescriptionHeader    = 'Subcommand help:';
             $subcommandDescriptionHeaderAlt =
                 mb_str_pad('... or:', mb_strlen($subcommandDescriptionHeader), ' ', STR_PAD_LEFT);
 
-            $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeader)
-                . " <{$param->getName()}> " . $formatter->paramValue('--' . Config::PARAMETER_NAME_HELP);
-            $description .= PHP_EOL . $formatter->helpNote($subcommandDescriptionHeaderAlt)
-                . ' ' . $formatter->paramValue(ShowHelpPage::getScriptName()) . " <{$param->getName()}>";
+            $description .= PHP_EOL . $this->formatter->helpNote($subcommandDescriptionHeader)
+                . " <{$param->getName()}> " . $this->formatter->paramValue('--' . Config::PARAMETER_NAME_HELP);
+            $description .= PHP_EOL . $this->formatter->helpNote($subcommandDescriptionHeaderAlt)
+                . ' ' . $this->formatter->paramValue(ShowHelpPage::getScriptName()) . " <{$param->getName()}>";
         } elseif (!$param->areAllowedValuesHiddenFromHelp()) {
             // Print allowed values list.
             // Print in long format if there is a description for at least one value. Otherwise, print values in one line.
@@ -329,7 +332,7 @@ class HelpGenerator {
                     $maxLength   = max(array_map('mb_strlen', array_keys($stringValues)));
                     foreach ($stringValues as $value => $valueDescription) {
                         $description .= PHP_EOL . ' - '
-                            . $formatter->paramValue(
+                            . $this->formatter->paramValue(
                                 $valueDescription ? mb_str_pad((string) $value, $maxLength + 1) : $value
                             );
                         if ($valueDescription) {
@@ -338,14 +341,17 @@ class HelpGenerator {
                     }
                 } else {
                     $description .= ' '
-                        . implode(', ', static::getPossibleValuesFormatted($formatter, array_keys($stringValues)));
+                        . implode(
+                            ', ',
+                            static::getPossibleValuesFormatted($this->formatter, array_keys($stringValues)),
+                        );
                 }
             }
         }
 
         if ($param->isArray()) {
             $description .= ('' !== $description) ? PHP_EOL : '';
-            $description .= $formatter->helpImportant("(multiple values allowed)");
+            $description .= $this->formatter->helpImportant("(multiple values allowed)");
         }
 
         $flagValue = ($param instanceof Option) ? $param->getFlagValue() : null;
@@ -355,9 +361,9 @@ class HelpGenerator {
         if (!$flagValue && null !== $default && [] !== $default && '' !== $default) {
             $defaultValue = static::convertValueToString($default);
             if (null !== $defaultValue) {
-                $defaultValue = $formatter->paramValue($defaultValue);
+                $defaultValue = $this->formatter->paramValue($defaultValue);
                 $description  .= ('' !== $description) ? PHP_EOL : '';
-                $description  .= $formatter->helpNote("Default: {$defaultValue}");
+                $description  .= $this->formatter->helpNote("Default: {$defaultValue}");
             }
         }
 
@@ -392,8 +398,7 @@ class HelpGenerator {
     /**
      * @param HelpParameterDefinition[] $parameterDefinitions
      */
-    protected static function makeDefinitionList(
-        HelpFormatter $formatter,
+    protected function makeDefinitionList(
         string $sectionTitle,
         array $parameterDefinitions,
     ): string {
@@ -411,7 +416,7 @@ class HelpGenerator {
             $shortName = $definition->shortName;
             if ('' !== $definition->shortName) {
                 $shortName       .= ', ';
-                $shortNameLength = $formatter::mbStrlenNoFormat($shortName);
+                $shortNameLength = $this->formatter::mbStrlenNoFormat($shortName);
                 if ($shortNameMaxLength < $shortNameLength) {
                     $shortNameMaxLength = $shortNameLength;
                 }
@@ -423,7 +428,7 @@ class HelpGenerator {
                 ];
             }
 
-            $nameLength = $formatter::mbStrlenNoFormat($definition->name);
+            $nameLength = $this->formatter::mbStrlenNoFormat($definition->name);
             if ($nameMaxLength < $nameLength) {
                 $nameMaxLength = $nameLength;
             }
@@ -435,7 +440,7 @@ class HelpGenerator {
             ];
 
             if ('' !== $definition->required) {
-                $nameLength = $formatter::mbStrlenNoFormat($definition->required);
+                $nameLength = $this->formatter::mbStrlenNoFormat($definition->required);
                 if ($nameMaxLength < $nameLength) {
                     $nameMaxLength = $nameLength;
                 }
@@ -458,9 +463,10 @@ class HelpGenerator {
         // ... And now we can print the section itself properly padded.
         $text = PHP_EOL;
         if ('' !== $sectionTitle) {
-            $text .= $formatter->section($sectionTitle) . PHP_EOL;
+            $text .= $this->formatter->section($sectionTitle) . PHP_EOL;
         }
 
+        $envConfig = $this->config->getEnvConfig();
         foreach ($definitionsTable as $paramTable) {
             // Extra empty line between parameter definitions:
             $text .= PHP_EOL;
@@ -472,7 +478,7 @@ class HelpGenerator {
                  */
 
                 // 1. Main padding:
-                $text .= str_repeat(' ', static::PAD_LEFT_MAIN);
+                $text .= str_repeat(' ', max(0, $envConfig->helpGeneratorPaddingLeftMain));
                 // 2. Short name (|X|.|.|), left padding:
                 if ($shortNameMaxLength > 0) {
                     $text .= ($row[0]['value'] ?? '')
@@ -486,9 +492,9 @@ class HelpGenerator {
                 if (isset($row[2])) {
                     $text .= str_repeat(
                             ' ',
-                                                                        // |X|.|.|, 1st column is already padded.
-                            + $nameMaxLength - ($row[1]['length'] ?? 0) // |.|X|.|
-                            + static::PAD_LEFT_PARAM_DESCRIPTION,       // |.|.|X|
+                                                                                                // |X|.|.|, 1st column is already padded.
+                            + $nameMaxLength - ($row[1]['length'] ?? 0)                         // |.|X|.|
+                            + max(0, $envConfig->helpGeneratorPaddingLeftParameterDescription), // |.|.|X|
                         )
                         . $row[2]['value'];
                 }
@@ -512,7 +518,7 @@ class HelpGenerator {
      */
     protected static function padTextBlock(string $text, int $paddingLeft = 0, bool $padFirstLine = false): string {
         $out     = '';
-        $padding = str_repeat(' ', $paddingLeft);
+        $padding = str_repeat(' ', max(0, $paddingLeft));
 
         foreach (explode(PHP_EOL, $text) as $i => $line) {
             // Pad a line if it is not blank and not first (or the first line padding is enabled).

@@ -20,13 +20,13 @@ use function PHPUnit\Framework\assertStringNotContainsString;
  * Any setting may be used as an example.
  */
 final class EnvironmentConfigTest extends TestCaseAbstract {
-    #[DataProvider('provideDifferentBranchConfigs')]
     /**
      * Tests that a setting is read from an {@see EnvironmentConfig} instance linked to a corresponding config branch,
      * when a parse error is thrown during a script execution.
      *
      * @see Parametizer::setExceptionHandlerForParsing()
      */
+    #[DataProvider('provideDifferentBranchConfigs')]
     public function testDifferentBranchConfigs(string $parametersString, string $expectedErrorOutput): void {
         static::assertFullErrorOutput(
             __DIR__ . '/scripts/main-and-subcommands.php',
@@ -43,12 +43,12 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
                     Incorrect value 'invalid' for argument <subcommand-name-l1>
 
 
-                      -X, --help                 Show full help page.
+                      -X, --help                  Show full help page.
 
-                          <subcommand-name-l1>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-                                                 Subcommand help: <subcommand-name-l1> --help
-                                                          ... or: help <subcommand-name-l1>
-                                                 Default: list
+                          <subcommand-name-l1>    Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                                  Subcommand help: <subcommand-name-l1> --help
+                                                           ... or: help <subcommand-name-l1>
+                                                  Default: list
 
                     STDERR_OUTPUT,
             ],
@@ -58,12 +58,12 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
                     Incorrect value 'invalid' for argument <subcommand-name-l2-s2>
 
 
-                      -y, --help                    Show full help page.
+                      -y, --help                     Show full help page.
 
-                          <subcommand-name-l2-s2>   Allowed values: 4 subcommands available (see 'list' subcommand output)
-                                                    Subcommand help: <subcommand-name-l2-s2> --help
-                                                             ... or: help <subcommand-name-l2-s2>
-                                                    Default: list
+                          <subcommand-name-l2-s2>    Allowed values: 4 subcommands available (see 'list' subcommand output)
+                                                     Subcommand help: <subcommand-name-l2-s2> --help
+                                                              ... or: help <subcommand-name-l2-s2>
+                                                     Default: list
 
                     STDERR_OUTPUT,
             ],
@@ -73,7 +73,7 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
                     Too many arguments, starting with 'invalid'
 
 
-                      -z, --help   Show full help page.
+                      -z, --help    Show full help page.
 
                     STDERR_OUTPUT,
             ],
@@ -118,7 +118,6 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
         }
     }
 
-    #[DataProvider('provideAutoloadFromFiles')]
     /**
      * Tests various environment config autoload cases.
      *
@@ -128,6 +127,7 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
      * @see EnvironmentConfig::fillFromJsonConfigFile()
      * @see Parametizer::newConfig()
      */
+    #[DataProvider('provideAutoloadFromFiles')]
     public function testAutoloadFromFiles(string $scriptPath, array $expectedConfigValues): void {
         $outputJson   = static::assertNoErrorsOutput($scriptPath)->getStdOut();
         $actualValues = json_decode($outputJson, true, flags: JSON_THROW_ON_ERROR);
@@ -181,7 +181,6 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideAutoloadFromFilesForSubcommands')]
     /**
      * Tests environment config autoload cases related to subcommands (classes) located with own config files
      * somewhere else - not in the same tree as a launcher script.
@@ -190,6 +189,7 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
      * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
      * @see EnvironmentConfig::detectBottommostDirectoryPath()
      */
+    #[DataProvider('provideAutoloadFromFilesForSubcommands')]
     public function testAutoloadFromFilesForSubcommands(
         string $scriptPath,
         string $parametersString,
@@ -250,13 +250,13 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideThrowingOnExceptions')]
     /**
      * Tests if all environment config autoload-related methods process `$throwOnException` flag correctly.
      *
      * @see EnvironmentConfig::createFromConfigsBottomUpHierarchy()
      * @see EnvironmentConfig::fillFromJsonConfigFile()
      */
+    #[DataProvider('provideThrowingOnExceptions')]
     public function testThrowingOnExceptions(
         string $scriptPath,
         bool $throwOnException,
@@ -338,7 +338,7 @@ final class EnvironmentConfigTest extends TestCaseAbstract {
             'invalid-parameter-types-exception' => [
                 'scriptPath'          => __DIR__ . '/' . 'autoload-with-exceptions/invalid-parameter-types/level2/invalid-parameter-types.php',
                 'throwOnException'    => true,
-                'expectedErrorOutput' => "Unable to set 'optionHelpShortName' environment config setting to the value: 0.0",
+                'expectedErrorOutput' => "Unable to set 'helpGeneratorShortDescriptionCharsMinBeforeFullStop' environment config setting to the value: '10'",
                 'expectedStdOutput'   => '',
             ],
         ];

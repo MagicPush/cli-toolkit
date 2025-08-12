@@ -15,10 +15,13 @@ class EnvironmentConfig {
 
     /* AVAILABLE PROPERTIES -> */
 
-    public ?string $optionHelpShortName = null;
-
+    public int $helpGeneratorPaddingLeftMain                        = 2;
+    public int $helpGeneratorPaddingLeftParameterDescription        = 4;
     public int $helpGeneratorShortDescriptionCharsMinBeforeFullStop = 40;
     public int $helpGeneratorShortDescriptionCharsMax               = 70;
+    public int $helpGeneratorUsageNonRequiredOptionsMax             = 5;
+
+    public ?string $optionHelpShortName = null;
 
     /* <- AVAILABLE PROPERTIES */
 

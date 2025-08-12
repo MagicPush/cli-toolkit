@@ -162,7 +162,7 @@ one-letter aliases, for instance `-v` for `--verbose`.
   `$ php my-cool-script.php -s 100 data.csv -p500`, where `100` is `-s` _option_ value,
   `data.csv` is an _argument_ and `500` is `-p` _option_ value.
 
-**Flags** — options that require no value and are specified by names only:
+**Flags** — _options_ that require no value and are specified by names only:
 `$ php my-cool-script.php --verbose`, where `--verbose` is a _flag_ name.
 - _Flags_ configured with short names may be specified as one word (`-abc`)
   or separately (`-a -b -c`).
@@ -540,24 +540,26 @@ by `somewhere/launchers/launcher.php` main config.
 
 ### Available settings
 
-#### optionHelpShortName
+#### helpGeneratorPaddingLeftMain
 
-* Controls if the `--help` option has a short name or does not.
-* Possible values:
-    * a latin character (like for any other option short name)
-    * `null` (no short name)
+* Affects the padding from the left border of a terminal. The padding precedes almost all lines from generated `help`
+  pages (except headers) - script's description, usage template and examples, parameters' names.
+* Controls the padding size as the number of space characters.
+* Possible values: non-negative `int`.
+    * Values below `0` are silently treated as `0`.
 
-`--help` option is automatically added for all scripts and subcommands. Usually you may want to add a short name `-h`
-to request help pages easier, but then you will not be able to use `-h` as a short name for your other parameters
-like `--host` because of the duplication check.
+#### helpGeneratorPaddingLeftParameterDescription
 
-With this setting you may choose which scripts get a short name for `--help` (and what) and which do not.
+* Affects the left padding for parameters' descriptions.
+* Controls the padding size as the number of space characters.
+* Possible values: non-negative `int`.
+    * Values below `0` are silently treated as `0`.
 
 #### helpGeneratorShortDescriptionCharsMinBeforeFullStop
 
 * Affects scripts descriptions' graceful trimming (usually seen while listing available subcommands).
 * Controls a min length of a description substring cut around a full sentence (a substring ending with `. `).
-* Possible values: any (reasonable) `int`
+* Possible values: any (reasonable) `int`.
     * Values bigger than [helpGeneratorShortDescriptionCharsMax](#helpgeneratorshortdescriptioncharsmax) are
     ignored naturally.
 
@@ -580,7 +582,7 @@ the next.
 * Affects scripts descriptions' graceful trimming (usually seen while listing available subcommands).
 * Controls a max length of a description substring.
   But firstly tries cutting a description gracefully (by a space character).
-* Possible values: any (reasonable) `int`
+* Possible values: any (reasonable) `int`.
 
 Consider a full description:
 ```
@@ -592,6 +594,58 @@ and [helpGeneratorShortDescriptionCharsMinBeforeFullStop](#helpgeneratorshortdes
 big (`35` or bigger), the short description could be `Too short string. Another shorty. The rest adds much more ch`
 (exactly 60 chars), but if a space character is found before the max length cursor, the last part (` ch`, a piece of
 an incomplete word) is cut: `Too short string. Another shorty. The rest adds much more`
+
+#### helpGeneratorUsageNonRequiredOptionsMax
+
+* Affects only _usage templates_ on scripts' generated `help` pages.
+* Controls if each non-required _option_ (including _flags_) is shown or `[options]` substring is outputted instead.
+* Possible values: positive `int`.
+    * Values less than `1` guarantee no long option names are shown.
+
+Consider a config below:
+
+```php
+$configBuilder
+    ->newOption('--chunk-size')
+    ->newOption('--chunk-pause')
+
+    ->newFlag('--verbose', '-v')
+    ->newFlag('--interactive', '-i')
+
+    ->newOption('--database')
+    ->required()
+
+    ->newOption('--table')
+    ->required();
+```
+
+This config contains _4_ non-required options - 2 standard options `--chunk-size` and `--chunk-pause`,
+2 flags `--verbose` and `--intercative` with their respective short names `-v` and `-i`.
+Depending on the environment config setting the usage template output will be different:
+
+1. If the setting value is `4` or higher:
+   `script.php [-vi] [--chunk-size=…] [--chunk-pause=…] [--verbose] [--interactive] --database=… --table=…`
+2. If the setting value is `3` or lower: `script.php [-vi] [options] --database=… --table=…`
+
+   Note that all 4 options long names were replaced with `[options]` substring, but flag short names (`[-vi]`)
+   and all required options (`--database` ,`--table`) are still outputted as is.
+
+The setting controls how lengthy might be usage templates for your scripts. Set it to `0` to force it always
+show `[options]`. Set it to a very high value to ensure all non-required option names are always shown in a template.
+Or pick some optimal value to see full templates for not very option-heavy scripts.
+
+#### optionHelpShortName
+
+* Controls if the `--help` option has a short name or does not.
+* Possible values:
+    * a latin character (like for any other option short name)
+    * `null` (no short name)
+
+`--help` option is automatically added for all scripts and subcommands. Usually you may want to add a short name `-h`
+to request help pages easier, but then you will not be able to use `-h` as a short name for your other parameters
+like `--host` because of the duplication check.
+
+With this setting you may choose which scripts get a short name for `--help` (and what) and which do not.
 
 ## Interactive scripts
 

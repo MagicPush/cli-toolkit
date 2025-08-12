@@ -48,13 +48,13 @@ final class ShowHelpPageTest extends TestCaseAbstract {
 
                 OPTIONS
 
-                  --help   Show full help page.
+                  --help    Show full help page.
 
                 ARGUMENTS
 
-                  <subcommand-name>   Name of any registered subcommand.
-                                      See 'list' subcommand for the list of possible values.
-                                      Default: help
+                  <subcommand-name>    Name of any registered subcommand.
+                                       See 'list' subcommand for the list of possible values.
+                                       Default: help
 
 
                 TEXT,
@@ -71,13 +71,13 @@ final class ShowHelpPageTest extends TestCaseAbstract {
 
                 OPTIONS
 
-                  --help   Show full help page.
+                  --help    Show full help page.
 
                 ARGUMENTS
 
-                  <subcommand-name>   Name of any registered subcommand.
-                                      See 'list' subcommand for the list of possible values.
-                                      Default: help
+                  <subcommand-name>    Name of any registered subcommand.
+                                       See 'list' subcommand for the list of possible values.
+                                       Default: help
 
 
                 TEXT,
@@ -99,7 +99,7 @@ final class ShowHelpPageTest extends TestCaseAbstract {
 
                 OPTIONS
 
-                  --help   Show full help page.
+                  --help    Show full help page.
 
 
                 TEXT,
@@ -116,9 +116,9 @@ final class ShowHelpPageTest extends TestCaseAbstract {
 
                 OPTIONS
 
-                  --help       Show full help page.
+                  --help        Show full help page.
 
-                  --god-mode   I-D-D-Q-D
+                  --god-mode    I-D-D-Q-D
 
 
                 TEXT,
@@ -140,11 +140,11 @@ final class ShowHelpPageTest extends TestCaseAbstract {
             Incorrect value 'black:flower:tea' for argument <subcommand-name>
 
 
-              --help              Show full help page.
+              --help               Show full help page.
             
-              <subcommand-name>   Name of any registered subcommand.
-                                  See 'list' subcommand for the list of possible values.
-                                  Default: help
+              <subcommand-name>    Name of any registered subcommand.
+                                   See 'list' subcommand for the list of possible values.
+                                   Default: help
 
             TEXT,
             ShowHelpPage::getScriptName() . ' black:flower:tea',

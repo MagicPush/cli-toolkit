@@ -111,9 +111,14 @@ The list of plans and ideas for future development.
         - generating an empty `ConfigBuilder` instance "automatically" (mainly for temp scripts);
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
     1. - [x] Make creating buildable instances that are expected to be called by users (like detectors)
-         with `create` static methods. 
-    1. - [ ] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
+         with `create` static methods.
+    1. - [ ] Move `ListSubcommands::PADDING_BLOCK` as 2 separate `EnvironmentConfig` settings - name and description
+       paddings.
+    1. - [ ] Place attributes after phpdoc blocks.
+    1. - [x] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.
+        1. - [x] Move most [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php) constants
+           (where relevant) to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 
 </details>
 
@@ -319,8 +324,6 @@ The list of plans and ideas for future development.
 Let's try making major releases less frequent by accumulating here all ideas with backward incompatibilities.
 When the time comes, the whole bunch of stuff mentioned here will be implemented in a single major version.
 
-1. Move most [HelpGenerator.php](../src/Parametizer/Config/HelpGenerator/HelpGenerator.php) constants (where relevant)
-   to [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php).
 1. Move to PHP 8.4 as a minimal required version. This includes:
     1. Replace `*trim()` functions with `mb_*trim()` alternatives.
     1. Replace `mb_strtoupper(mb_substr($pathComponent, 0, 1)) . mb_substr($pathComponent, 1)` in
