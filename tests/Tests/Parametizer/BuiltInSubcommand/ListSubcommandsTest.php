@@ -21,15 +21,15 @@ final class ListSubcommandsTest extends TestCaseAbstract {
         assertSame(
             <<<TEXT
              Built-in:
-                help        Outputs a help page for a specified subcommand.
-                list        Shows available subcommands.
+               help        Outputs a help page for a specified subcommand.
+               list        Shows available subcommands.
 
              --
-                script
-                script1
-                script2
-                script10
-                scripts
+               script
+               script1
+               script2
+               script10
+               scripts
 
             TEXT,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-natural-sorting.php', ListSubcommands::getScriptName())
@@ -51,34 +51,34 @@ final class ListSubcommandsTest extends TestCaseAbstract {
         assertSame(
             <<<TEXT
              Built-in:
-                help                                                Outputs a help page for a specified subcommand.
-                list                                                Shows available subcommands.
+               help                                                Outputs a help page for a specified subcommand.
+               list                                                Shows available subcommands.
 
              --
-                avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
-                red                                                 Avocado is an edible fruit. Avocados are native to the Western
-                test                                                Avocado is an edible fruit. Avocados are native to the Western
+               avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
+               red                                                 Avocado is an edible fruit. Avocados are native to the Western
+               test                                                Avocado is an edible fruit. Avocados are native to the Western
 
              blue:
-                blue:flower:
-                    blue:flower:tea                                 Yes, such a flower does exists!
+               blue:flower:
+                 blue:flower:tea                                   Yes, such a flower does exists!
 
              green:
-                green:house                                         Avocado is an edible fruit. Avocados are native to the Western
+               green:house                                         Avocado is an edible fruit. Avocados are native to the Western
 
              red:
-                red:book                                            Avocado is an edible fruit. Avocados are native to the Western
-                red:flower                                          Avocado is an edible fruit. Avocados are native to the Western
-                red:lever                                           Avocado is an edible fruit. Avocados are native to the Western
+               red:book                                            Avocado is an edible fruit. Avocados are native to the Western
+               red:flower                                          Avocado is an edible fruit. Avocados are native to the Western
+               red:lever                                           Avocado is an edible fruit. Avocados are native to the Western
 
-                red:flower:
-                    red:flower:pot                                  Avocado is an edible fruit. Avocados are native to the Western
+               red:flower:
+                 red:flower:pot                                    Avocado is an edible fruit. Avocados are native to the Western
 
              yellow:
-                yellow:banana                                       Avocado is an edible fruit. Avocados are native to the Western
+               yellow:banana                                       Avocado is an edible fruit. Avocados are native to the Western
 
-                yellow:banana:
-                    yellow:banana:ice-cream                         Avocado is an edible fruit. Avocados are native to the Western
+               yellow:banana:
+                 yellow:banana:ice-cream                           Avocado is an edible fruit. Avocados are native to the Western
 
             TEXT,
             static::assertNoErrorsOutput(__DIR__ . '/scripts/subcommands-with-name-sections.php', ListSubcommands::getScriptName())
@@ -86,7 +86,6 @@ final class ListSubcommandsTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideSearchBySubcommandNamePart')]
     /**
      * Tests output after subcommand name part filtering.
      *
@@ -97,6 +96,7 @@ final class ListSubcommandsTest extends TestCaseAbstract {
      *
      * @see ListSubcommands::execute()
      */
+    #[DataProvider('provideSearchBySubcommandNamePart')]
     public function testSearchBySubcommandNamePart(string $subcommandNamePart, string $expectedOutput): void {
         assertSame(
             $expectedOutput,
@@ -117,8 +117,8 @@ final class ListSubcommandsTest extends TestCaseAbstract {
                 'subcommandNamePart' => 'subcommand-that-does-not-exist',
                 'expectedOutput'     => <<<TEXT
                  Built-in:
-                    help    Outputs a help page for a specified subcommand.
-                    list    Shows available subcommands.
+                   help    Outputs a help page for a specified subcommand.
+                   list    Shows available subcommands.
 
 
                 TEXT,
@@ -128,19 +128,19 @@ final class ListSubcommandsTest extends TestCaseAbstract {
                 'subcommandNamePart' => 'red',
                 'expectedOutput'     => <<<TEXT
                  Built-in:
-                    help                  Outputs a help page for a specified subcommand.
-                    list                  Shows available subcommands.
+                   help                Outputs a help page for a specified subcommand.
+                   list                Shows available subcommands.
 
                  --
-                    red                   Avocado is an edible fruit. Avocados are native to the Western
+                   red                 Avocado is an edible fruit. Avocados are native to the Western
 
                  red:
-                    red:book              Avocado is an edible fruit. Avocados are native to the Western
-                    red:flower            Avocado is an edible fruit. Avocados are native to the Western
-                    red:lever             Avocado is an edible fruit. Avocados are native to the Western
+                   red:book            Avocado is an edible fruit. Avocados are native to the Western
+                   red:flower          Avocado is an edible fruit. Avocados are native to the Western
+                   red:lever           Avocado is an edible fruit. Avocados are native to the Western
 
-                    red:flower:
-                        red:flower:pot    Avocado is an edible fruit. Avocados are native to the Western
+                   red:flower:
+                     red:flower:pot    Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -149,18 +149,18 @@ final class ListSubcommandsTest extends TestCaseAbstract {
                 'subcommandNamePart' => 'flower',
                 'expectedOutput'     => <<<TEXT
                  Built-in:
-                    help                   Outputs a help page for a specified subcommand.
-                    list                   Shows available subcommands.
+                   help                 Outputs a help page for a specified subcommand.
+                   list                 Shows available subcommands.
 
                  blue:
-                    blue:flower:
-                        blue:flower:tea    Yes, such a flower does exists!
+                   blue:flower:
+                     blue:flower:tea    Yes, such a flower does exists!
 
                  red:
-                    red:flower             Avocado is an edible fruit. Avocados are native to the Western
+                   red:flower           Avocado is an edible fruit. Avocados are native to the Western
 
-                    red:flower:
-                        red:flower:pot     Avocado is an edible fruit. Avocados are native to the Western
+                   red:flower:
+                     red:flower:pot     Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -169,18 +169,18 @@ final class ListSubcommandsTest extends TestCaseAbstract {
                 'subcommandNamePart' => 'u',
                 'expectedOutput'     => <<<TEXT
                  Built-in:
-                    help                                                Outputs a help page for a specified subcommand.
-                    list                                                Shows available subcommands.
+                   help                                                Outputs a help page for a specified subcommand.
+                   list                                                Shows available subcommands.
 
                  --
-                    avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
+                   avocado-is-one-of-popular-fruits-you-see-in-menu    Avocado is an edible fruit. Avocados are native to the Western
 
                  blue:
-                    blue:flower:
-                        blue:flower:tea                                 Yes, such a flower does exists!
+                   blue:flower:
+                     blue:flower:tea                                   Yes, such a flower does exists!
 
                  green:
-                    green:house                                         Avocado is an edible fruit. Avocados are native to the Western
+                   green:house                                         Avocado is an edible fruit. Avocados are native to the Western
 
                 TEXT,
             ],
@@ -221,22 +221,22 @@ final class ListSubcommandsTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideShortDescriptionSettingsFromParentEnvConfig')]
     /**
      * Tests that {@see ListSubcommands} considers parent env config for generating short descriptions.
      *
      * @see ListSubcommands::outputNode()
      * @see HelpGenerator::getScriptShortDescription()
      */
+    #[DataProvider('provideShortDescriptionSettingsFromParentEnvConfig')]
     public function testShortDescriptionSettingsFromParentEnvConfig(
-        string $parametersString,
+        bool $isCustomEnvConfigForParent,
         string $expectedOutput,
     ): void {
         assertSame(
             $expectedOutput,
             static::assertNoErrorsOutput(
                 __DIR__ . '/scripts/short-description-parent-env.php',
-                ListSubcommands::getScriptName() . " {$parametersString}",
+                ListSubcommands::getScriptName() . ' ' . (int) $isCustomEnvConfigForParent,
             )
                 ->getStdOut(),
         );
@@ -254,30 +254,30 @@ final class ListSubcommandsTest extends TestCaseAbstract {
              * The custom env config does not affect output because it is not set for a parent script config.
              */
             'default' => [
-                'parametersString' => '0',
-                'expectedOutput'   => <<<TEXT
-                 Built-in:
-                    help       Outputs a help page for a specified subcommand.
-                    list       Shows available subcommands.
-                
-                 --
-                    avocado    Avocado is an edible fruit. Avocados are native to the Western
+                'isCustomEnvConfigForParent' => false,
+                'expectedOutput'             => <<<TEXT
+                     Built-in:
+                       help       Outputs a help page for a specified subcommand.
+                       list       Shows available subcommands.
 
-                TEXT,
+                     --
+                       avocado    Avocado is an edible fruit. Avocados are native to the Western
+
+                    TEXT,
             ],
 
             // Now we replace parent config with a custom one that makes short descriptions extremely short.
             'custom' => [
-                'parametersString' => '1',
-                'expectedOutput'   => <<<TEXT
-                 Built-in:
-                    help       Outputs a help page
-                    list       Shows available subcommands.
-                
-                 --
-                    avocado    Avocado is an edible
+                'isCustomEnvConfigForParent' => true,
+                'expectedOutput'             => <<<TEXT
+                     Built-in:
+                       help       Outputs a help page
+                       list       Shows available subcommands.
 
-                TEXT,
+                     --
+                       avocado    Avocado is an edible
+
+                    TEXT,
             ],
         ];
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Tests\Tests\Parametizer\EnvironmentConfig;
 
 use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\EnvironmentConfig;
 use MagicPush\CliToolkit\Parametizer\Parametizer;
 use MagicPush\CliToolkit\Tests\Tests\TestCaseAbstract;
 use MagicPush\CliToolkit\Utils;
@@ -20,6 +21,25 @@ use function PHPUnit\Framework\assertStringNotContainsString;
  * Any setting may be used as an example.
  */
 final class EnvironmentConfigTest extends TestCaseAbstract {
+    /**
+     * Tests that an environment config file, which is global for all the library tests, contains all possible settings
+     * with default values.
+     *
+     * The test ensures:
+     *  1. There are no settings to be accidentally added or deleted.
+     *  2. All the library tests will not utilize environment configs possibly existing above '/tests/Tests' directory.
+     *  3. All the library tests will use the default values, unless additional environment configs are added
+     *      for particular tests only.
+     *
+     * @see EnvironmentConfig::toJsonFileContent()
+     */
+    public function testCompleteDefaultConfigFileForTests(): void {
+        assertSame(
+            file_get_contents(__DIR__ . '/../../parametizer.env.json'),
+            (new EnvironmentConfig())->toJsonFileContent(),
+        );
+    }
+
     /**
      * Tests that a setting is read from an {@see EnvironmentConfig} instance linked to a corresponding config branch,
      * when a parse error is thrown during a script execution.

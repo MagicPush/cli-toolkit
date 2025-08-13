@@ -194,11 +194,11 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
         assertSame(
             <<<TEXT
                  Built-in:
-                    help                               Outputs a help page for a specified subcommand.
-                    list                               Shows available subcommands.
+                   help                               Outputs a help page for a specified subcommand.
+                   list                               Shows available subcommands.
 
                  example-scripts:
-                    example-scripts:my-first-script
+                   example-scripts:my-first-script
 
                 TEXT,
             static::assertNoErrorsOutput(

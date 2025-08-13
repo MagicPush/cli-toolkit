@@ -112,8 +112,7 @@ The list of plans and ideas for future development.
         - ~~making `getConfigBuilder()` non-static, creating `ConfigBuilder` instance inside `__construct()`.~~
     1. - [x] Make creating buildable instances that are expected to be called by users (like detectors)
          with `create` static methods.
-    1. - [ ] Move `ListSubcommands::PADDING_BLOCK` as 2 separate `EnvironmentConfig` settings - name and description
-       paddings.
+    1. - [x] Transform `ListSubcommands::PADDING_BLOCK` into separate `EnvironmentConfig` padding settings.
     1. - [ ] Place attributes after phpdoc blocks.
     1. - [x] Consider adding even more [backward incompatibilities](todo.md#next-major-release) ~~or delaying
        the next major release, see [already implemented backward incompatibilities](changelog.md#v300)~~.

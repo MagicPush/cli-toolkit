@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringEndsWith;
+use function PHPUnit\Framework\assertStringStartsWith;
 use function PHPUnit\Framework\assertTrue;
 
 final class SettingsTest extends TestCaseAbstract {
@@ -334,7 +335,7 @@ final class SettingsTest extends TestCaseAbstract {
 
                     TEXT,
             ],
-            'error-negative' => [
+            'negative' => [
                 'paddingSize'          => -1,
                 'expectedOutputEnding' => <<<TEXT
 
@@ -395,6 +396,460 @@ final class SettingsTest extends TestCaseAbstract {
             'negative' => [
                 'value'                  => -100,
                 'expectedUsageSubstring' => '[-fs] [options] --required-1=… --required-2=… --required-3=… --required-4=…',
+            ],
+        ];
+    }
+
+    /**
+     * Tests the padding between any content and the left terminal screen border for {@see ListSubcommands} output.
+     *
+     * @see EnvironmentConfig::$listPaddingLeftMain
+     * @see ListSubcommands::outputNode()
+     */
+    #[DataProvider('provideListPaddingLeftMain')]
+    public function testListPaddingLeftMain(bool $isSlim, int $value, string $expectedOutputStart): void {
+        assertStringStartsWith(
+            $expectedOutputStart,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/template-subcommands-list-padding.php',
+                "{$value} 2 4 " . ListSubcommands::getScriptName() . ($isSlim ? ' --slim' : ''),
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideListPaddingLeftMain(): array {
+        return [
+            'high' => [
+                'isSlim'              => false,
+                'value'               => 10,
+                'expectedOutputStart' => <<<TEXT
+                    BEGIN
+                              Built-in:
+                                help                               Outputs a help page for a specified subcommand.
+                                list                               Shows available subcommands.
+
+                              --
+                                something                          Some description
+
+                              blue:
+                                blue:suit                          Some description
+                    TEXT,
+            ],
+            'ignored-if-slim' => [
+                'isSlim'              => true,
+                'value'               => 10,
+                'expectedOutputStart' => <<<TEXT
+                    BEGIN
+                    help                             Outputs a help page for a specified subcommand.
+                    list                             Shows available subcommands.
+                    blue:flower:tea                  Some description
+                    blue:suit                        Some description
+                    something                        Some description
+                    something:with:very-long-name    Some description
+                    TEXT,
+            ],
+            'low' => [
+                'isSlim'              => false,
+                'value'               => 1,
+                'expectedOutputStart' => <<<TEXT
+                    BEGIN
+                     Built-in:
+                       help                               Outputs a help page for a specified subcommand.
+                       list                               Shows available subcommands.
+
+                     --
+                       something                          Some description
+
+                     blue:
+                       blue:suit                          Some description
+                    TEXT,
+            ],
+            'zero' => [
+                'isSlim'              => false,
+                'value'               => 0,
+                'expectedOutputStart' => <<<TEXT
+                    BEGIN
+                    Built-in:
+                      help                               Outputs a help page for a specified subcommand.
+                      list                               Shows available subcommands.
+
+                    --
+                      something                          Some description
+
+                    blue:
+                      blue:suit                          Some description
+                    TEXT,
+            ],
+            'negative' => [
+                'isSlim'              => false,
+                'value'               => -100,
+                'expectedOutputStart' => <<<TEXT
+                    BEGIN
+                    Built-in:
+                      help                               Outputs a help page for a specified subcommand.
+                      list                               Shows available subcommands.
+
+                    --
+                      something                          Some description
+
+                    blue:
+                      blue:suit                          Some description
+                    TEXT,
+            ],
+        ];
+    }
+
+    /**
+     * Tests the padding before each node (command or section) listed in {@see ListSubcommands} output.
+     *
+     * @see EnvironmentConfig::$listPaddingLeftCommand
+     * @see ListSubcommands::execute()
+     * @see ListSubcommands::outputNode()
+     */
+    #[DataProvider('provideListPaddingLeftCommand')]
+    public function testListPaddingLeftCommand(
+        bool $isSlim,
+        int $paddingMain,
+        int $paddingCommand,
+        string $expectedOutput,
+    ): void {
+        assertSame(
+            $expectedOutput,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/template-subcommands-list-padding.php',
+                "{$paddingMain} {$paddingCommand} 4 " . ListSubcommands::getScriptName() . ($isSlim ? ' --slim' : ''),
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideListPaddingLeftCommand(): array {
+        return [
+            'high' => [
+                'isSlim'         => false,
+                'paddingMain'    => 1,
+                'paddingCommand' => 10,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                     Built-in:
+                               help                                       Outputs a help page for a specified subcommand.
+                               list                                       Shows available subcommands.
+
+                     --
+                               something                                  Some description
+
+                     blue:
+                               blue:suit                                  Some description
+
+                               blue:flower:
+                                         blue:flower:tea                  Some description
+
+                     something:
+                               something:with:
+                                         something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+            'ignored-if-slim' => [
+                'isSlim'         => true,
+                'paddingMain'    => 1,
+                'paddingCommand' => 10,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                    help                             Outputs a help page for a specified subcommand.
+                    list                             Shows available subcommands.
+                    blue:flower:tea                  Some description
+                    blue:suit                        Some description
+                    something                        Some description
+                    something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+            'low' => [
+                'isSlim'         => false,
+                'paddingMain'    => 1,
+                'paddingCommand' => 1,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                     Built-in:
+                      help                              Outputs a help page for a specified subcommand.
+                      list                              Shows available subcommands.
+
+                     --
+                      something                         Some description
+
+                     blue:
+                      blue:suit                         Some description
+
+                      blue:flower:
+                       blue:flower:tea                  Some description
+
+                     something:
+                      something:with:
+                       something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+            'low-other-main' => [
+                'isSlim'         => false,
+                'paddingMain'    => 4,
+                'paddingCommand' => 1,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                        Built-in:
+                         help                              Outputs a help page for a specified subcommand.
+                         list                              Shows available subcommands.
+
+                        --
+                         something                         Some description
+
+                        blue:
+                         blue:suit                         Some description
+
+                         blue:flower:
+                          blue:flower:tea                  Some description
+
+                        something:
+                         something:with:
+                          something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+            'zero' => [
+                'isSlim'         => false,
+                'paddingMain'    => 1,
+                'paddingCommand' => 0,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                     Built-in:
+                     help                             Outputs a help page for a specified subcommand.
+                     list                             Shows available subcommands.
+
+                     --
+                     something                        Some description
+
+                     blue:
+                     blue:suit                        Some description
+
+                     blue:flower:
+                     blue:flower:tea                  Some description
+
+                     something:
+                     something:with:
+                     something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+            'negative' => [
+                'isSlim'         => false,
+                'paddingMain'    => 1,
+                'paddingCommand' => -100,
+                'expectedOutput' => <<<TEXT
+                    BEGIN
+                     Built-in:
+                     help                             Outputs a help page for a specified subcommand.
+                     list                             Shows available subcommands.
+
+                     --
+                     something                        Some description
+
+                     blue:
+                     blue:suit                        Some description
+
+                     blue:flower:
+                     blue:flower:tea                  Some description
+
+                     something:
+                     something:with:
+                     something:with:very-long-name    Some description
+
+                    TEXT,
+            ],
+        ];
+    }
+
+    /**
+     * Tests the padding before a command description in {@see ListSubcommands} output.
+     *
+     * @see EnvironmentConfig::$listPaddingLeftCommandDescription
+     * @see ListSubcommands::outputNode()
+     */
+    #[DataProvider('provideListPaddingLeftCommandDescription')]
+    public function testListPaddingLeftCommandDescription(
+        bool $isSlim,
+        int $paddingMain,
+        int $paddingCommand,
+        int $paddingCommandDescription,
+        string $expectedOutput,
+    ): void {
+        assertSame(
+            $expectedOutput,
+            static::assertNoErrorsOutput(
+                __DIR__ . '/scripts/template-subcommands-list-padding.php',
+                "{$paddingMain} {$paddingCommand} {$paddingCommandDescription} "
+                    . ListSubcommands::getScriptName() . ($isSlim ? ' --slim' : ''),
+            )
+                ->getStdOut(),
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function provideListPaddingLeftCommandDescription(): array {
+        return [
+            'high' => [
+                'isSlim'                    => false,
+                'paddingMain'               => 1,
+                'paddingCommand'            => 2,
+                'paddingCommandDescription' => 10,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                     Built-in:
+                       help                                     Outputs a help page for a specified subcommand.
+                       list                                     Shows available subcommands.
+
+                     --
+                       something                                Some description
+
+                     blue:
+                       blue:suit                                Some description
+
+                       blue:flower:
+                         blue:flower:tea                        Some description
+
+                     something:
+                       something:with:
+                         something:with:very-long-name          Some description
+
+                    TEXT,
+            ],
+            'works-even-if-slim' => [
+                'isSlim'                    => true,
+                'paddingMain'               => 1,
+                'paddingCommand'            => 2,
+                'paddingCommandDescription' => 10,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                    help                                   Outputs a help page for a specified subcommand.
+                    list                                   Shows available subcommands.
+                    blue:flower:tea                        Some description
+                    blue:suit                              Some description
+                    something                              Some description
+                    something:with:very-long-name          Some description
+
+                    TEXT,
+            ],
+            'low' => [
+                'isSlim'                    => false,
+                'paddingMain'               => 1,
+                'paddingCommand'            => 2,
+                'paddingCommandDescription' => 1,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                     Built-in:
+                       help                            Outputs a help page for a specified subcommand.
+                       list                            Shows available subcommands.
+
+                     --
+                       something                       Some description
+
+                     blue:
+                       blue:suit                       Some description
+
+                       blue:flower:
+                         blue:flower:tea               Some description
+
+                     something:
+                       something:with:
+                         something:with:very-long-name Some description
+
+                    TEXT,
+            ],
+            'low-other-paddings-high' => [
+                'isSlim'                    => false,
+                'paddingMain'               => 2,
+                'paddingCommand'            => 4,
+                'paddingCommandDescription' => 1,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                      Built-in:
+                          help                              Outputs a help page for a specified subcommand.
+                          list                              Shows available subcommands.
+
+                      --
+                          something                         Some description
+
+                      blue:
+                          blue:suit                         Some description
+
+                          blue:flower:
+                              blue:flower:tea               Some description
+
+                      something:
+                          something:with:
+                              something:with:very-long-name Some description
+
+                    TEXT,
+            ],
+            'zero' => [
+                'isSlim'                    => false,
+                'paddingMain'               => 1,
+                'paddingCommand'            => 2,
+                'paddingCommandDescription' => 0,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                     Built-in:
+                       help                           Outputs a help page for a specified subcommand.
+                       list                           Shows available subcommands.
+
+                     --
+                       something                      Some description
+
+                     blue:
+                       blue:suit                      Some description
+
+                       blue:flower:
+                         blue:flower:tea              Some description
+
+                     something:
+                       something:with:
+                         something:with:very-long-nameSome description
+
+                    TEXT,
+            ],
+            'negative' => [
+                'isSlim'                    => false,
+                'paddingMain'               => 1,
+                'paddingCommand'            => 2,
+                'paddingCommandDescription' => -100,
+                'expectedOutput'            => <<<TEXT
+                    BEGIN
+                     Built-in:
+                       help                           Outputs a help page for a specified subcommand.
+                       list                           Shows available subcommands.
+
+                     --
+                       something                      Some description
+
+                     blue:
+                       blue:suit                      Some description
+
+                       blue:flower:
+                         blue:flower:tea              Some description
+
+                     something:
+                       something:with:
+                         something:with:very-long-nameSome description
+
+                    TEXT,
             ],
         ];
     }

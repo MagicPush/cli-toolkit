@@ -540,6 +540,52 @@ by `somewhere/launchers/launcher.php` main config.
 
 ### Available settings
 
+#### listPaddingLeftMain
+
+* Affects the padding from the left border of a terminal for `list` [built-in subcommand](#built-in-subcommands) output.
+  The padding precedes each line (headers and command names).
+
+    * The setting is ignored (treated as `0`) if `--slim` output mode is enabled.
+* Controls the padding size as the number of space characters.
+* Possible values: non-negative `int`.
+    * Values below `0` are silently treated as `0`.
+
+#### listPaddingLeftCommand
+
+* Affects the padding to the left of a command or subsequent header (in addition to
+  [listPaddingLeftMain](#listpaddingleftmain)) for `list` [built-in subcommand](#built-in-subcommands) output.
+
+    * The setting is ignored (treated as `0`) if `--slim` output mode is enabled.
+* Controls the padding size as the number of space characters.
+* Possible values: non-negative `int`.
+    * Values below `0` are silently treated as `0`.
+    
+Consider a command name `some:cool:command` with [listPaddingLeftMain](#listpaddingleftmain) = 1 and this setting = 4.
+The command contains 2 sections, so after the main header (the first section) 2 more lines will be shown - a subsection
+and a full command name:
+
+```
+# This line is added here as a reference - it does not have any left padding.
+ some:
+     some:cool:
+         some:cool:command
+```
+
+The first (main) header is padded with [listPaddingLeftMain](#listpaddingleftmain), however subsequent header and
+the command itself are additionally padded with this setting, `listPaddingLeftCommand`.
+
+#### listPaddingLeftCommandDescription
+
+* Affects the minimum left padding for all commands descriptions outputted with `list`
+  [built-in subcommand](#built-in-subcommands).
+  
+  The maximum padding depends on the longest command name "column", which consists of
+  [listPaddingLeftMain](#listpaddingleftmain), [listPaddingLeftCommand](#listpaddingleftcommand) for each section, and
+  the command full name (including name sections).
+* Controls the padding size as the number of space characters.
+* Possible values: non-negative `int`.
+    * Values below `0` are silently treated as `0`.
+
 #### helpGeneratorPaddingLeftMain
 
 * Affects the padding from the left border of a terminal. The padding precedes almost all lines from generated `help`
@@ -550,7 +596,10 @@ by `somewhere/launchers/launcher.php` main config.
 
 #### helpGeneratorPaddingLeftParameterDescription
 
-* Affects the left padding for parameters' descriptions.
+* Affects the minimum left padding for parameters' descriptions outputted on a generated `help` page.
+
+  The maximum padding depends on the longest parameter name "column", which consists of
+  [helpGeneratorPaddingLeftMain](#helpgeneratorpaddingleftmain) and a parameter formatted name.
 * Controls the padding size as the number of space characters.
 * Possible values: non-negative `int`.
     * Values below `0` are silently treated as `0`.

@@ -53,7 +53,6 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
     }
 
 
-    #[DataProvider('provideDetectorCacheCleanup')]
     /**
      * Tests {@see ClearCache} subcommand availability and execution if a specified cache file exists.
      *
@@ -63,6 +62,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
      * @see ClearCache::getConfigBuilder()
      * @see ClearCache::execute()
      */
+    #[DataProvider('provideDetectorCacheCleanup')]
     public function testDetectorCacheCleanup(
         bool $doesDetectorThrowOnException,
         ?string $detectorCacheFilePath,
@@ -97,11 +97,11 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
             assertSame(
                 <<<TEXT
                  Built-in:
-                    help                           Outputs a help page for a specified subcommand.
-                    list                           Shows available subcommands.
+                   help                           Outputs a help page for a specified subcommand.
+                   list                           Shows available subcommands.
 
                  Script launcher:
-                    script-launcher:clear-cache    Removes ScriptClassDetector's cache file.
+                   script-launcher:clear-cache    Removes ScriptClassDetector's cache file.
 
 
                 TEXT,
@@ -129,8 +129,8 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
             assertStringEndsWith(
                 <<<TEXT
                  Built-in:
-                    help    Outputs a help page for a specified subcommand.
-                    list    Shows available subcommands.
+                   help    Outputs a help page for a specified subcommand.
+                   list    Shows available subcommands.
 
 
                 TEXT,
@@ -177,7 +177,6 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideLauncherSettingThrowOnException')]
     /**
      * Tests that the corresponding launcher setting is enabled for automatically created {@see ConfigBuilder} instance.
      *
@@ -189,6 +188,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
      * @see Parametizer::newConfig() Here the flag is set for the instance.
      * @see EnvironmentConfig::fillFromJsonConfigFile() Here the flag affects if an exception is thrown.
      */
+    #[DataProvider('provideLauncherSettingThrowOnException')]
     public function testLauncherSettingThrowOnException(
         string $invalidJsonFilePath,
         bool $throwOnException,
@@ -247,7 +247,6 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideLauncherSettingSameEnvConfigForSubcommands')]
     /**
      * Tests that {@see EnvironmentConfig} instance set for a parent config is also utilized by subcommands,
      * if the corresponding setting is enabled...
@@ -263,6 +262,7 @@ final class ScriptClassLauncherTest extends TestCaseAbstract {
      * (or not) to subcommand configs.
      * @see ScriptClassAbstract::getConfigBuilder() Here the parent config may be passed to a subcommand.
      */
+    #[DataProvider('provideLauncherSettingSameEnvConfigForSubcommands')]
     public function testLauncherSettingSameEnvConfigForSubcommands(
         bool $isSameEnvConfigForSubcommands,
         bool $isEnvConfigManual,

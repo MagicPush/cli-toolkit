@@ -179,14 +179,14 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertSame(
             <<<HELP
              Built-in:
-                help                          Outputs a help page for a specified subcommand.
-                list                          Shows available subcommands.
+               help                          Outputs a help page for a specified subcommand.
+               list                          Shows available subcommands.
 
              --
-                long-string                   Here is a sort of... short description.
-                long-string-short-sentence    Too short to stop here. So the description continues for some more
-                multiline                     Short description on the first line.
-                unbreakable-long-line         Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
+               long-string                   Here is a sort of... short description.
+               long-string-short-sentence    Too short to stop here. So the description continues for some more
+               multiline                     Short description on the first line.
+               unbreakable-long-line         Thatisareallylonglinebutthereisnowaytobreakitcorrectlysothelinewillbec
 
             HELP,
             static::assertNoErrorsOutput(
@@ -270,11 +270,11 @@ final class HelpGeneratorTest extends TestCaseAbstract {
         assertSame(
             <<<HELP
                  Built-in:
-                    help         Outputs a help page for a specified subcommand.
-                    list         Shows available subcommands.
+                   help         Outputs a help page for a specified subcommand.
+                   list         Shows available subcommands.
 
                  --
-                    multiline    It is a multi-line description. It could be considered long enough to be shortened...
+                   multiline    It is a multi-line description. It could be considered long enough to be shortened...
                                         But due to the fact that this description is set as the "short description",
                                         no shortage mechanism is applied.
 

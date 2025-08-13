@@ -15,8 +15,6 @@ use MagicPush\CliToolkit\Parametizer\ScriptClass\ScriptClassLauncher\Subcommand\
 use Override;
 
 class ListSubcommands extends BuiltinSubcommandAbstract {
-    protected const string PADDING_BLOCK = '    ';
-
     protected const string HEADER_DEFAULT = '--';
 
 
@@ -26,6 +24,10 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
 
     protected readonly bool   $isSlim;
     protected readonly string $subcommandNamePart;
+
+    protected readonly int $paddingLeftMain;
+    protected readonly int $paddingLeftCommand;
+    protected readonly int $paddingLeftCommandDescription;
 
     #[Override]
     public static function getScriptInnerName(): string {
@@ -58,6 +60,10 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
 
         $this->isSlim             = $request->getParamAsBool('slim');
         $this->subcommandNamePart = $request->getParamAsString('subcommand-name-part');
+
+        $this->paddingLeftMain               = $this->isSlim ? 0 : max(0, $this->environmentConfig->listPaddingLeftMain);
+        $this->paddingLeftCommand            = max(0, $this->environmentConfig->listPaddingLeftCommand);
+        $this->paddingLeftCommandDescription = max(0, $this->environmentConfig->listPaddingLeftCommandDescription);
     }
 
     public function execute(): void {
@@ -89,7 +95,6 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
         $subcommandGroupsAuto = [];
 
         $subcommandNameColumnWidthMax = 0;
-        $padBlockWidth                = mb_strlen(static::PADDING_BLOCK);
         foreach ($this->parentConfig->getBranches() as $subcommandName => $subcommandConfig) {
             $isBuiltInSubcommand = array_key_exists($subcommandName, $builtInSubcommands);
 
@@ -111,8 +116,8 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
             } else {
                 $nodeLevel = mb_substr_count($subcommandName, static::NAME_SECTION_SEPARATOR);
             }
-            $subcommandNameColumnWidth = $padBlockWidth * max($this->isSlim ? 0 : 1, $nodeLevel)
-                + mb_strlen($subcommandName);
+            $subcommandNameColumnWidth = mb_strlen($subcommandName)
+                + $this->paddingLeftCommand * max($this->isSlim ? 0 : 1, $nodeLevel);
             if ($subcommandNameColumnWidthMax < $subcommandNameColumnWidth) {
                 $subcommandNameColumnWidthMax = $subcommandNameColumnWidth;
             }
@@ -223,7 +228,8 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
                 echo PHP_EOL;
             }
 
-            $subcommandNameOutput = str_repeat(static::PADDING_BLOCK, $nodeLevel) . $elementName;
+            $subcommandNameOutput = str_repeat(' ', $this->paddingLeftMain + $this->paddingLeftCommand * $nodeLevel)
+                . $elementName;
             if ($elementValue instanceof Config) {
                 $subcommandNameOutputFormatted = $subcommandNameOutput;
                 if ('' !== $this->subcommandNamePart) {
@@ -235,9 +241,6 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
                 }
                 echo $this->formatter->paramValue($subcommandNameOutputFormatted);
             } else {
-                if (0 === $nodeLevel) {
-                    echo ' ';
-                }
                 echo $this->formatter->helpNote($subcommandNameOutput);
             }
 
@@ -245,8 +248,12 @@ class ListSubcommands extends BuiltinSubcommandAbstract {
                 $shortDescription = HelpGenerator::getScriptShortDescription($elementValue, $this->environmentConfig);
 
                 if ('' !== $shortDescription) {
-                    echo mb_str_pad('', $subcommandNameColumnWidthMax - mb_strlen($subcommandNameOutput))
-                        . static::PADDING_BLOCK . $shortDescription;
+                    echo str_repeat(
+                            ' ',
+                            $this->paddingLeftMain + $this->paddingLeftCommandDescription
+                                + $subcommandNameColumnWidthMax - mb_strlen($subcommandNameOutput),
+                        )
+                        . $shortDescription;
                 }
             }
             echo PHP_EOL;

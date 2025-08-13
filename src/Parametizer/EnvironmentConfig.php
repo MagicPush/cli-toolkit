@@ -15,6 +15,10 @@ class EnvironmentConfig {
 
     /* AVAILABLE PROPERTIES -> */
 
+    public int $listPaddingLeftMain               = 1;
+    public int $listPaddingLeftCommand            = 2;
+    public int $listPaddingLeftCommandDescription = 4;
+
     public int $helpGeneratorPaddingLeftMain                        = 2;
     public int $helpGeneratorPaddingLeftParameterDescription        = 4;
     public int $helpGeneratorShortDescriptionCharsMinBeforeFullStop = 40;
