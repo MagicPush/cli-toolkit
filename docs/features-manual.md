@@ -5,7 +5,7 @@ Here are more detailed descriptions for different features you may find in the p
 ## Contents
 
 - [Classes or plain scripts](#classes-or-plain-scripts)
-    - [Class detection performance](#class-detection-performance)
+    - [Class detection performance](#class-detection-and-performance)
     - [Class scripts alternative launcher](#class-scripts-alternative-launcher)
 - [Parameter types](#parameter-types)
 - [Type casting from requests](#type-casting-from-requests)
@@ -79,8 +79,8 @@ aspects of developing a console script with this library:
     * _Class-based_: Just create a class-based script.
         * Generally, your launcher's detector will detect the new class automatically.
           Otherwise, update the detection rules in the launcher.
-        * In case of [caching detected class names](#class-detection-performance), you should re-create the cache file:
-          `php your-launcher.php script-launcher:clear-cache`
+        * In case of [caching detected class names](#class-detection-and-performance), you should re-create the cache
+          file: `php your-launcher.php script-launcher:clear-cache`
 * **Naming and grouping scripts**:
     * _Plain_: Placing scripts in different directories is your main option.
         * If you enable completion, then you may group your scripts by alias prefixes: generate completion scripts for
@@ -95,7 +95,7 @@ aspects of developing a console script with this library:
           detection rules to access a selected subset of scripts.
 </details>
 
-### Class detection performance
+### Class detection and performance
 
 `ScriptClassDetector` provides you with these ways (non-exclusive) to set detection rules:
 
@@ -106,7 +106,7 @@ aspects of developing a console script with this library:
     * User-friendly: pretty much - in trivial cases (all scripts are within a single directory or its subdirectories)
       it is enough to specify just a single directory.
     * Use case: in most cases this method covers your needs.
-1. `excludeDirectory()` allows you to filter out a directory that definitely should not be parsed. Obviously,
+2. `excludeDirectory()` allows you to filter out a directory that definitely should not be parsed. Obviously,
    this method works well only when paired with `searchDirectory()` method in the recursive mode.
     * Use case: the directory specified in `searchDirectory()` contains subdirectories that definitely do not contain
       console scripts. So you can improve the detection performance by filtering out non-relevant subpaths.
@@ -117,6 +117,12 @@ aspects of developing a console script with this library:
     * Use cases:
         * Cherry-picking particular scripts.
         * Improving detection performance (instead of pointing at a directory with thousands of files).
+4. Though not a part of `ScriptClassDetector` setup, there is a way to mark a class script ignored by all class
+   detectors: redefine `ScriptClassAbstract::isAvailableByDetector()` method for your particular script and make it
+   return `false` if you do not want that script to be detectable.
+
+   Do note however, that the detector's `scriptClassName()` method does _not_ consider
+   `ScriptClassAbstract::isAvailableByDetector()` and thus still allows to cherry-pick otherwise ignored scripts.
 
 Now consider an odd case. You have a large project (gigabytes / tens of thousands of files), but your console scripts
 are scattered throughout your whole project for some reason - for instance, each console script is placed close to

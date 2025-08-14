@@ -32,7 +32,6 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         assertSame(realpath(static::CACHE_FILE_RELATIVE_PATH), $detector->getCacheFilePath());
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests if a cache file exists, but can not be readable (for instance, no access).
      *
@@ -40,6 +39,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      * @see ScriptDetectorAbstract::doesCacheFileExist()
      * @see ScriptDetectorAbstract::detect()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testCacheFileNotReadable(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -56,7 +56,6 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests cache contents parsing failure.
      *
@@ -64,6 +63,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      * @see ScriptDetectorAbstract::doesCacheFileExist()
      * @see ScriptDetectorAbstract::detect()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testFailToParseCacheFileContents(bool $throwOnException): void {
         $this->createCacheFile('not-a-json');
 
@@ -88,7 +88,6 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests failed attempts to create a cache file directory (for instance, no access).
      *
@@ -96,6 +95,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      * @see ScriptDetectorAbstract::detectBySettings()
      * @see ScriptDetectorAbstract::getCacheFilePath()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testUnableToCreateDirectory(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -132,7 +132,6 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         assertSame('/asd/zxc', $detector->getCacheFilePath());
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests cache raw contents encoding failure.
      *
@@ -140,6 +139,7 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
      * @see ScriptDetectorAbstract::getDataToStoreInCache()
      * @see ScriptDetectorAbstract::detectBySettings()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testStoringInvalidData(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -175,13 +175,13 @@ final class ScriptDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests failed attempts to write into a cache file (for instance, no access).
      *
      * @see ScriptDetectorAbstract::storeDetectedToCache()
      * @see ScriptDetectorAbstract::detectBySettings()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testUnableToWriteIntoFile(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(

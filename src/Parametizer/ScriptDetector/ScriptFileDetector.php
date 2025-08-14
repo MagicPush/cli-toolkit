@@ -160,11 +160,11 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
         }
     }
 
-    #[Override]
     /**
      * @param array<string, string> $dataFromCache (string) alias => (string) absolute path,
      *                                             same as {@see static::$detectedFilePathsByAliases}
      */
+    #[Override]
     protected function loadDataFromCache(array $dataFromCache): void {
         foreach ($dataFromCache as $alias => $filePath) {
             if (!is_readable($filePath)) {
@@ -184,10 +184,10 @@ class ScriptFileDetector extends ScriptDetectorAbstract {
         return $this->detectedFilePathsByAliases;
     }
 
-    #[Override]
     /**
      * @return array<string, string> getDetectedData() (string) alias => (string) absolute path
      */
+    #[Override]
     protected function getDataProcessedAfterDetection(): array {
         return $this->detectedFilePathsByAliases;
     }

@@ -14,7 +14,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
-    #[DataProvider('provideSearchAndExclude')]
     /**
      * Tests {@see Parametizer} plain scripts detections.
      *
@@ -27,6 +26,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptFileDetector::getDataProcessedAfterDetection()
      * @see ScriptDetectorAbstract::getDetectedData()
      */
+    #[DataProvider('provideSearchAndExclude')]
     public function testSearchAndExclude(array $expectedScripts, ScriptFileDetector $detector): void {
         assertSame($expectedScripts, $detector->getDetectedData());
     }
@@ -94,13 +94,13 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideCustomSearchSettings')]
     /**
      * Tests the case when a detector is initialized or not with exceptions enabled / disabled.
      *
      * @see ScriptFileDetector::hasMinimalCustomSearchSettings()
      * @see ScriptDetectorAbstract::detectBySettings()
      */
+    #[DataProvider('provideCustomSearchSettings')]
     public function testCustomSearchSettings(
         bool $throwOnException,
         bool $isSearchDirectorySet,
@@ -178,12 +178,12 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests exact script {@see realpath()} tries.
      *
      * @see ScriptFileDetector::scriptPath()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testFailedRealPath(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -205,12 +205,12 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests duplicate exact script path requested.
      *
      * @see ScriptFileDetector::scriptPath()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testDuplicateExactScriptPath(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -239,12 +239,12 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests script file extension's validation.
      *
      * @see ScriptFileDetector::processCustomDetections()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testWrongExtension(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -271,12 +271,12 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests failure to read script file's contents.
      *
      * @see ScriptFileDetector::processCustomDetections()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testFailedReadingFile(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -298,7 +298,6 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideScriptParseException')]
     /**
      * Tests different exception processing depending on exact script or directory search.
      *
@@ -306,6 +305,7 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptFileDetector::processDetectedFileContents()
      * @see ScriptFileDetector::processCustomDetections()
      */
+    #[DataProvider('provideScriptParseException')]
     public function testScriptParseException(
         bool $throwOnException,
         bool $isExactFileSearch,
@@ -377,12 +377,12 @@ final class ScriptFileDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests duplicate exception for different script paths detection with the same basename.
      *
      * @see ScriptFileDetector::processDetectedFileContentsInternal()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testDuplicateBasenameByDifferentPaths(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(

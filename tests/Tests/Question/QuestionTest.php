@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class QuestionTest extends TestCaseAbstract {
-    #[DataProvider('provideQuestionAnyValue')]
     /**
      * Tests a trivial case with a question and any value.
      * A script continues its execution anyway whatever input is given.
@@ -20,6 +19,7 @@ final class QuestionTest extends TestCaseAbstract {
      * @see Question::create()
      * @see Question::ask()
      */
+    #[DataProvider('provideQuestionAnyValue')]
     public function testQuestionAnyValue(string $inputValue, string $expectedOutputSubstring): void {
         assertSame(
             "Type something here: Your input: '{$expectedOutputSubstring}'",
@@ -70,13 +70,13 @@ final class QuestionTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideQuestionPostfix')]
     /**
      * Tests changing a substring after a question text.
      *
      * @see Question::substringAfterQuestion()
      * @see Question::showQuestion()
      */
+    #[DataProvider('provideQuestionPostfix')]
     public function testQuestionPostfix(string $questionPostfix, string $expectedOutputSubstring): void {
         assertSame(
             "The ultimate question of life, universe and everything {$expectedOutputSubstring}: 42",
@@ -124,7 +124,6 @@ final class QuestionTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('providePossibleAnswers')]
     /**
      * Tests possible answers various settings.
      * Also, tests that a script will ask a question again and again until the right answer is received.
@@ -139,6 +138,7 @@ final class QuestionTest extends TestCaseAbstract {
      * @see Question::validateAnswer()
      * @see Question::ask() Here the question is repeated indefinitely until a valid answer is provided.
      */
+    #[DataProvider('providePossibleAnswers')]
     public function testPossibleAnswers(
         array $possibleAnswers,
         bool $isCaseSensitive,
@@ -238,13 +238,13 @@ final class QuestionTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideValidatorConflict')]
     /**
      * Tests cases of validators conflicts - only a single validator is allowed.
      *
      * @see Question::possibleAnswers()
      * @see Question::answerValidatorPattern()
      */
+    #[DataProvider('provideValidatorConflict')]
     public function testValidatorConflict(bool $isListBeforePattern, string $expectedError): void {
         static::assertAnyErrorOutput(
             __DIR__ . '/scripts/validator-conflict.php',
@@ -271,7 +271,6 @@ final class QuestionTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideConfirm')]
     /**
      * Tests standard "yes/no" confirmation.
      *
@@ -280,6 +279,7 @@ final class QuestionTest extends TestCaseAbstract {
      * @see Question::defaultAnswer()
      * @see Question::ask()
      */
+    #[DataProvider('provideConfirm')]
     public function testConfirm(string $input, string $expectedOutput): void {
         assertSame(
             $expectedOutput,
@@ -324,7 +324,6 @@ final class QuestionTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideConfirmOrDie')]
     /**
      * Tests a ready-to-use method to confirm a script further execution or interrupt it with `exit(1)`.
      * Also, tests an optional message shown before a script interruption.
@@ -334,6 +333,7 @@ final class QuestionTest extends TestCaseAbstract {
      * @see Question::defaultAnswer()
      * @see Question::ask()
      */
+    #[DataProvider('provideConfirmOrDie')]
     public function testConfirmOrDie(
         string $input,
         string $dieMessage,

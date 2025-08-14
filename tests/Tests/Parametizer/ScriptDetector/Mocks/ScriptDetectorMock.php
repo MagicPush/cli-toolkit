@@ -57,10 +57,10 @@ class ScriptDetectorMock extends ScriptDetectorAbstract {
         return [];
     }
 
-    #[Override]
     /**
      * @return string[]
      */
+    #[Override]
     protected function getDataProcessedAfterDetection(): array {
         return $this->detectedFilePaths;
     }

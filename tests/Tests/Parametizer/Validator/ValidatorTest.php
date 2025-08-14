@@ -25,12 +25,12 @@ final class ValidatorTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideValidatorConfigs')]
     /**
      * Tests different validator configs.
      *
      * @see ParameterAbstract::validate()
      */
+    #[DataProvider('provideValidatorConfigs')]
     public function testValidatorConfigs(
         string $script,
         string $parametersString,

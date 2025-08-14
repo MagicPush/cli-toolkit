@@ -14,12 +14,12 @@ use function PHPUnit\Framework\assertSame;
 final class CallbackTest extends TestCaseAbstract {
     // Now it's impossible to test if an invalid callable is provided - internal type check renders a fatal error.
 
-    #[DataProvider('provideCallbackConfigs')]
     /**
      * Tests valid callback configs.
      *
      * @see ParameterAbstract::runCallback()
      */
+    #[DataProvider('provideCallbackConfigs')]
     public function testCallbackConfig(string $script, string $argument, string $standardOutput): void {
         $escapedArgument = escapeshellarg($argument);
 

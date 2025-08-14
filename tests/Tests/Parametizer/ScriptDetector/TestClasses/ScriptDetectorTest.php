@@ -18,13 +18,13 @@ use function PHPUnit\Framework\assertSame;
  * But prefer using a mock class {@see ScriptDetectorMock}.
  */
 final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
-    #[DataProvider('provideMinimalSearchSettings')]
     /**
      * Tests minimal viable search settings validation.
      *
      * @see ScriptDetectorAbstract::detectBySettings()
      * @see ScriptDetectorAbstract::hasMinimalCustomSearchSettings()
      */
+    #[DataProvider('provideMinimalSearchSettings')]
     public function testMinimalSearchSettings(
         bool $throwOnException,
         bool $hasMinimalCustomSearchSettings,
@@ -93,13 +93,13 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideInvalidPaths')]
     /**
      * Tests invalid paths processing for a searching directory.
      *
      * @see ScriptDetectorAbstract::getValidatedRealPath()
      * @see ScriptDetectorAbstract::searchDirectory()
      */
+    #[DataProvider('provideInvalidPaths')]
     public function testInvalidPathsSearch(bool $throwOnException, string $path): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -116,13 +116,13 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideInvalidPaths')]
     /**
      * Tests invalid paths processing for a searching directory.
      *
      * @see ScriptDetectorAbstract::getValidatedRealPath()
      * @see ScriptDetectorAbstract::excludeDirectory()
      */
+    #[DataProvider('provideInvalidPaths')]
     public function testInvalidPathsExclude(bool $throwOnException, string $path): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -161,7 +161,6 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideSearchAndExclude')]
     /**
      * Tests files detection in "search VS exclude" directories.
      *
@@ -173,6 +172,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptDetectorAbstract::excludeDirectories()
      * @see ScriptDetectorAbstract::detectBySettings()
      */
+    #[DataProvider('provideSearchAndExclude')]
     public function testSearchAndExclude(array $expectedDetectionResults, ScriptDetectorMock $detector): void {
         assertSame($expectedDetectionResults, $detector->getDetectedData());
     }
@@ -270,12 +270,12 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideExcludeSameOrWiderThanSearch')]
     /**
      * Tests a detection process when a searching directory is excluded by the same or a wider (higher) path.
      *
      * @see ScriptDetectorAbstract::validateSearchingAndExcludedPathsIntersections()
      */
+    #[DataProvider('provideExcludeSameOrWiderThanSearch')]
     public function testExcludeSameOrWiderThanSearch(
         bool $throwOnException,
         bool $isSearchRecursive,
@@ -356,13 +356,13 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideExcludeUnrelatedPath')]
     /**
      * Tests cases when an excluded directory is not related to a directory being searched.
      *
      * @param array<string, string> $expectedDetectionResult
      * @see ScriptDetectorAbstract::validateSearchingAndExcludedPathsIntersections()
      */
+    #[DataProvider('provideExcludeUnrelatedPath')]
     public function testExcludeUnrelatedPath(
         bool $throwOnException,
         bool $isExceptionExpected,
@@ -479,13 +479,13 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideDuplicateSearchSameRecursion')]
     /**
      * Tests duplicate search paths processing with the same recursion state.
      *
      * @param string[] $expectedResult
      * @see ScriptDetectorAbstract::searchDirectory()
      */
+    #[DataProvider('provideDuplicateSearchSameRecursion')]
     public function testDuplicateSearchSameRecursion(
         bool $throwOnException,
         bool $isRecursive,
@@ -573,7 +573,6 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideDuplicateSearchDifferentRecursion')]
     /**
      * Tests duplicate search paths processing if different paths have different recursion state - the duplication
      * validation ignores recursion state.
@@ -581,6 +580,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * @param string[] $expectedResult
      * @see ScriptDetectorAbstract::searchDirectory()
      */
+    #[DataProvider('provideDuplicateSearchDifferentRecursion')]
     public function testDuplicateSearchDifferentRecursion(
         bool $throwOnException,
         bool $isFirstRecursive,
@@ -657,7 +657,6 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideDuplicateSearchSubdirectory')]
     /**
      * Tests the case when one of searching directories is a subdirectory of some another searching directory.
      *
@@ -666,6 +665,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * @param string[] $expectedResult
      * @see ScriptDetectorAbstract::searchDirectory()
      */
+    #[DataProvider('provideDuplicateSearchSubdirectory')]
     public function testDuplicateSearchSubdirectory(
         bool $throwOnException,
         ?Exception $expectedException,
@@ -921,12 +921,12 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests excluded directories' duplicates processing.
      *
      * @see ScriptDetectorAbstract::excludeDirectory()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testDuplicateExclusion(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -975,7 +975,6 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideDuplicateExclusionSubdirectory')]
     /**
      * Tests the cases when one of excluded directories is a subdirectory of some another excluded directory.
      *
@@ -983,6 +982,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
      * @param array<string, string> $expectedFinalExcludedDirectories
      * @see ScriptDetectorAbstract::excludeDirectory()
      */
+    #[DataProvider('provideDuplicateExclusionSubdirectory')]
     public function testDuplicateExclusionSubdirectory(
         bool $throwOnException,
         ?Exception $expectedException,

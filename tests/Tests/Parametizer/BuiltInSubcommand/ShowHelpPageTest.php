@@ -12,7 +12,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ShowHelpPageTest extends TestCaseAbstract {
-    #[DataProvider('provideShowHelpForSubcommand')]
     /**
      * Tests help output for different parameters (subcommand names).
      *
@@ -20,6 +19,7 @@ final class ShowHelpPageTest extends TestCaseAbstract {
      * @see ShowHelpPage::execute()
      * @see Config::commitSubcommandSwitch()
      */
+    #[DataProvider('provideShowHelpForSubcommand')]
     public function testShowHelpForSubcommand(string $parametersString, string $expectedOutput): void {
         assertSame(
             $expectedOutput,

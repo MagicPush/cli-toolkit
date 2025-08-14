@@ -1,5 +1,7 @@
 # [CliToolkit](../README.md) -> Development notes
 
+Added here mainly for the library maintainers - not to forget decisions made to arguable cases.
+
 ## Contents
 
 - [PHPUnit](#phpunit)
@@ -10,6 +12,8 @@
     - [EnvironmentConfig load performance](#environmentconfig-load-performance)
     - [RegExp in subcommand name validation](#regexp-in-subcommand-name-validation)
 - [Throwing or ignoring exceptions default policy](#throwing-or-ignoring-exceptions-default-policy)
+- [Simplifying chain calls](#simplifying-chain-calls)
+    - [Parametizer::newConfig()](#parametizernewconfig)
 
 ## PHPUnit
 
@@ -147,3 +151,16 @@ The current policy:
     * Even if the library users do not read the documentation, at the first time they read a generated launcher script,
       they will know about a possibility to silence (or enable) exceptions. And then users decide if they prefer
       a zero-bug or production-safe setup.
+
+## Simplifying chain calls
+
+### `Parametizer::newConfig()`
+
+**Hypothesis**: `EnvironmentConfig` might be automatically created right in `Parametizer::newConfig()`, before
+internal calls in the stack reach `Config::__construct()`. Thus, `$throwOnException` parameter, needed (for now) only
+for `EnvironmentConfig` automatic creation, may be stripped off in the call stack - only `Parametizer::newConfig()`
+should keep this parameter, and `Config` then will require an env config instance only (no extra flag).
+
+**Decision**: this simplification should _not_ be implemented. From the development perspective, it changes
+almost nothing - almost no calls become easier in 95% of cases, if the methods' signatures are simplified.
+Because in 95% of cases `Parametizer::newConfig()` is called, not the inner methods along the stack.

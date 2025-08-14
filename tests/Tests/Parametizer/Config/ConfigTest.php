@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ConfigTest extends TestCaseAbstract {
-    #[DataProvider('provideConfigLogicExceptions')]
     /**
      * Tests various {@see ConfigException}s when setting up a config.
      *
@@ -20,6 +19,7 @@ final class ConfigTest extends TestCaseAbstract {
      * @see VariableBuilderAbstract::ensureNotAllowedValuesSetWithValidatorOrCompletionSimultaneously()
      * @see VariableBuilderAbstract::ensureNotRequiredAndHasDefaultSimultaneously()
      */
+    #[DataProvider('provideConfigLogicExceptions')]
     public function testConfigLogicExceptions(string $scriptPath, string $errorOutput): void {
         static::assertConfigExceptionOutput($scriptPath, $errorOutput);
     }
@@ -78,7 +78,6 @@ final class ConfigTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideNameConfigs')]
     /**
      * Tests names and short names for parameters.
      *
@@ -88,6 +87,7 @@ final class ConfigTest extends TestCaseAbstract {
      * @see BuilderAbstract::getValidatedOptionName()
      * @see BuilderAbstract::getValidatedOptionShortName()
      */
+    #[DataProvider('provideNameConfigs')]
     public function testNameConfigs(string $scriptPath, ?string $name, ?string $errorOutput): void {
         $escapedName = null !== $name ? escapeshellarg($name) : '';
 

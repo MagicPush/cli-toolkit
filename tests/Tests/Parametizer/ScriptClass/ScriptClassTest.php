@@ -12,12 +12,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ScriptClassTest extends TestCaseAbstract {
-    #[DataProvider('provideEmptyLocalNames')]
     /**
      * Tests that a script local name can not be empty.
      *
      * @see ScriptClassAbstract::getScriptName()
      */
+    #[DataProvider('provideEmptyLocalNames')]
     public function testEmptyLocalNames(string $className): void {
         self::assertConfigExceptionOutput(
             __DIR__ . '/scripts/by-single-name.php',

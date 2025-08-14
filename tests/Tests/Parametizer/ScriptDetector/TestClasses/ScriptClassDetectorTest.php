@@ -21,7 +21,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function PHPUnit\Framework\assertSame;
 
 final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
-    #[DataProvider('provideSearchAndExclude')]
     /**
      * Tests {@see ScriptClassAbstract} classes detections.
      *
@@ -34,6 +33,7 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
      * @see ScriptClassDetector::getDataProcessedAfterDetection()
      * @see ScriptDetectorAbstract::getDetectedData()
      */
+    #[DataProvider('provideSearchAndExclude')]
     public function testSearchAndExclude(array $expectedClasses, ScriptClassDetector $detector): void {
         assertSame($expectedClasses, $detector->getDetectedData());
     }
@@ -115,13 +115,13 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideCustomSearchSettings')]
     /**
      * Tests the case when a detector is initialized or not with exceptions enabled / disabled.
      *
      * @see ScriptClassDetector::hasMinimalCustomSearchSettings()
      * @see ScriptDetectorAbstract::detectBySettings()
      */
+    #[DataProvider('provideCustomSearchSettings')]
     public function testCustomSearchSettings(
         bool $throwOnException,
         bool $isSearchDirectorySet,
@@ -199,12 +199,12 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
         ];
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests the subclass validation happening while loading exact script classes.
      *
      * @see ScriptClassDetector::processCustomDetections()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testFQNameNotSubclass(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -232,12 +232,12 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests duplicate fully qualified names processing.
      *
      * @see ScriptClassDetector::scriptClassName()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testDuplicateFQNames(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(
@@ -327,12 +327,12 @@ final class ScriptClassDetectorTest extends ScriptDetectorTestAbstract {
         );
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests script name duplicates validation.
      *
      * @see ScriptClassDetector::getDataProcessedAfterDetection()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testDuplicateScriptName(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(

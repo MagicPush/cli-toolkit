@@ -31,7 +31,7 @@ abstract class ScriptClassAbstract {
      * You may repurpose this method for any other reason you see fit. Just a few examples:
      *  * Detect particular scripts for selected environments only.
      *      Like code generators, which are not very useful on test or production servers.
-     *  * Hide particular scripts from all launchers. Sometimes it might be easier to hide a script here
+     *  * Hide particular scripts from all launchers. Sometimes it might be easier to hide a script here,
      *      rather excluding it in each {@see ScriptClassDetector} instance.
      */
     public static function isAvailableByDetector(): bool {

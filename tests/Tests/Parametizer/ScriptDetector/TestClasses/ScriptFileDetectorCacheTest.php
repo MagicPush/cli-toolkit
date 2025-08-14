@@ -16,7 +16,6 @@ use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 
 final class ScriptFileDetectorCacheTest extends ScriptDetectorCacheTestAbstract {
-    #[DataProvider('provideCachedDetection')]
     /**
      * Tests scripts detection (via directories) caching.
      *
@@ -30,6 +29,7 @@ final class ScriptFileDetectorCacheTest extends ScriptDetectorCacheTestAbstract 
      * @see ScriptDetectorAbstract::doesCacheFileExist()
      * @see ScriptDetectorAbstract::detect()
      */
+    #[DataProvider('provideCachedDetection')]
     public function testCachedDetection(
         bool $isCachePathSet,
         bool $doesCacheFileExistAfterFirstLaunch,
@@ -116,12 +116,12 @@ final class ScriptFileDetectorCacheTest extends ScriptDetectorCacheTestAbstract 
         ];
     }
 
-    #[DataProvider('provideThrowOnException')]
     /**
      * Tests how the file detector handles invalid cache elements.
      *
      * @see ScriptFileDetector::loadDataFromCache()
      */
+    #[DataProvider('provideThrowOnException')]
     public function testLoadDataFromCacheException(bool $throwOnException): void {
         if ($throwOnException) {
             $this->expectExceptionObject(

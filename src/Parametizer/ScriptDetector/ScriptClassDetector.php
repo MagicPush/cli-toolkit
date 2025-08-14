@@ -118,11 +118,11 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
         }
     }
 
-    #[Override]
     /**
      * @param ScriptClassAbstract[]|string[] $dataFromCache (string) Fully Qualified class name
-     *                                                 that extends {@see ScriptClassAbstract}
+     *                                                      that extends {@see ScriptClassAbstract}
      */
+    #[Override]
     protected function loadDataFromCache(array $dataFromCache): void {
         foreach ($dataFromCache as $fQClassName) {
             if (!is_subclass_of($fQClassName, ScriptClassAbstract::class)) {
@@ -139,20 +139,20 @@ class ScriptClassDetector extends ScriptDetectorAbstract {
         }
     }
 
-    #[Override]
     /**
      * @return ScriptClassAbstract[]|string[] (string) Fully Qualified class name
-     * that extends {@see ScriptClassAbstract}
+     *                                        that extends {@see ScriptClassAbstract}
      */
+    #[Override]
     protected function getDataToStoreInCache(): array {
         return $this->detectedFQClassNames;
     }
 
-    #[Override]
     /**
      * @return array<string, ScriptClassAbstract|string> (string) script name => (string) Fully Qualified class name
-     * that extends {@see ScriptClassAbstract}
+     *                                                   that extends {@see ScriptClassAbstract}
      */
+    #[Override]
     protected function getDataProcessedAfterDetection(): array {
         $detectedFQClassNamesByScriptNames = [];
         foreach ($this->detectedFQClassNames as $fullyQualifiedClassName) {

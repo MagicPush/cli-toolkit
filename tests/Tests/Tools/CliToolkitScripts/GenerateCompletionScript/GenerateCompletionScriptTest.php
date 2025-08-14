@@ -51,12 +51,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         assertFileIsReadable(self::COMPLETION_SCRIPT_PATH);
     }
 
-    #[DataProvider('provideInvalidOutputFilePath')]
     /**
      * Tests cases when `--output-filepath` contains an invalid path.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideInvalidOutputFilePath')]
     public function testInvalidOutputFilePath(string $outputPath, string $expectedErrorSubstring): void {
         static::assertExecutionErrorOutput(
             static::LAUNCHER_PATH,
@@ -94,7 +94,6 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         ];
     }
 
-    #[DataProvider('provideScriptsDetection')]
     /**
      * Tests detection parameters available in {@see CompletionScript::getConfigBuilder()}.
      *
@@ -102,6 +101,7 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
      * @see CompletionScript::execute()
      * @see CompletionScript::getConfigBuilder()
      */
+    #[DataProvider('provideScriptsDetection')]
     public function testScriptsDetection(
         string $parametersString,
         array $detectedPathsByNames,
@@ -262,12 +262,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         ];
     }
 
-    #[DataProvider('provideErrorIfNoSearchSettings')]
     /**
      * Tests an error appearance if no search setting was provided.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideErrorIfNoSearchSettings')]
     public function testErrorIfNoSearchSettings(string $parametersSubstring, ?string $errorMessage): void {
         $parametersString = sprintf(
             '%s --output-filepath=%s%s',
@@ -360,12 +360,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
     }
 
-    #[DataProvider('provideInvalidDirectoryPaths')]
     /**
      * Tests invalid '--search-directory' paths.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideInvalidDirectoryPaths')]
     public function testInvalidSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
@@ -383,12 +383,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
     }
 
-    #[DataProvider('provideInvalidDirectoryPaths')]
     /**
      * Tests invalid '--search-directory-recursive' paths.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideInvalidDirectoryPaths')]
     public function testInvalidRecursiveSearchPaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
@@ -406,12 +406,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
     }
 
-    #[DataProvider('provideInvalidDirectoryPaths')]
     /**
      * Tests invalid '--exclude-directory' paths.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideInvalidDirectoryPaths')]
     public function testInvalidExcludePaths(string $directoryPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
@@ -440,12 +440,12 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         ];
     }
 
-    #[DataProvider('provideInvalidIncludeScriptPaths')]
     /**
      * Tests invalid '--include-script' paths.
      *
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideInvalidIncludeScriptPaths')]
     public function testInvalidIncludeScriptPaths(string $scriptPath): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 
@@ -474,13 +474,13 @@ final class GenerateCompletionScriptTest extends CliToolkitScriptTestAbstract {
         ];
     }
 
-    #[DataProvider('provideAliasPrefixes')]
     /**
      * Tests different prefixes for script aliases.
      *
      * @see CompletionScript::getConfigBuilder()
      * @see CompletionScript::execute()
      */
+    #[DataProvider('provideAliasPrefixes')]
     public function testAliasPrefixes(string $aliasPrefix, string $expectedScriptAlias): void {
         assertFileDoesNotExist(self::COMPLETION_SCRIPT_PATH);
 

@@ -12,12 +12,12 @@ use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertSame;
 
 final class UtilsTest extends TestCase {
-    #[DataProvider('provideShortClassName')]
     /**
      * Tests how different types of full class names are treated.
      *
      * @see Utils::getClassShortName()
      */
+    #[DataProvider('provideShortClassName')]
     public function testShortClassName(string $fullyQualifiedName, string $expectedShortName): void {
         assertSame($expectedShortName, Utils::getClassShortName($fullyQualifiedName));
     }

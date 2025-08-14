@@ -40,7 +40,6 @@ final class CompletionTest extends TestCaseAbstract {
         assertSame($expectedOutputLines, $result->getStdOutAsArray());
     }
 
-    #[DataProvider('provideCompletionExecution')]
     /**
      * Tests completion execution.
      *
@@ -48,6 +47,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see Completion::executeCompletion()
      * @see Completion::complete()
      */
+    #[DataProvider('provideCompletionExecution')]
     public function testCompletionExecution(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(
             __DIR__ . '/scripts/different-params.php',
@@ -56,7 +56,6 @@ final class CompletionTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideCompletionExecution')]
     /**
      * Tests the same completion execution as in {@see testCompletionExecution()},
      * but the tested config is a subcommand.
@@ -65,6 +64,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see Completion::executeCompletion()
      * @see Completion::complete()
      */
+    #[DataProvider('provideCompletionExecution')]
     public function testCompletionExecutionSubcommand(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(
             __DIR__ . '/scripts/subcommands.php',
@@ -232,7 +232,6 @@ final class CompletionTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideSmartCompletion')]
     /**
      * Tests "smart" (no duplicate) completion execution.
      *
@@ -244,6 +243,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see ParameterAbstract::allowedValues()
      * @see VariableBuilderAbstract::allowedValues()
      */
+    #[DataProvider('provideSmartCompletion')]
     public function testSmartCompletion(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(
             __DIR__ . '/scripts/smart-completion.php',
@@ -252,7 +252,6 @@ final class CompletionTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideSmartCompletion')]
     /**
      * Tests the same "smart" (no duplicate) completion execution as in {@see testSmartCompletion()},
      * but the tested config is a subcommand.
@@ -265,6 +264,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see ParameterAbstract::allowedValues()
      * @see VariableBuilderAbstract::allowedValues()
      */
+    #[DataProvider('provideSmartCompletion')]
     public function testSmartCompletionSubcommand(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(
             __DIR__ . '/scripts/subcommands.php',
@@ -345,7 +345,6 @@ final class CompletionTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideSubcommandSwitch')]
     /**
      * Tests subcommand switch completion.
      *
@@ -354,6 +353,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see Completion::complete()
      * @see Completion::completeParamValue()
      */
+    #[DataProvider('provideSubcommandSwitch')]
     public function testSubcommandSwitch(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(__DIR__ . '/scripts/subcommands.php', $parametersString, $expectedOutputLines);
     }
@@ -387,7 +387,6 @@ final class CompletionTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideSubcommandSwitchDefaultValueDeep')]
     /**
      * Tests completion affected by default subcommand switch value deeply in configs tree.
      *
@@ -399,6 +398,7 @@ final class CompletionTest extends TestCaseAbstract {
      * @see Completion::complete()
      * @see Completion::completeParamValue()
      */
+    #[DataProvider('provideSubcommandSwitchDefaultValueDeep')]
     public function testSubcommandSwitchDefaultValueDeep(string $parametersString, array $expectedOutputLines): void {
         $this->testTemplateCompletion(
             __DIR__ . '/scripts/deep-default-subcommand.php',

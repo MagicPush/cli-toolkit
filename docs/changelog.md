@@ -150,7 +150,7 @@ This change log references the repository changes and releases, which respect [s
     1. Added `executeBuiltInSubcommandIfRequested()` method for built-in subcommands automatic execution;
        the method is utilized by `Parametizer::run()`.
 1. Added `CliRequestProcessor::parseSubcommandParameters()` protected method
-   to ease processing of the default subcommand switch value.
+   to ease processing of the default subcommand name (subcommand switch value).
 1. Added `CliRequestProcessor::$isForCompletion` readonly flag (settable in `__construct()`). The flag is used
    to stabilize completion output due to the default subcommand switch value.
 1. [Config.php](../src/Parametizer/Config/Config.php):

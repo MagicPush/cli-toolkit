@@ -15,13 +15,13 @@ use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsString;
 
 final class CliRequestTest extends TestCaseAbstract {
-    #[DataProvider('provideGettingParameterValue')]
     /**
      * Tests different reading of parameter values processed from a request.
      *
      * @see CliRequest::getParam()
      * @see CliRequest::getParams()
      */
+    #[DataProvider('provideGettingParameterValue')]
     public function testGettingParameterValue(string $parameterName, string $parameterValue): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-request-parameter-name.php', $parameterName);
 
@@ -68,7 +68,6 @@ final class CliRequestTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideParameterTypeCast')]
     /**
      * Tests type casting helper methods for parameter values processed from a request.
      *
@@ -82,6 +81,7 @@ final class CliRequestTest extends TestCaseAbstract {
      * @see CliRequest::getParamAsString()
      * @see CliRequest::getParamAsStringList()
      */
+    #[DataProvider('provideParameterTypeCast')]
     public function testParameterTypeCast(?string $castType, array $expectedValues): void {
         $parametersString = "--single=3.14something --array=9.8whatever --array='-' --array=1";
         if (null !== $castType) {
@@ -137,7 +137,6 @@ final class CliRequestTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideParameterLogicErrors')]
     /**
      * Tests logic errors while reading parameter values processed from a request.
      *
@@ -151,6 +150,7 @@ final class CliRequestTest extends TestCaseAbstract {
      * @see CliRequest::validateValueIsArray()
      * @see CliRequest::validateValueNotArray()
      */
+    #[DataProvider('provideParameterLogicErrors')]
     public function testParameterLogicErrors(
         string $scriptPath,
         string $castType,
@@ -203,13 +203,13 @@ final class CliRequestTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideSubcommandDataInRequest')]
     /**
      * Tests that if no subcommands are available, subcommand-related methods in the request object will render `null`.
      *
      * @see CliRequest::getRequestedSubcommandName()
      * @see CliRequest::getSubcommandRequest()
      */
+    #[DataProvider('provideSubcommandDataInRequest')]
     public function testSubcommandDataInRequest(string $subcommandName, array $expectedValues): void {
         $result = static::assertNoErrorsOutput(__DIR__ . '/scripts/template-subcommand-request.php', $subcommandName);
 
@@ -254,7 +254,6 @@ final class CliRequestTest extends TestCaseAbstract {
         );
     }
 
-    #[DataProvider('provideSubcommandDoesNotShadowParentParameter')]
     /**
      * Tests that parent config parameter values are not lost if a subcommand with the same name is picked.
      *
@@ -264,6 +263,7 @@ final class CliRequestTest extends TestCaseAbstract {
      * @see CliRequestProcessor::parseSubcommandParameters()
      * @see CliRequest::getSubcommandRequest()
      */
+    #[DataProvider('provideSubcommandDoesNotShadowParentParameter')]
     public function testSubcommandDoesNotShadowParentParameter(
         string $parametersString,
         array $expectedRequestParameters,
@@ -308,7 +308,6 @@ final class CliRequestTest extends TestCaseAbstract {
         ];
     }
 
-    #[DataProvider('provideErrorIfRequestSubcommandPrefixIsUsedForParameterNames')]
     /**
      * Tests that it is not possible to add the request subcommand prefix ({@see CliRequest::SUBCOMMAND_PREFIX})
      * to parameter and subcommand regular names.
@@ -319,6 +318,7 @@ final class CliRequestTest extends TestCaseAbstract {
      * @see ParameterAbstract::__construct()
      * @see Config::newSubcommand()
      */
+    #[DataProvider('provideErrorIfRequestSubcommandPrefixIsUsedForParameterNames')]
     public function testErrorIfRequestSubcommandPrefixIsUsedForParameterNames(
         string $parameterType,
         string $expectedErrorOutputSubstringMessage,
