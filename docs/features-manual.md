@@ -26,7 +26,7 @@ Within this library:
 `php script-file.php [parameters...]`.
 
     * Developing _plain scripts_ might be a better solution for you, only if you do not want (or are not able) to enable
-      [completion](../README.md#completion) for some reason - calling a plain script file might be shorter than calling
+      [completion](../README.md#completion) for some reason. Calling a plain script file might be shorter than calling
       a launcher with a class script name.
 * **Class-based script** means a file with a class (extended from `ScriptClassAbstract`) that contains a script logic
   and must be executed by a separate launcher (`ScriptClassLauncher`):
@@ -35,10 +35,10 @@ Within this library:
     * Generally, _class-based scripts_ are recommended over _plain scripts_ because are more flexible and easier to
       organize and thus maintain, test, debug, reuse, etc.
 
-      Although you may create a single-file script that contain both a class and its execution code,
+      Although, you may create a single-file script that contain both a class and its execution code,
       _class-based scripts_ written with this library (extended from `ScriptClassAbstract`) contain some built-in stuff
-      to decrease your time and efforts needed for creating ready-to-launch scripts
-      (that's the main idea lying under the _class-based scripts_).
+      to decrease your time and efforts needed for creating ready-to-launch scripts. That is the main idea lying
+      under the _class-based scripts_.
     * Under the hood `ScriptClassLauncher` instance eventually creates a parent `Config` instance (unless you pass it
       to a launcher constructor explicitly) and fills it with _class-based scripts_' configs as
       **[subcommands](#subcommands)**.
@@ -138,7 +138,7 @@ a "feature unit". And you do not like the idea to set detection rules by specify
       time to parse lots of files.
 2. Set `cacheFilePath()` for your detector.
     * During the first run of your launcher (with any command, including no command at all) the detector will put all
-      detected class names into the file specified on the previous step.
+      detected class names into the specified cache file.
     * All subsequent runs of your launcher will be executed instantly - by loading classes with their fully
       qualified names stored in the specified cache file.
 3. Later, if you add (or delete) a script, just launch the special command in your launcher to delete the cache file:
@@ -404,7 +404,7 @@ the _built-in subcommands_:
       `EnvironmentConfig` options).
 
       Additionally, you may manually set an exact short description in a subcommand config builder with
-      `shortDescription()`. If a value is present, then that exact value will be always shown as is (without trimming)
+      `shortDescription()`. If a value is present, then that exact value will always be shown as is (without trimming)
       in `list` output.
 
       As a bonus, if your subcommand full description is short enough, you may set it with
@@ -693,7 +693,7 @@ Or pick some optimal value to see full templates for not very option-heavy scrip
 
 * Controls if the `--help` option has a short name or does not.
 * Possible values:
-    * a latin character (like for any other option short name)
+    * a Latin character (like for any other option short name)
     * `null` (no short name)
 
 `--help` option is automatically added for all scripts and subcommands. Usually you may want to add a short name `-h`
@@ -797,7 +797,13 @@ Mario bet 10 bitcoins on Daphne.
 
 `TerminalFormatter` class adds escape sequences to strings, which may affect font color, font style, and
 background color. The key method here is `apply()` - it surrounds an input string with escape sequences, where
-the first enables formatting and the second disables it. See class constants and comments around those for details. 
+the first enables formatting and the second disables it. See class constants and comments around those for details.
+
+There is a built-in showcase script that demonstrates possible outputs:
+```shell
+ php ../tools/cli-toolkit/run.php cli-toolkit:terminal-formatter-showcase
+```
+Also, see its help page for additional output options.
 
 * Nested formatting is supported: `$formatter->error('Exception "' . $formatter->note('Weee!') . '" message')`
   will result in a string with sequences starting and ending in correct places, so inner substring `Weee!` is formatted

@@ -11,7 +11,7 @@ declare(strict_types=1);
  *      `php execute-class.php '\MagicPush\CliToolkit\Tools\CliToolkit\ScriptClasses\TerminalFormatterShowcase' --help`
  *
  * Note that in this case the class name must be the first parameter. The rest of parameters may be in any order,
- * according to the library parameters placement rules (see "Parameter types" in {@link ../../docs/features-manual.md}).
+ * according to the library parameters placement rules (see "Parameter types" in {@see ../../docs/features-manual.md}).
  *
  * Some of use cases:
  *  1. You have a few "plumber" scripts that you do not want to appear in the standard launcher's list of available

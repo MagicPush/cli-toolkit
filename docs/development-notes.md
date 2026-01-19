@@ -115,8 +115,8 @@ Negligible. `--dir-count=50 --dir-max-level=5 2000`:
 |                                                               Condition | Seconds | Memory, MB |
 |------------------------------------------------------------------------:|:--------|:-----------|
 | Autoload OFF: `ScriptClassLauncher::useParentEnvConfigForSubcommands()` | `0.150` | `25.898`   |
-|                                            Autoload ON + no config file | `0.185` | `26.809`   |
-|           Autoload ON + a config file somewhere in `MassTest` directory | `0.215` | `27.69`    |
+|                                            Autoload ON + no config file | `0.185` | `28.914`   |
+|           Autoload ON + a config file somewhere in `MassTest` directory | `0.210` | `29.795`   |
 
 ### RegExp in subcommand name validation
 

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace MagicPush\CliToolkit\Parametizer;
 
 use Exception;
+use MagicPush\CliToolkit\Parametizer\Config\Config;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ListSubcommands;
+use MagicPush\CliToolkit\Parametizer\ScriptClass\BuiltinSubcommand\ShowHelpPage;
 use MagicPush\CliToolkit\Utils;
 use RuntimeException;
 use TypeError;
@@ -15,16 +18,56 @@ class EnvironmentConfig {
 
     /* AVAILABLE PROPERTIES -> */
 
+    /**
+     * @var int Padding size for each line from the left in {@see ListSubcommands} output.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $listPaddingLeftMain               = 1;
+    /**
+     * @var int Padding size each command or commands header from the left in {@see ListSubcommands} output.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $listPaddingLeftCommand            = 2;
+    /**
+     * @var int Length of a gap between a command name and its description in {@see ListSubcommands} output.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $listPaddingLeftCommandDescription = 4;
 
+    /**
+     * @var int Padding size for almost each line (except headers) from the left in {@see ShowHelpPage} output.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $helpGeneratorPaddingLeftMain                        = 2;
+    /**
+     * @var int Minimal length of a gap between a parameter name and its description
+     * in {@see ShowHelpPage} output.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $helpGeneratorPaddingLeftParameterDescription        = 4;
+    /**
+     * @var int Minimum length of a short description before ". " (to trim after the whole sentence);
+     * mainly affects {@see ListSubcommands} output for subcommands.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $helpGeneratorShortDescriptionCharsMinBeforeFullStop = 40;
+    /**
+     * @var int Maximum length of a short description; mainly affects {@see ListSubcommands} output for subcommands.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $helpGeneratorShortDescriptionCharsMax               = 70;
+    /**
+     * @var int Maximum amount of non-required options allowed to be shown in {@see ShowHelpPage} usage template(s)
+     * (instead of a single "[options]" substring).
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public int $helpGeneratorUsageNonRequiredOptionsMax             = 5;
 
+    /**
+     * @var string|null Short name for `--help` ({@see Config::PARAMETER_NAME_HELP}) parameter.
+     * `null` disables a short name.
+     * <br />See {@see ../../docs/features-manual.md} for details about each available setting.
+     */
     public ?string $optionHelpShortName = null;
 
     /* <- AVAILABLE PROPERTIES */

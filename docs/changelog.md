@@ -8,6 +8,8 @@ This change log references the repository changes and releases, which respect [s
 
 1. Adapted the codebase to work smoothly with PHP 8.5
     1. Updated PHPUnit: 12.1.0 -> 12.5.6
+1. Added short descriptions to all [EnvironmentConfig.php](../src/Parametizer/EnvironmentConfig.php) settings.
+1. Improved docs a bit.
 
 ## v3.0.0
 

@@ -57,7 +57,7 @@ if (!$request->getParamAsBool('dry-run')) {
 
 If you want to read your script's documentation, then just call your script with `--help` option:
 ```
-$ path/to/my-cool-script.php --help
+$ php path/to/my-cool-script.php --help
 
 USAGE
 
@@ -88,7 +88,7 @@ $request = Parametizer::newConfig()
 ```
 
 ```
-$ my-cool-script.php
+$ php my-cool-script.php
 'chunk-size' >>> Config error: a parameter can't be required and have a default value simultaneously.
 ```
 
@@ -101,6 +101,9 @@ php tools/cli-toolkit/run.php cli-toolkit:generate:launcher-skeleton
 ```
 
 Read the output and comments in generated files.
+
+The generated files will include completion script `local/completion.sh` and its generator script
+`generate-completion.sh` for your convenience, so you may skip the next section about [completion](#completion).
 
 ### Completion
 

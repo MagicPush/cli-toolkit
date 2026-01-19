@@ -412,19 +412,19 @@ class LauncherSkeleton extends CliToolkitGenerateScriptAbstract {
                 --output-filepath="\$scriptDirectoryPath{$completionScriptPathSuffix}" \
                 --include-script="\$scriptDirectoryPath/%%LAUNCHER_BASENAME%%"
 
-            # %%DO%% [--verbose]: Remove the line below after you get acquainted with the completion generator.
+            # %%DO%% [--verbose]: Remove this line after you get acquainted with the completion generator.
 
             # %%DO%% [--alias-prefix='%%ALIAS_PREFIX%%']:
             # %%DO%% It will create an alias '%%ALIAS_PREFIX%%{$generatedLauncherBasenameNoExtension}'
             # %%DO%% for your newly generated launcher.
-            # %%DO%% You may replace it with any other substring or even ' ' (a space character), which works as no prefix,
-            # %%DO%% so your launcher Bash alias will be just '{$generatedLauncherBasenameNoExtension}'.
+            # %%DO%% You may replace it with any other substring or even ' ' (a space character), which works as
+            # %%DO%% no prefix, so your launcher Bash alias will be just '{$generatedLauncherBasenameNoExtension}'.
 
             # %%DO%% [--output-filepath='...{$completionScriptPathSuffix}']:
-            # %%DO%% You should generate the completion script each time you make relevant changes (or build a container)
-            # %%DO%% and ignore the script in your VCS (or pick your own already ignored directory for that) - because of
-            # %%DO%% absolute paths inside and because later you may add here for your completion script more launchers
-            # %%DO%% and non-class scripts.
+            # %%DO%% You should generate the completion script each time you make relevant changes
+            # %%DO%% (or build a container) and ignore the script in your VCS (or pick your own already ignored
+            # %%DO%% directory for that) - because of absolute paths inside and because later you may add here for
+            # %%DO%% your completion script more launchers and non-class scripts.
 
             # %%DO%% [--include-script='.../%%LAUNCHER_BASENAME%%']:
             # %%DO%% For now, there is just the generated launcher. But you may add more entries,

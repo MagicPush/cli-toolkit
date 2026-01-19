@@ -76,7 +76,7 @@ final class GenerateEnvironmentConfigFileTest extends CliToolkitScriptTestAbstra
         ) ;
 
         assertFileExists(self::CONFIG_PATH);
-        assertJsonFileEqualsJsonFile(__DIR__ . '/../../../parametizer.env.json', self::CONFIG_PATH);
+        assertJsonFileEqualsJsonFile(__DIR__ . '/../../parametizer.env.json', self::CONFIG_PATH);
     }
 
     /**

@@ -142,7 +142,7 @@ final class GenerateLauncherSkeletonTest extends CliToolkitScriptTestAbstract {
         /** @noinspection SpellCheckingInspection */
         assertStringContainsString("# TODO It will create an alias 'ctlauncher'", $completionScriptGeneratorContents);
         assertStringContainsString(
-            "# TODO so your launcher Bash alias will be just 'launcher'",
+            "# TODO no prefix, so your launcher Bash alias will be just 'launcher'",
             $completionScriptGeneratorContents,
         );
         assertStringContainsString(

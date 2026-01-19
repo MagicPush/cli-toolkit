@@ -161,14 +161,20 @@ When the time comes, the whole bunch of stuff mentioned here will be implemented
         1. Headered group names are NOT sorted. But auto-group names (based on name sections) ARE sorted.
         1. In `slim` mode all subcommands are sorted within groups only,
            where auto-group names are considered as a single group.
-1. PHPUnit: Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
-    1. Consider adding DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
+1. Testing:
+    1. Add DI-methods like `logOutput()` and `logError()`, which may be related to actual STD* streams,
        files or any other kinds of streams.
-        * Think about config types where to store stream sources: `EnvironmentConfig` or a new config type like
+
+       Use cases: background launch; launching scripts within PHPUnit process,
+       so coverage would actually show something.
+
+        1. `STDIN` should be replaceable as well.
+        1. Think about config types where to store stream sources: `EnvironmentConfig` or a new config type like
           a "runtime config".
 
           Consider a case: normally a script utilizes STD* streams. But when launched in background,
           this script should write output and error strings into files.
+    1. Try messing with the coverage - make tests call test scripts inside the same processes with test methods.
     1. Try to cover formatting in tests.
 1. Detected script names may be accessed as subcommand names by specifying their full names
    (completion-powered) or unambiguous first characters substrings (like in Symfony console) - if there are
