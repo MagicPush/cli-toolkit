@@ -75,7 +75,7 @@ class CliRequestProcessor {
         if (!$this->isForCompletion) {
             // But otherwise, if there is a subcommand switch in a config, but no subcommand request,
             // then it's a default subcommand and we should process the switch's default value like parsed one.
-            $subcommandSwitchName = $this->config->getSubcommandSwitchName();
+            $subcommandSwitchName = $this->config->getSubcommandSwitchName() ?? '';
             $subcommandName       = $this->requestParams[$subcommandSwitchName] ?? null;
             if (
                 $subcommandName

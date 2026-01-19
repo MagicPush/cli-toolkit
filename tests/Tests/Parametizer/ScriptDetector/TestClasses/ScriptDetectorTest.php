@@ -40,6 +40,7 @@ final class ScriptDetectorTest extends ScriptDetectorTestAbstract {
             ->setConstructorArgs(['throwOnException' => $throwOnException])
             ->getMock();
         $detector
+            ->expects($this->atMost(1))
             ->method('hasMinimalCustomSearchSettings')
             ->willReturn($hasMinimalCustomSearchSettings);
         if ($hasSearchedDirectorySetting) {

@@ -2,6 +2,13 @@
 
 This change log references the repository changes and releases, which respect [semantic versioning](https://semver.org).
 
+## v3.0.1
+
+### Patches
+
+1. Adapted the codebase to work smoothly with PHP 8.5
+    1. Updated PHPUnit: 12.1.0 -> 12.5.6
+
 ## v3.0.0
 
 ### Backward incompatibilities:

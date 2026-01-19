@@ -6,6 +6,7 @@
   columns="40"
   colors="true"
 
+  displayDetailsOnPhpunitNotices="true"
   displayDetailsOnPhpunitDeprecations="true"
   displayDetailsOnTestsThatTriggerDeprecations="true"
   displayDetailsOnTestsThatTriggerErrors="true"
